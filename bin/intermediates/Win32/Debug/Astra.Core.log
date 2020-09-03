@@ -1,0 +1,50 @@
+﻿  Main.cpp
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\buffers\VertexArray.h(29,27): warning C4227: anachronism used: qualifiers on reference are ignored
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
+C:\Users\Justin\Documents\Cpp Projects\Astra\Dependencies\GLFW\include\GLFW\glfw3.h(123): message : see previous definition of 'APIENTRY'
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\entities\Spatial.h(19,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\Main.cpp(30,76): warning C4305: 'argument': truncation from 'double' to 'const float'
+  Texture.cpp
+  VertexArray.cpp
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\buffers\VertexArray.h(29,27): warning C4227: anachronism used: qualifiers on reference are ignored
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\buffers\VertexArray.cpp(22,39): warning C4227: anachronism used: qualifiers on reference are ignored
+  Camera.cpp
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\entities\Spatial.h(19,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  Entity.cpp
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\entities\Spatial.h(19,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\buffers\VertexArray.h(29,27): warning C4227: anachronism used: qualifiers on reference are ignored
+  Loader.cpp
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\buffers\VertexArray.h(29,27): warning C4227: anachronism used: qualifiers on reference are ignored
+  ObjLoader.cpp
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\buffers\VertexArray.h(29,27): warning C4227: anachronism used: qualifiers on reference are ignored
+  Entity3dRenderer.cpp
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\buffers\VertexArray.h(29,27): warning C4227: anachronism used: qualifiers on reference are ignored
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\entities\Spatial.h(19,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  GuiRenderer.cpp
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\buffers\VertexArray.h(29,27): warning C4227: anachronism used: qualifiers on reference are ignored
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\entities\Spatial.h(19,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  Renderer.cpp
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\buffers\VertexArray.h(29,27): warning C4227: anachronism used: qualifiers on reference are ignored
+  RendererController.cpp
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\buffers\VertexArray.h(29,27): warning C4227: anachronism used: qualifiers on reference are ignored
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\entities\Spatial.h(19,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\renderers\RendererController.cpp(28,61): warning C4244: 'argument': conversion from 'const unsigned int' to 'float', possible loss of data
+  Shader.cpp
+  GuiTexture.cpp
+  Window.cpp
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\Window.cpp(62,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\Window.cpp(62,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\Window.cpp(117,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\Window.cpp(117,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Mat4.cpp
+  Vec2.cpp
+  Vec3.cpp
+  Vec4.cpp
+  stb_image.cpp
+  Generating Code...
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\loaders\Loader.cpp(104): warning C4172: returning address of local variable or temporary: vaoId
+C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\src\graphics\loaders\Loader.cpp(112): warning C4172: returning address of local variable or temporary: vboId
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\Justin\Documents\Cpp Projects\Astra\bin\Win32\Debug\vc120.pdb'; linking object as if no debug info
+  Astra.Core.vcxproj -> C:\Users\Justin\Documents\Cpp Projects\Astra\bin\Win32\Debug\Astra.Core.exe

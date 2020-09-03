@@ -1,0 +1,6 @@
+.vs/
+.git/
+
+*.obj
+
+!Astra.Core/src/resources/*.obj
