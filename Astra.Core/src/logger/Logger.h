@@ -26,7 +26,7 @@ namespace Astra::Log
 			return instance;
 		}
 
-		static void const LogError(std::string message)
+		static void const LogError(const std::string& message)
 		{
 			Get().LogImpl(Error, message.c_str());
 		}
@@ -36,7 +36,7 @@ namespace Astra::Log
 			Get().LogImpl(Error, message);
 		}
 
-		static void const LogWarning(std::string message)
+		static void const LogWarning(const std::string& message)
 		{
 			Get().LogImpl(Warning, message.c_str());
 		}
@@ -46,7 +46,7 @@ namespace Astra::Log
 			Get().LogImpl(Warning, message);
 		}
 
-		static void const Log(std::string message)
+		static void const Log(const std::string& message)
 		{
 			Get().LogImpl(Info, message.c_str());
 		}
