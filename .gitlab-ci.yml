@@ -5,10 +5,15 @@ stages:
     - test
 
 variables:
+    msbuild: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe'
     solution: "Astra.sln"
     test: "Astra.Test"
 
-build:
+build_windows:
     stage: build
     script:
-        - msbuild Astra.sln /t:Rebuild /p:Configuration=Release /p:Platform="x86" /m
+        - '& "$msbuild" -help'
+    tags:
+        - shared-windows
+        - windows
+        - windows-1809
