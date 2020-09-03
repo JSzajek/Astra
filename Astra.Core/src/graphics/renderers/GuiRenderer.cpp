@@ -23,11 +23,11 @@ namespace Astra::Graphics
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);
-		for (const GuiTexture& gui : m_guis)
+		for (const GuiTexture* gui : m_guis)
 		{
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, gui.GetId());
-			m_shader->SetUniformMat4(Shader::TransformMatrixTag, Math::Mat4Utils::Transformation(gui));
+			glBindTexture(GL_TEXTURE_2D, gui->GetId());
+			m_shader->SetUniformMat4(Shader::TransformMatrixTag, Math::Mat4Utils::Transformation(*gui));
 			glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
 		}
 		glEnable(GL_DEPTH_TEST);

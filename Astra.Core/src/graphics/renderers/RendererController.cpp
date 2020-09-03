@@ -38,12 +38,12 @@ namespace Astra::Graphics
 		m_guiRenderer->Draw(NULL);
 	}
 
-	void RendererController::AddGui(const GuiTexture& gui)
+	void RendererController::AddGui(const GuiTexture* gui)
 	{
 		m_guiRenderer->AddGui(gui);
 	}
 
-	void RendererController::AddEntity(const Entity& entity)
+	void RendererController::AddEntity(const Entity* entity)
 	{
 		m_entityRenderer->AddEntity(entity);
 	}

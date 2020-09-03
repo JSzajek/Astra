@@ -16,16 +16,25 @@ int main()
     window.SetWindowResizeCallback([&](float width, float height) { renderer.UpdateScreen(width, height); });
 
     Texture* texture = Loader::LoadTexture("C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/textures/test1.jpg");
-    renderer.AddGui(GuiTexture(texture->id, Vec2(0.75,0.75), Vec2(0.1,0.1)));
+    Texture* texture4 = Loader::LoadTexture("C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/textures/test1.jpg");
+    GuiTexture gui = GuiTexture(texture->id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
+    GuiTexture gui2 = GuiTexture(texture4->id, Vec2(-0.75, -0.75), Vec2(0.1, 0.1));
+    renderer.AddGui(&gui);
+    renderer.AddGui(&gui2);
 
     Texture* texture2 = Loader::LoadTexture("C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/textures/red.jpg");
+    Texture* texture3 = Loader::LoadTexture("C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/textures/purple.jpg");
     texture2->reflectivity = 1;
     texture2->shineDampener = 8;
-    const VertexArray* vertArray = ObjLoader::LoadObjectModel("C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/cube.obj");
-    Entity entity = Entity(vertArray, texture2, Vec3(0, 0, 0), Vec3(0), Vec3(0.5f));
-    Entity entity2 = Entity(vertArray, texture2, Vec3(0, 0, 2), Vec3(0), Vec3(0.2f));
-    renderer.AddEntity(entity);
-    renderer.AddEntity(entity2);
+
+    texture3->reflectivity = 1;
+    texture3->shineDampener = 8;
+    //const VertexArray* vertArray = ObjLoader::LoadObjectModel("C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/cube.obj");
+    const VertexArray* vertArray2 = ObjLoader::LoadObjectModel("C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/bunny.obj");
+    //Entity entity = Entity(vertArray, texture2, Vec3(0, 0, 0), Vec3(0), Vec3(0.5f));
+    Entity entity2 = Entity(vertArray2, texture3, Vec3(0, 0, 0), Vec3(0), Vec3(20));
+    //renderer.AddEntity(&entity);
+    renderer.AddEntity(&entity2);
 
     Timer time;
     float timer = 0;
@@ -33,6 +42,8 @@ int main()
 
     while (!window.Closed())
     {
+        //entity.GetRotation().y += 0.0001f;
+        entity2.GetRotation().y -= 0.0001f;
         window.Clear();
         renderer.Render();
         window.Update();

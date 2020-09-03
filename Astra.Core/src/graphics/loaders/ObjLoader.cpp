@@ -12,7 +12,7 @@ namespace Astra::Graphics
 		textures.clear();
 		normals.clear();
 		indices.clear();
-
+		
 		bool done = false;
 
 		std::vector<float> verticesArray;
@@ -41,17 +41,15 @@ namespace Astra::Graphics
 				normals.push_back(Math::Vec3(std::stof(split[1]), std::stof(split[2]), std::stof(split[3])));
 				break;
 			case StringUtils::str2int("f"):
-				textureCount = vertices.size() * 2;
-				normalsCount = vertices.size() * 3;
-				texturesArray.resize(textureCount);
-				normalsArray.resize(normalsCount);
+				texturesArray.resize(vertices.size() * 2);
+				normalsArray.resize(vertices.size() * 3);
 				done = true;
 				break;
 			}
 			if (done) { break; }
 		}
 
-		while (getline(stream, line))
+		do 
 		{
 			if (line.find('f') == std::string::npos) { continue; }
 
@@ -65,17 +63,17 @@ namespace Astra::Graphics
 			}
 			else
 			{
-				split.erase(split.begin());
 				for (int i = 1; i <= 3; i++)
 				{
-					ProcessVertex(split, indices, textures, normals, texturesArray, normalsArray);
+					indices.push_back(std::stoi(split[i]) - 1);
+					//ProcessVertex(split[i], indices, textures, normals, texturesArray, normalsArray);
 				}
 			}
-		}
+		} while (getline(stream, line));
+
 		stream.close();
 		
-		vertexCount = vertices.size() * 3;
-		verticesArray.reserve(vertexCount);
+		verticesArray.reserve(vertices.size() * 3);
 		
 		for (const Math::Vec3& vertex : vertices)
 		{

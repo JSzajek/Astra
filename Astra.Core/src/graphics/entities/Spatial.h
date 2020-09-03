@@ -57,5 +57,9 @@ namespace Astra::Graphics
 		inline const Math::Vec3& GetTranslation() const { return rows[0]; }
 		inline const Math::Vec3& GetRotation() const { return rows[1]; }
 		inline const Math::Vec3& GetScale() const { return rows[2]; }
+
+		inline Math::Vec3& GetTranslation() { return rows[0]; }
+		inline Math::Vec3& GetRotation() { return rows[1]; }
+		inline Math::Vec3& GetScale() { return rows[2]; }
 	};
 }

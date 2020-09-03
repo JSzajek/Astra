@@ -170,6 +170,7 @@
     <ClCompile Include="src\graphics\buffers\VertexArray.cpp" />
     <ClCompile Include="src\graphics\entities\Camera.cpp" />
     <ClCompile Include="src\graphics\entities\Entity.cpp" />
+    <ClCompile Include="src\graphics\entities\Terrain.cpp" />
     <ClCompile Include="src\graphics\loaders\Loader.cpp" />
     <ClCompile Include="src\graphics\loaders\ObjLoader.cpp" />
     <ClCompile Include="src\graphics\renderers\Entity3dRenderer.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="src\graphics\entities\Entity.h" />
     <ClInclude Include="src\graphics\entities\Light.h" />
     <ClInclude Include="src\graphics\entities\Spatial.h" />
+    <ClInclude Include="src\graphics\entities\Terrain.h" />
     <ClInclude Include="src\graphics\loaders\Loader.h" />
     <ClInclude Include="src\graphics\loaders\ObjLoader.h" />
     <ClInclude Include="src\graphics\renderers\Entity3dRenderer.h" />

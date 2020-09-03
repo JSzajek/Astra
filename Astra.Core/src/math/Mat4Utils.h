@@ -23,12 +23,12 @@ namespace Astra::Math
 			return instance;
 		}
 
-		static Mat4 Transformation(Graphics::GuiTexture texture) 
+		static Mat4 Transformation(const Graphics::GuiTexture& texture) 
 		{
 			return Get().TransformationImpl(texture.GetPosition(), texture.GetScale());
 		}
 
-		static Mat4 Transformation(Graphics::Entity entity)
+		static Mat4 Transformation(const Graphics::Entity& entity)
 		{
 			return Get().TransformationImpl(entity.GetTranslation(), entity.rows[1].x, entity.rows[1].y, entity.rows[1].z, entity.rows[2].x);
 		}

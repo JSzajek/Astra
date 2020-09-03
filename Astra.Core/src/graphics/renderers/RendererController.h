@@ -38,8 +38,8 @@ namespace Astra::Graphics
 		~RendererController();
 		void UpdateScreen(float width, float height);
 		void Render();
-		void AddGui(const GuiTexture& texture);
-		void AddEntity(const Entity& entity);
+		void AddGui(const GuiTexture* gui);
+		void AddEntity(const Entity* entity);
 
 		void UpdatePitch(float value);
 		void UpdateYaw(float value);
