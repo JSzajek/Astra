@@ -8,8 +8,6 @@ variables:
 build_windows:
     stage: build
     script:
-        - msbuild Astra.sln /t:Rebuild /p:Configuration=Release /p:Platform="x86" /m
+        - "$msbuild $solution /t:Rebuild /p:Configuration=Release /p:Platform="x86" /m"
     tags:
-        - shared-windows
         - windows
-        - windows-1809
