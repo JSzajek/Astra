@@ -1,2 +1,0 @@
-C:\Users\Justin\Documents\Cpp Projects\Astra\Dependencies\Astra.Core\Debug\Astra.Core.pdb
-C:\Users\Justin\Documents\Cpp Projects\Astra\Astra.Core\intermediates\Astra.Core.pdb
