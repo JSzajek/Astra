@@ -1,12 +1,14 @@
-image: gcc
+image: mono:latest
 
 stages:
     - build
+    - test
 
 variables:
     solution: "Astra.sln"
+    test: "Astra.Test"
 
 build:
     stage: build
     script:
-        - msbuild.exe Astra.sln /t:Rebuild /p:Configuration=Release /p:Platform="x86" /m
+        - msbuild Astra.sln /t:Rebuild /p:Configuration=Release /p:Platform="x86" /m
