@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "../logger/Logger.h"
 
 namespace Astra::Graphics
 {
@@ -35,7 +36,7 @@ namespace Astra::Graphics
 	{
 		if (!glfwInit())
 		{
-			std::cout << "Failed to initialize glfw" << std::endl;
+			Log::Logger::LogError("Failed to Initialize GLFW.");
 			return false;
 		}
 
@@ -43,7 +44,7 @@ namespace Astra::Graphics
 
 		if (!m_window)
 		{
-			std::cout << "Failed to create window" << std::endl;
+			Log::Logger::LogError("Failed to Create Window Instance.");
 			glfwTerminate();
 			return false;
 		}
@@ -86,11 +87,11 @@ namespace Astra::Graphics
 
 		if (glewInit() != GLEW_OK)
 		{
-			std::cout << "Could not initialize GLEW!" << std::endl;
+			Log::Logger::LogError("Failed to Initialize GLEW." );
 			return false;
 		}
 
-		std::cout << "OpenGL " << glGetString(GL_VERSION) << std::endl;
+		Log::Logger::Log(std::string("OpenGL ") + std::string((char*)glGetString(GL_VERSION)));
 		return true;
 	}
 
@@ -104,7 +105,7 @@ namespace Astra::Graphics
 		GLenum error = glGetError();
 		if (error != GL_NO_ERROR)
 		{
-			std::cout << "OpenGL Error: " << error << std::endl;
+			Log::Logger::LogError(std::string("OpenGL Error: ") + std::string(""+error));
 		}
 
 		glfwPollEvents();
@@ -119,9 +120,9 @@ namespace Astra::Graphics
 
 	bool Window::isKeyPressed(unsigned int keycode) const
 	{
-		//TODO:: log this
 		if (keycode >= MAX_KEYS)
 		{
+			Log::Logger::LogWarning("Detected key input outside of MAX_KEYS bounds.");
 			return false;
 		}
 		return m_keys[keycode];
@@ -129,9 +130,9 @@ namespace Astra::Graphics
 
 	bool Window::isMouseButtonPressed(unsigned int button) const
 	{
-		//TODO:: log this
 		if (button >= MAX_BUTTONS)
 		{
+			Log::Logger::LogWarning("Detected mouse button input outside of MAX_BUTTONS bounds.");
 			return false;
 		}
 		return m_mouseButtons[button];

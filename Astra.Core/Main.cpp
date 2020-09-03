@@ -32,7 +32,7 @@ int main()
     Texture* texture2 = Loader::LoadTexture("C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/textures/red.jpg");
     texture2->reflectivity = 1;
     texture2->shineDampener = 8;
-    const VertexArray* vertArray = ObjLoader::LoadObjectModel("C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/dragon.obj");
+    const VertexArray* vertArray = ObjLoader::LoadObjectModel("C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/cube.obj");
     Entity entity = Entity(vertArray, texture2, Vec3(0, 0, 0), Vec3(0), Vec3(0.5f));
     Entity entity2 = Entity(vertArray, texture2, Vec3(0, 0, 2), Vec3(0), Vec3(0.2f));
     renderer.AddEntity(entity);

@@ -180,6 +180,7 @@
     <ClCompile Include="src\graphics\shaders\Shader.cpp" />
     <ClCompile Include="src\graphics\textures\GuiTexture.cpp" />
     <ClCompile Include="src\graphics\Window.cpp" />
+    <ClCompile Include="src\logger\Logger.cpp" />
     <ClCompile Include="src\math\Mat4.cpp" />
     <ClCompile Include="src\math\Vec2.cpp" />
     <ClCompile Include="src\math\Vec3.cpp" />
@@ -205,6 +206,7 @@
     <ClInclude Include="src\graphics\shaders\Shader.h" />
     <ClInclude Include="src\graphics\textures\GuiTexture.h" />
     <ClInclude Include="src\graphics\Window.h" />
+    <ClInclude Include="src\logger\Logger.h" />
     <ClInclude Include="src\math\Mat4.h" />
     <ClInclude Include="src\math\Mat4Utils.h" />
     <ClInclude Include="src\math\Maths.h" />
