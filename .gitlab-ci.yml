@@ -1,0 +1,12 @@
+image: gcc
+
+stages:
+    - build
+
+variables:
+    solution: "Astra.sln"
+
+build:
+    stage: build
+    script:
+        - msbuild.exe Astra.sln /t:Rebuild /p:Configuration=Release /p:Platform="x86" /m
