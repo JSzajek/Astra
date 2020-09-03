@@ -10,7 +10,7 @@ namespace Astra::Graphics
 		{
 			glfwTerminate();
 		}
-
+		
 		for (int i = 0; i < MAX_KEYS; i++)
 		{
 			m_keys[i] = false;
