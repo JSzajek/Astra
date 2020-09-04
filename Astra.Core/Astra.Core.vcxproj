@@ -230,9 +230,6 @@
     <None Include="src\resources\shaders\Lighting.shader" />
     <None Include="src\resources\shaders\Terrain.shader" />
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="src\resources\textures\test1.jpg" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

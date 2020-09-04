@@ -19,4 +19,32 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\bunny.obj" />
+    <Text Include="res\cube.obj" />
+    <Text Include="res\dragon.obj" />
+    <Text Include="res\fern.obj" />
+    <Text Include="res\grass.obj" />
+    <Text Include="res\pylon.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\fernTexture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\grass.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\grassTexture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\purple.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\red.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\test1.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

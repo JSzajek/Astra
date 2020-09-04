@@ -13,7 +13,7 @@ out vec2 v_TexCoordinates;
 
 void main()
 {
-	v_TexCoordinates = textureCoords * 20;
+	v_TexCoordinates = textureCoords * 15;
 	gl_Position = projectionMatrix * viewMatrix * transformMatrix * vec4(position, 1);
 }
 
