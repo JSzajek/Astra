@@ -17,8 +17,9 @@ namespace Astra::Graphics
 		std::unordered_map<GLuint, std::vector<const Entity*>> m_entities;
 		//std::vector<Light> m_lights;
 		Light m_light;
+		const Math::Vec3* m_skyColor;
 	public:
-		Entity3dRenderer(Shader* shader);
+		Entity3dRenderer(Shader* shader, const Math::Vec3* skyColor);
 		inline void AddEntity(const Entity* entity) 
 		{
 			auto temp = m_entities.find(entity->vertexArray->vaoId);

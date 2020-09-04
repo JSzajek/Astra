@@ -33,6 +33,8 @@ namespace Astra::Graphics
 		Camera m_camera;
 		Light m_light;
 
+		Math::Vec3 skyColor;
+
 		Math::Mat4 projectionMatrix;
 		Math::Mat4 viewMatrix;
 		Math::Mat4 modelViewMatrix;
@@ -40,6 +42,7 @@ namespace Astra::Graphics
 	public:
 		RendererController();
 		~RendererController();
+		void Init() const;
 		void UpdateScreen(float width, float height);
 		void Render();
 		void AddGui(const GuiTexture* gui);

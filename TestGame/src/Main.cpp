@@ -10,12 +10,11 @@ int main()
     using namespace Astra::Math;
 
     Window window("Astra", 960, 540);
-    window.SetClearColor(Vec3(0.6));
 
     RendererController renderer;
     window.SetWindowResizeCallback([&](float width, float height) { renderer.UpdateScreen(width, height); });
 
-    Texture* texture = Loader::LoadTexture("res/textures/test1.jpg");
+    Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png");
     GuiTexture gui = GuiTexture(texture->id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
     renderer.AddGui(&gui);
 
@@ -26,16 +25,16 @@ int main()
 
     texture3->reflectivity = 1;
     texture3->shineDampener = 8;
-    const VertexArray* vertArray2 = ObjLoader::LoadObjectModel("res/cube.obj");
-    Entity entity = Entity(vertArray2, texture2, Vec3(0, 0, 0), Vec3(0), Vec3(0.5f));
-    Entity entity2 = Entity(vertArray2, texture3, Vec3(0, 2, 0), Vec3(0), Vec3(0.5f));
+    const VertexArray* vertArray2 = ObjLoader::LoadObjectModel("res/dragon.obj");
+    Entity entity = Entity(vertArray2, texture2, Vec3(0, 1, 0), Vec3(0), Vec3(0.5f));
     renderer.AddEntity(&entity);
-    renderer.AddEntity(&entity2);
 
     Texture* grassModelTexture = Loader::LoadTexture("res/textures/grassTexture.png");
+    grassModelTexture->fakeLight = true;
     grassModelTexture->transparent = true;
     Texture* fernModelTexture = Loader::LoadTexture("res/textures/fernTexture.png");
     fernModelTexture->transparent = true;
+    grassModelTexture->fakeLight = true;
 
     const VertexArray* grassVertArray = ObjLoader::LoadObjectModel("res/grass.obj");
     const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");
@@ -45,7 +44,8 @@ int main()
     renderer.AddEntity(&grassModel);
     renderer.AddEntity(&fernModel);
 
-    Texture* grassTexture = Loader::LoadTexture("res/textures/grass.jpg", GL_REPEAT);
+    Texture* grassTexture = Loader::LoadTexture("res/textures/grass.jpg");
+
     Terrain terrain = Terrain(0, 0, grassTexture);
     Terrain terrain1 = Terrain(-1, 0, grassTexture);
     Terrain terrain2 = Terrain(0, -1, grassTexture);
@@ -61,8 +61,7 @@ int main()
 
     while (!window.Closed())
     {
-        //entity.GetRotation().y += 0.0001f;
-        entity2.GetRotation().y -= 0.0001f;
+        entity.GetRotation().y += 0.0001f;
         window.Clear();
         renderer.Render();
         window.Update();
@@ -87,11 +86,11 @@ int main()
 
         if (window.isKeyPressed(90))
         {
-            renderer.UpdateDistance(-0.001f);
+            renderer.UpdateDistance(-0.01f);
         }
         if (window.isKeyPressed(88))
         {
-            renderer.UpdateDistance(0.001f);
+            renderer.UpdateDistance(0.01f);
         }
 
         frames++;

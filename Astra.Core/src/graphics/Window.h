@@ -31,8 +31,6 @@ namespace Astra::Graphics
 		void Update();
 		bool Closed() const;
 
-		inline void SetClearColor(const Math::Vec3& color) { glClearColor(color.x, color.y, color.z, 1); }
-
 		inline int GetWidth() { return m_width; }
 		inline int GetHeight() { return m_height; }
 

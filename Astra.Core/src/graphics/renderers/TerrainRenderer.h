@@ -6,6 +6,7 @@
 #include "../loaders/Loader.h"
 #include "../entities/Terrain.h"
 #include "../entities/Light.h"
+#include "../shaders/TerrainShader.h"
 
 namespace Astra::Graphics
 {
@@ -15,8 +16,9 @@ namespace Astra::Graphics
 		std::unordered_map<GLuint, std::vector<const Terrain*>> m_terrains;
 		//std::vector<Light> m_lights;
 		Light m_light;
+		const Math::Vec3* m_skyColor;
 	public:
-		TerrainRenderer(Shader* shader);
+		TerrainRenderer(Shader* shader, const Math::Vec3* skyColor);
 		inline void AddTerrain(const Terrain* terrain)
 		{
 			auto temp = m_terrains.find(terrain->vertexArray->vaoId);
