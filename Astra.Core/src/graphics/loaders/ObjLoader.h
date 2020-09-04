@@ -35,7 +35,6 @@ namespace Astra::Graphics
 			return Get().LoadObjectModelImpl(filepath);
 		}
 
-
 	private:
 		ObjLoader();
 		const VertexArray* LoadObjectModelImpl(const std::string& filepath);

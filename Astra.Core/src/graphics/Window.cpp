@@ -10,7 +10,7 @@ namespace Astra::Graphics
 		{
 			glfwTerminate();
 		}
-
+		
 		for (int i = 0; i < MAX_KEYS; i++)
 		{
 			m_keys[i] = false;
@@ -91,7 +91,7 @@ namespace Astra::Graphics
 			return false;
 		}
 
-		Log::Logger::Log(std::string("OpenGL ") + std::string((char*)glGetString(GL_VERSION)));
+		Log::Logger::Log(std::string("OpenGL ") + std::string((const char*)glGetString(GL_VERSION)));
 		return true;
 	}
 
@@ -105,7 +105,8 @@ namespace Astra::Graphics
 		GLenum error = glGetError();
 		if (error != GL_NO_ERROR)
 		{
-			Log::Logger::LogError(std::string("OpenGL Error: ") + std::string(""+error));
+			Log::Logger::LogError(std::string("OpenGL Error: ") + std::to_string(error));
+			Log::Logger::LogError((const char*)(glewGetErrorString(error)));
 		}
 
 		glfwPollEvents();

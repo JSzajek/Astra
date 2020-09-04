@@ -11,11 +11,11 @@ namespace Astra::Graphics
 	{
 	private:
 		const VertexArray* m_defaultQuad;
-		std::vector<GuiTexture> m_guis;
+		std::vector<const GuiTexture*> m_guis;
 	public:
 		GuiRenderer(GuiShader* shader);
 		~GuiRenderer();
-		inline void AddGui(const GuiTexture& gui) { m_guis.push_back(gui); }
+		inline void AddGui(const GuiTexture* gui) { m_guis.emplace_back(gui); }
 		void Draw(const Math::Mat4& viewMatrix) override;
 	};
 }

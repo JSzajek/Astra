@@ -2,5 +2,5 @@
 .git/
 bin/
 *.obj
-
+Astra.Core/intermediates/
 !Astra.Core/src/resources/*.obj

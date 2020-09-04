@@ -30,16 +30,16 @@ namespace Astra::Graphics
 	{
 		GLuint id = GenerateVaoId();
 		GLuint verticesID = BindInAttribBuffer(0, vertices, 3, GL_STATIC_DRAW);
-		GLuint indicesID = BindIndicesBuffer(indices, GL_STATIC_DRAW);
 		GLuint texturesID = BindInAttribBuffer(1, texturesCoords, 2, GL_STATIC_DRAW);
 		GLuint normalsID = BindInAttribBuffer(2, normals, 3, GL_STATIC_DRAW);
+		GLuint indicesID = BindIndicesBuffer(indices, GL_STATIC_DRAW);
 		UnbindVertexArray();
 
-		VertexArray* vertArray = new VertexArray(verticesID, indices.size(), drawType);
+		VertexArray* vertArray = new VertexArray(id, indices.size(), drawType);
 		(*vertArray)(BufferType::Vertices) = verticesID;
-		(*vertArray)(BufferType::Indices) = indicesID;
 		(*vertArray)(BufferType::Normals) = normalsID;
 		(*vertArray)(BufferType::TextureCoords) = texturesID;
+		(*vertArray)(BufferType::Indices) = indicesID;
 
 		return vertArray;
 	}
@@ -55,7 +55,7 @@ namespace Astra::Graphics
 		return vertArray;
 	}
 
-	Texture* Loader::LoadTextureImpl(const char* const filepath)
+	Texture* Loader::LoadTextureImpl(const char* const filepath, GLint clippingOption)
 	{
 		Texture* texture = new Texture(filepath);
 
@@ -63,8 +63,8 @@ namespace Astra::Graphics
 		glBindTexture(GL_TEXTURE_2D, texture->id);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clippingOption);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clippingOption);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture->buffer);
 		glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -79,7 +79,7 @@ namespace Astra::Graphics
 		GLuint id = GenerateVboId();
 		glBindBuffer(GL_ARRAY_BUFFER, id);
 
-		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), usage);
+		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], usage);
 		glVertexAttribPointer(index, strideSize, GL_FLOAT, normalized, 0, NULL);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		return id;

@@ -19,12 +19,12 @@ namespace Astra::Graphics
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
 		for (const auto& directory : m_entities)
 		{
-			std::vector<Entity> entities = directory.second;
-			PrepareEntity(entities.front());
-			for (const Entity& entity : entities)
+			std::vector<const Entity*> entities = directory.second;
+			PrepareEntity(*entities.front());
+			for (const Entity* entity : entities)
 			{
-				m_shader->SetUniformMat4(Shader::TransformMatrixTag, Math::Mat4Utils::Transformation(entity));
-				glDrawElements(entity.vertexArray->drawType, entity.vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
+				m_shader->SetUniformMat4(Shader::TransformMatrixTag, Math::Mat4Utils::Transformation(*entity));
+				glDrawElements(entity->vertexArray->drawType, entity->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
 			}
 		}
 		UnbindTextureModel();

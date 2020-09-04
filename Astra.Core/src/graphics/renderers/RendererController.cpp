@@ -12,6 +12,9 @@ namespace Astra::Graphics
 		m_lightingShader = new LightingShader();
 		m_entityRenderer = new Entity3dRenderer(m_lightingShader);
 
+		m_terrainShader = new TerrainShader();
+		m_terrainRenderer = new TerrainRenderer(m_terrainShader);
+
 		modelViewMatrix = Math::Mat4::Identity();
 	
 		m_entityRenderer->AddLight(m_light);
@@ -27,6 +30,7 @@ namespace Astra::Graphics
 	{
 		projectionMatrix = Math::Mat4::Perspective(width, height, FieldOfView, NearPlane, FarPlane);
 		m_entityRenderer->UpdateProjectionMatrix(projectionMatrix);
+		m_terrainRenderer->UpdateProjectionMatrix(projectionMatrix);
 	}
 
 	void RendererController::Render()
@@ -34,18 +38,24 @@ namespace Astra::Graphics
 		m_camera.UpdatePosition();
 		viewMatrix = Math::Mat4Utils::ViewMatrix(m_camera);
 
+		m_terrainRenderer->Draw(viewMatrix);
 		m_entityRenderer->Draw(viewMatrix);
 		m_guiRenderer->Draw(NULL);
 	}
 
-	void RendererController::AddGui(const GuiTexture& gui)
+	void RendererController::AddGui(const GuiTexture* gui)
 	{
 		m_guiRenderer->AddGui(gui);
 	}
 
-	void RendererController::AddEntity(const Entity& entity)
+	void RendererController::AddEntity(const Entity* entity)
 	{
 		m_entityRenderer->AddEntity(entity);
+	}
+
+	void RendererController::AddTerrain(const Terrain* terrain)
+	{
+		m_terrainRenderer->AddTerrain(terrain);
 	}
 
 	void RendererController::UpdatePitch(float value)

@@ -14,22 +14,22 @@ namespace Astra::Graphics
 	class Entity3dRenderer : public Renderer
 	{
 	private:
-		std::unordered_map<GLuint, std::vector<Entity>> m_entities;
+		std::unordered_map<GLuint, std::vector<const Entity*>> m_entities;
 		//std::vector<Light> m_lights;
 		Light m_light;
 	public:
 		Entity3dRenderer(Shader* shader);
-		inline void AddEntity(const Entity& entity) 
+		inline void AddEntity(const Entity* entity) 
 		{
-			auto temp = m_entities.find(entity.vertexArray->vaoId);
+			auto temp = m_entities.find(entity->vertexArray->vaoId);
 			if (temp != m_entities.end())
 			{
-				temp->second.push_back(entity);
+				temp->second.emplace_back(entity);
 			}
 			else
 			{
-				m_entities[entity.vertexArray->vaoId] = std::vector<Entity>();
-				m_entities[entity.vertexArray->vaoId].push_back(entity);
+				m_entities[entity->vertexArray->vaoId] = std::vector<const Entity*>();
+				m_entities[entity->vertexArray->vaoId].emplace_back(entity);
 			}
 		}
 		inline void AddLight(const Light& light) { m_light = light; }

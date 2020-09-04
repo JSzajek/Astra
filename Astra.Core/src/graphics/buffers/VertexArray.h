@@ -10,9 +10,9 @@ namespace Astra::Graphics
 	enum BufferType
 	{
 		Vertices		= 0,
-		Indices			= 1,
-		TextureCoords	= 2,
-		Normals			= 3
+		TextureCoords	= 1,
+		Normals			= 2,
+		Indices			= 3,
 	};
 
 	struct VertexArray

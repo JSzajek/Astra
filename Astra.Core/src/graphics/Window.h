@@ -5,6 +5,7 @@
 #include <functional>
 
 #include "../math/Vec2.h"
+#include "../math/Vec3.h"
 
 namespace Astra::Graphics
 {
@@ -29,6 +30,8 @@ namespace Astra::Graphics
 		void Clear() const;
 		void Update();
 		bool Closed() const;
+
+		inline void SetClearColor(const Math::Vec3& color) { glClearColor(color.x, color.y, color.z, 1); }
 
 		inline int GetWidth() { return m_width; }
 		inline int GetHeight() { return m_height; }
