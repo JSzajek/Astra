@@ -177,6 +177,7 @@
     <ClCompile Include="src\graphics\renderers\GuiRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\Renderer.cpp" />
     <ClCompile Include="src\graphics\renderers\RendererController.cpp" />
+    <ClCompile Include="src\graphics\renderers\TerrainRenderer.cpp" />
     <ClCompile Include="src\graphics\shaders\Shader.cpp" />
     <ClCompile Include="src\graphics\textures\GuiTexture.cpp" />
     <ClCompile Include="src\graphics\Window.cpp" />
@@ -202,10 +203,12 @@
     <ClInclude Include="src\graphics\renderers\GuiRenderer.h" />
     <ClInclude Include="src\graphics\renderers\RendererController.h" />
     <ClInclude Include="src\graphics\renderers\Renderer.h" />
+    <ClInclude Include="src\graphics\renderers\TerrainRenderer.h" />
     <ClInclude Include="src\graphics\shaders\BasicShader.h" />
     <ClInclude Include="src\graphics\shaders\GuiShader.h" />
     <ClInclude Include="src\graphics\shaders\LightingShader.h" />
     <ClInclude Include="src\graphics\shaders\Shader.h" />
+    <ClInclude Include="src\graphics\shaders\TerrainShader.h" />
     <ClInclude Include="src\graphics\textures\GuiTexture.h" />
     <ClInclude Include="src\graphics\Window.h" />
     <ClInclude Include="src\logger\Logger.h" />
@@ -225,6 +228,7 @@
     <None Include="src\resources\shaders\Basic.shader" />
     <None Include="src\resources\shaders\Gui.shader" />
     <None Include="src\resources\shaders\Lighting.shader" />
+    <None Include="src\resources\shaders\Terrain.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\textures\test1.jpg" />

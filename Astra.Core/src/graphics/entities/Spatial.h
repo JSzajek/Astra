@@ -16,7 +16,7 @@ namespace Astra::Graphics
 		{
 			for (int i = 0; i < 3 * 3; i++)
 			{
-				data[i] = i < 5 ? 0 : 1;
+				data[i] = i < 6 ? 0 : 1;
 			}
 		}
 

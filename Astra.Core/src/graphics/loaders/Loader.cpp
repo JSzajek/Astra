@@ -55,7 +55,7 @@ namespace Astra::Graphics
 		return vertArray;
 	}
 
-	Texture* Loader::LoadTextureImpl(const char* const filepath)
+	Texture* Loader::LoadTextureImpl(const char* const filepath, GLint clippingOption)
 	{
 		Texture* texture = new Texture(filepath);
 
@@ -63,8 +63,8 @@ namespace Astra::Graphics
 		glBindTexture(GL_TEXTURE_2D, texture->id);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clippingOption);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clippingOption);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture->buffer);
 		glBindTexture(GL_TEXTURE_2D, 0);
 

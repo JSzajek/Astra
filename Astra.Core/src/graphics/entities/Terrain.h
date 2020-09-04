@@ -10,10 +10,13 @@ namespace Astra::Graphics
 	class Terrain : public Spatial
 	{
 	private:
-		static constexpr float Size = 200;
-		static constexpr float VertexCount = 80;
+		static constexpr float Size = 40;
+		static constexpr float VertexCount = 6;
 	public:
-		Terrain(unsigned int width, unsigned int height, Texture* texture);
+		const VertexArray* vertexArray;
+		const Texture* texture;
+	public:
+		Terrain(int xGrid, int zGrid, Texture* texture);
 	private:
 		const VertexArray* GeneratePlaneTerrain();
 	};

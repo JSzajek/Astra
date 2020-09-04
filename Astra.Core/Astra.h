@@ -16,3 +16,4 @@
 #include "src/graphics/renderers/RendererController.h"
 
 #include "src/graphics/entities/Entity.h"
+#include "src/graphics/entities/Terrain.h"
