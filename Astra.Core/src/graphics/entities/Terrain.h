@@ -14,9 +14,10 @@ namespace Astra::Graphics
 		static constexpr float VertexCount = 6;
 	public:
 		const VertexArray* vertexArray;
-		const TerrainMaterial* material;
+		const TerrainMaterialPack* texturePack;
+		const TerrainMaterial* blendMap;
 	public:
-		Terrain(int xGrid, int zGrid, TerrainMaterial* material);
+		Terrain(int xGrid, int zGrid, TerrainMaterialPack* pack, TerrainMaterial* map);
 	private:
 		const VertexArray* GeneratePlaneTerrain();
 	};

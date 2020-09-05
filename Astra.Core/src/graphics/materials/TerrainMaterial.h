@@ -11,4 +11,15 @@ namespace Astra::Graphics
 	public:
 		TerrainMaterial(const char* const filepath);
 	};
+	
+	struct TerrainMaterialPack
+	{
+		const TerrainMaterial* backgroundTexture;
+		const TerrainMaterial* rTexture;
+		const TerrainMaterial* gTexture;
+		const TerrainMaterial* bTexture;
+	
+		TerrainMaterialPack(const TerrainMaterial* background, const TerrainMaterial* red,
+							const TerrainMaterial* green, const TerrainMaterial* blue);
+	};
 }
