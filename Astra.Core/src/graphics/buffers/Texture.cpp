@@ -3,7 +3,7 @@
 namespace Astra::Graphics
 {
 	Texture::Texture(const char* const filepath)
-		: id(0), m_filePath(filepath), reflectivity(0), shineDampener(1), transparent(false), fakeLight(false)
+		: id(0), m_filePath(filepath)
 	{
 		stbi_set_flip_vertically_on_load(1);
 		buffer = stbi_load(std::string(filepath).c_str(), &width, &height, &m_bpp, 4);

@@ -4,8 +4,8 @@ Player::Player(Window* window)
 	: m_camera(new Camera(20, 25, 0)), _window(window), m_movement(Vec3(0))
 {
 	const VertexArray* bodyModel = ObjLoader::LoadObjectModel("res/pylon.obj");
-	const Texture* texture = Loader::LoadTexture("res/textures/red.jpg");
-	m_body = new Entity(bodyModel, texture, Vec3(0));
+    ImageMaterial* material = new ImageMaterial("res/textures/red.jpg");
+	m_body = new Entity(bodyModel, material, Vec3(0));
 }
 
 void Player::Update()

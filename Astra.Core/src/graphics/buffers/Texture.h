@@ -6,15 +6,13 @@
 
 namespace Astra::Graphics
 {
-	struct Texture
+	class Texture
 	{
 	public:
 		GLuint id;
 		int width, height;
 		unsigned char* buffer;
-		float shineDampener, reflectivity;
-		bool transparent;
-		bool fakeLight;
+		
 	private:
 		const char* const m_filePath;
 		int m_bpp;

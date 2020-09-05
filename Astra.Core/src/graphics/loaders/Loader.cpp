@@ -58,20 +58,24 @@ namespace Astra::Graphics
 	Texture* Loader::LoadTextureImpl(const char* const filepath, GLint clippingOption)
 	{
 		Texture* texture = new Texture(filepath);
+		return BufferTextureImpl(texture, clippingOption);
+	}
 
-		glGenTextures(1, &texture->id);
-		glBindTexture(GL_TEXTURE_2D, texture->id);
+	Texture* Loader::BufferTextureImpl(Texture* initializedTexture, GLint clippingOption)
+	{
+		glGenTextures(1, &initializedTexture->id);
+		glBindTexture(GL_TEXTURE_2D, initializedTexture->id);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clippingOption);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clippingOption);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture->buffer);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, initializedTexture->width, initializedTexture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, initializedTexture->buffer);
 		glBindTexture(GL_TEXTURE_2D, 0);
 
-		m_textures.emplace_back(texture);
+		m_textures.emplace_back(initializedTexture);
 
-		texture->ClearBuffer();
-		return texture;
+		initializedTexture->ClearBuffer();
+		return initializedTexture;
 	}
 
 	GLuint Loader::BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage, GLboolean normalized)

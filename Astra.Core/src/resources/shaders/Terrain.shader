@@ -23,7 +23,7 @@ const float gradient = 5.0;
 
 void main()
 {
-	v_TexCoordinates = textureCoords * 3;
+	v_TexCoordinates = textureCoords;
 	vec4 worldPosition = transformMatrix * vec4(position, 1);
 	vec4 positionRelativeToCam = viewMatrix * worldPosition;
 	gl_Position = projectionMatrix * positionRelativeToCam;
@@ -50,7 +50,11 @@ in float visibility;
 
 out vec4 out_Color;
 
-uniform sampler2D u_Texture;
+uniform sampler2D backgroundTexture;
+uniform sampler2D rTexture;
+uniform sampler2D gTexture;
+uniform sampler2D bTexture;
+uniform sampler2D blendMap;
 
 uniform vec3 lightColor;
 uniform float shineDampener;
@@ -60,6 +64,16 @@ uniform vec3 skyColor;
 
 void main()
 {
+	vec4 blendMapColor = texture(blendMap, v_TexCoordinates);
+	float backTextureAmount = 1 - (blendMapColor.r + blendMapColor.g + blendMapColor.b);
+	vec2 tiledCoords = v_TexCoordinates * 3;
+	vec4 backgroundTextureColor = texture(backgroundTexture, tiledCoords) * backTextureAmount;
+	vec4 rTextureColor = texture(rTexture, tiledCoords) * blendMapColor.r;
+	vec4 gTextureColor = texture(gTexture, tiledCoords) * blendMapColor.g;
+	vec4 bTextureColor = texture(bTexture, tiledCoords) * blendMapColor.b;
+
+	vec4 totalColor = backgroundTextureColor + rTextureColor + gTextureColor + bTextureColor;
+
 	vec3 unitNormal = normalize(surfaceNormal);
 	vec3 unitLightVector = normalize(toLightVector);
 
@@ -76,9 +90,6 @@ void main()
 	float dampenedFactor = pow(specularFactor, shineDampener);
 	vec3 finalSpecular = dampenedFactor * reflectivity * lightColor;
 
-	vec4 textureColor = texture2D(u_Texture, v_TexCoordinates);
-	if (textureColor.a < 0.5) { discard; }
-
-	out_Color = vec4(diffuse, 1) * textureColor + vec4(finalSpecular, 1);
+	out_Color = vec4(diffuse, 1) * totalColor + vec4(finalSpecular, 1);
 	out_Color = mix(vec4(skyColor, 1), out_Color, visibility);
 }

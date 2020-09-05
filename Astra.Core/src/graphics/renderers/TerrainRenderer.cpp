@@ -39,21 +39,16 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 
-		if (terrain.texture->transparent)
-		{
-			glDisable(GL_CULL_FACE);
-		}
-
 		if (m_shader->GetType() == ShaderType::Terrains)
 		{
-			m_shader->SetUniform1f(TerrainShader::ShineDampenerTag, terrain.texture->shineDampener);
-			m_shader->SetUniform1f(TerrainShader::ReflectivityTag, terrain.texture->reflectivity);
+			m_shader->SetUniform1f(TerrainShader::ShineDampenerTag, terrain.material->shineDampener);
+			m_shader->SetUniform1f(TerrainShader::ReflectivityTag, terrain.material->reflectivity);
 		}
 
-		if (terrain.texture != NULL)
+		if (terrain.material != NULL)
 		{
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, terrain.texture->id);
+			glBindTexture(GL_TEXTURE_2D, terrain.material->id);
 		}
 	}
 }

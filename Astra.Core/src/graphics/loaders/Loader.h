@@ -39,6 +39,11 @@ namespace Astra::Graphics
 			return Get().LoadTextureImpl(filepath, clippingOption);
 		}
 
+		static Texture* BufferTexture(Texture* texture, GLint clippingOption = GL_REPEAT)
+		{
+			return Get().BufferTextureImpl(texture, clippingOption);
+		}
+
 	private:
 		Loader();
 		~Loader();
@@ -50,6 +55,8 @@ namespace Astra::Graphics
 		const VertexArray* LoadImpl(unsigned int drawType, const std::vector<float>& vertices);
 		
 		Texture* LoadTextureImpl(const char* const filepath, GLint clippingOption);
+		
+		Texture* BufferTextureImpl(Texture* initializedTexture, GLint clippingOption);
 
 		GLuint BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage, GLboolean normalized = GL_FALSE);
 

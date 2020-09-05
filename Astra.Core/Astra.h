@@ -10,6 +10,8 @@
 #include "src/graphics/loaders/Loader.h"
 #include "src/graphics/loaders/ObjLoader.h"
 
+#include "src/graphics/materials/Materials.h"
+
 #include "src/graphics/buffers/VertexArray.h"
 #include "src/graphics/buffers/Texture.h"
 

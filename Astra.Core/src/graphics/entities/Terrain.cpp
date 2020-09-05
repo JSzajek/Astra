@@ -2,8 +2,8 @@
 
 namespace Astra::Graphics
 {
-	Terrain::Terrain(int xGrid, int zGrid, Texture* texture)
-		: texture(texture)
+	Terrain::Terrain(int xGrid, int zGrid, TerrainMaterial* material)
+		: material(material)
 	{
 		GetTranslation().x = xGrid * Size;
 		GetTranslation().z = zGrid * Size;
