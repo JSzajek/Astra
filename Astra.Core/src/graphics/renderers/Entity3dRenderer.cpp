@@ -40,22 +40,22 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 
-		if (entity.texture->transparent)
+		if (entity.material->transparent)
 		{
 			glDisable(GL_CULL_FACE);
 		}
 
 		if (m_shader->GetType() == ShaderType::Lighting)
 		{
-			m_shader->SetUniform1f(LightingShader::UseFakeLightingTag, entity.texture->fakeLight);
-			m_shader->SetUniform1f(LightingShader::ShineDampenerTag, entity.texture->shineDampener);
-			m_shader->SetUniform1f(LightingShader::ReflectivityTag, entity.texture->reflectivity);
+			m_shader->SetUniform1f(LightingShader::UseFakeLightingTag, entity.material->fakeLight);
+			m_shader->SetUniform1f(LightingShader::ShineDampenerTag, entity.material->shineDampener);
+			m_shader->SetUniform1f(LightingShader::ReflectivityTag, entity.material->reflectivity);
 		}
 		
-		if (entity.texture != NULL)
+		if (entity.material != NULL)
 		{
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, entity.texture->id);
+			glBindTexture(GL_TEXTURE_2D, entity.material->id);
 		}
 	}
 }

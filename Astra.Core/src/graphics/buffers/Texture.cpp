@@ -2,24 +2,36 @@
 
 namespace Astra::Graphics
 {
+	Texture::Texture()
+		: id(0), width(0), height(0), m_filePath(DefaultTexture)
+	{
+	}
+
 	Texture::Texture(const char* const filepath)
-		: id(0), m_filePath(filepath), reflectivity(0), shineDampener(1), transparent(false), fakeLight(false)
+		: id(0), width(0), height(0), m_filePath(filepath)
 	{
-		stbi_set_flip_vertically_on_load(1);
-		buffer = stbi_load(std::string(filepath).c_str(), &width, &height, &m_bpp, 4);
 	}
 
-	Texture::~Texture()
+	Texture::Texture(GLuint id, const char* const filepath)
+		: id(id), width(0), height(0), m_filePath(filepath)
 	{
-		glDeleteTextures(1, &id);
 	}
 
-	void Texture::ClearBuffer()
+	Texture::Texture(const Texture& other)
+		: id(other.id), width(other.width), height(other.height), m_filePath(other.m_filePath)
 	{
-		if (buffer)
-		{
-			stbi_image_free(buffer);
-			buffer = nullptr;
-		}
 	}
+	
+	bool Texture::operator==(const Texture& other)
+	{
+		return id == other.id;
+	}
+
+	//void Texture::operator=(const Texture& other)
+	//{
+	//	id = other.id;
+	//	width = other.width;
+	//	height = other.height;
+	//	m_filePath = other.m_filePath;
+	//}
 }

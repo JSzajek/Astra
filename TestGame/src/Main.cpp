@@ -23,42 +23,39 @@ int main()
     renderer.AddEntity(player.GetRendering());
     worldItems.emplace_back(&player);
 
-    Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png");
-    GuiTexture gui = GuiTexture(texture->id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
+    Texture texture = Loader::LoadTexture("res/textures/grassTexture.png");
+    GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
     renderer.AddGui(&gui);
 
-    Texture* texture2 = Loader::LoadTexture("res/textures/red.jpg");
-    Texture* texture3 = Loader::LoadTexture("res/textures/purple.jpg");
-    texture2->reflectivity = 1;
-    texture2->shineDampener = 8;
-
-    texture3->reflectivity = 1;
-    texture3->shineDampener = 8;
+    ImageMaterial* mat1 = new ImageMaterial();//new ImageMaterial("res/textures/red.jpg", 8, 1);
+    
     const VertexArray* vertArray2 = ObjLoader::LoadObjectModel("res/pylon.obj");
-    Entity entity = Entity(vertArray2, texture2, Vec3(0, 1, 0), Vec3(0), Vec3(0.5f));
+    Entity entity = Entity(vertArray2, Vec3(0, 1, 0), Vec3(0), Vec3(0.5f));
     renderer.AddEntity(&entity);
 
-    Texture* grassModelTexture = Loader::LoadTexture("res/textures/grassTexture.png");
-    grassModelTexture->fakeLight = true;
-    grassModelTexture->transparent = true;
-    Texture* fernModelTexture = Loader::LoadTexture("res/textures/fernTexture.png");
-    fernModelTexture->transparent = true;
-    grassModelTexture->fakeLight = true;
+    ImageMaterial* grassMat = new ImageMaterial("res/textures/grassTexture.png", 1, 0, true, true);
+    ImageMaterial* fernMat = new ImageMaterial("res/textures/fernTexture.png", 1, 0, true, true);
 
     const VertexArray* grassVertArray = ObjLoader::LoadObjectModel("res/grass.obj");
     const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");
-    Entity grassModel = Entity(grassVertArray, grassModelTexture, Vec3(0), Vec3(0), Vec3(1));
-    Entity fernModel = Entity(fernVertArray, fernModelTexture, Vec3(-5, 0, 1), Vec3(0), Vec3(0.3f));
+    Entity grassModel = Entity(grassVertArray, grassMat, Vec3(0), Vec3(0), Vec3(1));
+    Entity fernModel = Entity(fernVertArray, fernMat, Vec3(-5, 0, 1), Vec3(0), Vec3(0.3f));
 
     renderer.AddEntity(&grassModel);
     renderer.AddEntity(&fernModel);
 
-    Texture* grassTexture = Loader::LoadTexture("res/textures/grass.jpg");
+    TerrainMaterial* grassTerrainMat = new TerrainMaterial("res/textures/grass.jpg");
+    TerrainMaterial* flowerTerrainMat = new TerrainMaterial("res/textures/grassFlowers.png");
+    TerrainMaterial* mudTerrainMat = new TerrainMaterial("res/textures/mud.png");
+    TerrainMaterial* pathTerrainMat = new TerrainMaterial("res/textures/path.png");
 
-    Terrain terrain = Terrain(0, 0, grassTexture);
-    Terrain terrain1 = Terrain(-1, 0, grassTexture);
-    Terrain terrain2 = Terrain(0, -1, grassTexture);
-    Terrain terrain3 = Terrain(-1, -1, grassTexture);
+    TerrainMaterialPack pack(grassTerrainMat, flowerTerrainMat, mudTerrainMat, pathTerrainMat);
+    TerrainMaterial* blendMap = new TerrainMaterial("res/textures/blendMap.png");
+
+    Terrain terrain = Terrain(0, 0, &pack, blendMap);
+    Terrain terrain1 = Terrain(-1, 0, &pack, blendMap);
+    Terrain terrain2 = Terrain(0, -1, &pack, blendMap);
+    Terrain terrain3 = Terrain(-1, -1, &pack, blendMap);
     renderer.AddTerrain(&terrain);
     renderer.AddTerrain(&terrain1);
     renderer.AddTerrain(&terrain2);

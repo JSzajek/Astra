@@ -173,6 +173,8 @@
     <ClCompile Include="src\graphics\entities\Terrain.cpp" />
     <ClCompile Include="src\graphics\loaders\Loader.cpp" />
     <ClCompile Include="src\graphics\loaders\ObjLoader.cpp" />
+    <ClCompile Include="src\graphics\materials\ImageMaterial.cpp" />
+    <ClCompile Include="src\graphics\materials\TerrainMaterial.cpp" />
     <ClCompile Include="src\graphics\renderers\Entity3dRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\GuiRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\Renderer.cpp" />
@@ -190,6 +192,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Astra.h" />
+    <ClInclude Include="src\graphics\materials\ImageMaterial.h" />
+    <ClInclude Include="src\graphics\materials\Materials.h" />
+    <ClInclude Include="src\graphics\materials\TerrainMaterial.h" />
     <ClInclude Include="src\graphics\buffers\Texture.h" />
     <ClInclude Include="src\graphics\buffers\VertexArray.h" />
     <ClInclude Include="src\graphics\entities\Camera.h" />
@@ -229,6 +234,9 @@
     <None Include="src\resources\shaders\Gui.shader" />
     <None Include="src\resources\shaders\Lighting.shader" />
     <None Include="src\resources\shaders\Terrain.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\resources\textures\Default.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

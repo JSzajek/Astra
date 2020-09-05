@@ -35,6 +35,7 @@ namespace Astra::Graphics
 		inline void AddLight(const Light& light) { m_light = light; }
 		void Draw(const Math::Mat4& viewMatrix) override;
 	private:
-		void PrepareTerrain(const Terrain& entity);
+		void PrepareTerrain(const Terrain& terrain);
+		void BindTerrainTextures(const Terrain& terrain);
 	};
 }

@@ -3,27 +3,32 @@
 namespace Astra::Graphics
 {
 	Entity::Entity()
-		: vertexArray(NULL), texture(NULL)
+		: vertexArray(NULL), material(NULL)
 	{
 	}
 
 	Entity::Entity(const Math::Vec3& position)
-		: vertexArray(NULL), texture(NULL)
+		: vertexArray(NULL), material(NULL)
 	{
 	}
 
-	Entity::Entity(const VertexArray* vertArray, const Texture* texture, const Math::Vec3& position)
-		: vertexArray(vertArray), texture(texture), Spatial(position)
+	Entity::Entity(const VertexArray* vertArray, const Math::Vec3& position)
+		: vertexArray(vertArray), material(new ImageMaterial())
 	{
 	}
 
-	Entity::Entity(const VertexArray* vertArray, const Texture* texture, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale)
-		: vertexArray(vertArray), texture(texture), Spatial(position, rotation, scale)
+	Entity::Entity(const VertexArray* vertArray, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale)
+		: vertexArray(vertArray), material(new ImageMaterial()), Spatial(position, rotation, scale)
+	{
+	}
+
+	Entity::Entity(const VertexArray* vertArray, const ImageMaterial* material, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale)
+		: vertexArray(vertArray), material(material), Spatial(position, rotation, scale)
 	{
 	}
 
 	Entity::Entity(const Entity& other)
-		: vertexArray(other.vertexArray), texture(other.texture)
+		: vertexArray(other.vertexArray), material(other.material)
 	{
 		memcpy(data, other.data, 3 * 3 * sizeof(float));
 	}
@@ -31,10 +36,6 @@ namespace Astra::Graphics
 	Entity::~Entity()
 	{
 		delete vertexArray;
+		delete material;
 	}
-
-	/*Entity::Entity(const Math::Vec3& position, float xRotation, float yRotation, float zRotation, float scale)
-	{
-
-	}*/
 }

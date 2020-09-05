@@ -2,12 +2,16 @@
 
 namespace Astra::Graphics
 {
-	Terrain::Terrain(int xGrid, int zGrid, Texture* texture)
-		: texture(texture)
+	Terrain::Terrain(int xGrid, int zGrid, const TerrainMaterialPack* pack, const TerrainMaterial* map)
+		: texturePack(pack), blendMap(map)
 	{
 		GetTranslation().x = xGrid * Size;
 		GetTranslation().z = zGrid * Size;
 		vertexArray = GeneratePlaneTerrain();
+	}
+
+	Terrain::~Terrain()
+	{
 	}
 
 	const VertexArray* Terrain::GeneratePlaneTerrain()

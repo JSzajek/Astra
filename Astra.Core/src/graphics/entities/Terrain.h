@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Spatial.h"
-#include "../buffers/Texture.h"
 #include "../buffers/VertexArray.h"
+#include "../materials/TerrainMaterial.h"
 #include "../loaders/Loader.h"
 
 namespace Astra::Graphics
@@ -14,9 +14,11 @@ namespace Astra::Graphics
 		static constexpr float VertexCount = 6;
 	public:
 		const VertexArray* vertexArray;
-		const Texture* texture;
+		const TerrainMaterialPack* texturePack;
+		const TerrainMaterial* blendMap;
 	public:
-		Terrain(int xGrid, int zGrid, Texture* texture);
+		Terrain(int xGrid, int zGrid, const TerrainMaterialPack* pack, const TerrainMaterial* map);
+		~Terrain();
 	private:
 		const VertexArray* GeneratePlaneTerrain();
 	};
