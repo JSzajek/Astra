@@ -2,6 +2,8 @@
 #include <vector>
 
 #include "Astra.h"
+#include "Synchronous.h"
+#include "Player.h"
 
 int main()
 {
@@ -9,10 +11,17 @@ int main()
     using namespace Astra::Graphics;
     using namespace Astra::Math;
 
+    std::vector<Synchronous*> worldItems;
+
     Window window("Astra", 960, 540);
 
     RendererController renderer;
     window.SetWindowResizeCallback([&](float width, float height) { renderer.UpdateScreen(width, height); });
+
+    Player player(&window);
+    renderer.SetMainCamera(player.GetCamera());
+    renderer.AddEntity(player.GetRendering());
+    worldItems.emplace_back(&player);
 
     Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png");
     GuiTexture gui = GuiTexture(texture->id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
@@ -25,7 +34,7 @@ int main()
 
     texture3->reflectivity = 1;
     texture3->shineDampener = 8;
-    const VertexArray* vertArray2 = ObjLoader::LoadObjectModel("res/dragon.obj");
+    const VertexArray* vertArray2 = ObjLoader::LoadObjectModel("res/pylon.obj");
     Entity entity = Entity(vertArray2, texture2, Vec3(0, 1, 0), Vec3(0), Vec3(0.5f));
     renderer.AddEntity(&entity);
 
@@ -63,35 +72,14 @@ int main()
     {
         entity.GetRotation().y += 0.0001f;
         window.Clear();
+        
+        for (Synchronous* item : worldItems)
+        {
+            item->Update();
+        }
+        
         renderer.Render();
         window.Update();
-
-        if (window.isKeyPressed(87))
-        {
-            renderer.UpdatePitch(0.2f);
-        }
-        if (window.isKeyPressed(83))
-        {
-            renderer.UpdatePitch(-0.2f);
-        }
-
-        if (window.isKeyPressed(65))
-        {
-            renderer.UpdateYaw(-0.2f);
-        }
-        if (window.isKeyPressed(68))
-        {
-            renderer.UpdateYaw(0.2f);
-        }
-
-        if (window.isKeyPressed(90))
-        {
-            renderer.UpdateDistance(-0.01f);
-        }
-        if (window.isKeyPressed(88))
-        {
-            renderer.UpdateDistance(0.01f);
-        }
 
         frames++;
         if (time.Elapsed() - timer > 1.0f)

@@ -38,7 +38,7 @@ namespace Astra::Graphics
 
 		bool isKeyPressed(unsigned int keycode) const;
 		bool isMouseButtonPressed(unsigned int button) const;
-		Math::Vec2& getMousePosition();
+		const Math::Vec2& getMousePosition();
 	private:
 		bool Init();
 	};

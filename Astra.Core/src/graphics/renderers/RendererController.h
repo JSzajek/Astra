@@ -14,6 +14,8 @@
 #include "../entities/Camera.h"
 #include "../../math/Mat4Utils.h"
 
+#include "../../logger/Logger.h"
+
 namespace Astra::Graphics
 {
 	class RendererController
@@ -30,7 +32,7 @@ namespace Astra::Graphics
 		TerrainShader* m_terrainShader;
 		Entity3dRenderer* m_entityRenderer;
 		TerrainRenderer* m_terrainRenderer;
-		Camera m_camera;
+		Camera* m_mainCamera;
 		Light m_light;
 
 		Math::Vec3 skyColor;
@@ -44,14 +46,13 @@ namespace Astra::Graphics
 		~RendererController();
 		void Init() const;
 		void UpdateScreen(float width, float height);
+		void UpdateCameraView();
 		void Render();
-		void AddGui(const GuiTexture* gui);
-		void AddEntity(const Entity* entity);
-		void AddTerrain(const Terrain* terrain);
 
-		void UpdatePitch(float value);
-		void UpdateYaw(float value);
-		void UpdateDistance(float value);
+		inline void AddGui(const GuiTexture* gui) { m_guiRenderer->AddGui(gui); }
+		inline void AddEntity(const Entity* entity) { m_entityRenderer->AddEntity(entity); }
+		inline void AddTerrain(const Terrain* terrain) { m_terrainRenderer->AddTerrain(terrain); }
 		
+		inline void SetMainCamera(Camera* camera) { m_mainCamera = camera; }
 	};
 }

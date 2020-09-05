@@ -3,7 +3,7 @@
 namespace Astra::Graphics
 {
 	RendererController::RendererController()
-		: m_camera(Camera()), m_light(Light(Math::Vec3(20000, 20000, 2000), Math::Vec3(1, 1, 1))),
+		: m_light(Light(Math::Vec3(20000, 20000, 2000), Math::Vec3(1, 1, 1))),
 			skyColor(Math::Vec3(0.1f, 0.7f, 0.7f))
 	{
 		Init();
@@ -46,41 +46,23 @@ namespace Astra::Graphics
 
 	void RendererController::Render()
 	{
-		m_camera.UpdatePosition();
-		viewMatrix = Math::Mat4Utils::ViewMatrix(m_camera);
+		UpdateCameraView();
 
 		m_terrainRenderer->Draw(viewMatrix);
 		m_entityRenderer->Draw(viewMatrix);
 		m_guiRenderer->Draw(NULL);
 	}
 
-	void RendererController::AddGui(const GuiTexture* gui)
+	void RendererController::UpdateCameraView()
 	{
-		m_guiRenderer->AddGui(gui);
-	}
-
-	void RendererController::AddEntity(const Entity* entity)
-	{
-		m_entityRenderer->AddEntity(entity);
-	}
-
-	void RendererController::AddTerrain(const Terrain* terrain)
-	{
-		m_terrainRenderer->AddTerrain(terrain);
-	}
-
-	void RendererController::UpdatePitch(float value)
-	{
-		m_camera.SetPitch(m_camera.GetPitch() + value);
-	}
-
-	void RendererController::UpdateYaw(float value)
-	{
-		m_camera.SetSwivel(m_camera.GetSwivel() + value);
-	}
-
-	void RendererController::UpdateDistance(float value)
-	{
-		m_camera.SetDistance(m_camera.GetDistance() + value);
+		if (m_mainCamera != nullptr)
+		{
+			m_mainCamera->UpdatePosition();
+			viewMatrix = Math::Mat4Utils::ViewMatrix(*m_mainCamera);
+		}
+		else
+		{
+			Log::Logger::LogWarning("No Main Camera detected.");
+		}
 	}
 }

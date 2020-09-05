@@ -159,6 +159,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Astra.Core\Astra.Core.vcxproj">
@@ -204,6 +205,10 @@
     <Image Include="res\textures\purple.jpg" />
     <Image Include="res\textures\red.jpg" />
     <Image Include="res\textures\test1.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\Synchronous.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -95,34 +95,17 @@ namespace Astra::Math
 	{
 		Mat4 translationMatrix = TranslationMatrix(other);
 		return Multiply(translationMatrix);
-
-		/*columns[3].x = columns[0].x * other.x + columns[1].x * other.y + columns[2].x * other.z + columns[3].x;
-		columns[3].y = columns[0].y * other.x + columns[1].y * other.y + columns[2].y * other.z + columns[3].y;
-		columns[3].z = columns[0].z * other.x + columns[1].z * other.y + columns[2].z * other.z + columns[3].z;
-		return *this;*/
 	}
 
 	Mat4& Mat4::Rotate(float angle, const Vec3& other)
 	{
-		/*Mat4 rotationMat = RotationMatrix(angle, other);
-		return Multiply(rotationMat);*/
-
 		Multiply(RotationMatrix(angle, other));
-		/*Mat4 tempMat(*this);
-		columns[0] = tempMat.columns[0] * rotate.columns[0][0] + tempMat.columns[1] * rotate.columns[0][1] + tempMat.columns[2] * rotate.columns[0][2];
-		columns[1] = tempMat.columns[0] * rotate.columns[1][0] + tempMat.columns[1] * rotate.columns[1][1] + tempMat.columns[2] * rotate.columns[1][2];
-		columns[2] = tempMat.columns[0] * rotate.columns[2][0] + tempMat.columns[1] * rotate.columns[2][1] + tempMat.columns[2] * rotate.columns[2][2];
-		columns[3] = tempMat.columns[3];*/
-
 		return *this;
 	}
 
 	Mat4& Mat4::Scale(const Vec3& other)
 	{
 		Multiply(ScaleMatrix(other));
-		/*columns[0] = columns[0] * other.x;
-		columns[1] = columns[1] * other.y;
-		columns[2] = columns[2] * other.z;*/
 		return *this;
 	}
 
@@ -166,23 +149,6 @@ namespace Astra::Math
 		result.columns[3].z = -((2 * near * far) / fulstrumLength);
 		return result;
 	}
-
-	/*Mat4 Mat4::Perspective(float fov, float aspectRatio, float near, float far)
-	{
-		Mat4 result(1.0f);
-		float q = 1.0f / tan(ToRadians(0.5f * fov));
-		float a = q / aspectRatio;
-		float b = (near + far) / (near - far);
-		float c = (2.0f * near * far) / (near - far);
-
-		result.data[0 + 0 * 4] = a;
-		result.data[1 + 1 * 4] = q;
-		result.data[2 + 2 * 4] = b;
-		result.data[3 + 2 * 4] = -1.0f;
-		result.data[2 + 3 * 4] = c;
-		
-		return result;
-	}*/
 
 	Mat4 Mat4::TranslationMatrix(const Vec3& translation)
 	{

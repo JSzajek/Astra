@@ -22,4 +22,11 @@ namespace Astra::Graphics
 		rows[0].z = m_focalPoint.rows[0].z - zOffset;
 		m_yaw = 180 - (m_focalPoint.rows[1].y + m_angleAroundFocal);
 	}
+
+	void Camera::LookAt(const Math::Vec3& lookAtPoint)
+	{
+		m_focalPoint.rows[0].x = lookAtPoint.x;
+		m_focalPoint.rows[0].y = lookAtPoint.y;
+		m_focalPoint.rows[0].z = lookAtPoint.z;
+	}
 }
