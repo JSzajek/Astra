@@ -65,10 +65,7 @@ namespace Astra::Math
 			Mat4 result(1);
 			result = result.Rotate(Math::ToRadians(camera.GetPitch()), X_Axis);
 			result = result.Rotate(Math::ToRadians(camera.GetYaw()), Y_Axis);
-			//Vec3 inverted(-.5f,0,0);
-			Vec3 inverted(camera.GetPosition());
-			inverted *= -1;
-			result = result.Translate(inverted);
+			result = result.Translate(*camera.GetInvertedPosition());
 			return result;
 		}
 	};

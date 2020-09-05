@@ -15,7 +15,7 @@ namespace Astra::Graphics
 		Renderer(Shader* shader);
 		~Renderer();
 
-		void UnbindTextureModel();
+		void UnbindVertexArray();
 		void UpdateDynamicVbo();
 		void UpdateTexture();
 		

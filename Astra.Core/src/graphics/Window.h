@@ -31,8 +31,6 @@ namespace Astra::Graphics
 		void Update();
 		bool Closed() const;
 
-		inline void SetClearColor(const Math::Vec3& color) { glClearColor(color.x, color.y, color.z, 1); }
-
 		inline int GetWidth() { return m_width; }
 		inline int GetHeight() { return m_height; }
 
@@ -40,7 +38,7 @@ namespace Astra::Graphics
 
 		bool isKeyPressed(unsigned int keycode) const;
 		bool isMouseButtonPressed(unsigned int button) const;
-		Math::Vec2& getMousePosition();
+		const Math::Vec2& getMousePosition();
 	private:
 		bool Init();
 	};

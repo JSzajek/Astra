@@ -14,6 +14,7 @@ namespace Astra::Graphics
 		unsigned char* buffer;
 		float shineDampener, reflectivity;
 		bool transparent;
+		bool fakeLight;
 	private:
 		const char* const m_filePath;
 		int m_bpp;

@@ -3,8 +3,8 @@
 
 namespace Astra::Graphics
 {
-	Entity3dRenderer::Entity3dRenderer(Shader* shader)
-		: Renderer(shader), m_light(Math::Vec3(0), Math::Vec3(0))
+	Entity3dRenderer::Entity3dRenderer(Shader* shader, const Math::Vec3* skyColor)
+		: Renderer(shader), m_light(Math::Vec3(0), Math::Vec3(0)), m_skyColor(skyColor)
 	{
 	}
 
@@ -13,6 +13,8 @@ namespace Astra::Graphics
 		m_shader->Start();
 		if (m_shader->GetType() == ShaderType::Lighting)
 		{
+			m_shader->SetUniform3f(LightingShader::SkyColorTag, *m_skyColor);
+
 			m_shader->SetUniform3f(LightingShader::LightPositionTag, m_light.GetTranslation());
 			m_shader->SetUniform3f(LightingShader::LightColorTag, m_light.GetColor());
 		}
@@ -27,7 +29,7 @@ namespace Astra::Graphics
 				glDrawElements(entity->vertexArray->drawType, entity->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
 			}
 		}
-		UnbindTextureModel();
+		UnbindVertexArray();
 		m_shader->Stop();
  	}
 
@@ -45,6 +47,7 @@ namespace Astra::Graphics
 
 		if (m_shader->GetType() == ShaderType::Lighting)
 		{
+			m_shader->SetUniform1f(LightingShader::UseFakeLightingTag, entity.texture->fakeLight);
 			m_shader->SetUniform1f(LightingShader::ShineDampenerTag, entity.texture->shineDampener);
 			m_shader->SetUniform1f(LightingShader::ReflectivityTag, entity.texture->reflectivity);
 		}

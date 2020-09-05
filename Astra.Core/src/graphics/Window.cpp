@@ -139,7 +139,7 @@ namespace Astra::Graphics
 		return m_mouseButtons[button];
 	}
 
-	Math::Vec2& Window::getMousePosition()
+	const Math::Vec2& Window::getMousePosition()
 	{
 		return m_mousePosition;
 	}

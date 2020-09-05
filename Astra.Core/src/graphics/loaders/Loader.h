@@ -34,7 +34,7 @@ namespace Astra::Graphics
 			return Get().LoadImpl(drawType, vertices);
 		}
 
-		static Texture* LoadTexture(const char* const filepath, GLint clippingOption = GL_CLAMP)
+		static Texture* LoadTexture(const char* const filepath, GLint clippingOption = GL_REPEAT)
 		{
 			return Get().LoadTextureImpl(filepath, clippingOption);
 		}

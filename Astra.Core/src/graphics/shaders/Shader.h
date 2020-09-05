@@ -17,7 +17,8 @@ namespace Astra::Graphics
 	{
 		Basic,
 		Lighting,
-		Gui
+		Gui,
+		Terrains
 	};
 
 	struct ShaderProgramSource

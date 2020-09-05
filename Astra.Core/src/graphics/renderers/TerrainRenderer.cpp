@@ -3,19 +3,20 @@
 
 namespace Astra::Graphics
 {
-	TerrainRenderer::TerrainRenderer(Shader* shader)
-		: Renderer(shader), m_light(Math::Vec3(0), Math::Vec3(0))
+	TerrainRenderer::TerrainRenderer(Shader* shader, const Math::Vec3* skyColor)
+		: Renderer(shader), m_light(Math::Vec3(0), Math::Vec3(0)), m_skyColor(skyColor)
 	{
 	}
 
 	void TerrainRenderer::Draw(const Math::Mat4& viewMatrix)
 	{
 		m_shader->Start();
-		/*if (m_shader->GetType() == ShaderType::Lighting)
+		if (m_shader->GetType() == ShaderType::Terrains)
 		{
-			m_shader->SetUniform3f(LightingShader::LightPositionTag, m_light.GetTranslation());
-			m_shader->SetUniform3f(LightingShader::LightColorTag, m_light.GetColor());
-		}*/
+			m_shader->SetUniform3f(TerrainShader::SkyColorTag, *m_skyColor);
+			m_shader->SetUniform3f(TerrainShader::LightPositionTag, m_light.GetTranslation());
+			m_shader->SetUniform3f(TerrainShader::LightColorTag, m_light.GetColor());
+		}
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
 		for (const auto& directory : m_terrains)
 		{
@@ -27,7 +28,7 @@ namespace Astra::Graphics
 				glDrawElements(terrain->vertexArray->drawType, terrain->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
 			}
 		}
-		UnbindTextureModel();
+		UnbindVertexArray();
 		m_shader->Stop();
 	}
 
@@ -43,11 +44,11 @@ namespace Astra::Graphics
 			glDisable(GL_CULL_FACE);
 		}
 
-		/*if (m_shader->GetType() == ShaderType::Lighting)
+		if (m_shader->GetType() == ShaderType::Terrains)
 		{
-			m_shader->SetUniform1f(LightingShader::ShineDampenerTag, entity.texture->shineDampener);
-			m_shader->SetUniform1f(LightingShader::ReflectivityTag, entity.texture->reflectivity);
-		}*/
+			m_shader->SetUniform1f(TerrainShader::ShineDampenerTag, terrain.texture->shineDampener);
+			m_shader->SetUniform1f(TerrainShader::ReflectivityTag, terrain.texture->reflectivity);
+		}
 
 		if (terrain.texture != NULL)
 		{

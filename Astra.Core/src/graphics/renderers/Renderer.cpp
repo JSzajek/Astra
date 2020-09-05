@@ -19,7 +19,7 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
-	void Renderer::UnbindTextureModel()
+	void Renderer::UnbindVertexArray()
 	{
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
