@@ -5,14 +5,8 @@
 namespace Astra::Graphics
 {
 	TerrainMaterial::TerrainMaterial(const char* const filepath)
-		: Texture(filepath), reflectivity(0), shineDampener(1)
+		: Texture(Loader::LoadTexture(filepath)), reflectivity(0), shineDampener(1)
 	{
-		Loader::BufferTexture(this);
-	}
-
-	TerrainMaterial::~TerrainMaterial()
-	{
-		Loader::RemoveTexture(this);
 	}
 
 	TerrainMaterialPack::TerrainMaterialPack(const TerrainMaterial* background, const TerrainMaterial* red,

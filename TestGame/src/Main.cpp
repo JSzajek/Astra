@@ -23,14 +23,14 @@ int main()
     renderer.AddEntity(player.GetRendering());
     worldItems.emplace_back(&player);
 
-    Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png");
-    GuiTexture gui = GuiTexture(texture->id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
+    Texture texture = Loader::LoadTexture("res/textures/grassTexture.png");
+    GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
     renderer.AddGui(&gui);
 
-    ImageMaterial* mat1 = new ImageMaterial("res/textures/red.jpg", 8, 1);
+    ImageMaterial* mat1 = new ImageMaterial();//new ImageMaterial("res/textures/red.jpg", 8, 1);
     
     const VertexArray* vertArray2 = ObjLoader::LoadObjectModel("res/pylon.obj");
-    Entity entity = Entity(vertArray2, mat1, Vec3(0, 1, 0), Vec3(0), Vec3(0.5f));
+    Entity entity = Entity(vertArray2, Vec3(0, 1, 0), Vec3(0), Vec3(0.5f));
     renderer.AddEntity(&entity);
 
     ImageMaterial* grassMat = new ImageMaterial("res/textures/grassTexture.png", 1, 0, true, true);

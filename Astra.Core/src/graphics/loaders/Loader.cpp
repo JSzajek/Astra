@@ -17,19 +17,9 @@ namespace Astra::Graphics
 		{
 			glDeleteBuffers(1, &vbo);
 		}
-		for (const Texture* texture : m_textures)
+		for (const auto& texture : m_textureDirectory)
 		{
-			delete texture;
-		}
-		m_textures.clear();
-	}
-
-	void Loader::RemoveTextureImpl(Texture* texture)
-	{
-		auto found = std::find(m_textures.begin(), m_textures.end(), texture);
-		if (found != m_textures.end())
-		{
-			m_textures.erase(found);
+			glDeleteTextures(1, &texture.second.id);
 		}
 	}
 
@@ -64,27 +54,35 @@ namespace Astra::Graphics
 		return vertArray;
 	}
 
-	Texture* Loader::LoadTextureImpl(const char* const filepath, GLint clippingOption)
+	const Texture& Loader::LoadTextureImpl(const char* const filepath, GLint clippingOption)
 	{
-		Texture* texture = new Texture(filepath);
-		return BufferTextureImpl(texture, clippingOption);
-	}
+		static int m_bpp;
+		static unsigned char* buffer;
 
-	Texture* Loader::BufferTextureImpl(Texture* initializedTexture, GLint clippingOption)
-	{
-		glGenTextures(1, &initializedTexture->id);
-		glBindTexture(GL_TEXTURE_2D, initializedTexture->id);
+		auto found = m_textureDirectory.find(filepath);
+		if (found != m_textureDirectory.end())
+		{
+			return found->second;
+		}
+
+		Texture texture(filepath);
+
+		stbi_set_flip_vertically_on_load(1);
+		buffer = stbi_load(std::string(filepath).c_str(), &texture.width, &texture.height, &m_bpp, 4);
+		
+		glGenTextures(1, &texture.id);
+		glBindTexture(GL_TEXTURE_2D, texture.id);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clippingOption);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clippingOption);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, initializedTexture->width, initializedTexture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, initializedTexture->buffer);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		
 		glBindTexture(GL_TEXTURE_2D, 0);
+		stbi_image_free(buffer);
 
-		m_textures.emplace_back(initializedTexture);
-
-		initializedTexture->ClearBuffer();
-		return initializedTexture;
+		m_textureDirectory[filepath] = texture;
+		return texture;
 	}
 
 	GLuint Loader::BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage, GLboolean normalized)
@@ -104,7 +102,6 @@ namespace Astra::Graphics
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
 
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.size() * sizeof(int), data.data(), usage);
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		return id;
 	}
 

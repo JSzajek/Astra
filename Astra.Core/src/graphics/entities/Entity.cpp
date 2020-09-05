@@ -12,8 +12,13 @@ namespace Astra::Graphics
 	{
 	}
 
-	Entity::Entity(const VertexArray* vertArray, const ImageMaterial* material, const Math::Vec3& position)
-		: vertexArray(vertArray), material(material), Spatial(position)
+	Entity::Entity(const VertexArray* vertArray, const Math::Vec3& position)
+		: vertexArray(vertArray), material(new ImageMaterial())
+	{
+	}
+
+	Entity::Entity(const VertexArray* vertArray, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale)
+		: vertexArray(vertArray), material(new ImageMaterial()), Spatial(position, rotation, scale)
 	{
 	}
 
