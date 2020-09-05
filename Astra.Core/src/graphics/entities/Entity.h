@@ -13,6 +13,7 @@ namespace Astra::Graphics
 		const Texture* const texture;
 	public:
 		Entity();
+		~Entity();
 		Entity(const Math::Vec3& position);
 		Entity(const VertexArray* vertArray, const Texture* texture, const Math::Vec3& position);
 		Entity(const VertexArray* vertArray, const Texture* texture, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale);

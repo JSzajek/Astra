@@ -10,6 +10,7 @@ namespace Astra::Graphics
 		float m_pitch, m_distance, m_angleAroundFocal, m_yaw;
 		Spatial m_focalPoint;
 	public:
+		Camera(float pitch, float distance, float angleAround);
 		Camera();
 		void UpdatePosition();
 
