@@ -10,6 +10,7 @@ namespace Astra::Graphics
 		float shineDampener, reflectivity;
 	public:
 		TerrainMaterial(const char* const filepath);
+		~TerrainMaterial();
 	};
 	
 	struct TerrainMaterialPack

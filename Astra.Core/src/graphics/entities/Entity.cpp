@@ -31,6 +31,7 @@ namespace Astra::Graphics
 	Entity::~Entity()
 	{
 		delete vertexArray;
+		delete material;
 	}
 
 	/*Entity::Entity(const Math::Vec3& position, float xRotation, float yRotation, float zRotation, float scale)

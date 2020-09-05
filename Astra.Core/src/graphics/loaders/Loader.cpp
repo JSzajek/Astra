@@ -24,6 +24,15 @@ namespace Astra::Graphics
 		m_textures.clear();
 	}
 
+	void Loader::RemoveTextureImpl(Texture* texture)
+	{
+		auto found = std::find(m_textures.begin(), m_textures.end(), texture);
+		if (found != m_textures.end())
+		{
+			m_textures.erase(found);
+		}
+	}
+
 	const VertexArray* Loader::LoadImpl(unsigned int drawType, const std::vector<float>& vertices,
 		const std::vector<int>& indices, const std::vector<float>& texturesCoords,
 		const std::vector<float>& normals)

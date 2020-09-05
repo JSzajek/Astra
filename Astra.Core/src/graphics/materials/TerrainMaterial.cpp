@@ -10,6 +10,10 @@ namespace Astra::Graphics
 		Loader::BufferTexture(this);
 	}
 
+	TerrainMaterial::~TerrainMaterial()
+	{
+		Loader::RemoveTexture(this);
+	}
 
 	TerrainMaterialPack::TerrainMaterialPack(const TerrainMaterial* background, const TerrainMaterial* red,
 												const TerrainMaterial* green, const TerrainMaterial* blue)

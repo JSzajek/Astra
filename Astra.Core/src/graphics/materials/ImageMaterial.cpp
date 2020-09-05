@@ -15,4 +15,9 @@ namespace Astra::Graphics
 	{
 		Loader::BufferTexture(this);
 	}
+
+	ImageMaterial::~ImageMaterial()
+	{
+		Loader::RemoveTexture(this);
+	}
 }

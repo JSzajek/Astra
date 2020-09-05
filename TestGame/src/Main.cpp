@@ -49,13 +49,13 @@ int main()
     TerrainMaterial* mudTerrainMat = new TerrainMaterial("res/textures/mud.png");
     TerrainMaterial* pathTerrainMat = new TerrainMaterial("res/textures/path.png");
 
-    TerrainMaterialPack* pack = new TerrainMaterialPack(grassTerrainMat, flowerTerrainMat, mudTerrainMat, pathTerrainMat);
+    TerrainMaterialPack pack(grassTerrainMat, flowerTerrainMat, mudTerrainMat, pathTerrainMat);
     TerrainMaterial* blendMap = new TerrainMaterial("res/textures/blendMap.png");
 
-    Terrain terrain = Terrain(0, 0, pack, blendMap);
-    Terrain terrain1 = Terrain(-1, 0, pack, blendMap);
-    Terrain terrain2 = Terrain(0, -1, pack, blendMap);
-    Terrain terrain3 = Terrain(-1, -1, pack, blendMap);
+    Terrain terrain = Terrain(0, 0, &pack, blendMap);
+    Terrain terrain1 = Terrain(-1, 0, &pack, blendMap);
+    Terrain terrain2 = Terrain(0, -1, &pack, blendMap);
+    Terrain terrain3 = Terrain(-1, -1, &pack, blendMap);
     renderer.AddTerrain(&terrain);
     renderer.AddTerrain(&terrain1);
     renderer.AddTerrain(&terrain2);

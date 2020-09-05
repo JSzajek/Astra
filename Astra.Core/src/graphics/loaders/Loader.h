@@ -44,6 +44,11 @@ namespace Astra::Graphics
 			return Get().BufferTextureImpl(texture, clippingOption);
 		}
 
+		static void RemoveTexture(Texture* texture)
+		{
+			Get().RemoveTextureImpl(texture);
+		}
+
 	private:
 		Loader();
 		~Loader();
@@ -61,6 +66,8 @@ namespace Astra::Graphics
 		GLuint BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage, GLboolean normalized = GL_FALSE);
 
 		GLuint BindIndicesBuffer(const std::vector<int>& data, GLenum usage);
+
+		void RemoveTextureImpl(Texture* texture);
 
 		inline void UnbindVertexArray() { glBindVertexArray(0); }
 

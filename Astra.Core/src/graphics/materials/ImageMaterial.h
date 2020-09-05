@@ -13,5 +13,6 @@ namespace Astra::Graphics
 	public:
 		ImageMaterial(const char* const filepath);
 		ImageMaterial(const char* const filepath, float shineDampener, float reflectivity, bool transparent = false, bool fakeLight = false);
+		~ImageMaterial();
 	};
 }

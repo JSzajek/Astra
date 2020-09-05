@@ -17,7 +17,8 @@ namespace Astra::Graphics
 		const TerrainMaterialPack* texturePack;
 		const TerrainMaterial* blendMap;
 	public:
-		Terrain(int xGrid, int zGrid, TerrainMaterialPack* pack, TerrainMaterial* map);
+		Terrain(int xGrid, int zGrid, const TerrainMaterialPack* pack, const TerrainMaterial* map);
+		~Terrain();
 	private:
 		const VertexArray* GeneratePlaneTerrain();
 	};
