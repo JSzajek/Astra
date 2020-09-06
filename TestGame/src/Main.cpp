@@ -67,7 +67,7 @@ int main()
 
     while (!window.Closed())
     {
-        entity.GetRotation().y += 0.0001f;
+        entity.Rotation().y += 0.0001f;
         window.Clear();
         
         for (Synchronous* item : worldItems)

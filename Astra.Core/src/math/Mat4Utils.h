@@ -63,8 +63,8 @@ namespace Astra::Math
 		Mat4 ViewMatrixImpl(const Graphics::Camera& camera)
 		{
 			Mat4 result(1);
-			result = result.Rotate(Math::ToRadians(camera.GetPitch()), X_Axis);
-			result = result.Rotate(Math::ToRadians(camera.GetYaw()), Y_Axis);
+			result = result.Rotate(camera.GetPitch(), X_Axis);
+			result = result.Rotate(camera.GetYaw(), Y_Axis);
 			result = result.Translate(*camera.GetInvertedPosition());
 			return result;
 		}

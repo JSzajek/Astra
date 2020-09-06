@@ -164,8 +164,9 @@ namespace Astra::Math
 	Mat4 Mat4::RotationMatrix(float angle, const Vec3& axis)
 	{
 		Mat4 result(1);
-		const float c = cos(angle);
-		const float s = sin(angle);
+		float rad = ToRadians(angle);
+		const float c = cos(rad);
+		const float s = sin(rad);
 
 		Vec3 normAxis = Vec3(axis);
 		normAxis.Normalize();
@@ -186,7 +187,6 @@ namespace Astra::Math
 		result.columns[2][2] = c + temp[2] * normAxis[2];
 
 		/*Mat4 result(1.0f);
-		float rad = ToRadians(angle);
 		float c = cos(rad);
 		float c_inv = 1.0f - c;
 		float s = sin(rad);

@@ -1,6 +1,6 @@
 #include "Logger.h"
 
-namespace Astra::Log
+namespace Astra
 {
 	Logger::Logger()
 	{

@@ -9,4 +9,9 @@ namespace Astra::Math
 	{
 		return degrees * (float)M_PI / 180.0f;
 	}
+
+	inline float ToDegrees(float radians)
+	{
+		return radians * 180.0f / (float)M_PI;
+	}
 }

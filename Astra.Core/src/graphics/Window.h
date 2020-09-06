@@ -24,6 +24,10 @@ namespace Astra::Graphics
 		bool m_keys[MAX_KEYS];
 		bool m_mouseButtons[MAX_BUTTONS];
 		Math::Vec2 m_mousePosition;
+
+		double m_lastFrameTime;
+	public:
+		double delta;
 	public:
 		Window(const char* title, int width, int height);
 		~Window();
@@ -39,6 +43,8 @@ namespace Astra::Graphics
 		bool isKeyPressed(unsigned int keycode) const;
 		bool isMouseButtonPressed(unsigned int button) const;
 		const Math::Vec2& getMousePosition();
+
+		inline float GetDelta() { return delta; }
 	private:
 		bool Init();
 	};

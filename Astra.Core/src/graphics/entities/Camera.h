@@ -23,7 +23,7 @@ namespace Astra::Graphics
 		inline float& Swivel() { return m_angleAroundFocal; }
 		inline float& Distance() { return m_distance; }
 
-		inline Math::Vec3& GetTranslation() override { return m_focalPoint.GetTranslation(); }
+		inline Math::Vec3& Translation() override { return m_focalPoint.Translation(); }
 
 		inline Math::Vec3& Position() { return rows[0]; }
 		void LookAt(const Math::Vec3& lookAtPoint);

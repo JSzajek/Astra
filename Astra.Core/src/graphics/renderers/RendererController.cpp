@@ -62,7 +62,7 @@ namespace Astra::Graphics
 		}
 		else
 		{
-			Log::Logger::LogWarning("No Main Camera detected.");
+			Logger::LogWarning("No Main Camera detected.");
 		}
 	}
 }
