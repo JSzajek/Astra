@@ -3,7 +3,8 @@
 #include <iostream>
 
 Player::Player(Window* window)
-	: m_camera(new Camera(20, 25, 0)), _window(window), m_movement(Vec3(0))
+	: m_camera(new Camera(20, 25, 0)), _window(window), m_movement(Vec3(0)),
+           m_rotating(false), m_oldPosition(Vec2(0,0))
 {
 	const VertexArray* bodyModel = ObjLoader::LoadObjectModel("res/bunny.obj");
 	m_body = new Entity(bodyModel, Vec3(0), Vec3(0), Vec3(0.4f));
@@ -11,22 +12,48 @@ Player::Player(Window* window)
 
 void Player::Update()
 {
+    float delta = _window->delta;
     CheckInput();
 
-    m_body->Rotation().y += currentTurnSpeed * _window->GetDelta();
-    
+    m_body->Rotation().y += currentTurnSpeed * delta;
+#if LOCKED_CAMERA
     //m_camera->Swivel() = m_body->GetRotation().y;
+#else
+    if (!_window->isMouseButtonPressed(GLFW_MOUSE_BUTTON_2))
+    {
+        m_rotating = false;
+    }
 
-    float distance = currentSpeed * _window->GetDelta();
+    if (!m_rotating && _window->isMouseButtonPressed(GLFW_MOUSE_BUTTON_2))
+    {
+        m_rotating = true;
+        m_oldPosition = _window->getMousePosition();
+    }
+
+    else if (m_rotating)
+    {
+        Vec2 change(_window->getMousePosition());
+        change -= m_oldPosition;
+
+        change.Normalize();
+        change *= PanSpeed;
+
+        m_camera->Swivel() += -change.x;
+        m_camera->Pitch() += change.y;
+        Clamp(m_camera->Pitch(), (float)MIN_PITCH, (float)MAX_PITCH);
+    }
+#endif
+
+    float distance = currentSpeed * delta;
     float y_rot = ToRadians(m_body->GetRotation().y);
     m_body->Translation().x += distance * sin(y_rot);
     m_body->Translation().z += distance * cos(y_rot);
 
-    upwardsSpeed += GRAVITY * _window->GetDelta();
-    m_body->Translation().y += upwardsSpeed * _window->GetDelta();
-    
-    //m_camera->Translation() = m_body->GetTranslation();
+    upwardsSpeed += GRAVITY * delta;
+    m_body->Translation().y += upwardsSpeed * delta;
 
+    m_camera->Translation() = m_body->GetTranslation();
+    
     if (m_body->GetTranslation().y < TERRAIN_HEIGHT)
     {
         upwardsSpeed = 0;
@@ -34,13 +61,11 @@ void Player::Update()
         m_body->Translation().y = 0;
     }
 
-    if (_window->isKeyPressed(90))
+    float mouseWheel = _window->getMouseWheel();
+    if (mouseWheel != 0)
     {
-        m_camera->Distance() += -0.01f;
-    }
-    if (_window->isKeyPressed(88))
-    {
-        m_camera->Distance() += 0.01f;
+        m_camera->Distance() += mouseWheel * -1 * ZoomPower * 0.1f;
+        Clamp(m_camera->Distance(), (float)MIN_DISTANCE, (float)MAX_DISTANCE);
     }
 }
 

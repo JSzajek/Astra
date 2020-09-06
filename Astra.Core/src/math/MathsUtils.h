@@ -14,4 +14,9 @@ namespace Astra::Math
 	{
 		return radians * 180.0f / (float)M_PI;
 	}
+
+	template <typename T> void Clamp(T& value, const T& low, const T& high)
+	{
+		value = value < low ? low : (value > high ? high : value);
+	}
 }

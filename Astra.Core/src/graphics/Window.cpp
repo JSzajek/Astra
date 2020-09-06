@@ -4,7 +4,8 @@
 namespace Astra::Graphics
 {
 	Window::Window(const char* title, int width, int height)
-		: m_title(title), m_width(width), m_height(height), m_mousePosition(Math::Vec2())
+		: m_title(title), m_width(width), m_height(height), m_mousePosition(Math::Vec2()),
+			m_mouseScroll(0)
 	{
 		if (!Init())
 		{
@@ -84,6 +85,12 @@ namespace Astra::Graphics
 			win->m_mousePosition.y = (float)yPos;
 		});
 
+		glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xOffset, double yOffset)
+		{
+			Window* win = (Window*)glfwGetWindowUserPointer(window);
+			win->m_mouseScroll = (float)yOffset;
+		});
+
 
 		if (glewInit() != GLEW_OK)
 		{
@@ -114,6 +121,7 @@ namespace Astra::Graphics
 		const double& currentFrameTime = glfwGetTime();
 		delta = (currentFrameTime - m_lastFrameTime);
 		m_lastFrameTime = currentFrameTime;
+		m_mouseScroll = 0;
 
 		glfwPollEvents();
 		glfwSwapBuffers(m_window);
