@@ -21,7 +21,7 @@ namespace Astra::Graphics
 		if (m_shader->GetType() == ShaderType::Terrains)
 		{
 			m_shader->SetUniform3f(TerrainShader::SkyColorTag, *m_skyColor);
-			m_shader->SetUniform3f(TerrainShader::LightPositionTag, m_light.GetTranslation());
+			m_shader->SetUniform3f(TerrainShader::LightPositionTag, m_light.Translation());
 			m_shader->SetUniform3f(TerrainShader::LightColorTag, m_light.GetColor());
 		}
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);

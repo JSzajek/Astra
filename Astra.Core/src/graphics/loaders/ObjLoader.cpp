@@ -8,10 +8,7 @@ namespace Astra::Graphics
 
 	const VertexArray* ObjLoader::LoadObjectModelImpl(const std::string& filepath)
 	{
-		vertices.clear();
-		textures.clear();
-		normals.clear();
-		indices.clear();
+		
 		
 		bool done = false;
 
@@ -82,11 +79,14 @@ namespace Astra::Graphics
 			verticesArray.push_back(vertex.z);
 		}
 
-		return Loader::Load(GL_TRIANGLES,
-							verticesArray,
-							indices,
-							texturesArray,
-							normalsArray);
+		const VertexArray* result = Loader::Load(GL_TRIANGLES, verticesArray, indices, texturesArray, normalsArray);
+
+		vertices.clear();
+		textures.clear();
+		normals.clear();
+		indices.clear();
+
+		return result;
 	}
 
 	void ObjLoader::ProcessVertex(const std::vector<std::string>& data, std::vector<int>& indices, std::vector<Math::Vec2>& textures, std::vector<Math::Vec3>& normals, std::vector<float>& textureArray, std::vector<float>& normalsArray)

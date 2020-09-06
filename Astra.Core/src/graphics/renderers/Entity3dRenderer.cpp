@@ -15,7 +15,7 @@ namespace Astra::Graphics
 		{
 			m_shader->SetUniform3f(LightingShader::SkyColorTag, *m_skyColor);
 
-			m_shader->SetUniform3f(LightingShader::LightPositionTag, m_light.GetTranslation());
+			m_shader->SetUniform3f(LightingShader::LightPositionTag, m_light.Translation());
 			m_shader->SetUniform3f(LightingShader::LightColorTag, m_light.GetColor());
 		}
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);

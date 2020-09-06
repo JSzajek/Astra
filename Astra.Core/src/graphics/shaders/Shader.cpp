@@ -115,8 +115,8 @@ namespace Astra::Graphics
 
 			std::vector<char> error(length);
 			glGetShaderInfoLog(id, length, &length, &error[0]);
-			Log::Logger::LogError(std::string("Failed to Compile ") + std::string(type == GL_VERTEX_SHADER ? "vertex" : "fragment") + " shader!");
-			Log::Logger::LogError(&error[0]);
+			Logger::LogError(std::string("Failed to Compile ") + std::string(type == GL_VERTEX_SHADER ? "vertex" : "fragment") + " shader!");
+			Logger::LogError(&error[0]);
 			glDeleteShader(id);
 			return 0;
 		}
@@ -161,7 +161,7 @@ namespace Astra::Graphics
 			GLint index = glGetUniformLocation(m_id, name);
 			if (index == -1)
 			{
-				Log::Logger::LogWarning(std::string("Failed to find Uniform ") + name);
+				Logger::LogWarning(std::string("Failed to find Uniform ") + name);
 				failedDirectory[name] = index;
 			}
 			else

@@ -4,7 +4,8 @@
 namespace Astra::Graphics
 {
 	Window::Window(const char* title, int width, int height)
-		: m_title(title), m_width(width), m_height(height), m_mousePosition(Math::Vec2())
+		: m_title(title), m_width(width), m_height(height), m_mousePosition(Math::Vec2()),
+			m_mouseScroll(0)
 	{
 		if (!Init())
 		{
@@ -36,7 +37,7 @@ namespace Astra::Graphics
 	{
 		if (!glfwInit())
 		{
-			Log::Logger::LogError("Failed to Initialize GLFW.");
+			Logger::LogError("Failed to Initialize GLFW.");
 			return false;
 		}
 
@@ -44,7 +45,7 @@ namespace Astra::Graphics
 
 		if (!m_window)
 		{
-			Log::Logger::LogError("Failed to Create Window Instance.");
+			Logger::LogError("Failed to Create Window Instance.");
 			glfwTerminate();
 			return false;
 		}
@@ -84,14 +85,22 @@ namespace Astra::Graphics
 			win->m_mousePosition.y = (float)yPos;
 		});
 
+		glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xOffset, double yOffset)
+		{
+			Window* win = (Window*)glfwGetWindowUserPointer(window);
+			win->m_mouseScroll = (float)yOffset;
+		});
+
 
 		if (glewInit() != GLEW_OK)
 		{
-			Log::Logger::LogError("Failed to Initialize GLEW." );
+			Logger::LogError("Failed to Initialize GLEW." );
 			return false;
 		}
 
-		Log::Logger::Log(std::string("OpenGL ") + std::string((const char*)glGetString(GL_VERSION)));
+		m_lastFrameTime = glfwGetTime();
+
+		Logger::Log(std::string("OpenGL ") + std::string((const char*)glGetString(GL_VERSION)));
 		return true;
 	}
 
@@ -105,9 +114,14 @@ namespace Astra::Graphics
 		GLenum error = glGetError();
 		if (error != GL_NO_ERROR)
 		{
-			Log::Logger::LogError(std::string("OpenGL Error: ") + std::to_string(error));
-			Log::Logger::LogError((const char*)(glewGetErrorString(error)));
+			Logger::LogError(std::string("OpenGL Error: ") + std::to_string(error));
+			Logger::LogError((const char*)(glewGetErrorString(error)));
 		}
+
+		const double& currentFrameTime = glfwGetTime();
+		delta = (currentFrameTime - m_lastFrameTime);
+		m_lastFrameTime = currentFrameTime;
+		m_mouseScroll = 0;
 
 		glfwPollEvents();
 		glfwSwapBuffers(m_window);
@@ -123,7 +137,7 @@ namespace Astra::Graphics
 	{
 		if (keycode >= MAX_KEYS)
 		{
-			Log::Logger::LogWarning("Detected key input outside of MAX_KEYS bounds.");
+			Logger::LogWarning("Detected key input outside of MAX_KEYS bounds.");
 			return false;
 		}
 		return m_keys[keycode];
@@ -133,7 +147,7 @@ namespace Astra::Graphics
 	{
 		if (button >= MAX_BUTTONS)
 		{
-			Log::Logger::LogWarning("Detected mouse button input outside of MAX_BUTTONS bounds.");
+			Logger::LogWarning("Detected mouse button input outside of MAX_BUTTONS bounds.");
 			return false;
 		}
 		return m_mouseButtons[button];

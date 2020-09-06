@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-namespace Astra::Log
+namespace Astra
 {
 	enum LogLevel : unsigned char
 	{
