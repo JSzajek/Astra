@@ -53,13 +53,9 @@ int main()
     TerrainMaterial* blendMap = new TerrainMaterial("res/textures/blendMap.png");
 
     Terrain terrain = Terrain(0, 0, &pack, blendMap);
-    Terrain terrain1 = Terrain(-1, 0, &pack, blendMap);
-    Terrain terrain2 = Terrain(0, -1, &pack, blendMap);
-    Terrain terrain3 = Terrain(-1, -1, &pack, blendMap);
     renderer.AddTerrain(&terrain);
-    renderer.AddTerrain(&terrain1);
-    renderer.AddTerrain(&terrain2);
-    renderer.AddTerrain(&terrain3);
+    terrain.Translation().x -= 200;
+    terrain.Translation().z -= 200;
 
     Timer time;
     float timer = 0;
