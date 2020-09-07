@@ -1,5 +1,7 @@
 #include "Loader.h"
 
+#include "../../logger/Logger.h"
+
 namespace Astra::Graphics
 { 
 	Loader::Loader()
@@ -70,19 +72,31 @@ namespace Astra::Graphics
 		stbi_set_flip_vertically_on_load(1);
 		buffer = stbi_load(std::string(filepath).c_str(), &texture.width, &texture.height, &m_bpp, 4);
 		
-		glGenTextures(1, &texture.id);
-		glBindTexture(GL_TEXTURE_2D, texture.id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clippingOption);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clippingOption);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-		
-		glBindTexture(GL_TEXTURE_2D, 0);
-		stbi_image_free(buffer);
+		if (buffer)
+		{
+			glGenTextures(1, &texture.id);
+			glBindTexture(GL_TEXTURE_2D, texture.id);
 
-		m_textureDirectory[filepath] = texture;
-		return texture;
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clippingOption);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clippingOption);
+		
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -2);
+		
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		
+			glBindTexture(GL_TEXTURE_2D, 0);
+			stbi_image_free(buffer);
+
+			m_textureDirectory[filepath] = texture;
+			return texture;
+		}
+		Logger::LogWarning(std::string("Texture ") + std::string(filepath) + std::string(" did not load correctly."));
+		return NULL;
 	}
 
 	GLuint Loader::BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage, GLboolean normalized)

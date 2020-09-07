@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-Player::Player(Window* window)
+Player::Player(Window* window, Terrain* terrain)
 	: m_camera(new Camera(20, 25, 0)), _window(window), m_movement(Vec3(0)),
-           m_rotating(false), m_oldPosition(Vec2(0,0))
+           m_rotating(false), m_oldPosition(Vec2(0,0)), m_terrain(terrain)
 {
 	const VertexArray* bodyModel = ObjLoader::LoadObjectModel("res/bunny.obj");
 	m_body = new Entity(bodyModel, Vec3(0), Vec3(0), Vec3(0.4f));
@@ -54,11 +54,12 @@ void Player::Update()
 
     m_camera->Translation() = m_body->GetTranslation();
     
-    if (m_body->GetTranslation().y < TERRAIN_HEIGHT)
+    float terrainHeight = m_terrain->GetHeightOfTerrain(m_body->GetTranslation().x, m_body->GetTranslation().z);
+    if (m_body->GetTranslation().y < terrainHeight)
     {
         upwardsSpeed = 0;
         isGrounded = true;
-        m_body->Translation().y = 0;
+        m_body->Translation().y = terrainHeight;
     }
 
     float mouseWheel = _window->getMouseWheel();

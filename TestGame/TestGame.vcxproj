@@ -204,6 +204,7 @@
     <Image Include="res\textures\grass.jpg" />
     <Image Include="res\textures\grassFlowers.png" />
     <Image Include="res\textures\grassTexture.png" />
+    <Image Include="res\textures\heightmap.png" />
     <Image Include="res\textures\mud.png" />
     <Image Include="res\textures\path.png" />
     <Image Include="res\textures\purple.jpg" />
