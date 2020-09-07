@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 
+#include <ctime>
+
 #include "Astra.h"
 #include "Synchronous.h"
 #include "Player.h"
@@ -10,6 +12,8 @@ int main()
     using namespace Astra;
     using namespace Astra::Graphics;
     using namespace Astra::Math;
+
+    srand((unsigned)time(0));
 
     std::vector<Synchronous*> worldItems;
 
@@ -46,17 +50,27 @@ int main()
     Entity entity = Entity(vertArray2, Vec3(0, 1, 0), Vec3(0), Vec3(0.5f));
     renderer.AddEntity(&entity);
 
-    ImageMaterial* grassMat = new ImageMaterial("res/textures/grassTexture.png", 1, 0, true, true);
-    ImageMaterial* fernMat = new ImageMaterial("res/textures/fernTexture.png", 1, 0, true, true);
+    ImageMaterial* grassMat = new ImageMaterial("res/textures/grassTexture.png", 1, 1, 0, true, true);
+    ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 1, 0, true, true);
 
     const VertexArray* grassVertArray = ObjLoader::LoadObjectModel("res/grass.obj");
     const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");
     Entity grassModel = Entity(grassVertArray, grassMat, Vec3(0), Vec3(0), Vec3(1));
-    Entity fernModel = Entity(fernVertArray, fernMat, Vec3(-5, 0, 1), Vec3(0), Vec3(0.3f));
+    //Entity fernModel = Entity(fernVertArray, fernMat, Vec3(-5, 0, 1), Vec3(0), Vec3(0.3f));
 
     renderer.AddEntity(&grassModel);
-    renderer.AddEntity(&fernModel);
+    //renderer.AddEntity(&fernModel);
 
+    std::vector<const Entity*> entities;
+    for (int i = 0; i < 20; i++)
+    {
+        float x = (rand() % 800) - 400;
+        float z = (rand() % 800) - 400;
+        float y = terrain.GetHeightOfTerrain(x, z);
+        Entity *entity = new Entity(fernVertArray, fernMat, rand() % 4, Vec3(x, y, z), Vec3(0), Vec3(1));
+        entities.emplace_back(entity);
+        renderer.AddEntity(entity);
+    }
 
     Timer time;
     float timer = 0;
@@ -83,5 +97,6 @@ int main()
             frames = 0;
         }
     }
+
     return 0;
 }

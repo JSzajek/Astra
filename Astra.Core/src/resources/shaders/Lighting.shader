@@ -12,6 +12,9 @@ uniform vec3 lightPosition;
 
 uniform float useFakeLighting;
 
+uniform float numberOfRows;
+uniform vec2 offset;
+
 out vec2 v_TexCoordinates;
 
 out vec3 surfaceNormal;
@@ -25,10 +28,11 @@ const float gradient = 5.0;
 
 void main()
 {
-	v_TexCoordinates = textureCoords;
 	vec4 worldPosition = transformMatrix * vec4(position, 1);
 	vec4 positionRelativeToCam = viewMatrix * worldPosition;
 	gl_Position = projectionMatrix * positionRelativeToCam;
+	
+	v_TexCoordinates = (textureCoords / numberOfRows) + offset;
 
 	surfaceNormal = (transformMatrix * vec4(useFakeLighting > 0.5 ? vec3(0, 1, 0) : normal, 0)).xyz;
 	toLightVector = lightPosition - worldPosition.xyz;
