@@ -18,7 +18,20 @@ int main()
     RendererController renderer;
     window.SetWindowResizeCallback([&](float width, float height) { renderer.UpdateScreen(width, height); });
 
-    Player player(&window);
+    TerrainMaterial* grassTerrainMat = new TerrainMaterial("res/textures/grass.jpg");
+    TerrainMaterial* flowerTerrainMat = new TerrainMaterial("res/textures/grassFlowers.png");
+    TerrainMaterial* mudTerrainMat = new TerrainMaterial("res/textures/mud.png");
+    TerrainMaterial* pathTerrainMat = new TerrainMaterial("res/textures/path.png");
+
+    TerrainMaterialPack pack(grassTerrainMat, flowerTerrainMat, mudTerrainMat, pathTerrainMat);
+    TerrainMaterial* blendMap = new TerrainMaterial("res/textures/blendMap.png");
+
+    Terrain terrain = Terrain(0, 0, &pack, blendMap);
+    renderer.AddTerrain(&terrain);
+    terrain.Translation().x -= 200;
+    terrain.Translation().z -= 200;
+
+    Player player(&window, &terrain);
     renderer.SetMainCamera(player.GetCamera());
     renderer.AddEntity(player.GetRendering());
     worldItems.emplace_back(&player);
@@ -27,7 +40,7 @@ int main()
     GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
     renderer.AddGui(&gui);
 
-    ImageMaterial* mat1 = new ImageMaterial();//new ImageMaterial("res/textures/red.jpg", 8, 1);
+    ImageMaterial* mat1 = new ImageMaterial();
     
     const VertexArray* vertArray2 = ObjLoader::LoadObjectModel("res/pylon.obj");
     Entity entity = Entity(vertArray2, Vec3(0, 1, 0), Vec3(0), Vec3(0.5f));
@@ -44,18 +57,6 @@ int main()
     renderer.AddEntity(&grassModel);
     renderer.AddEntity(&fernModel);
 
-    TerrainMaterial* grassTerrainMat = new TerrainMaterial("res/textures/grass.jpg");
-    TerrainMaterial* flowerTerrainMat = new TerrainMaterial("res/textures/grassFlowers.png");
-    TerrainMaterial* mudTerrainMat = new TerrainMaterial("res/textures/mud.png");
-    TerrainMaterial* pathTerrainMat = new TerrainMaterial("res/textures/path.png");
-
-    TerrainMaterialPack pack(grassTerrainMat, flowerTerrainMat, mudTerrainMat, pathTerrainMat);
-    TerrainMaterial* blendMap = new TerrainMaterial("res/textures/blendMap.png");
-
-    Terrain terrain = Terrain(0, 0, &pack, blendMap);
-    renderer.AddTerrain(&terrain);
-    terrain.Translation().x -= 200;
-    terrain.Translation().z -= 200;
 
     Timer time;
     float timer = 0;

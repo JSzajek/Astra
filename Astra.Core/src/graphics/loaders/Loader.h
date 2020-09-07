@@ -15,8 +15,6 @@ namespace Astra::Graphics
 	private:
 		std::vector<GLuint> m_vaos;
 		std::vector<GLuint> m_vbos;
-		//std::vector<Texture> m_textures;
-
 		std::unordered_map<std::string, Texture> m_textureDirectory;
 	public:
 		Loader(const Loader&) = delete;

@@ -28,6 +28,7 @@ private:
 	Window* _window;
 	Camera* m_camera;
 	Entity* m_body;
+	Terrain* m_terrain;
 
 	bool m_rotating;
 	Vec2 m_oldPosition;
@@ -40,7 +41,7 @@ private:
 
 	Vec3 m_movement;
 public:
-	Player(Window* window);
+	Player(Window* window, Terrain* terrain);
 	~Player();
 	void Update() override;
 	void CheckInput();
