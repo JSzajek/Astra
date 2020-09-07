@@ -34,6 +34,11 @@ namespace Astra::Graphics
 		glUniform2f(GetUniformLocation(name), vector.x, vector.y);
 	}
 
+	void Shader::SetUniform2f(const GLchar* name, const float& v1, const float& v2)
+	{
+		glUniform2f(GetUniformLocation(name), v1, v2);
+	}
+
 	void Shader::SetUniform3f(const GLchar* name, const Math::Vec3& vector)
 	{
 		glUniform3f(GetUniformLocation(name), vector.x, vector.y, vector.z);

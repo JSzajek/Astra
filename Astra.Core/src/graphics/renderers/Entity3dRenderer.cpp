@@ -25,6 +25,8 @@ namespace Astra::Graphics
 			PrepareEntity(*entities.front());
 			for (const Entity* entity : entities)
 			{
+				m_shader->SetUniform2f(LightingShader::OffsetTag, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
+
 				m_shader->SetUniformMat4(Shader::TransformMatrixTag, Math::Mat4Utils::Transformation(*entity));
 				glDrawElements(entity->vertexArray->drawType, entity->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
 			}
@@ -39,6 +41,8 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
+
+		m_shader->SetUniform1f(LightingShader::NumberOfRowsTag, entity.material->GetRowCount());
 
 		if (entity.material->transparent)
 		{
