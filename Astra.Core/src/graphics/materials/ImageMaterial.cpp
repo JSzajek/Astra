@@ -23,5 +23,4 @@ namespace Astra::Graphics
 		: Texture(Loader::LoadTexture(filepath)), m_rowCount(rowCount), shineDampener(shineDampener), reflectivity(reflectivity), transparent(transparent), fakeLight(fakeLight)
 	{
 	}
-
 }

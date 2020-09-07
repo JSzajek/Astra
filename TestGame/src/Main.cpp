@@ -55,17 +55,15 @@ int main()
 
     const VertexArray* grassVertArray = ObjLoader::LoadObjectModel("res/grass.obj");
     const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");
-    Entity grassModel = Entity(grassVertArray, grassMat, Vec3(0), Vec3(0), Vec3(1));
-    //Entity fernModel = Entity(fernVertArray, fernMat, Vec3(-5, 0, 1), Vec3(0), Vec3(0.3f));
+    Entity grassModel = Entity(grassVertArray, grassMat, Vec3(0, terrain.GetHeightOfTerrain(0,0), 0), Vec3(0), Vec3(1));
 
     renderer.AddEntity(&grassModel);
-    //renderer.AddEntity(&fernModel);
 
     std::vector<const Entity*> entities;
     for (int i = 0; i < 20; i++)
     {
-        float x = (rand() % 800) - 400;
-        float z = (rand() % 800) - 400;
+        float x = (rand() % 400) - 200;
+        float z = (rand() % 400) - 200;
         float y = terrain.GetHeightOfTerrain(x, z);
         Entity *entity = new Entity(fernVertArray, fernMat, rand() % 4, Vec3(x, y, z), Vec3(0), Vec3(1));
         entities.emplace_back(entity);
@@ -96,6 +94,11 @@ int main()
             printf("%dfps\n", frames);
             frames = 0;
         }
+    }
+
+    for (const Entity* entity : entities)
+    {
+        delete entity;
     }
 
     return 0;
