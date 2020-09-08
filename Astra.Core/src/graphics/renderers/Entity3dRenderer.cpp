@@ -4,7 +4,7 @@
 namespace Astra::Graphics
 {
 	Entity3dRenderer::Entity3dRenderer(Shader* shader, const Math::Vec3* skyColor)
-		: Renderer(shader), m_light(Math::Vec3(0), Math::Vec3(0)), m_skyColor(skyColor)
+		: Renderer(shader), m_skyColor(skyColor)
 	{
 	}
 
@@ -15,8 +15,19 @@ namespace Astra::Graphics
 		{
 			m_shader->SetUniform3f(LightingShader::SkyColorTag, *m_skyColor);
 
-			m_shader->SetUniform3f(LightingShader::LightPositionTag, m_light.Translation());
-			m_shader->SetUniform3f(LightingShader::LightColorTag, m_light.GetColor());
+			for (int i = 0; i < MAX_LIGHTS; i++)
+			{
+				if (i < m_lights.size())
+				{
+					m_shader->SetUniform3f(LightingShader::GetLightPositionTag(i), m_lights[i]->GetTranslation());
+					m_shader->SetUniform3f(LightingShader::GetLightColorTag(i), m_lights[i]->GetColor());
+				}
+				else
+				{
+					m_shader->SetUniform3f(LightingShader::GetLightPositionTag(i), Math::Vec3(0));
+					m_shader->SetUniform3f(LightingShader::GetLightColorTag(i), Math::Vec3(0));
+				}
+			}
 		}
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
 		for (const auto& directory : m_entities)

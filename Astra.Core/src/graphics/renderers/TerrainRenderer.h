@@ -8,14 +8,15 @@
 #include "../entities/Light.h"
 #include "../shaders/TerrainShader.h"
 
+#include "../../logger/Logger.h"
+
 namespace Astra::Graphics
 {
 	class TerrainRenderer : public Renderer
 	{
 	private:
 		std::unordered_map<GLuint, std::vector<const Terrain*>> m_terrains;
-		//std::vector<Light> m_lights;
-		Light m_light;
+		std::vector<const Light*> m_lights;
 		const Math::Vec3* m_skyColor;
 	public:
 		TerrainRenderer(Shader* shader, const Math::Vec3* skyColor);
@@ -32,7 +33,16 @@ namespace Astra::Graphics
 				m_terrains[terrain->vertexArray->vaoId].emplace_back(terrain);
 			}
 		}
-		inline void AddLight(const Light& light) { m_light = light; }
+		inline void AddLight(const Light* light)
+		{
+			if (m_lights.size() + 1 > MAX_LIGHTS)
+			{
+				Logger::Log("Too Many Lights");
+				m_lights.pop_back();
+
+			}
+			m_lights.push_back(light);
+		}
 		void Draw(const Math::Mat4& viewMatrix) override;
 	private:
 		void PrepareTerrain(const Terrain& terrain);

@@ -8,12 +8,12 @@ layout(location = 2) in vec3 normal;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 transformMatrix;
-uniform vec3 lightPosition;
+uniform vec3 lightPosition[4];
 
 out vec2 v_TexCoordinates;
 
 out vec3 surfaceNormal;
-out vec3 toLightVector;
+out vec3 toLightVector[4];
 out vec3 toCameraVector;
 
 out float visibility;
@@ -23,13 +23,17 @@ const float gradient = 5.0;
 
 void main()
 {
-	v_TexCoordinates = textureCoords;
 	vec4 worldPosition = transformMatrix * vec4(position, 1);
 	vec4 positionRelativeToCam = viewMatrix * worldPosition;
 	gl_Position = projectionMatrix * positionRelativeToCam;
+	
+	v_TexCoordinates = textureCoords;
 
 	surfaceNormal = (transformMatrix * vec4(normal, 0)).xyz;
-	toLightVector = lightPosition - worldPosition.xyz;
+	for (int i = 0; i < 4; i++)
+	{
+		toLightVector[i] = lightPosition[i] - worldPosition.xyz;
+	}
 	toCameraVector = (inverse(viewMatrix) * vec4(0, 0, 0, 1)).xyz - worldPosition.xyz;
 	
 	float distance = length(positionRelativeToCam.xyz);
@@ -43,7 +47,7 @@ void main()
 in vec2 v_TexCoordinates;
 
 in vec3 surfaceNormal;
-in vec3 toLightVector;
+in vec3 toLightVector[4];
 in vec3 toCameraVector;
 
 in float visibility;
@@ -56,7 +60,7 @@ uniform sampler2D gTexture;
 uniform sampler2D bTexture;
 uniform sampler2D blendMap;
 
-uniform vec3 lightColor;
+uniform vec3 lightColor[4];
 uniform float shineDampener;
 uniform float reflectivity;
 
@@ -75,21 +79,30 @@ void main()
 	vec4 totalColor = backgroundTextureColor + rTextureColor + gTextureColor + bTextureColor;
 
 	vec3 unitNormal = normalize(surfaceNormal);
-	vec3 unitLightVector = normalize(toLightVector);
-
-	float nDot1 = dot(unitNormal, unitLightVector);
-	float brightness = max(nDot1, 0.2);
-	vec3 diffuse = brightness * lightColor;
-
 	vec3 unitVectorToCamera = normalize(toCameraVector);
-	vec3 lightDirection = -unitLightVector;
-	vec3 reflectedLightDirection = reflect(lightDirection, unitNormal);
 
-	float specularFactor = dot(reflectedLightDirection, unitVectorToCamera);
-	specularFactor = max(specularFactor, 0);
-	float dampenedFactor = pow(specularFactor, shineDampener);
-	vec3 finalSpecular = dampenedFactor * reflectivity * lightColor;
+	vec3 totalDiffuse = vec3(0);
+	vec3 totalSpecular = vec3(0);
 
-	out_Color = vec4(diffuse, 1) * totalColor + vec4(finalSpecular, 1);
+	for (int i = 0; i < 4; i++)
+	{
+		vec3 unitLightVector = normalize(toLightVector[i]);
+
+		float nDot1 = dot(unitNormal, unitLightVector);
+		float brightness = max(nDot1, 0.0);
+
+		vec3 lightDirection = -unitLightVector;
+		vec3 reflectedLightDirection = reflect(lightDirection, unitNormal);
+
+		float specularFactor = dot(reflectedLightDirection, unitVectorToCamera);
+		specularFactor = max(specularFactor, 0);
+		float dampenedFactor = pow(specularFactor, shineDampener);
+
+		totalDiffuse += brightness * lightColor[i];
+		totalSpecular += dampenedFactor * reflectivity * lightColor[i];
+	}
+	totalDiffuse = max(totalDiffuse, 0.2);
+
+	out_Color = vec4(totalDiffuse, 1) * totalColor + vec4(totalSpecular, 1);
 	out_Color = mix(vec4(skyColor, 1), out_Color, visibility);
 }

@@ -44,6 +44,17 @@ int main()
     GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
     renderer.AddGui(&gui);
 
+
+    Light light1(Light(Math::Vec3(100, 100, 100), Math::Vec3(1, 0, 1)));
+    Light light2(Light(Math::Vec3(-100, 100, 100), Math::Vec3(0, 1, 1)));
+    Light light3(Light(Math::Vec3(100, 100, -100), Math::Vec3(1, 1, 0)));
+    Light light4(Light(Math::Vec3(-100, 100, -100), Math::Vec3(0, 0, 1)));
+
+    renderer.AddLight(&light1);
+    renderer.AddLight(&light2);
+    renderer.AddLight(&light3);
+    renderer.AddLight(&light4);
+
     ImageMaterial* mat1 = new ImageMaterial();
     
     const VertexArray* vertArray2 = ObjLoader::LoadObjectModel("res/pylon.obj");
@@ -96,10 +107,10 @@ int main()
         }
     }
 
-    for (const Entity* entity : entities)
+    /*for (const Entity* entity : entities)
     {
         delete entity;
-    }
+    }*/
 
     return 0;
 }

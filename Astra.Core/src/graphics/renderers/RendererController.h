@@ -33,7 +33,6 @@ namespace Astra::Graphics
 		Entity3dRenderer* m_entityRenderer;
 		TerrainRenderer* m_terrainRenderer;
 		Camera* m_mainCamera;
-		Light m_light;
 
 		Math::Vec3 skyColor;
 
@@ -52,6 +51,12 @@ namespace Astra::Graphics
 		inline void AddGui(const GuiTexture* gui) { m_guiRenderer->AddGui(gui); }
 		inline void AddEntity(const Entity* entity) { m_entityRenderer->AddEntity(entity); }
 		inline void AddTerrain(const Terrain* terrain) { m_terrainRenderer->AddTerrain(terrain); }
+		
+		inline void AddLight(const Light* light) 
+		{ 
+			m_entityRenderer->AddLight(light);
+			m_terrainRenderer->AddLight(light);
+		}
 		
 		inline void SetMainCamera(Camera* camera) { m_mainCamera = camera; }
 	};

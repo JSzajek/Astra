@@ -3,8 +3,7 @@
 namespace Astra::Graphics
 {
 	RendererController::RendererController()
-		: m_light(Light(Math::Vec3(20000, 20000, 2000), Math::Vec3(1, 1, 1))),
-			skyColor(Math::Vec3(0.1f, 0.7f, 0.7f))
+		: skyColor(Math::Vec3(0.1f, 0.7f, 0.7f))
 	{
 		Init();
 
@@ -19,9 +18,6 @@ namespace Astra::Graphics
 		m_terrainRenderer = new TerrainRenderer(m_terrainShader, &skyColor);
 
 		modelViewMatrix = Math::Mat4::Identity();
-
-		m_entityRenderer->AddLight(m_light);
-		m_terrainRenderer->AddLight(m_light);
 	}
 
 	void RendererController::Init() const
