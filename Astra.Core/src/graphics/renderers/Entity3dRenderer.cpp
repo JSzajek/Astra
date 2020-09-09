@@ -21,11 +21,13 @@ namespace Astra::Graphics
 				{
 					m_shader->SetUniform3f(LightingShader::GetLightPositionTag(i), m_lights[i]->GetTranslation());
 					m_shader->SetUniform3f(LightingShader::GetLightColorTag(i), m_lights[i]->GetColor());
+					m_shader->SetUniform3f(LightingShader::GetAttenuationTag(i), m_lights[i]->GetAttenuation());
 				}
 				else
 				{
 					m_shader->SetUniform3f(LightingShader::GetLightPositionTag(i), Math::Vec3(0));
 					m_shader->SetUniform3f(LightingShader::GetLightColorTag(i), Math::Vec3(0));
+					m_shader->SetUniform3f(LightingShader::GetAttenuationTag(i), Math::Vec3(1,0,0));
 				}
 			}
 		}

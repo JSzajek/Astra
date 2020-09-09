@@ -62,6 +62,8 @@ out vec4 out_Color;
 uniform sampler2D u_Texture;
 
 uniform vec3 lightColor[4];
+uniform vec3 attenuation[4];
+
 uniform float shineDampener;
 uniform float reflectivity;
 
@@ -77,6 +79,9 @@ void main()
 
 	for (int i = 0; i < 4; i++)
 	{
+		float distance = length(toLightVector[i]);
+		float attenuationFactor = attenuation[i].x + (attenuation[i].y * distance) + (attenuation[i].z * distance * distance);
+
 		vec3 unitLightVector = normalize(toLightVector[i]);
 
 		float nDot1 = dot(unitNormal, unitLightVector);
@@ -89,8 +94,8 @@ void main()
 		specularFactor = max(specularFactor, 0);
 		float dampenedFactor = pow(specularFactor, shineDampener);
 	
-		totalDiffuse += brightness * lightColor[i];
-		totalSpecular += dampenedFactor * reflectivity * lightColor[i];
+		totalDiffuse += (brightness * lightColor[i]) / attenuationFactor;
+		totalSpecular += (dampenedFactor * reflectivity * lightColor[i]) / attenuationFactor;
 	}
 	totalDiffuse = max(totalDiffuse, 0.2);
 

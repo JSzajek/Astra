@@ -39,5 +39,11 @@ namespace Astra::Graphics
 			static std::string base("lightColor[x]");
 			return base.replace(base.end() - 2, base.end() - 1, std::to_string(index)).c_str();
 		}
+
+		static const char* GetAttenuationTag(int index)
+		{
+			static std::string base("attenuation[x]");
+			return base.replace(base.end() - 2, base.end() - 1, std::to_string(index)).c_str();
+		}
 	};
 }

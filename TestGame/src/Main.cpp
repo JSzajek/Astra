@@ -45,10 +45,10 @@ int main()
     renderer.AddGui(&gui);
 
 
-    Light light1(Light(Math::Vec3(100, 100, 100), Math::Vec3(1, 0, 1)));
-    Light light2(Light(Math::Vec3(-100, 100, 100), Math::Vec3(0, 1, 1)));
-    Light light3(Light(Math::Vec3(100, 100, -100), Math::Vec3(1, 1, 0)));
-    Light light4(Light(Math::Vec3(-100, 100, -100), Math::Vec3(0, 0, 1)));
+    Light light1(Light(Math::Vec3(2000, 1000, 2000), Math::Vec3(0.6f)));  // Sun 
+    Light light2(Light(Math::Vec3(-20, 50, 20), Math::Vec3(0, 1, 1), Math::Vec3(1, 0.01f, 0.002f)));
+    Light light3(Light(Math::Vec3(20, 50, -20), Math::Vec3(1, 1, 0), Math::Vec3(1, 0.01f, 0.002f)));
+    Light light4(Light(Math::Vec3(-20, 50, -20), Math::Vec3(0, 0, 1), Math::Vec3(1, 0.01f, 0.002f)));
 
     renderer.AddLight(&light1);
     renderer.AddLight(&light2);
