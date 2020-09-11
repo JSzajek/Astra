@@ -20,3 +20,4 @@
 #include "src/graphics/entities/Entity.h"
 #include "src/graphics/entities/Terrain.h"
 #include "src/graphics/entities/Camera.h"
+#include "src/graphics/entities/Light.h"

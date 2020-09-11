@@ -6,6 +6,8 @@ namespace Astra::Graphics
 {
 	class LightingShader : public Shader
 	{
+	#define MAX_LIGHTS 4
+
 	public:
 		static constexpr const char* LightPositionTag = "lightPosition";
 		static constexpr const char* LightColorTag = "lightColor";
@@ -23,6 +25,24 @@ namespace Astra::Graphics
 			"C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/shaders/Lighting.shader")
 			: Shader(filepath, ShaderType::Lighting)
 		{
+		}
+
+		static const char* GetLightPositionTag(int index)
+		{
+			static std::string base("lightPosition[x]");
+			return base.replace(base.end() - 2, base.end() - 1, std::to_string(index)).c_str();
+		}
+
+		static const char* GetLightColorTag(int index)
+		{
+			static std::string base("lightColor[x]");
+			return base.replace(base.end() - 2, base.end() - 1, std::to_string(index)).c_str();
+		}
+
+		static const char* GetAttenuationTag(int index)
+		{
+			static std::string base("attenuation[x]");
+			return base.replace(base.end() - 2, base.end() - 1, std::to_string(index)).c_str();
 		}
 	};
 }

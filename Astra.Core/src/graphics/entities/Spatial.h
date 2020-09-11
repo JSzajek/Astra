@@ -61,5 +61,7 @@ namespace Astra::Graphics
 		virtual inline Math::Vec3& Translation() { return rows[0]; }
 		inline Math::Vec3& Rotation() { return rows[1]; }
 		inline Math::Vec3& Scale() { return rows[2]; }
+
+		virtual inline void SetTranslation(const Math::Vec3& translation) { rows[0] = translation; }
 	};
 }
