@@ -44,16 +44,17 @@ int main()
     GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
     renderer.AddGui(&gui);
 
+    Vec3 temp(20, 50, -20);
 
-    Light light1(Light(Math::Vec3(2000, 1000, 2000), Math::Vec3(0.6f)));  // Sun 
-    Light light2(Light(Math::Vec3(-20, 50, 20), Math::Vec3(0, 1, 1), Math::Vec3(1, 0.01f, 0.002f)));
-    Light light3(Light(Math::Vec3(20, 50, -20), Math::Vec3(1, 1, 0), Math::Vec3(1, 0.01f, 0.002f)));
-    Light light4(Light(Math::Vec3(-20, 50, -20), Math::Vec3(0, 0, 1), Math::Vec3(1, 0.01f, 0.002f)));
+    Light* light1 = new Light(Math::Vec3(20000, 20000, 2000), Math::Vec3(0.4f));  // Sun 
+    Light* light2 = new Light(Math::Vec3(-20, 50, 20), Math::Vec3(0, 1, 1), Math::Vec3(1, 0.01f, 0.002f));
+    Light* light3 = new Light(temp, Math::Vec3(1, 0, 0), Math::Vec3(1, 0.01f, 0.002f));
+    Light* light4 =  new Light(Math::Vec3(-20, 50, -20), Math::Vec3(1, 0, 1), Math::Vec3(1, 0.01f, 0.002f));
 
-    renderer.AddLight(&light1);
-    renderer.AddLight(&light2);
-    renderer.AddLight(&light3);
-    renderer.AddLight(&light4);
+    renderer.AddLight(light1);
+    renderer.AddLight(light2);
+    renderer.AddLight(light3);
+    renderer.AddLight(light4);
 
     ImageMaterial* mat1 = new ImageMaterial();
     

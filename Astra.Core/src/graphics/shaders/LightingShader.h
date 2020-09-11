@@ -27,10 +27,6 @@ namespace Astra::Graphics
 		{
 		}
 
-		/* TODO: Add optimizations:
-					- Only update light positions and colors when they change or when necessary
-					- Sort lights based on position to camera and only grab top 4
-		*/
 		static const char* GetLightPositionTag(int index)
 		{
 			static std::string base("lightPosition[x]");

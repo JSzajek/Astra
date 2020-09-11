@@ -52,7 +52,7 @@ namespace Astra::Graphics
 		inline void AddEntity(const Entity* entity) { m_entityRenderer->AddEntity(entity); }
 		inline void AddTerrain(const Terrain* terrain) { m_terrainRenderer->AddTerrain(terrain); }
 		
-		inline void AddLight(const Light* light) 
+		inline void AddLight(Light* light) 
 		{ 
 			m_entityRenderer->AddLight(light);
 			m_terrainRenderer->AddLight(light);

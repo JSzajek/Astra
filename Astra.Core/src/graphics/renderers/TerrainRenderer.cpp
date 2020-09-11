@@ -21,22 +21,6 @@ namespace Astra::Graphics
 		if (m_shader->GetType() == ShaderType::Terrains)
 		{
 			m_shader->SetUniform3f(TerrainShader::SkyColorTag, *m_skyColor);
-
-			for (int i = 0; i < MAX_LIGHTS; i++)
-			{
-				if (i < m_lights.size())
-				{
-					m_shader->SetUniform3f(TerrainShader::GetLightPositionTag(i), m_lights[i]->GetTranslation());
-					m_shader->SetUniform3f(TerrainShader::GetLightColorTag(i), m_lights[i]->GetColor());
-					m_shader->SetUniform3f(TerrainShader::GetAttenuationTag(i), m_lights[i]->GetAttenuation());
-				}
-				else
-				{
-					m_shader->SetUniform3f(TerrainShader::GetLightPositionTag(i), Math::Vec3(0));
-					m_shader->SetUniform3f(TerrainShader::GetLightColorTag(i), Math::Vec3(0));
-					m_shader->SetUniform3f(TerrainShader::GetAttenuationTag(i), Math::Vec3(1, 0, 0));
-				}
-			}
 		}
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
 		for (const auto& directory : m_terrains)
@@ -53,18 +37,51 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
-	void TerrainRenderer::BindTerrainTextures(const Terrain& terrain)
+	void TerrainRenderer::AddTerrain(const Terrain* terrain)
 	{
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, terrain.texturePack->backgroundTexture->id);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, terrain.texturePack->rTexture->id);
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, terrain.texturePack->gTexture->id);
-		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, terrain.texturePack->bTexture->id);
-		glActiveTexture(GL_TEXTURE4);
-		glBindTexture(GL_TEXTURE_2D, terrain.blendMap->id);
+		auto temp = m_terrains.find(terrain->vertexArray->vaoId);
+		if (temp != m_terrains.end())
+		{
+			temp->second.emplace_back(terrain);
+		}
+		else
+		{
+			m_terrains[terrain->vertexArray->vaoId] = std::vector<const Terrain*>();
+			m_terrains[terrain->vertexArray->vaoId].emplace_back(terrain);
+		}
+	}
+
+	void TerrainRenderer::AddLight(Light* light)
+	{
+		if (m_lights.size() + 1 > MAX_LIGHTS)
+		{
+			Logger::Log("Too Many Lights");
+			m_lights.pop_back();
+		}
+		m_lights.emplace_back(light);
+		light->SetCallback(std::bind(&TerrainRenderer::UpdateLights, this));
+		UpdateLights();
+	}
+
+	void TerrainRenderer::UpdateLights()
+	{
+		m_shader->Start();
+		for (int i = 0; i < MAX_LIGHTS; i++)
+		{
+			if (i < m_lights.size())
+			{
+				m_shader->SetUniform3f(TerrainShader::GetLightPositionTag(i), m_lights[i]->GetTranslation());
+				m_shader->SetUniform3f(TerrainShader::GetLightColorTag(i), m_lights[i]->GetColor());
+				m_shader->SetUniform3f(TerrainShader::GetAttenuationTag(i), m_lights[i]->GetAttenuation());
+			}
+			else
+			{
+				m_shader->SetUniform3f(TerrainShader::GetLightPositionTag(i), Math::Vec3(0));
+				m_shader->SetUniform3f(TerrainShader::GetLightColorTag(i), Math::Vec3(0));
+				m_shader->SetUniform3f(TerrainShader::GetAttenuationTag(i), Math::Vec3(1, 0, 0));
+			}
+		}
+		m_shader->Stop();
 	}
 
 	void TerrainRenderer::PrepareTerrain(const Terrain& terrain)
@@ -82,5 +99,19 @@ namespace Astra::Graphics
 			m_shader->SetUniform1f(TerrainShader::ShineDampenerTag, 1);
 			m_shader->SetUniform1f(TerrainShader::ReflectivityTag, 0);
 		}
+	}
+
+	void TerrainRenderer::BindTerrainTextures(const Terrain& terrain)
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, terrain.texturePack->backgroundTexture->id);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, terrain.texturePack->rTexture->id);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, terrain.texturePack->gTexture->id);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, terrain.texturePack->bTexture->id);
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_2D, terrain.blendMap->id);
 	}
 }
