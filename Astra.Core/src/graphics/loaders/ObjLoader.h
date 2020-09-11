@@ -13,10 +13,36 @@
 
 namespace Astra::Graphics
 {
+	struct TempVertex
+	{
+		Math::Vec3 position;
+		int textureIndex;
+		int normalIndex;
+		int index;
+		float length;
+
+		TempVertex* duplicate;
+
+		TempVertex(int index, const Math::Vec3& position)
+			: index(index), position(position), textureIndex(-1), normalIndex(-1), duplicate(NULL)
+		{
+			length = position.Magnitude();
+		}
+
+		inline bool IsSet() const
+		{
+			return textureIndex != -1 && normalIndex != -1;
+		}
+		inline bool SameTextureAndNormal(int otherTextureIndex, int otherNormalIndex) const
+		{
+			return textureIndex == otherTextureIndex && normalIndex == otherNormalIndex;
+		}
+	};
+
 	class ObjLoader
 	{
 	private:
-		std::vector<Math::Vec3> vertices;
+		std::vector<TempVertex*> vertices;
 		std::vector<Math::Vec2> textures;
 		std::vector<Math::Vec3> normals;
 		std::vector<int> indices;
@@ -39,6 +65,10 @@ namespace Astra::Graphics
 		ObjLoader();
 		const VertexArray* LoadObjectModelImpl(const std::string& filepath);
 
-		void ProcessVertex(const std::vector<std::string>& data, std::vector<int>& indices, std::vector<Math::Vec2>& textures, std::vector<Math::Vec3>& normals, std::vector<float>& textureArray, std::vector<float>& normalsArray);
+		float Convert(std::vector<float>& verticesArray, std::vector<float>& texturesArray, std::vector<float>& normalsArray);
+
+		void ProcessVertex(const std::vector<std::string>& data);
+		void AlreadyProcessed(TempVertex* previous, int textureIndex, int normalIndex);
+		void RemoveUnused();
 	};
 }

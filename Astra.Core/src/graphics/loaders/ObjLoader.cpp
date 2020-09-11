@@ -8,8 +8,6 @@ namespace Astra::Graphics
 
 	const VertexArray* ObjLoader::LoadObjectModelImpl(const std::string& filepath)
 	{
-		
-		
 		bool done = false;
 
 		std::vector<float> verticesArray;
@@ -29,7 +27,7 @@ namespace Astra::Graphics
 			switch (StringUtils::str2int(split[0].c_str()))
 			{
 			case StringUtils::str2int("v"):
-				vertices.push_back(Math::Vec3(std::stof(split[1]), std::stof(split[2]), std::stof(split[3])));
+				vertices.emplace_back(new TempVertex(vertices.size(), Math::Vec3(std::stof(split[1]), std::stof(split[2]), std::stof(split[3]))));
 				break;
 			case StringUtils::str2int("vt"):
 				textures.push_back(Math::Vec2(std::stof(split[1]), std::stof(split[2])));
@@ -38,8 +36,6 @@ namespace Astra::Graphics
 				normals.push_back(Math::Vec3(std::stof(split[1]), std::stof(split[2]), std::stof(split[3])));
 				break;
 			case StringUtils::str2int("f"):
-				texturesArray.resize(vertices.size() * 2);
-				normalsArray.resize(vertices.size() * 3);
 				done = true;
 				break;
 			}
@@ -55,7 +51,7 @@ namespace Astra::Graphics
 			{
 				for (int i = 1; i <= 3; i++)
 				{
-					ProcessVertex(StringUtils::Split(split[i], '/'), indices, textures, normals, texturesArray, normalsArray);
+					ProcessVertex(StringUtils::Split(split[i], '/'));
 				}
 			}
 			else
@@ -63,24 +59,24 @@ namespace Astra::Graphics
 				for (int i = 1; i <= 3; i++)
 				{
 					indices.push_back(std::stoi(split[i]) - 1);
-					//ProcessVertex(split[i], indices, textures, normals, texturesArray, normalsArray);
 				}
 			}
 		} while (getline(stream, line));
 
 		stream.close();
-		
-		verticesArray.reserve(vertices.size() * 3);
-		
-		for (const Math::Vec3& vertex : vertices)
-		{
-			verticesArray.push_back(vertex.x);
-			verticesArray.push_back(vertex.y);
-			verticesArray.push_back(vertex.z);
-		}
+
+		RemoveUnused();
+		texturesArray.resize(vertices.size() * 2);
+		normalsArray.resize(vertices.size() * 3);
+		verticesArray.resize(vertices.size() * 3);
+		Convert(verticesArray, texturesArray, normalsArray);
 
 		const VertexArray* result = Loader::Load(GL_TRIANGLES, verticesArray, indices, texturesArray, normalsArray);
 
+		for (TempVertex* vertex : vertices)
+		{
+			delete vertex;
+		}
 		vertices.clear();
 		textures.clear();
 		normals.clear();
@@ -89,23 +85,93 @@ namespace Astra::Graphics
 		return result;
 	}
 
-	void ObjLoader::ProcessVertex(const std::vector<std::string>& data, std::vector<int>& indices, std::vector<Math::Vec2>& textures, std::vector<Math::Vec3>& normals, std::vector<float>& textureArray, std::vector<float>& normalsArray)
+	float ObjLoader::Convert(std::vector<float>& verticesArray, std::vector<float>& texturesArray, std::vector<float>& normalsArray)
+	{
+		float furthest = 0;
+		for (int i = 0; i < vertices.size(); i++)
+		{
+			TempVertex* current = vertices[i];
+			if (current == NULL) { continue; }
+			if (current->length > furthest)
+			{
+				furthest = current->length;
+			}
+			const Math::Vec2& texture = textures[current->textureIndex];
+			const Math::Vec3& normal = normals[current->normalIndex];
+			verticesArray[i * 3] = current->position.x;
+			verticesArray[(i * 3) + 1] = current->position.y;
+			verticesArray[(i * 3) + 2] = current->position.z;
+
+			texturesArray[i * 2] = texture.x;
+			texturesArray[(i * 2) + 1] = texture.y;
+
+			normalsArray[i * 3] = normal.x;
+			normalsArray[(i * 3) + 1] = normal.y;
+			normalsArray[(i * 3) + 2] = normal.z;
+		}
+		return furthest;
+	}
+
+	void ObjLoader::ProcessVertex(const std::vector<std::string>& data)
 	{
 		int currentVertexPointer = std::stoi(data[0]) - 1;
-		indices.push_back(currentVertexPointer);
-		if (textures.size() > 0 && !data[1].empty())
+		TempVertex* currentVertex = vertices[currentVertexPointer];
+		
+		int textureIndex = textures.size() > 0 && !data[1].empty() ? std::stoi(data[1]) - 1 : -1;
+		int normalIndex = normals.size() > 0 && !data[2].empty() ? std::stoi(data[2]) - 1 : -1;
+		
+		if (!currentVertex->IsSet())
 		{
-			const Math::Vec2& current = textures[std::stoi(data[1]) - 1];
-			textureArray[currentVertexPointer * 2] = current.x;
-			textureArray[(currentVertexPointer * 2) + 1] = current.y;
+			currentVertex->textureIndex = textureIndex;
+			currentVertex->normalIndex = normalIndex;
+			indices.push_back(currentVertexPointer);
 		}
-
-		if (normals.size() > 0)
+		else
 		{
-			const Math::Vec3& current = normals[std::stoi(data[2]) - 1];
-			normalsArray[currentVertexPointer * 3] = current.x;
-			normalsArray[(currentVertexPointer * 3) + 1] = current.y;
-			normalsArray[(currentVertexPointer * 3) + 2] = current.z;
+			AlreadyProcessed(currentVertex, textureIndex, normalIndex);
+		}
+	}
+
+	void ObjLoader::AlreadyProcessed(TempVertex* previous, int textureIndex, int normalIndex)
+	{
+		if (previous->SameTextureAndNormal(textureIndex, normalIndex))
+		{
+			indices.push_back(previous->index);
+		}
+		else
+		{
+			TempVertex* other = previous->duplicate;
+			if (other != NULL)
+			{
+				AlreadyProcessed(other, textureIndex, normalIndex);
+			}
+			else
+			{
+				TempVertex* duplicate = new TempVertex(vertices.size(), previous->position);
+				duplicate->textureIndex = textureIndex;
+				duplicate->normalIndex = normalIndex;
+				previous->duplicate = duplicate;
+				vertices.emplace_back(duplicate);
+				indices.push_back(duplicate->index);
+			}
+		}
+	}
+
+	void ObjLoader::RemoveUnused()
+	{
+		std::vector<TempVertex*>::iterator iter = vertices.begin();
+		while (iter != vertices.end())
+		{
+			if (!(*iter)->IsSet())
+			{
+				void* ptr = *iter;
+				iter = vertices.erase(iter);
+				delete ptr;
+			}
+			else
+			{
+				++iter;
+			}
 		}
 	}
 }
