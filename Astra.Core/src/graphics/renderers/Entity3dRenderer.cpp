@@ -5,8 +5,8 @@
 
 namespace Astra::Graphics
 {
-	Entity3dRenderer::Entity3dRenderer(Shader* shader, const Math::Vec3* skyColor)
-		: Renderer(shader), m_skyColor(skyColor)
+	Entity3dRenderer::Entity3dRenderer(Shader* shader, const Math::Vec3* fogColor)
+		: Renderer(shader), m_skyColor(fogColor)
 	{
 	}
 

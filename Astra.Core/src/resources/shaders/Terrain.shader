@@ -66,7 +66,7 @@ uniform vec3 attenuation[4];
 uniform float shineDampener;
 uniform float reflectivity;
 
-uniform vec3 skyColor;
+uniform vec3 fogColor;
 
 void main()
 {
@@ -109,5 +109,5 @@ void main()
 	totalDiffuse = max(totalDiffuse, 0.2);
 
 	out_Color = vec4(totalDiffuse, 1) * totalColor + vec4(totalSpecular, 1);
-	out_Color = mix(vec4(skyColor, 1), out_Color, visibility);
+	out_Color = mix(vec4(fogColor, 1), out_Color, visibility);
 }

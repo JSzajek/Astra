@@ -7,7 +7,7 @@ namespace Astra::Graphics
 	{
 		Translation().x = xGrid * Size;
 		Translation().z = zGrid * Size;
-		vertexArray = GeneratePlaneTerrain("res/textures/heightmap.png");
+		vertexArray = GeneratePlaneTerrain("res/textures/volcano_heightmap.png");
 	}
 
 	Terrain::~Terrain()

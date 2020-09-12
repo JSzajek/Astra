@@ -64,6 +64,48 @@
     <Image Include="res\textures\heightmap.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\textures\fernAtlas.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\volcano_heightmap.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\Default_Night_Skybox\back.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\Default_Night_Skybox\bottom.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\Default_Night_Skybox\front.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\Default_Night_Skybox\left.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\Default_Night_Skybox\right.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\Default_Night_Skybox\top.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\Default_Skybox\back.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\Default_Skybox\bottom.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\Default_Skybox\front.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\Default_Skybox\left.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\Default_Skybox\right.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\Default_Skybox\top.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Player.h">

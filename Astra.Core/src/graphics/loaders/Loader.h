@@ -7,6 +7,7 @@
 
 #include "../buffers/VertexArray.h"
 #include "../buffers/Texture.h"
+#include "../buffers/CubeMapTexture.h"
 
 namespace Astra::Graphics
 {
@@ -16,6 +17,7 @@ namespace Astra::Graphics
 		std::vector<GLuint> m_vaos;
 		std::vector<GLuint> m_vbos;
 		std::unordered_map<std::string, Texture> m_textureDirectory;
+		std::vector<GLuint> m_textureIds;
 	public:
 		Loader(const Loader&) = delete;
 		void operator=(const Loader&) = delete;
@@ -33,14 +35,19 @@ namespace Astra::Graphics
 			return Get().LoadImpl(drawType, vertices, indices, texturesCoords, normals);
 		}
 
-		static const VertexArray* Load(unsigned int drawType, const std::vector<float>& vertices)
+		static const VertexArray* Load(unsigned int drawType, const std::vector<float>& vertices, unsigned int dimensions)
 		{
-			return Get().LoadImpl(drawType, vertices);
+			return Get().LoadImpl(drawType, vertices , dimensions);
 		}
 
 		static const Texture& LoadTexture(const char* const filepath, GLint clippingOption = GL_REPEAT)
 		{
 			return Get().LoadTextureImpl(filepath, clippingOption);
+		}
+
+		static const CubeMapTexture* LoadCubeMap(const std::vector<const char*>& filepaths)
+		{
+			return Get().LoadCubeMapImpl(filepaths);
 		}
 
 	private:
@@ -51,10 +58,12 @@ namespace Astra::Graphics
 									const std::vector<int>& indices, const std::vector<float>& texturesCoords,
 									const std::vector<float>& normals);
 
-		const VertexArray* LoadImpl(unsigned int drawType, const std::vector<float>& vertices);
+		const VertexArray* LoadImpl(unsigned int drawType, const std::vector<float>& vertices, unsigned int dimensions);
 		
 		const Texture& LoadTextureImpl(const char* const filepath, GLint clippingOption);
 		
+		const CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);
+
 		GLuint BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage, GLboolean normalized = GL_FALSE);
 
 		GLuint BindIndicesBuffer(const std::vector<int>& data, GLenum usage);

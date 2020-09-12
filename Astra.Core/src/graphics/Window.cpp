@@ -3,6 +3,8 @@
 
 namespace Astra::Graphics
 {
+	double Window::delta;
+	
 	Window::Window(const char* title, int width, int height)
 		: m_title(title), m_width(width), m_height(height), m_mousePosition(Math::Vec2()),
 			m_mouseScroll(0)
@@ -52,7 +54,10 @@ namespace Astra::Graphics
 
 		glfwMakeContextCurrent(m_window);
 		glfwSetWindowUserPointer(m_window, this);
+	
+	#if V_SYNC
 		glfwSwapInterval(0);
+	#endif
 
 		glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height)
 		{

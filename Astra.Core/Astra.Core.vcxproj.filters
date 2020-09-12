@@ -87,6 +87,12 @@
     <ClCompile Include="src\graphics\entities\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\renderers\SkyboxRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\materials\SkyboxMaterial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat4.h">
@@ -200,15 +206,46 @@
     <ClInclude Include="src\graphics\materials\Materials.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\buffers\CubeMapTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\shaders\SkyboxShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\renderers\SkyboxRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\materials\SkyboxMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\resources\shaders\Gui.shader" />
     <None Include="src\resources\shaders\Basic.shader" />
     <None Include="src\resources\shaders\Lighting.shader" />
     <None Include="src\resources\shaders\Terrain.shader" />
+    <None Include="src\resources\shaders\Skybox.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\textures\Default.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\resources\textures\Default_Skybox\back.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\resources\textures\Default_Skybox\bottom.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\resources\textures\Default_Skybox\front.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\resources\textures\Default_Skybox\left.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\resources\textures\Default_Skybox\right.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\resources\textures\Default_Skybox\top.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

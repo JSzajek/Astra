@@ -19,7 +19,7 @@ namespace Astra::Graphics
 		std::vector<const Light*> m_lights;
 		const Math::Vec3* m_skyColor;
 	public:
-		TerrainRenderer(Shader* shader, const Math::Vec3* skyColor);
+		TerrainRenderer(Shader* shader, const Math::Vec3* fogColor);
 		
 		void Draw(const Math::Mat4& viewMatrix) override;
 		void AddTerrain(const Terrain* terrain);

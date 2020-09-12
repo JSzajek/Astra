@@ -18,7 +18,8 @@ namespace Astra::Graphics
 		Basic,
 		Lighting,
 		Gui,
-		Terrains
+		Terrains,
+		Skybox
 	};
 
 	struct ShaderProgramSource
@@ -49,7 +50,7 @@ namespace Astra::Graphics
 		void SetUniform2f(const GLchar* name, const float& v1, const float& v2);
 		void SetUniform3f(const GLchar* name, const Math::Vec3& value);
 		void SetUniform4f(const GLchar* name, const Math::Vec4& value);
-		void SetUniformMat4(const GLchar* name, const Math::Mat4& matrix);
+		virtual void SetUniformMat4(const GLchar* name, const Math::Mat4& matrix);
 
 		void Start() const;
 		void Stop() const;

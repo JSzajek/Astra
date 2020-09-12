@@ -44,11 +44,32 @@ int main()
     GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
     renderer.AddGui(&gui);
 
-    Vec3 temp(20, 50, -20);
+    std::vector<const char*> m_textureFiles =
+    {
+        "res/textures/Default_Skybox/right.png",
+        "res/textures/Default_Skybox/left.png",
+        "res/textures/Default_Skybox/top.png",
+        "res/textures/Default_Skybox/bottom.png",
+        "res/textures/Default_Skybox/back.png",
+        "res/textures/Default_Skybox/front.png",
+    };
+
+    std::vector<const char*> m_nightTextureFiles =
+    {
+        "res/textures/Default_Night_Skybox/right.png",
+        "res/textures/Default_Night_Skybox/left.png",
+        "res/textures/Default_Night_Skybox/top.png",
+        "res/textures/Default_Night_Skybox/bottom.png",
+        "res/textures/Default_Night_Skybox/back.png",
+        "res/textures/Default_Night_Skybox/front.png",
+    };
+
+    SkyboxMaterial skybox(m_textureFiles, m_nightTextureFiles);
+    renderer.SetSkyBox(&skybox);
 
     Light* light1 = new Light(Math::Vec3(20000, 20000, 2000), Math::Vec3(0.4f));  // Sun 
     Light* light2 = new Light(Math::Vec3(-20, 50, 20), Math::Vec3(0, 1, 1), Math::Vec3(1, 0.01f, 0.002f));
-    Light* light3 = new Light(temp, Math::Vec3(1, 0, 0), Math::Vec3(1, 0.01f, 0.002f));
+    Light* light3 = new Light(Math::Vec3(20, 50, -20), Math::Vec3(1, 0, 0), Math::Vec3(1, 0.01f, 0.002f));
     Light* light4 =  new Light(Math::Vec3(-20, 50, -20), Math::Vec3(1, 0, 1), Math::Vec3(1, 0.01f, 0.002f));
 
     renderer.AddLight(light1);
@@ -82,6 +103,9 @@ int main()
         renderer.AddEntity(entity);
     }
 
+    const float InGameTimeSpeed = 0.00005f;
+    short timeDir = 1;
+
     Timer time;
     float timer = 0;
     unsigned int frames = 0;
@@ -95,7 +119,19 @@ int main()
         {
             item->Update();
         }
-        
+
+        skybox.BlendFactor() += InGameTimeSpeed * timeDir;
+        if (skybox.BlendFactor() >= 1)
+        {
+            skybox.BlendFactor() = 1;
+            timeDir = -1;
+        }
+        else if (skybox.BlendFactor() <= 0)
+        {
+            skybox.BlendFactor() = 0;
+            timeDir = 1;
+        }
+
         renderer.Render();
         window.Update();
 

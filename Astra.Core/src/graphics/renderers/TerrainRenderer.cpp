@@ -3,8 +3,8 @@
 
 namespace Astra::Graphics
 {
-	TerrainRenderer::TerrainRenderer(Shader* shader, const Math::Vec3* skyColor)
-		: Renderer(shader), m_skyColor(skyColor)
+	TerrainRenderer::TerrainRenderer(Shader* shader, const Math::Vec3* fogColor)
+		: Renderer(shader), m_skyColor(fogColor)
 	{
 		m_shader->Start();
 		m_shader->SetUniform1i(TerrainShader::BackgroundTextureTag, 0);
