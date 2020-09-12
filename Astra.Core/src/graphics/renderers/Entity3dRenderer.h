@@ -20,7 +20,7 @@ namespace Astra::Graphics
 		std::vector<const Light*> m_lights;
 		const Math::Vec3* m_skyColor;
 	public:
-		Entity3dRenderer(Shader* shader, const Math::Vec3* skyColor);
+		Entity3dRenderer(Shader* shader, const Math::Vec3* fogColor);
 		
 		void Draw(const Math::Mat4& viewMatrix) override;
 		void AddEntity(const Entity* entity);

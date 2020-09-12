@@ -18,6 +18,12 @@ namespace Astra::Graphics
 		m_secondaryTexture = Loader::LoadCubeMap(secondFiles);
 	}
 
+	SkyboxMaterial::~SkyboxMaterial()
+	{
+		delete m_primaryTexture;
+		delete m_secondaryTexture;
+	}
+
 	const unsigned int& SkyboxMaterial::GetFirstTextureId() const
 	{
 		if (m_primaryTexture != NULL)

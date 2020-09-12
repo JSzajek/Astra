@@ -38,14 +38,14 @@ namespace Astra::Graphics
 		SkyboxRenderer* m_skyboxRenderer;
 		Camera* m_mainCamera;
 
-		Math::Vec3 skyColor;
+		Math::Vec3 fogColor;
 
 		Math::Mat4 projectionMatrix;
 		Math::Mat4 viewMatrix;
 		Math::Mat4 modelViewMatrix;
 
 	public:
-		RendererController(const Math::Vec3& skyColor = Math::Vec3(0.5f, 0.6f, 0.6f));
+		RendererController(const Math::Vec3& fogColor = Math::Vec3(0.5f, 0.6f, 0.6f));
 		~RendererController();
 		void Init() const;
 		void UpdateScreen(float width, float height);

@@ -16,7 +16,8 @@ namespace Astra::Graphics
 	public:
 		SkyboxMaterial(const std::vector<const char*>& firstFiles);
 		SkyboxMaterial(const std::vector<const char*>& firstFiles, const std::vector<const char*>& secondFiles);
-		
+		~SkyboxMaterial();
+
 		const unsigned int& GetFirstTextureId() const;
 		const unsigned int& GetSecondTextureId() const;
 		inline const float& GetBlendFactor() const { return m_blendFactor; }

@@ -2,8 +2,8 @@
 
 namespace Astra::Graphics
 {
-	SkyboxRenderer::SkyboxRenderer(Shader* shader, const Math::Vec3* skyColor)
-		: Renderer(shader), m_skyColor(skyColor), m_blendFactor(0), m_material(NULL)
+	SkyboxRenderer::SkyboxRenderer(Shader* shader, const Math::Vec3* fogColor)
+		: Renderer(shader), m_skyColor(fogColor), m_blendFactor(0), m_material(NULL)
 	{
 		m_cube = Loader::Load(GL_TRIANGLES, Vertices, 3);
 

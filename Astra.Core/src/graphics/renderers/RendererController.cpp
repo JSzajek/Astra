@@ -2,8 +2,8 @@
 
 namespace Astra::Graphics
 {
-	RendererController::RendererController(const Math::Vec3& skyColor)
-		: skyColor(skyColor)
+	RendererController::RendererController(const Math::Vec3& fogColor)
+		: fogColor(fogColor)
 	{
 		Init();
 
@@ -12,13 +12,13 @@ namespace Astra::Graphics
 
 		m_basicShader = new BasicShader();
 		m_lightingShader = new LightingShader();
-		m_entityRenderer = new Entity3dRenderer(m_lightingShader, &skyColor);
+		m_entityRenderer = new Entity3dRenderer(m_lightingShader, &fogColor);
 
 		m_terrainShader = new TerrainShader();
-		m_terrainRenderer = new TerrainRenderer(m_terrainShader, &skyColor);
+		m_terrainRenderer = new TerrainRenderer(m_terrainShader, &fogColor);
 
 		m_skyboxShader = new SkyboxShader();
-		m_skyboxRenderer = new SkyboxRenderer(m_skyboxShader, &skyColor);
+		m_skyboxRenderer = new SkyboxRenderer(m_skyboxShader, &fogColor);
 
 		modelViewMatrix = Math::Mat4::Identity();
 	}
@@ -27,7 +27,7 @@ namespace Astra::Graphics
 	{
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
-		glClearColor(skyColor.x, skyColor.y, skyColor.z, 1);
+		glClearColor(fogColor.x, fogColor.y, fogColor.z, 1);
 	}
 
 	RendererController::~RendererController()

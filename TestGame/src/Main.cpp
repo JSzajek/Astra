@@ -103,7 +103,7 @@ int main()
         renderer.AddEntity(entity);
     }
 
-    const float InGameTimeSpeed = 0.005f;
+    const float InGameTimeSpeed = 0.00005f;
     short timeDir = 1;
 
     Timer time;
@@ -120,7 +120,7 @@ int main()
             item->Update();
         }
 
-        skybox.BlendFactor() += 0.005f * timeDir * Window::delta;
+        skybox.BlendFactor() += InGameTimeSpeed * timeDir;
         if (skybox.BlendFactor() >= 1)
         {
             skybox.BlendFactor() = 1;
