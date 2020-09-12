@@ -6,10 +6,12 @@
 #include "GuiRenderer.h"
 #include "Entity3dRenderer.h"
 #include "TerrainRenderer.h"
+#include "SkyboxRenderer.h"
 #include "../shaders/GuiShader.h"
 #include "../shaders/BasicShader.h"
 #include "../shaders/LightingShader.h"
 #include "../shaders/TerrainShader.h"
+#include "../shaders/SkyboxShader.h"
 #include "../textures/GuiTexture.h"
 #include "../entities/Camera.h"
 #include "../../math/Mat4Utils.h"
@@ -30,8 +32,10 @@ namespace Astra::Graphics
 		BasicShader* m_basicShader;
 		LightingShader* m_lightingShader;
 		TerrainShader* m_terrainShader;
+		SkyboxShader* m_skyboxShader;
 		Entity3dRenderer* m_entityRenderer;
 		TerrainRenderer* m_terrainRenderer;
+		SkyboxRenderer* m_skyboxRenderer;
 		Camera* m_mainCamera;
 
 		Math::Vec3 skyColor;

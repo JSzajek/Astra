@@ -19,9 +19,15 @@ namespace Astra::Graphics
 		{
 			glDeleteBuffers(1, &vbo);
 		}
+
 		for (const auto& texture : m_textureDirectory)
 		{
 			glDeleteTextures(1, &texture.second.id);
+		}
+
+		for (const GLuint& textureId : m_textureIds)
+		{
+			glDeleteTextures(1, &textureId);
 		}
 	}
 
@@ -45,13 +51,13 @@ namespace Astra::Graphics
 		return vertArray;
 	}
 
-	const VertexArray* Loader::LoadImpl(unsigned int drawType, const std::vector<float>& vertices)
+	const VertexArray* Loader::LoadImpl(unsigned int drawType, const std::vector<float>& vertices, unsigned int dimensions)
 	{
 		GLuint id = GenerateVaoId();
-		GLuint vboId = BindInAttribBuffer(0, vertices, 2, GL_STATIC_DRAW);
+		GLuint vboId = BindInAttribBuffer(0, vertices, dimensions, GL_STATIC_DRAW);
 		UnbindVertexArray();
 
-		VertexArray* vertArray = new VertexArray(id, vertices.size() / 2, drawType);
+		VertexArray* vertArray = new VertexArray(id, vertices.size() / dimensions, drawType);
 		(*vertArray)(BufferType::Vertices) = vboId;
 		return vertArray;
 	}
@@ -83,7 +89,6 @@ namespace Astra::Graphics
 		
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -2);
 		
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
@@ -97,6 +102,36 @@ namespace Astra::Graphics
 		}
 		Logger::LogWarning(std::string("Texture ") + std::string(filepath) + std::string(" did not load correctly."));
 		return NULL;
+	}
+
+	const CubeMapTexture* Loader::LoadCubeMapImpl(const std::vector<const char*>& filepaths)
+	{
+		static int m_bpp;
+		static unsigned char* buffer;
+
+		CubeMapTexture* resultTexture = new CubeMapTexture(filepaths);
+		CubeMapTexture& cubemapTexture = *resultTexture;
+
+		glGenTextures(1, &cubemapTexture.id);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture.id);
+		
+		stbi_set_flip_vertically_on_load(1);
+		for (int i = 0; i < filepaths.size(); i++)
+		{
+			Texture& texture = cubemapTexture[i];
+			buffer = stbi_load(std::string(texture.m_filePath).c_str(), &texture.width, &texture.height, &m_bpp, 4);
+			if (buffer)
+			{
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+				stbi_image_free(buffer);
+			}
+		}
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		m_textureIds.push_back(cubemapTexture.id);
+
+		return resultTexture;
 	}
 
 	GLuint Loader::BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage, GLboolean normalized)

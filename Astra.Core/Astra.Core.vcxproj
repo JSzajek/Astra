@@ -180,6 +180,7 @@
     <ClCompile Include="src\graphics\renderers\GuiRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\Renderer.cpp" />
     <ClCompile Include="src\graphics\renderers\RendererController.cpp" />
+    <ClCompile Include="src\graphics\renderers\SkyboxRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\TerrainRenderer.cpp" />
     <ClCompile Include="src\graphics\shaders\Shader.cpp" />
     <ClCompile Include="src\graphics\textures\GuiTexture.cpp" />
@@ -193,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Astra.h" />
+    <ClInclude Include="src\graphics\buffers\CubeMapTexture.h" />
     <ClInclude Include="src\graphics\materials\ImageMaterial.h" />
     <ClInclude Include="src\graphics\materials\Materials.h" />
     <ClInclude Include="src\graphics\materials\TerrainMaterial.h" />
@@ -209,11 +211,13 @@
     <ClInclude Include="src\graphics\renderers\GuiRenderer.h" />
     <ClInclude Include="src\graphics\renderers\RendererController.h" />
     <ClInclude Include="src\graphics\renderers\Renderer.h" />
+    <ClInclude Include="src\graphics\renderers\SkyboxRenderer.h" />
     <ClInclude Include="src\graphics\renderers\TerrainRenderer.h" />
     <ClInclude Include="src\graphics\shaders\BasicShader.h" />
     <ClInclude Include="src\graphics\shaders\GuiShader.h" />
     <ClInclude Include="src\graphics\shaders\LightingShader.h" />
     <ClInclude Include="src\graphics\shaders\Shader.h" />
+    <ClInclude Include="src\graphics\shaders\SkyboxShader.h" />
     <ClInclude Include="src\graphics\shaders\TerrainShader.h" />
     <ClInclude Include="src\graphics\textures\GuiTexture.h" />
     <ClInclude Include="src\graphics\Window.h" />
@@ -234,10 +238,23 @@
     <None Include="src\resources\shaders\Basic.shader" />
     <None Include="src\resources\shaders\Gui.shader" />
     <None Include="src\resources\shaders\Lighting.shader" />
+    <None Include="src\resources\shaders\Skybox.shader" />
     <None Include="src\resources\shaders\Terrain.shader" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\Downloads\back.png" />
+    <Image Include="..\..\..\..\Downloads\bottom.png" />
+    <Image Include="..\..\..\..\Downloads\front.png" />
+    <Image Include="..\..\..\..\Downloads\left.png" />
+    <Image Include="..\..\..\..\Downloads\right.png" />
+    <Image Include="..\..\..\..\Downloads\top.png" />
     <Image Include="src\resources\textures\Default.jpg" />
+    <Image Include="src\resources\textures\Default_Skybox\back.png" />
+    <Image Include="src\resources\textures\Default_Skybox\bottom.png" />
+    <Image Include="src\resources\textures\Default_Skybox\front.png" />
+    <Image Include="src\resources\textures\Default_Skybox\left.png" />
+    <Image Include="src\resources\textures\Default_Skybox\right.png" />
+    <Image Include="src\resources\textures\Default_Skybox\top.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

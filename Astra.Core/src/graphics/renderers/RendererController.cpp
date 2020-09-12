@@ -17,6 +17,9 @@ namespace Astra::Graphics
 		m_terrainShader = new TerrainShader();
 		m_terrainRenderer = new TerrainRenderer(m_terrainShader, &skyColor);
 
+		m_skyboxShader = new SkyboxShader();
+		m_skyboxRenderer = new SkyboxRenderer(m_skyboxShader);
+
 		modelViewMatrix = Math::Mat4::Identity();
 	}
 
@@ -38,6 +41,7 @@ namespace Astra::Graphics
 		projectionMatrix = Math::Mat4::Perspective(width, height, FieldOfView, NearPlane, FarPlane);
 		m_entityRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_terrainRenderer->UpdateProjectionMatrix(projectionMatrix);
+		m_skyboxRenderer->UpdateProjectionMatrix(projectionMatrix);
 	}
 
 	void RendererController::Render()
@@ -46,6 +50,7 @@ namespace Astra::Graphics
 
 		m_terrainRenderer->Draw(viewMatrix);
 		m_entityRenderer->Draw(viewMatrix);
+		m_skyboxRenderer->Draw(viewMatrix);
 		m_guiRenderer->Draw(NULL);
 	}
 

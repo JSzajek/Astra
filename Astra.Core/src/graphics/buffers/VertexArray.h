@@ -7,7 +7,7 @@ namespace Astra::Graphics
 {
 	#define TRACKED_VBOS 4
 	
-	enum BufferType
+	enum BufferType : unsigned short
 	{
 		Vertices		= 0,
 		TextureCoords	= 1,
