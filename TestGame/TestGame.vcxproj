@@ -200,6 +200,18 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\blendMap.png" />
+    <Image Include="res\textures\Default_Night_Skybox\back.png" />
+    <Image Include="res\textures\Default_Night_Skybox\bottom.png" />
+    <Image Include="res\textures\Default_Night_Skybox\front.png" />
+    <Image Include="res\textures\Default_Night_Skybox\left.png" />
+    <Image Include="res\textures\Default_Night_Skybox\right.png" />
+    <Image Include="res\textures\Default_Night_Skybox\top.png" />
+    <Image Include="res\textures\Default_Skybox\back.png" />
+    <Image Include="res\textures\Default_Skybox\bottom.png" />
+    <Image Include="res\textures\Default_Skybox\front.png" />
+    <Image Include="res\textures\Default_Skybox\left.png" />
+    <Image Include="res\textures\Default_Skybox\right.png" />
+    <Image Include="res\textures\Default_Skybox\top.png" />
     <Image Include="res\textures\fernAtlas.png" />
     <Image Include="res\textures\fernTexture.png" />
     <Image Include="res\textures\grass.jpg" />
