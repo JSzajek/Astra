@@ -3,6 +3,8 @@
 
 namespace Astra::Graphics
 {
+	double Window::delta;
+
 	Window::Window(const char* title, int width, int height)
 		: m_title(title), m_width(width), m_height(height), m_mousePosition(Math::Vec2()),
 			m_mouseScroll(0)

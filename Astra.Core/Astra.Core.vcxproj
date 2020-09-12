@@ -242,12 +242,6 @@
     <None Include="src\resources\shaders\Terrain.shader" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\Downloads\back.png" />
-    <Image Include="..\..\..\..\Downloads\bottom.png" />
-    <Image Include="..\..\..\..\Downloads\front.png" />
-    <Image Include="..\..\..\..\Downloads\left.png" />
-    <Image Include="..\..\..\..\Downloads\right.png" />
-    <Image Include="..\..\..\..\Downloads\top.png" />
     <Image Include="src\resources\textures\Default.jpg" />
     <Image Include="src\resources\textures\Default_Skybox\back.png" />
     <Image Include="src\resources\textures\Default_Skybox\bottom.png" />

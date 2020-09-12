@@ -3,10 +3,10 @@
 #include "Astra.h"
 #include "Synchronous.h"
 
-#define		MAX_DISTANCE	 80
+#define		MAX_DISTANCE	 120
 #define		MIN_DISTANCE	 5
 #define		MAX_PITCH		 90
-#define		MIN_PITCH		 20
+#define		MIN_PITCH		 0
 
 #define		GRAVITY			-50
 #define		TERRAIN_HEIGHT	 0
@@ -23,7 +23,7 @@ private:
 	float TurnSpeed = 160;  // In Degrees
 	float JumpPower = 30;
 	float ZoomPower = 20;
-	float PanSpeed = 0.09f;
+	float PanSpeed = 0.03f;
 	
 	Window* _window;
 	Camera* m_camera;

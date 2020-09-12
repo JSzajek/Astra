@@ -45,7 +45,7 @@ namespace Astra::Graphics
 		Math::Mat4 modelViewMatrix;
 
 	public:
-		RendererController();
+		RendererController(const Math::Vec3& skyColor = Math::Vec3(0.5f, 0.6f, 0.6f));
 		~RendererController();
 		void Init() const;
 		void UpdateScreen(float width, float height);

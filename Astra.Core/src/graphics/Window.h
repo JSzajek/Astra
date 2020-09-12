@@ -28,7 +28,7 @@ namespace Astra::Graphics
 
 		double m_lastFrameTime;
 	public:
-		double delta;
+		static double delta;
 	public:
 		Window(const char* title, int width, int height);
 		~Window();

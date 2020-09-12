@@ -2,8 +2,8 @@
 
 namespace Astra::Graphics
 {
-	RendererController::RendererController()
-		: skyColor(Math::Vec3(0.1f, 0.7f, 0.7f))
+	RendererController::RendererController(const Math::Vec3& skyColor)
+		: skyColor(skyColor)
 	{
 		Init();
 
@@ -18,7 +18,7 @@ namespace Astra::Graphics
 		m_terrainRenderer = new TerrainRenderer(m_terrainShader, &skyColor);
 
 		m_skyboxShader = new SkyboxShader();
-		m_skyboxRenderer = new SkyboxRenderer(m_skyboxShader);
+		m_skyboxRenderer = new SkyboxRenderer(m_skyboxShader, &skyColor);
 
 		modelViewMatrix = Math::Mat4::Identity();
 	}
