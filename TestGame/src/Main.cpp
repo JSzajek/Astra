@@ -46,22 +46,22 @@ int main()
 
     std::vector<const char*> m_textureFiles =
     {
-        "../Astra.Core/src/resources/textures/Default_Skybox/right.png",
-        "../Astra.Core/src/resources/textures/Default_Skybox/left.png",
-        "../Astra.Core/src/resources/textures/Default_Skybox/top.png",
-        "../Astra.Core/src/resources/textures/Default_Skybox/bottom.png",
-        "../Astra.Core/src/resources/textures/Default_Skybox/back.png",
-        "../Astra.Core/src/resources/textures/Default_Skybox/front.png",
+        "res/textures/Default_Skybox/right.png",
+        "res/textures/Default_Skybox/left.png",
+        "res/textures/Default_Skybox/top.png",
+        "res/textures/Default_Skybox/bottom.png",
+        "res/textures/Default_Skybox/back.png",
+        "res/textures/Default_Skybox/front.png",
     };
 
     std::vector<const char*> m_nightTextureFiles =
     {
-        "../Astra.Core/src/resources/textures/Default_Night_Skybox/right.png",
-        "../Astra.Core/src/resources/textures/Default_Night_Skybox/left.png",
-        "../Astra.Core/src/resources/textures/Default_Night_Skybox/top.png",
-        "../Astra.Core/src/resources/textures/Default_Night_Skybox/bottom.png",
-        "../Astra.Core/src/resources/textures/Default_Night_Skybox/back.png",
-        "../Astra.Core/src/resources/textures/Default_Night_Skybox/front.png",
+        "res/textures/Default_Night_Skybox/right.png",
+        "res/textures/Default_Night_Skybox/left.png",
+        "res/textures/Default_Night_Skybox/top.png",
+        "res/textures/Default_Night_Skybox/bottom.png",
+        "res/textures/Default_Night_Skybox/back.png",
+        "res/textures/Default_Night_Skybox/front.png",
     };
 
     SkyboxMaterial skybox(m_textureFiles, m_nightTextureFiles);

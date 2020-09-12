@@ -11,7 +11,6 @@ namespace Astra::Graphics
 	{
 	private:
 		static constexpr float Size = 800;
-		//static constexpr float VertexCount = 128;
 		static constexpr float MaxHeight = 40;
 	private:
 		float* m_heights;

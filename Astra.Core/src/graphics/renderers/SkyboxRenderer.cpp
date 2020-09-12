@@ -21,7 +21,6 @@ namespace Astra::Graphics
 		{
 			m_shader->SetUniform3f(SkyboxShader::FogColorTag, *m_skyColor);
 		}
-
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
 	
 		glBindVertexArray(m_cube->vaoId);
@@ -35,6 +34,8 @@ namespace Astra::Graphics
 
 	void SkyboxRenderer::BindTextures()
 	{
+		if (m_material == NULL) { return; }
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_material->GetFirstTextureId());
 		glActiveTexture(GL_TEXTURE1);
