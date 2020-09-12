@@ -3,11 +3,9 @@
 namespace Astra::Graphics
 {
 	SkyboxRenderer::SkyboxRenderer(Shader* shader, const Math::Vec3* skyColor)
-		: Renderer(shader), m_skyColor(skyColor), m_blendFactor(0)
+		: Renderer(shader), m_skyColor(skyColor), m_blendFactor(0), m_material(NULL)
 	{
 		m_cube = Loader::Load(GL_TRIANGLES, Vertices, 3);
-		m_texture = Loader::LoadCubeMap(m_textureFiles);
-		m_nightTexture = Loader::LoadCubeMap(m_nightTextureFiles);
 
 		m_shader->Start();
 		m_shader->SetUniform1i(SkyboxShader::FirstCubeMapTag, 0);
@@ -38,9 +36,9 @@ namespace Astra::Graphics
 	void SkyboxRenderer::BindTextures()
 	{
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_texture->id);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_material->GetFirstTextureId());
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_nightTexture->id);
-		m_shader->SetUniform1f(SkyboxShader::BlendFactorTag, 0.5f);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_material->GetSecondTextureId());
+		m_shader->SetUniform1f(SkyboxShader::BlendFactorTag, m_material->GetBlendFactor());
 	}
 }

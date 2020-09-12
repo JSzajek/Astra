@@ -64,6 +64,12 @@
     <Image Include="res\textures\heightmap.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\textures\fernAtlas.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\volcano_heightmap.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Player.h">

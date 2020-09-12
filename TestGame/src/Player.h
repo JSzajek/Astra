@@ -23,7 +23,7 @@ private:
 	float TurnSpeed = 160;  // In Degrees
 	float JumpPower = 30;
 	float ZoomPower = 20;
-	float PanSpeed = 0.03f;
+	float PanSpeed = 1;
 	
 	Window* _window;
 	Camera* m_camera;

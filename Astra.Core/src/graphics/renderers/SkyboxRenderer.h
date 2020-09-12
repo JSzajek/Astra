@@ -4,6 +4,7 @@
 
 #include "Renderer.h"
 #include "../buffers/CubeMapTexture.h"
+#include "../materials/SkyboxMaterial.h"
 #include "../loaders/Loader.h"
 #include "../shaders/SkyboxShader.h"
 
@@ -58,33 +59,14 @@ namespace Astra::Graphics
 			 Size, -Size,  Size
 		};
 	private:
-		std::vector<const char*> m_textureFiles =
-		{
-			"../Astra.Core/src/resources/textures/Default_Skybox/right.png",
-			"../Astra.Core/src/resources/textures/Default_Skybox/left.png",
-			"../Astra.Core/src/resources/textures/Default_Skybox/top.png",
-			"../Astra.Core/src/resources/textures/Default_Skybox/bottom.png",
-			"../Astra.Core/src/resources/textures/Default_Skybox/back.png",
-			"../Astra.Core/src/resources/textures/Default_Skybox/front.png",
-		};
-
-		std::vector<const char*> m_nightTextureFiles =
-		{
-			"../Astra.Core/src/resources/textures/Default_Night_Skybox/right.png",
-			"../Astra.Core/src/resources/textures/Default_Night_Skybox/left.png",
-			"../Astra.Core/src/resources/textures/Default_Night_Skybox/top.png",
-			"../Astra.Core/src/resources/textures/Default_Night_Skybox/bottom.png",
-			"../Astra.Core/src/resources/textures/Default_Night_Skybox/back.png",
-			"../Astra.Core/src/resources/textures/Default_Night_Skybox/front.png",
-		};
-
 		const VertexArray* m_cube;
-		const CubeMapTexture* m_texture;
-		const CubeMapTexture* m_nightTexture;
+		const SkyboxMaterial* m_material;
 		const Math::Vec3* m_skyColor;
 		float m_blendFactor;
 	public:
 		SkyboxRenderer(Shader* shader, const Math::Vec3* skyColor);
+
+		inline void SetSkyBox(const SkyboxMaterial* material) { m_material = material; }
 
 		void Draw(const Math::Mat4& viewMatrix) override;
 	private:

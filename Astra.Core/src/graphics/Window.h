@@ -9,6 +9,7 @@
 
 namespace Astra::Graphics
 {
+	#define V_SYNC		0	
 	#define MAX_KEYS	1024
 	#define MAX_BUTTONS 32
 

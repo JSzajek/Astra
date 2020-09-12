@@ -200,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\blendMap.png" />
+    <Image Include="res\textures\fernAtlas.png" />
     <Image Include="res\textures\fernTexture.png" />
     <Image Include="res\textures\grass.jpg" />
     <Image Include="res\textures\grassFlowers.png" />
@@ -210,6 +211,7 @@
     <Image Include="res\textures\purple.jpg" />
     <Image Include="res\textures\red.jpg" />
     <Image Include="res\textures\test1.jpg" />
+    <Image Include="res\textures\volcano_heightmap.png" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Player.h" />

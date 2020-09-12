@@ -63,5 +63,6 @@ namespace Astra::Graphics
 		}
 		
 		inline void SetMainCamera(Camera* camera) { m_mainCamera = camera; }
+		inline void SetSkyBox(const SkyboxMaterial* material) { m_skyboxRenderer->SetSkyBox(material); }
 	};
 }
