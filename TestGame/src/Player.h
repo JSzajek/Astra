@@ -41,11 +41,10 @@ private:
 
 	Vec3 m_movement;
 public:
-	Player(Window* window, Terrain* terrain);
+	Player(const Vec3& position, Window* window, Terrain* terrain);
 	~Player();
 	void Update() override;
 	void CheckInput();
-	void MovePlayer(const Vec3& movement);
 	inline Camera* GetCamera() { return m_camera; }
 	inline Entity* GetRendering() { return m_body; }
 };

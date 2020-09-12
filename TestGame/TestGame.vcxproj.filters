@@ -106,6 +106,9 @@
     <Image Include="res\textures\Default_Skybox\top.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\textures\Crater_Heightmap.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Player.h">

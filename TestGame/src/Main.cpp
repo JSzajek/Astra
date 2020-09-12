@@ -32,10 +32,13 @@ int main()
 
     Terrain terrain = Terrain(0, 0, &pack, blendMap);
     renderer.AddTerrain(&terrain);
-    terrain.Translation().x -= 200;
-    terrain.Translation().z -= 200;
+    terrain.Translation().x -= 128;
+    terrain.Translation().z -= 128;
 
-    Player player(&window, &terrain);
+    WaterTile tile1 = WaterTile(0, 0, 45, 100);
+    renderer.AddWaterTile(tile1);
+
+    Player player(Vec3(-100,50,100),&window, &terrain);
     renderer.SetMainCamera(player.GetCamera());
     renderer.AddEntity(player.GetRendering());
     worldItems.emplace_back(&player);

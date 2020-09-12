@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Renderer.h"
-#include "../loaders/Loader.h"
 #include "../shaders/GuiShader.h"
 #include "../textures/GuiTexture.h"
 

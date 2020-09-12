@@ -172,6 +172,7 @@
     <ClCompile Include="src\graphics\entities\Entity.cpp" />
     <ClCompile Include="src\graphics\entities\Light.cpp" />
     <ClCompile Include="src\graphics\entities\Terrain.cpp" />
+    <ClCompile Include="src\graphics\entities\WaterTile.cpp" />
     <ClCompile Include="src\graphics\loaders\Loader.cpp" />
     <ClCompile Include="src\graphics\loaders\ObjLoader.cpp" />
     <ClCompile Include="src\graphics\materials\ImageMaterial.cpp" />
@@ -183,6 +184,7 @@
     <ClCompile Include="src\graphics\renderers\RendererController.cpp" />
     <ClCompile Include="src\graphics\renderers\SkyboxRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\TerrainRenderer.cpp" />
+    <ClCompile Include="src\graphics\renderers\WaterRenderer.cpp" />
     <ClCompile Include="src\graphics\shaders\Shader.cpp" />
     <ClCompile Include="src\graphics\textures\GuiTexture.cpp" />
     <ClCompile Include="src\graphics\Window.cpp" />
@@ -196,6 +198,7 @@
   <ItemGroup>
     <ClInclude Include="Astra.h" />
     <ClInclude Include="src\graphics\buffers\CubeMapTexture.h" />
+    <ClInclude Include="src\graphics\entities\WaterTile.h" />
     <ClInclude Include="src\graphics\materials\ImageMaterial.h" />
     <ClInclude Include="src\graphics\materials\Materials.h" />
     <ClInclude Include="src\graphics\materials\SkyboxMaterial.h" />
@@ -215,12 +218,14 @@
     <ClInclude Include="src\graphics\renderers\Renderer.h" />
     <ClInclude Include="src\graphics\renderers\SkyboxRenderer.h" />
     <ClInclude Include="src\graphics\renderers\TerrainRenderer.h" />
+    <ClInclude Include="src\graphics\renderers\WaterRenderer.h" />
     <ClInclude Include="src\graphics\shaders\BasicShader.h" />
     <ClInclude Include="src\graphics\shaders\GuiShader.h" />
     <ClInclude Include="src\graphics\shaders\LightingShader.h" />
     <ClInclude Include="src\graphics\shaders\Shader.h" />
     <ClInclude Include="src\graphics\shaders\SkyboxShader.h" />
     <ClInclude Include="src\graphics\shaders\TerrainShader.h" />
+    <ClInclude Include="src\graphics\shaders\WaterShader.h" />
     <ClInclude Include="src\graphics\textures\GuiTexture.h" />
     <ClInclude Include="src\graphics\Window.h" />
     <ClInclude Include="src\logger\Logger.h" />
@@ -242,6 +247,7 @@
     <None Include="src\resources\shaders\Lighting.shader" />
     <None Include="src\resources\shaders\Skybox.shader" />
     <None Include="src\resources\shaders\Terrain.shader" />
+    <None Include="src\resources\shaders\Water.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\textures\Default.jpg" />

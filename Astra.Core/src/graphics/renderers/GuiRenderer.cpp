@@ -1,5 +1,6 @@
 #include "GuiRenderer.h"
 #include "../../math/Mat4Utils.h"
+#include "../loaders/Loader.h"
 
 namespace Astra::Graphics
 {

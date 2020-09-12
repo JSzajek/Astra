@@ -21,3 +21,4 @@
 #include "src/graphics/entities/Terrain.h"
 #include "src/graphics/entities/Camera.h"
 #include "src/graphics/entities/Light.h"
+#include "src/graphics/entities/WaterTile.h"

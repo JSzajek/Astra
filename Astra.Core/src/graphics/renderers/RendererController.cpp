@@ -20,6 +20,9 @@ namespace Astra::Graphics
 		m_skyboxShader = new SkyboxShader();
 		m_skyboxRenderer = new SkyboxRenderer(m_skyboxShader, &fogColor);
 
+		m_waterShader = new WaterShader();
+		m_waterRenderer = new WaterRenderer(m_waterShader);
+
 		modelViewMatrix = Math::Mat4::Identity();
 	}
 
@@ -42,15 +45,32 @@ namespace Astra::Graphics
 		m_entityRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_terrainRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_skyboxRenderer->UpdateProjectionMatrix(projectionMatrix);
+		m_waterRenderer->UpdateProjectionMatrix(projectionMatrix);
 	}
 
 	void RendererController::Render()
+	{
+		PreRender();
+		PostRender();
+		GuiRender();
+	}
+
+	void RendererController::PreRender()
 	{
 		UpdateCameraView();
 
 		m_terrainRenderer->Draw(viewMatrix);
 		m_entityRenderer->Draw(viewMatrix);
 		m_skyboxRenderer->Draw(viewMatrix);
+	}
+
+	void RendererController::PostRender()
+	{
+		m_waterRenderer->Draw(viewMatrix);
+	}
+
+	void RendererController::GuiRender()
+	{
 		m_guiRenderer->Draw(NULL);
 	}
 

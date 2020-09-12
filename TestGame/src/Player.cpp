@@ -2,13 +2,13 @@
 
 #include <iostream>
 
-Player::Player(Window* window, Terrain* terrain)
+Player::Player(const Vec3& position, Window* window, Terrain* terrain)
 	: m_camera(new Camera(20, 25, 0)), _window(window), m_movement(Vec3(0)),
            m_rotating(false), m_oldPosition(Vec2(0,0)), m_terrain(terrain)
 {
     ImageMaterial* grassMat = new ImageMaterial("res/textures/fernTexture.png", 1, 1, 0, true, true);
 	const VertexArray* bodyModel = ObjLoader::LoadObjectModel("res/fern.obj");
-	m_body = new Entity(bodyModel, grassMat, Vec3(0), Vec3(0), Vec3(2));
+	m_body = new Entity(bodyModel, grassMat, position, Vec3(0), Vec3(2));
 }
 
 void Player::Update()
