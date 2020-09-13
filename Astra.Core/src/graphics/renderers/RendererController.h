@@ -18,6 +18,8 @@
 #include "../entities/Camera.h"
 #include "../../math/Mat4Utils.h"
 
+#include "../buffers/WaterFrameBuffer.h"
+
 #include "../../logger/Logger.h"
 
 namespace Astra::Graphics
@@ -29,6 +31,10 @@ namespace Astra::Graphics
 		const float NearPlane = 0.1f;
 		const float FarPlane = 500.0f;
 	private:
+
+		WaterFrameBuffer m_waterBuffer;
+		GuiTexture* m_tempTexture;
+
 		GuiShader* m_guiShader;
 		GuiRenderer* m_guiRenderer;
 		BasicShader* m_basicShader;

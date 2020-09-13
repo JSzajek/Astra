@@ -3,10 +3,9 @@
 namespace Astra::Graphics
 {
 	RendererController::RendererController(const Math::Vec3& fogColor)
-		: fogColor(fogColor)
+		: fogColor(fogColor), m_waterBuffer(Loader::LoadWaterFrameBuffer(320, 180, 1280, 720))
 	{
 		Init();
-
 		m_guiShader = new GuiShader();
 		m_guiRenderer = new GuiRenderer(m_guiShader);
 
@@ -24,6 +23,9 @@ namespace Astra::Graphics
 		m_waterRenderer = new WaterRenderer(m_waterShader);
 
 		modelViewMatrix = Math::Mat4::Identity();
+		
+		m_tempTexture = new GuiTexture(m_waterBuffer.m_reflectionBuffer.ColorAttachment(), Math::Vec2(-0.7f, 0.7f), Math::Vec2(0.2, 0.2));
+		AddGui(m_tempTexture);
 	}
 
 	void RendererController::Init() const
@@ -50,6 +52,11 @@ namespace Astra::Graphics
 
 	void RendererController::Render()
 	{
+		UpdateCameraView();
+		m_waterRenderer->BindFrameBuffer(m_waterBuffer.m_reflectionBuffer.Id(), 320, 180);
+		PreRender();
+		m_waterRenderer->UnbindFrameBuffer();
+		
 		PreRender();
 		PostRender();
 		GuiRender();
@@ -57,7 +64,7 @@ namespace Astra::Graphics
 
 	void RendererController::PreRender()
 	{
-		UpdateCameraView();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		m_terrainRenderer->Draw(viewMatrix);
 		m_entityRenderer->Draw(viewMatrix);

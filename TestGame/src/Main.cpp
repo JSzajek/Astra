@@ -98,8 +98,8 @@ int main()
     std::vector<const Entity*> entities;
     for (int i = 0; i < 20; i++)
     {
-        float x = (rand() % 400) - 200;
-        float z = (rand() % 400) - 200;
+        float x = (rand() % 256) - 128;
+        float z = (rand() % 256) - 128;
         float y = terrain.GetHeightOfTerrain(x, z);
         Entity *entity = new Entity(fernVertArray, fernMat, rand() % 4, Vec3(x, y, z), Vec3(0), Vec3(1));
         entities.emplace_back(entity);

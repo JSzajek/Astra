@@ -4,6 +4,8 @@
 namespace Astra::Graphics
 {
 	double Window::delta;
+	int Window::width;
+	int Window::height;
 	
 	Window::Window(const char* title, int width, int height)
 		: m_title(title), m_width(width), m_height(height), m_mousePosition(Math::Vec2()),
@@ -13,7 +15,10 @@ namespace Astra::Graphics
 		{
 			glfwTerminate();
 		}
-		
+	
+		this->width = m_width;
+		this->height = m_height;
+
 		for (int i = 0; i < MAX_KEYS; i++)
 		{
 			m_keys[i] = false;
@@ -62,8 +67,8 @@ namespace Astra::Graphics
 		glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height)
 		{
 			Window* win = (Window*)glfwGetWindowUserPointer(window);
-			win->m_width = width;
-			win->m_height = height;
+			win->width = win->m_width = width;
+			win->height = win->m_height = height;
 			if (win->m_windowResizeCallback != NULL)
 			{
 				win->m_windowResizeCallback(width, height);

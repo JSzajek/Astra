@@ -168,6 +168,7 @@
   <ItemGroup>
     <ClCompile Include="src\graphics\buffers\Texture.cpp" />
     <ClCompile Include="src\graphics\buffers\VertexArray.cpp" />
+    <ClCompile Include="src\graphics\buffers\WaterFrameBuffer.cpp" />
     <ClCompile Include="src\graphics\entities\Camera.cpp" />
     <ClCompile Include="src\graphics\entities\Entity.cpp" />
     <ClCompile Include="src\graphics\entities\Light.cpp" />
@@ -198,6 +199,8 @@
   <ItemGroup>
     <ClInclude Include="Astra.h" />
     <ClInclude Include="src\graphics\buffers\CubeMapTexture.h" />
+    <ClInclude Include="src\graphics\buffers\FrameBuffer.h" />
+    <ClInclude Include="src\graphics\buffers\WaterFrameBuffer.h" />
     <ClInclude Include="src\graphics\entities\WaterTile.h" />
     <ClInclude Include="src\graphics\materials\ImageMaterial.h" />
     <ClInclude Include="src\graphics\materials\Materials.h" />

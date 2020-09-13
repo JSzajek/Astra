@@ -6,7 +6,7 @@
 #define		MAX_DISTANCE	 120
 #define		MIN_DISTANCE	 5
 #define		MAX_PITCH		 90
-#define		MIN_PITCH		 0
+#define		MIN_PITCH		 -90
 
 #define		GRAVITY			-50
 #define		TERRAIN_HEIGHT	 0

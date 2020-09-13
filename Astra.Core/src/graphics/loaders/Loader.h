@@ -8,6 +8,8 @@
 #include "../buffers/VertexArray.h"
 #include "../buffers/Texture.h"
 #include "../buffers/CubeMapTexture.h"
+#include "../buffers/FrameBuffer.h"
+#include "../buffers/WaterFrameBuffer.h"
 
 namespace Astra::Graphics
 {
@@ -50,6 +52,12 @@ namespace Astra::Graphics
 			return Get().LoadCubeMapImpl(filepaths);
 		}
 
+		static const WaterFrameBuffer& LoadWaterFrameBuffer(unsigned int reflectionWidth, unsigned int reflectionHeight,
+															unsigned int refractionWidth, unsigned int refractionHeight)
+		{
+			return Get().LoadWaterFrameBufferImpl(reflectionWidth, reflectionHeight, refractionWidth, refractionHeight);
+		}
+
 	private:
 		Loader();
 		~Loader();
@@ -64,14 +72,21 @@ namespace Astra::Graphics
 		
 		const CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);
 
-		GLuint BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage, GLboolean normalized = GL_FALSE);
+		const WaterFrameBuffer& LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
+															unsigned int refractionWidth, unsigned int refractionHeight);
+		
+		const FrameBuffer& CreateFrameBuffer();
+		void CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height);
+		void CreateDepthTextureAttachment(GLuint& id, unsigned int width, unsigned int height);
+		void CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height);
 
+		GLuint BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage, GLboolean normalized = GL_FALSE);
 		GLuint BindIndicesBuffer(const std::vector<int>& data, GLenum usage);
 
-		inline void UnbindVertexArray() { glBindVertexArray(0); }
-
 		const GLuint& GenerateVaoId();
-
 		const GLuint& GenerateVboId();
+		
+		void UnbindFrameBuffer();
+		inline void UnbindVertexArray() { glBindVertexArray(0); }
 	};
 }
