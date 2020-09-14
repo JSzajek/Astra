@@ -138,6 +138,7 @@ namespace Astra::Graphics
 	const WaterFrameBuffer& Loader::LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
 															  unsigned int refractionWidth, unsigned int refractionHeight)
 	{
+		static unsigned int hashId = 1;
 		FrameBuffer reflection = CreateFrameBuffer();
 		CreateTextureAttachment(reflection.ColorAttachment(), reflectionWidth, reflectionHeight);
 		CreateDepthBufferAttachment(reflection.DepthAttachment(), reflectionWidth, reflectionHeight);
@@ -157,6 +158,7 @@ namespace Astra::Graphics
 		UnbindFrameBuffer();
 
 		WaterFrameBuffer waterFrameBuffer(reflection, refraction);
+		waterFrameBuffer.id = hashId++;
 		return waterFrameBuffer;
 	}
 

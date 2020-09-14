@@ -15,6 +15,6 @@ namespace Astra::Graphics
 		GuiRenderer(GuiShader* shader);
 		~GuiRenderer();
 		inline void AddGui(const GuiTexture* gui) { m_guis.emplace_back(gui); }
-		void Draw(const Math::Mat4& viewMatrix) override;
+		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 	};
 }

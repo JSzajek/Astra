@@ -1,9 +1,11 @@
 #include "RendererController.h"
 
+#include <functional>
+
 namespace Astra::Graphics
 {
 	RendererController::RendererController(const Math::Vec3& fogColor)
-		: fogColor(fogColor), m_waterBuffer(Loader::LoadWaterFrameBuffer(320, 180, 1280, 720))
+		: fogColor(fogColor)
 	{
 		Init();
 		m_guiShader = new GuiShader();
@@ -20,12 +22,17 @@ namespace Astra::Graphics
 		m_skyboxRenderer = new SkyboxRenderer(m_skyboxShader, &fogColor);
 
 		m_waterShader = new WaterShader();
-		m_waterRenderer = new WaterRenderer(m_waterShader);
+		m_waterRenderer = new WaterRenderer(m_waterShader, m_mainCamera, [&](const Math::Vec4& clipPlane)
+		{
+			UpdateCameraView();
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			m_terrainRenderer->Draw(viewMatrix, clipPlane);
+			m_entityRenderer->Draw(viewMatrix, clipPlane);
+			m_skyboxRenderer->Draw(viewMatrix);
+		});
 
 		modelViewMatrix = Math::Mat4::Identity();
-		
-		m_tempTexture = new GuiTexture(m_waterBuffer.m_reflectionBuffer.ColorAttachment(), Math::Vec2(-0.7f, 0.7f), Math::Vec2(0.2, 0.2));
-		AddGui(m_tempTexture);
 	}
 
 	void RendererController::Init() const
@@ -33,6 +40,8 @@ namespace Astra::Graphics
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
 		glClearColor(fogColor.x, fogColor.y, fogColor.z, 1);
+
+		glEnable(GL_CLIP_DISTANCE0);
 	}
 
 	RendererController::~RendererController()
@@ -53,16 +62,14 @@ namespace Astra::Graphics
 	void RendererController::Render()
 	{
 		UpdateCameraView();
-		m_waterRenderer->BindFrameBuffer(m_waterBuffer.m_reflectionBuffer.Id(), 320, 180);
-		PreRender();
-		m_waterRenderer->UnbindFrameBuffer();
 		
 		PreRender();
+
 		PostRender();
 		GuiRender();
 	}
 
-	void RendererController::PreRender()
+	void RendererController::PostRender(const Math::Vec4& clipPlane)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -71,7 +78,7 @@ namespace Astra::Graphics
 		m_skyboxRenderer->Draw(viewMatrix);
 	}
 
-	void RendererController::PostRender()
+	void RendererController::PreRender()
 	{
 		m_waterRenderer->Draw(viewMatrix);
 	}

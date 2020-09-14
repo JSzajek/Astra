@@ -35,17 +35,24 @@ int main()
     terrain.Translation().x -= 128;
     terrain.Translation().z -= 128;
 
+    WaterFrameBuffer waterframe = Loader::LoadWaterFrameBuffer(320, 180, 1280, 720);
+
     WaterTile tile1 = WaterTile(0, 0, 45, 100);
-    renderer.AddWaterTile(tile1);
+    renderer.AddWaterTile(waterframe, tile1);
+
+    GuiTexture gui1 = GuiTexture(waterframe.GetReflectionBuffer().GetColorAttachment(), Vec2(-0.75, 0.75), Vec2(0.1, 0.1));
+    GuiTexture gui2 = GuiTexture(waterframe.GetRefractionBuffer().GetColorAttachment(), Vec2(0.75, 0.75), Vec2(0.1, 0.1));
+    renderer.AddGui(&gui1);
+    renderer.AddGui(&gui2);
 
     Player player(Vec3(-100,50,100),&window, &terrain);
     renderer.SetMainCamera(player.GetCamera());
     renderer.AddEntity(player.GetRendering());
     worldItems.emplace_back(&player);
 
-    Texture texture = Loader::LoadTexture("res/textures/grassTexture.png");
-    GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
-    renderer.AddGui(&gui);
+    //Texture texture = Loader::LoadTexture("res/textures/grassTexture.png");
+    //GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
+    //renderer.AddGui(&gui);
 
     std::vector<const char*> m_textureFiles =
     {

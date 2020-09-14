@@ -20,6 +20,8 @@ namespace Astra::Graphics
 
 		static constexpr const char* NumberOfRowsTag = "numberOfRows";
 		static constexpr const char* OffsetTag = "offset";
+
+		static constexpr const char* ClipPaneTag = "clipPlane";
 	public:
 		LightingShader(const char* filepath =
 			"C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/shaders/Lighting.shader")

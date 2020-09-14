@@ -10,11 +10,12 @@ namespace Astra::Graphics
 	{
 	}
 
-	void Entity3dRenderer::Draw(const Math::Mat4& viewMatrix)
+	void Entity3dRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
 		if (m_shader->GetType() == ShaderType::Lighting)
 		{
+			m_shader->SetUniform4f(LightingShader::ClipPaneTag, clipPlane);
 			m_shader->SetUniform3f(LightingShader::SkyColorTag, *m_skyColor);
 		}
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);

@@ -14,6 +14,8 @@ namespace Astra::Graphics
 		Camera();
 		void UpdatePosition();
 
+		inline void InvertPitch() { m_pitch = -m_pitch; }
+
 		inline const float& GetPitch() const { return m_pitch; }
 		inline const float& GetYaw() const { return m_yaw; }
 		inline const Math::Vec3& GetPosition() const { return rows[0]; }

@@ -15,11 +15,12 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
-	void TerrainRenderer::Draw(const Math::Mat4& viewMatrix)
+	void TerrainRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
 		if (m_shader->GetType() == ShaderType::Terrains)
 		{
+			m_shader->SetUniform4f(TerrainShader::ClipPaneTag, clipPlane);
 			m_shader->SetUniform3f(TerrainShader::SkyColorTag, *m_skyColor);
 		}
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);

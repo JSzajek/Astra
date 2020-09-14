@@ -31,10 +31,6 @@ namespace Astra::Graphics
 		const float NearPlane = 0.1f;
 		const float FarPlane = 500.0f;
 	private:
-
-		WaterFrameBuffer m_waterBuffer;
-		GuiTexture* m_tempTexture;
-
 		GuiShader* m_guiShader;
 		GuiRenderer* m_guiRenderer;
 		BasicShader* m_basicShader;
@@ -62,7 +58,7 @@ namespace Astra::Graphics
 		void UpdateCameraView();
 		void Render();
 		void PreRender();
-		void PostRender();
+		void PostRender(const Math::Vec4& clipPlane = Renderer::DefaultClipPlane);
 		void GuiRender();
 
 		inline void AddGui(const GuiTexture* gui) { m_guiRenderer->AddGui(gui); }
@@ -73,9 +69,13 @@ namespace Astra::Graphics
 			m_entityRenderer->AddLight(light);
 			m_terrainRenderer->AddLight(light);
 		}
-		inline void AddWaterTile(const WaterTile& tile) { m_waterRenderer->AddTile(tile); }
+		inline void AddWaterTile(const WaterFrameBuffer& buffer, const WaterTile& tile) { m_waterRenderer->AddTile(buffer, tile); }
 
-		inline void SetMainCamera(Camera* camera) { m_mainCamera = camera; }
+		inline void SetMainCamera(Camera* camera) 
+		{ 
+			m_mainCamera = camera;
+			m_waterRenderer->SetCamera(camera);
+		}
 		inline void SetSkyBox(const SkyboxMaterial* material) { m_skyboxRenderer->SetSkyBox(material); }
 	};
 }

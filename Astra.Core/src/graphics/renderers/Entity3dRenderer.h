@@ -22,7 +22,7 @@ namespace Astra::Graphics
 	public:
 		Entity3dRenderer(Shader* shader, const Math::Vec3* fogColor);
 		
-		void Draw(const Math::Mat4& viewMatrix) override;
+		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 		void AddEntity(const Entity* entity);
 		void AddLight(Light* light);
 		void UpdateLights();

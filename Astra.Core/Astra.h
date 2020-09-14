@@ -14,6 +14,7 @@
 
 #include "src/graphics/buffers/VertexArray.h"
 #include "src/graphics/buffers/Texture.h"
+#include "src/graphics/buffers/WaterFrameBuffer.h"
 
 #include "src/graphics/renderers/RendererController.h"
 

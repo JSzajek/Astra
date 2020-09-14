@@ -9,6 +9,7 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 transformMatrix;
 uniform vec3 lightPosition[4];
+uniform vec4 clipPlane;
 
 out vec2 v_TexCoordinates;
 
@@ -24,9 +25,11 @@ const float gradient = 5.0;
 void main()
 {
 	vec4 worldPosition = transformMatrix * vec4(position, 1);
+
+	gl_ClipDistance[0] = dot(worldPosition, clipPlane);
+
 	vec4 positionRelativeToCam = viewMatrix * worldPosition;
 	gl_Position = projectionMatrix * positionRelativeToCam;
-	
 	v_TexCoordinates = textureCoords;
 
 	surfaceNormal = (transformMatrix * vec4(normal, 0)).xyz;

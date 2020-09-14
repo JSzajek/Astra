@@ -8,6 +8,8 @@ namespace Astra::Graphics
 {
 	class Renderer
 	{
+	public:
+		static const Math::Vec4 DefaultClipPlane;
 	protected:
 		Shader* m_shader;
 	public:
@@ -22,6 +24,6 @@ namespace Astra::Graphics
 		void UpdateDynamicVbo();
 		void UpdateTexture();
 		
-		virtual void Draw(const Math::Mat4& viewMatrix) = 0;
+		virtual void Draw(const Math::Mat4& viewMatrix = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) = 0;
 	};
 }

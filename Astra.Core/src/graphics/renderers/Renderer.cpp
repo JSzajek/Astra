@@ -5,6 +5,8 @@
 
 namespace Astra::Graphics
 {
+	const Math::Vec4 Renderer::DefaultClipPlane = Math::Vec4(0, -1, 0, 10000);
+
 	Renderer::Renderer(Shader* shader)
 		: m_shader(shader)
 	{

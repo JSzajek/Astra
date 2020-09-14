@@ -14,6 +14,7 @@ uniform float useFakeLighting;
 
 uniform float numberOfRows;
 uniform vec2 offset;
+uniform vec4 clipPlane;
 
 out vec2 v_TexCoordinates;
 
@@ -29,12 +30,15 @@ const float gradient = 5.0;
 void main()
 {
 	vec4 worldPosition = transformMatrix * vec4(position, 1);
+
+	gl_ClipDistance[0] = dot(worldPosition, clipPlane);
+
 	vec4 positionRelativeToCam = viewMatrix * worldPosition;
 	gl_Position = projectionMatrix * positionRelativeToCam;
-	
 	v_TexCoordinates = (textureCoords / numberOfRows) + offset;
-
+	
 	surfaceNormal = (transformMatrix * vec4(useFakeLighting > 0.5 ? vec3(0, 1, 0) : normal, 0)).xyz;
+	
 	for (int i = 0; i < 4; i++)
 	{
 		toLightVector[i] = lightPosition[i] - worldPosition.xyz;
