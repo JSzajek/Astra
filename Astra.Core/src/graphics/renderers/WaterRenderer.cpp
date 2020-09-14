@@ -4,12 +4,15 @@
 
 namespace Astra::Graphics
 {
-	WaterRenderer::WaterRenderer(Shader* shader, Camera* camera, std::function<void(const Math::Vec4&)> renderCallback)
-		: Renderer(shader), m_renderCallback(renderCallback), m_camera(camera),
-			m_reflectionClipPlane(Math::Vec4(0, 1, 0, 0)),
-			m_refractionClipPlane(Math::Vec4(0, -1, 0, 0))
+	WaterRenderer::WaterRenderer(Shader* shader, Camera* camera)
+		: Renderer(shader), m_camera(camera), m_buffer(NULL)
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLES, { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 }, 2);
+
+		m_shader->Start();
+		m_shader->SetUniform1i(WaterShader::ReflectionTextureTag, 0);
+		m_shader->SetUniform1i(WaterShader::RefractionTextureTag, 1);
+		m_shader->Stop();
 	}
 
 	void WaterRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
@@ -19,57 +22,21 @@ namespace Astra::Graphics
 
 		glBindVertexArray(m_defaultQuad->vaoId);
 		glEnableVertexAttribArray(0);
-
-		for (const auto& directory : m_waterTiles)
+		if (m_buffer)
 		{
-			const WaterFrameBuffer& buffer = directory.first;
-			std::vector<WaterTile> tiles = directory.second;
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, m_buffer->GetReflectionBuffer().GetColorAttachment());
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, m_buffer->GetRefractionBuffer().GetColorAttachment());
+		}
 
-			if (tiles.size() == 0) { continue; }
-
-			m_shader->Stop();
-
-			float distance = 2 * (m_camera->GetTranslation().y - tiles[0].GetTranslation().y);
-			m_reflectionClipPlane.w = -tiles[0].GetTranslation().y;
-			m_refractionClipPlane.w = tiles[0].GetTranslation().y;
-			
-			BindFrameBuffer(buffer.GetReflectionBuffer().GetId(), 320, 180);
-			m_camera->Translation().y -= distance;
-			m_camera->InvertPitch();
-			m_renderCallback(m_reflectionClipPlane);
-			UnbindFrameBuffer();
-
-
-			BindFrameBuffer(buffer.GetRefractionBuffer().GetId(), 1280, 720);
-			m_camera->Translation().y += distance;
-			m_camera->InvertPitch();
-			m_renderCallback(m_refractionClipPlane);
-			UnbindFrameBuffer();
-
-			m_shader->Start();
-
-			for (const WaterTile& tile: tiles)
-			{
-				m_shader->SetUniformMat4(Shader::TransformMatrixTag, Math::Mat4Utils::Transformation(tile));
-				glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
-			}
+		for (const WaterTile& tile: m_waterTiles)
+		{
+			m_shader->SetUniformMat4(Shader::TransformMatrixTag, Math::Mat4Utils::Transformation(tile));
+			glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
 		}
 
 		UnbindVertexArray();
 		m_shader->Stop();
-	}
-
-	void WaterRenderer::AddTile(const WaterFrameBuffer& buffer, const WaterTile& tile)
-	{
-		auto temp = m_waterTiles.find(buffer);
-		if (temp != m_waterTiles.end())
-		{
-			temp->second.emplace_back(tile);
-		}
-		else
-		{
-			m_waterTiles[buffer] = std::vector<WaterTile>();
-			m_waterTiles[buffer].emplace_back(tile);
-		}
 	}
 }

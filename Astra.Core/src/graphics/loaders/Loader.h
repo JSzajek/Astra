@@ -52,8 +52,8 @@ namespace Astra::Graphics
 			return Get().LoadCubeMapImpl(filepaths);
 		}
 
-		static const WaterFrameBuffer& LoadWaterFrameBuffer(unsigned int reflectionWidth, unsigned int reflectionHeight,
-															unsigned int refractionWidth, unsigned int refractionHeight)
+		static WaterFrameBuffer* LoadWaterFrameBuffer(unsigned int reflectionWidth, unsigned int reflectionHeight,
+													  unsigned int refractionWidth, unsigned int refractionHeight)
 		{
 			return Get().LoadWaterFrameBufferImpl(reflectionWidth, reflectionHeight, refractionWidth, refractionHeight);
 		}
@@ -72,7 +72,7 @@ namespace Astra::Graphics
 		
 		const CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);
 
-		const WaterFrameBuffer& LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
+		WaterFrameBuffer* LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
 															unsigned int refractionWidth, unsigned int refractionHeight);
 		
 		const FrameBuffer& CreateFrameBuffer();

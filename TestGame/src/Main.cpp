@@ -35,15 +35,8 @@ int main()
     terrain.Translation().x -= 128;
     terrain.Translation().z -= 128;
 
-    WaterFrameBuffer waterframe = Loader::LoadWaterFrameBuffer(320, 180, 1280, 720);
-
     WaterTile tile1 = WaterTile(0, 0, 45, 100);
-    renderer.AddWaterTile(waterframe, tile1);
-
-    GuiTexture gui1 = GuiTexture(waterframe.GetReflectionBuffer().GetColorAttachment(), Vec2(-0.75, 0.75), Vec2(0.1, 0.1));
-    GuiTexture gui2 = GuiTexture(waterframe.GetRefractionBuffer().GetColorAttachment(), Vec2(0.75, 0.75), Vec2(0.1, 0.1));
-    renderer.AddGui(&gui1);
-    renderer.AddGui(&gui2);
+    renderer.AddWaterTile(tile1);
 
     Player player(Vec3(-100,50,100),&window, &terrain);
     renderer.SetMainCamera(player.GetCamera());
@@ -87,12 +80,6 @@ int main()
     renderer.AddLight(light3);
     renderer.AddLight(light4);
 
-    ImageMaterial* mat1 = new ImageMaterial();
-    
-    const VertexArray* vertArray2 = ObjLoader::LoadObjectModel("res/pylon.obj");
-    Entity entity = Entity(vertArray2, Vec3(0, 1, 0), Vec3(0), Vec3(0.5f));
-    renderer.AddEntity(&entity);
-
     ImageMaterial* grassMat = new ImageMaterial("res/textures/grassTexture.png", 1, 1, 0, true, true);
     ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 1, 0, true, true);
 
@@ -122,7 +109,6 @@ int main()
 
     while (!window.Closed())
     {
-        entity.Rotation().y += 0.0001f;
         window.Clear();
         
         for (Synchronous* item : worldItems)

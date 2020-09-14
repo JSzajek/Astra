@@ -50,6 +50,7 @@ namespace Astra::Graphics
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, Window::width, Window::height);
+		glFinish();
 	}
 
 	void Renderer::UpdateDynamicVbo()

@@ -5,7 +5,8 @@
 namespace Astra::Graphics
 {
 	RendererController::RendererController(const Math::Vec3& fogColor)
-		: fogColor(fogColor)
+		: fogColor(fogColor), m_reflectionClipPlane(Math::Vec4(0, 1, 0, 0)),
+			m_refractionClipPlane(Math::Vec4(0, -1, 0, 0))
 	{
 		Init();
 		m_guiShader = new GuiShader();
@@ -22,15 +23,16 @@ namespace Astra::Graphics
 		m_skyboxRenderer = new SkyboxRenderer(m_skyboxShader, &fogColor);
 
 		m_waterShader = new WaterShader();
-		m_waterRenderer = new WaterRenderer(m_waterShader, m_mainCamera, [&](const Math::Vec4& clipPlane)
-		{
-			UpdateCameraView();
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		m_waterRenderer = new WaterRenderer(m_waterShader, m_mainCamera);
 
-			m_terrainRenderer->Draw(viewMatrix, clipPlane);
-			m_entityRenderer->Draw(viewMatrix, clipPlane);
-			m_skyboxRenderer->Draw(viewMatrix);
-		});
+		m_waterBuffer = Loader::LoadWaterFrameBuffer(DefaultReflectionWidth, DefaultReflectionHeight,
+													 DefaultRefractionWidth, DefaultRefractionHeight);
+		m_waterRenderer->SetFrameBuffer(m_waterBuffer);
+
+		GuiTexture* gui1 = new GuiTexture(m_waterBuffer->GetReflectionBuffer().GetColorAttachment(), Math::Vec2(-0.75, 0.75), Math::Vec2(0.1, 0.1));
+		GuiTexture* gui2 = new GuiTexture(m_waterBuffer->GetRefractionBuffer().GetColorAttachment(), Math::Vec2(0.75, 0.75), Math::Vec2(0.1, 0.1));
+		AddGui(gui1);
+		AddGui(gui2);
 
 		modelViewMatrix = Math::Mat4::Identity();
 	}
@@ -61,24 +63,41 @@ namespace Astra::Graphics
 
 	void RendererController::Render()
 	{
-		UpdateCameraView();
-		
-		PreRender();
+		if (m_waterBuffer && m_mainCamera)
+		{
+			float distance = 2 * (m_mainCamera->GetTranslation().y - m_refractionClipPlane.w);
 
+			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetReflectionBuffer().GetId(), 320, 180);
+			m_mainCamera->Translation().y -= distance;
+			m_mainCamera->InvertPitch();
+			viewMatrix = Math::Mat4Utils::ViewMatrix(*m_mainCamera);
+			PreRender(m_reflectionClipPlane);
+			m_waterRenderer->UnbindFrameBuffer();
+
+			m_mainCamera->Translation().y += distance;
+			m_mainCamera->InvertPitch();
+			viewMatrix = Math::Mat4Utils::ViewMatrix(*m_mainCamera);
+			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetRefractionBuffer().GetId(), 1280, 720);
+			PreRender(m_refractionClipPlane);
+			m_waterRenderer->UnbindFrameBuffer();
+		}
+
+		UpdateCameraView();
+		PreRender();
 		PostRender();
 		GuiRender();
 	}
 
-	void RendererController::PostRender(const Math::Vec4& clipPlane)
+	void RendererController::PreRender(const Math::Vec4& clipPlane)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		m_terrainRenderer->Draw(viewMatrix);
-		m_entityRenderer->Draw(viewMatrix);
+		m_terrainRenderer->Draw(viewMatrix, clipPlane);
+		m_entityRenderer->Draw(viewMatrix, clipPlane);
 		m_skyboxRenderer->Draw(viewMatrix);
 	}
 
-	void RendererController::PreRender()
+	void RendererController::PostRender()
 	{
 		m_waterRenderer->Draw(viewMatrix);
 	}

@@ -27,6 +27,12 @@ namespace Astra::Graphics
 	class RendererController
 	{
 	private:
+		static const constexpr float DefaultReflectionWidth = 320;
+		static const constexpr float DefaultReflectionHeight = 180;
+
+		static const constexpr float DefaultRefractionWidth = 1280;
+		static const constexpr float DefaultRefractionHeight = 720;
+	private:
 		const unsigned int FieldOfView = 70;
 		const float NearPlane = 0.1f;
 		const float FarPlane = 500.0f;
@@ -42,7 +48,12 @@ namespace Astra::Graphics
 		TerrainRenderer* m_terrainRenderer;
 		SkyboxRenderer* m_skyboxRenderer;
 		WaterRenderer* m_waterRenderer;
+		
 		Camera* m_mainCamera;
+
+		WaterFrameBuffer* m_waterBuffer;
+		Math::Vec4 m_reflectionClipPlane;
+		Math::Vec4 m_refractionClipPlane;
 
 		Math::Vec3 fogColor;
 
@@ -57,8 +68,8 @@ namespace Astra::Graphics
 		void UpdateScreen(float width, float height);
 		void UpdateCameraView();
 		void Render();
-		void PreRender();
-		void PostRender(const Math::Vec4& clipPlane = Renderer::DefaultClipPlane);
+		void PreRender(const Math::Vec4& clipPlane = Renderer::DefaultClipPlane);
+		void PostRender();
 		void GuiRender();
 
 		inline void AddGui(const GuiTexture* gui) { m_guiRenderer->AddGui(gui); }
@@ -69,7 +80,12 @@ namespace Astra::Graphics
 			m_entityRenderer->AddLight(light);
 			m_terrainRenderer->AddLight(light);
 		}
-		inline void AddWaterTile(const WaterFrameBuffer& buffer, const WaterTile& tile) { m_waterRenderer->AddTile(buffer, tile); }
+		inline void AddWaterTile(const WaterTile& tile) 
+		{
+			m_reflectionClipPlane.w = -tile.GetTranslation().y;
+			m_refractionClipPlane.w = tile.GetTranslation().y;
+			m_waterRenderer->AddTile(tile); 
+		}
 
 		inline void SetMainCamera(Camera* camera) 
 		{ 

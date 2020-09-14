@@ -3,28 +3,34 @@
 
 layout(location = 0) in vec2 position;
 
+out vec4 clipSpace;
+
 uniform mat4 projectionMatrix = mat4(1.0);
 uniform mat4 viewMatrix = mat4(1.0);
 uniform mat4 transformMatrix = mat4(1.0);
 
-out vec2 v_TexCoordinates;
-
 void main()
 {
-	gl_Position = projectionMatrix * viewMatrix * transformMatrix * vec4(position.x, 0, position.y, 1.0);
-	v_TexCoordinates = vec2(position.x / 2.0 + 0.5, position.y / 2.0 + 0.5);
+	clipSpace = projectionMatrix * viewMatrix * transformMatrix * vec4(position.x, 0, position.y, 1.0);
+	gl_Position = clipSpace;
 }
 
 #shader fragment
 #version 460
 
-in vec2 v_TexCoordinates;
-
 out vec4 out_Color;
 
-uniform sampler2D u_Texture;
+in vec4 clipSpace;
+
+uniform sampler2D reflectionTexture;
+uniform sampler2D refractionTexture;
 
 void main()
 {
-	out_Color = vec4(0,0,1,1);
+	vec2 normDeviceSpace = (clipSpace.xy / clipSpace.w) / 2.0 + 0.5;
+	
+	vec4 refractColor = texture(refractionTexture, normDeviceSpace);
+	vec4 reflectColor = texture(reflectionTexture, vec2(normDeviceSpace.x, -normDeviceSpace.y));
+
+	out_Color = mix(reflectColor, refractColor, 0.5);
 }
