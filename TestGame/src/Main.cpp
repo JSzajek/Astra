@@ -43,9 +43,9 @@ int main()
     renderer.AddEntity(player.GetRendering());
     worldItems.emplace_back(&player);
 
-    //Texture texture = Loader::LoadTexture("res/textures/grassTexture.png");
-    //GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
-    //renderer.AddGui(&gui);
+    Texture texture = Loader::LoadTexture("res/textures/grassTexture.png");
+    GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
+    renderer.AddGui(&gui);
 
     std::vector<const char*> m_textureFiles =
     {

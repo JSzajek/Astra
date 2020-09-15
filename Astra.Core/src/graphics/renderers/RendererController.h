@@ -32,10 +32,10 @@ namespace Astra::Graphics
 
 		static const constexpr float DefaultRefractionWidth = 1280;
 		static const constexpr float DefaultRefractionHeight = 720;
-	private:
-		const unsigned int FieldOfView = 70;
-		const float NearPlane = 0.1f;
-		const float FarPlane = 500.0f;
+
+		static const constexpr unsigned int FieldOfView = 70;
+		static const constexpr float NearPlane = 0.1f;
+		static const constexpr float FarPlane = 500.0f;
 	private:
 		GuiShader* m_guiShader;
 		GuiRenderer* m_guiRenderer;

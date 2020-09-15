@@ -23,7 +23,7 @@ namespace Astra::Graphics
 		m_skyboxRenderer = new SkyboxRenderer(m_skyboxShader, &fogColor);
 
 		m_waterShader = new WaterShader();
-		m_waterRenderer = new WaterRenderer(m_waterShader, m_mainCamera);
+		m_waterRenderer = new WaterRenderer(m_waterShader, m_mainCamera, NearPlane, FarPlane);
 
 		m_waterBuffer = Loader::LoadWaterFrameBuffer(DefaultReflectionWidth, DefaultReflectionHeight,
 													 DefaultRefractionWidth, DefaultRefractionHeight);

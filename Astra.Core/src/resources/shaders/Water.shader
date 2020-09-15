@@ -39,8 +39,8 @@ in vec2 v_TexCoordinates;
 in vec3 toCameraVector;
 in vec3 fromLightVector;
 
-uniform float nearPlane = 0.1;
-uniform float farPlane = 1000.0;
+uniform float nearPlane;
+uniform float farPlane;
 
 uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
@@ -48,22 +48,18 @@ uniform sampler2D dudvMap;
 uniform sampler2D normalMap;
 uniform sampler2D depthMap;
 
-uniform vec3 lightColor;
-
 uniform float moveFactor;
+uniform float waveStrength;
+uniform float shineDampener;
+uniform float reflectivity;
+uniform vec4 baseWaterColor;
 
-const float waveStrength = 0.02;
-const float shineDampener = 20.0;
-const float reflectivity = 0.6;
-const vec4 baseWaterColor = vec4(0, 0.3, 0.5, 1.0);
+uniform vec3 lightColor;
 
 void main()
 {
 	vec2 normDeviceSpace = (clipSpace.xy / clipSpace.w) / 2.0 + 0.5;
 	vec2 reflectTexCoords = vec2(normDeviceSpace.x, -normDeviceSpace.y);
-
-	vec4 refractColor = texture(refractionTexture, normDeviceSpace);
-	vec4 reflectColor = texture(reflectionTexture, reflectTexCoords);
 
 	// water depth = floor distance - water distance
 	float waterDepth = (2.0 * nearPlane * farPlane / (farPlane + nearPlane - (2.0 * texture(depthMap, normDeviceSpace).r - 1.0) * (farPlane - nearPlane))) 
@@ -71,7 +67,7 @@ void main()
 
 	vec2 distortedTexCoords = texture(dudvMap, vec2(v_TexCoordinates.x + moveFactor, v_TexCoordinates.y)).rg * 0.1;
 	distortedTexCoords = v_TexCoordinates + vec2(distortedTexCoords.x, distortedTexCoords.y + moveFactor);
-	vec2 totalDistortion = (texture(dudvMap, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength * clamp(waterDepth / 20, 0, 1);
+	vec2 totalDistortion = (texture(dudvMap, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength * clamp(waterDepth / 10, 0, 1);
 	
 	normDeviceSpace += totalDistortion;
 	normDeviceSpace = clamp(normDeviceSpace, 0.001, 0.999);
@@ -79,6 +75,9 @@ void main()
 	reflectTexCoords += totalDistortion;
 	reflectTexCoords.x = clamp(reflectTexCoords.x, 0.001, 0.999);
 	reflectTexCoords.y = clamp(reflectTexCoords.y, -0.999, -0.001);
+	
+	vec4 refractColor = texture(refractionTexture, normDeviceSpace);
+	vec4 reflectColor = texture(reflectionTexture, reflectTexCoords);
 	
 	vec4 normalMapColor = texture(normalMap, distortedTexCoords);
 	vec3 normal = normalize(vec3(normalMapColor.r * 2.0 - 1.0, normalMapColor.b * 3.0, normalMapColor.g * 2.0 - 1.0));

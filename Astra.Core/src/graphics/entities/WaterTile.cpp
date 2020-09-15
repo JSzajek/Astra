@@ -4,8 +4,8 @@
 
 namespace Astra::Graphics
 {
-	WaterTile::WaterTile(float xCenter, float zCenter, float height)
-		: m_size(DefaultSize)
+	WaterTile::WaterTile(float xCenter, float zCenter, float height, WaterMaterial* const material)
+		: m_size(DefaultSize), material(material)
 	{
 		rows[0].x = xCenter;
 		rows[0].y = height;
@@ -13,8 +13,8 @@ namespace Astra::Graphics
 		rows[2] = m_size;
 	}
 
-	WaterTile::WaterTile(float xCenter, float zCenter, float height, float size)
-		: m_size(size)
+	WaterTile::WaterTile(float xCenter, float zCenter, float height, float size, WaterMaterial* const material)
+		: m_size(size), material(material)
 	{
 		rows[0].x = xCenter;
 		rows[0].y = height;
@@ -23,7 +23,7 @@ namespace Astra::Graphics
 	}
 
 	WaterTile::WaterTile(const WaterTile& other)
-		: m_size(other.m_size)
+		: m_size(other.m_size), material(other.material)
 	{
 		memcpy(data, other.data, 3 * 3 * sizeof(float));
 	}

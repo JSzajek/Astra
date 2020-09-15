@@ -13,10 +13,17 @@ namespace Astra::Graphics
 		static constexpr const char* NormalMapTextureTag = "normalMap";
 		static constexpr const char* DepthMapTextureTag = "depthMap";
 
+		static constexpr const char* NearPlaneTag = "nearPlane";
+		static constexpr const char* FarPlaneTag = "farPlane";
+
 		static constexpr const char* LightPositionTag = "lightPosition";
 		static constexpr const char* LightColorTag = "lightColor";
 
 		static constexpr const char* MoveFactorTag = "moveFactor";
+		static constexpr const char* WaveStrengthTag = "waveStrength";
+		static constexpr const char* ShineDampenerTag = "shineDampener";
+		static constexpr const char* ReflectivityTag = "reflectivity";
+		static constexpr const char* BaseWaterColorTag = "baseWaterColor";
 
 		static constexpr const char* CameraPositionTag = "cameraPosition";
 	public:
