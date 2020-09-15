@@ -1,17 +1,21 @@
 #include "WaterRenderer.h"
 #include "../../math/Mat4Utils.h"
 #include "../loaders/Loader.h"
+#include "../Window.h"
 
 namespace Astra::Graphics
 {
 	WaterRenderer::WaterRenderer(Shader* shader, Camera* camera)
-		: Renderer(shader), m_camera(camera), m_buffer(NULL)
+		: Renderer(shader), m_camera(camera), m_buffer(NULL), 
+			dudvMap(Loader::LoadTexture("res/textures/waterDUDV.png")),
+			m_currentMoveFactor(0), m_waveSpeed(DefaultWaveSpeed)
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLES, { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 }, 2);
 
 		m_shader->Start();
 		m_shader->SetUniform1i(WaterShader::ReflectionTextureTag, 0);
 		m_shader->SetUniform1i(WaterShader::RefractionTextureTag, 1);
+		m_shader->SetUniform1i(WaterShader::DuDvMapTextureTag, 2);
 		m_shader->Stop();
 	}
 
@@ -19,6 +23,10 @@ namespace Astra::Graphics
 	{
 		m_shader->Start();
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
+		
+		m_currentMoveFactor += m_waveSpeed * Window::delta;
+		m_currentMoveFactor = fmod(m_currentMoveFactor, 1);
+		m_shader->SetUniform1f(WaterShader::MoveFactorTag, m_currentMoveFactor);
 
 		glBindVertexArray(m_defaultQuad->vaoId);
 		glEnableVertexAttribArray(0);
@@ -28,6 +36,8 @@ namespace Astra::Graphics
 			glBindTexture(GL_TEXTURE_2D, m_buffer->GetReflectionBuffer().GetColorAttachment());
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, m_buffer->GetRefractionBuffer().GetColorAttachment());
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, dudvMap.id);
 		}
 
 		for (const WaterTile& tile: m_waterTiles)

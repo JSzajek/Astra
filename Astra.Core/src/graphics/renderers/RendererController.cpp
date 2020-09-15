@@ -29,11 +29,6 @@ namespace Astra::Graphics
 													 DefaultRefractionWidth, DefaultRefractionHeight);
 		m_waterRenderer->SetFrameBuffer(m_waterBuffer);
 
-		GuiTexture* gui1 = new GuiTexture(m_waterBuffer->GetReflectionBuffer().GetColorAttachment(), Math::Vec2(-0.75, 0.75), Math::Vec2(0.1, 0.1));
-		GuiTexture* gui2 = new GuiTexture(m_waterBuffer->GetRefractionBuffer().GetColorAttachment(), Math::Vec2(0.75, 0.75), Math::Vec2(0.1, 0.1));
-		AddGui(gui1);
-		AddGui(gui2);
-
 		modelViewMatrix = Math::Mat4::Identity();
 	}
 
