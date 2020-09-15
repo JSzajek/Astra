@@ -13,7 +13,7 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
-	void SkyboxRenderer::Draw(const Math::Mat4& viewMatrix)
+	void SkyboxRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
 

@@ -26,6 +26,12 @@ namespace Astra::Math
 		Vec2(const float& _x, const float& _y);
 
 		/// <summary>
+		/// Initializes a new instance of the <see cref="Vec2"/> class.
+		/// </summary>
+		/// <param name="_value">The value across the Vec2</param>
+		Vec2(const float& _value);
+
+		/// <summary>
 		/// Copy constructor of the <see cref="Vec2"/> class.
 		/// </summary>
 		/// <param name="other"></param>

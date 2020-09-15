@@ -14,6 +14,8 @@ namespace Astra::Graphics
 		Camera();
 		void UpdatePosition();
 
+		inline void InvertPitch() { m_pitch = -m_pitch; }
+
 		inline const float& GetPitch() const { return m_pitch; }
 		inline const float& GetYaw() const { return m_yaw; }
 		inline const Math::Vec3& GetPosition() const { return rows[0]; }
@@ -22,8 +24,6 @@ namespace Astra::Graphics
 		inline float& Pitch() { return m_pitch; }
 		inline float& Swivel() { return m_angleAroundFocal; }
 		inline float& Distance() { return m_distance; }
-
-		inline Math::Vec3& Translation() override { return m_focalPoint.Translation(); }
 
 		inline Math::Vec3& Position() { return rows[0]; }
 		void LookAt(const Math::Vec3& lookAtPoint);

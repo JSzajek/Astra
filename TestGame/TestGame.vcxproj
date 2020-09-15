@@ -200,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\blendMap.png" />
+    <Image Include="res\textures\Crater_Heightmap.jpg" />
     <Image Include="res\textures\Default_Night_Skybox\back.png" />
     <Image Include="res\textures\Default_Night_Skybox\bottom.png" />
     <Image Include="res\textures\Default_Night_Skybox\front.png" />

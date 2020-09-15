@@ -28,6 +28,12 @@ namespace Astra::Math
 		Vec4(const float& _x, const float& _y, const float& _z, const float& _w);
 	
 		/// <summary>
+		/// Initializes a new instance of the <see cref="Vec4"/> class.
+		/// </summary>
+		/// <param name="_value">The value across the Vec4</param>
+		Vec4(const float& _value);
+
+		/// <summary>
 		/// Copy constructor of the <see cref="Vec4"/> class.
 		/// </summary>
 		/// <param name="other"></param>

@@ -68,7 +68,7 @@ namespace Astra::Graphics
 
 		inline void SetSkyBox(const SkyboxMaterial* material) { m_material = material; }
 
-		void Draw(const Math::Mat4& viewMatrix) override;
+		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 	private:
 		void BindTextures();
 	};

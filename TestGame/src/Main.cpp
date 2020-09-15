@@ -32,10 +32,13 @@ int main()
 
     Terrain terrain = Terrain(0, 0, &pack, blendMap);
     renderer.AddTerrain(&terrain);
-    terrain.Translation().x -= 200;
-    terrain.Translation().z -= 200;
+    terrain.Translation().x -= 128;
+    terrain.Translation().z -= 128;
 
-    Player player(&window, &terrain);
+    WaterTile tile1 = WaterTile(0, 0, 45, 100);
+    renderer.AddWaterTile(tile1);
+
+    Player player(Vec3(-100,50,100),&window, &terrain);
     renderer.SetMainCamera(player.GetCamera());
     renderer.AddEntity(player.GetRendering());
     worldItems.emplace_back(&player);
@@ -77,12 +80,6 @@ int main()
     renderer.AddLight(light3);
     renderer.AddLight(light4);
 
-    ImageMaterial* mat1 = new ImageMaterial();
-    
-    const VertexArray* vertArray2 = ObjLoader::LoadObjectModel("res/pylon.obj");
-    Entity entity = Entity(vertArray2, Vec3(0, 1, 0), Vec3(0), Vec3(0.5f));
-    renderer.AddEntity(&entity);
-
     ImageMaterial* grassMat = new ImageMaterial("res/textures/grassTexture.png", 1, 1, 0, true, true);
     ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 1, 0, true, true);
 
@@ -95,8 +92,8 @@ int main()
     std::vector<const Entity*> entities;
     for (int i = 0; i < 20; i++)
     {
-        float x = (rand() % 400) - 200;
-        float z = (rand() % 400) - 200;
+        float x = (rand() % 256) - 128;
+        float z = (rand() % 256) - 128;
         float y = terrain.GetHeightOfTerrain(x, z);
         Entity *entity = new Entity(fernVertArray, fernMat, rand() % 4, Vec3(x, y, z), Vec3(0), Vec3(1));
         entities.emplace_back(entity);
@@ -112,7 +109,6 @@ int main()
 
     while (!window.Closed())
     {
-        entity.Rotation().y += 0.0001f;
         window.Clear();
         
         for (Synchronous* item : worldItems)

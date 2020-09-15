@@ -14,6 +14,7 @@
 
 #include "src/graphics/buffers/VertexArray.h"
 #include "src/graphics/buffers/Texture.h"
+#include "src/graphics/buffers/WaterFrameBuffer.h"
 
 #include "src/graphics/renderers/RendererController.h"
 
@@ -21,3 +22,4 @@
 #include "src/graphics/entities/Terrain.h"
 #include "src/graphics/entities/Camera.h"
 #include "src/graphics/entities/Light.h"
+#include "src/graphics/entities/WaterTile.h"

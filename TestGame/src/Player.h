@@ -6,7 +6,7 @@
 #define		MAX_DISTANCE	 120
 #define		MIN_DISTANCE	 5
 #define		MAX_PITCH		 90
-#define		MIN_PITCH		 0
+#define		MIN_PITCH		 -90
 
 #define		GRAVITY			-50
 #define		TERRAIN_HEIGHT	 0
@@ -41,11 +41,10 @@ private:
 
 	Vec3 m_movement;
 public:
-	Player(Window* window, Terrain* terrain);
+	Player(const Vec3& position, Window* window, Terrain* terrain);
 	~Player();
 	void Update() override;
 	void CheckInput();
-	void MovePlayer(const Vec3& movement);
 	inline Camera* GetCamera() { return m_camera; }
 	inline Entity* GetRendering() { return m_body; }
 };

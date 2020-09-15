@@ -1,5 +1,6 @@
 #include "GuiRenderer.h"
 #include "../../math/Mat4Utils.h"
+#include "../loaders/Loader.h"
 
 namespace Astra::Graphics
 {
@@ -14,7 +15,7 @@ namespace Astra::Graphics
 		delete m_defaultQuad;
 	}
 
-	void GuiRenderer::Draw(const Math::Mat4& viewMatrix)
+	void GuiRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
 	{
 		if (m_guis.size() <= 0) { return; }
 		m_shader->Start();

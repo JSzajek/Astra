@@ -10,7 +10,7 @@ namespace Astra::Graphics
 	class Terrain : public Spatial
 	{
 	private:
-		static constexpr float Size = 800;
+		static constexpr float Size = 256;
 		static constexpr float MaxHeight = 40;
 	private:
 		float* m_heights;

@@ -19,7 +19,8 @@ namespace Astra::Graphics
 		Lighting,
 		Gui,
 		Terrains,
-		Skybox
+		Skybox,
+		Water
 	};
 
 	struct ShaderProgramSource

@@ -2,23 +2,28 @@
 
 #include "../shaders/Shader.h"
 #include "../buffers/VertexArray.h"
+#include "../buffers/FrameBuffer.h"
 
 namespace Astra::Graphics
 {
 	class Renderer
 	{
+	public:
+		static const Math::Vec4 DefaultClipPlane;
 	protected:
 		Shader* m_shader;
 	public:
 		void UpdateProjectionMatrix(const Math::Mat4& projectionMatrix);
+		void BindFrameBuffer(GLuint bufferId, unsigned int width, unsigned int height);
+		void UnbindFrameBuffer();
 	protected:
 		Renderer(Shader* shader);
 		~Renderer();
 
-		void UnbindVertexArray();
+		virtual void UnbindVertexArray();
 		void UpdateDynamicVbo();
 		void UpdateTexture();
 		
-		virtual void Draw(const Math::Mat4& viewMatrix) = 0;
+		virtual void Draw(const Math::Mat4& viewMatrix = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) = 0;
 	};
 }

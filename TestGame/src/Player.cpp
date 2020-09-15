@@ -2,13 +2,13 @@
 
 #include <iostream>
 
-Player::Player(Window* window, Terrain* terrain)
-	: m_camera(new Camera(20, 25, 0)), _window(window), m_movement(Vec3(0)),
+Player::Player(const Vec3& position, Window* window, Terrain* terrain)
+	: m_camera(new Camera(20, 45, 0)), _window(window), m_movement(Vec3(0)),
            m_rotating(false), m_oldPosition(Vec2(0,0)), m_terrain(terrain)
 {
     ImageMaterial* grassMat = new ImageMaterial("res/textures/fernTexture.png", 1, 1, 0, true, true);
 	const VertexArray* bodyModel = ObjLoader::LoadObjectModel("res/fern.obj");
-	m_body = new Entity(bodyModel, grassMat, Vec3(0), Vec3(0), Vec3(2));
+	m_body = new Entity(bodyModel, grassMat, position, Vec3(0), Vec3(2));
 }
 
 void Player::Update()
@@ -53,7 +53,7 @@ void Player::Update()
     upwardsSpeed += GRAVITY * delta;
     m_body->Translation().y += upwardsSpeed * delta;
 
-    m_camera->Translation() = m_body->GetTranslation();
+    m_camera->LookAt(m_body->GetTranslation());
     
     float terrainHeight = m_terrain->GetHeightOfTerrain(m_body->GetTranslation().x, m_body->GetTranslation().z);
     if (m_body->GetTranslation().y < terrainHeight)

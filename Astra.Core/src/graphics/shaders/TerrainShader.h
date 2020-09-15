@@ -21,6 +21,8 @@ namespace Astra::Graphics
 		static constexpr const char* GTextureTag = "gTexture";
 		static constexpr const char* BTextureTag = "bTexture";
 		static constexpr const char* BlendMapTag = "blendMap";
+
+		static constexpr const char* ClipPaneTag = "clipPlane";
 	public:
 		TerrainShader(const char* filepath =
 			"C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/shaders/Terrain.shader")
