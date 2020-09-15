@@ -117,10 +117,10 @@ namespace Astra::Graphics
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture.id);
 		
-		stbi_set_flip_vertically_on_load(1);
 		for (int i = 0; i < filepaths.size(); i++)
 		{
 			Texture& texture = cubemapTexture[i];
+			stbi_set_flip_vertically_on_load(0);
 			buffer = stbi_load(std::string(texture.m_filePath).c_str(), &texture.width, &texture.height, &m_bpp, 4);
 			if (buffer)
 			{

@@ -20,7 +20,7 @@ namespace Astra::Graphics
 		Renderer(Shader* shader);
 		~Renderer();
 
-		void UnbindVertexArray();
+		virtual void UnbindVertexArray();
 		void UpdateDynamicVbo();
 		void UpdateTexture();
 		

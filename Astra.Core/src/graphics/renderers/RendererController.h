@@ -76,14 +76,15 @@ namespace Astra::Graphics
 		inline void AddEntity(const Entity* entity) { m_entityRenderer->AddEntity(entity); }
 		inline void AddTerrain(const Terrain* terrain) { m_terrainRenderer->AddTerrain(terrain); }
 		inline void AddLight(Light* light) 
-		{ 
+		{
 			m_entityRenderer->AddLight(light);
 			m_terrainRenderer->AddLight(light);
+			m_waterRenderer->AddLight(light);
 		}
 		inline void AddWaterTile(const WaterTile& tile) 
 		{
-			m_reflectionClipPlane.w = -tile.GetTranslation().y;
-			m_refractionClipPlane.w = tile.GetTranslation().y;
+			m_reflectionClipPlane.w = -tile.GetTranslation().y + 1.6f;
+			m_refractionClipPlane.w = tile.GetTranslation().y + 1.6f;
 			m_waterRenderer->AddTile(tile); 
 		}
 
