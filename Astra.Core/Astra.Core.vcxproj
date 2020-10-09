@@ -182,6 +182,7 @@
     <ClCompile Include="src\graphics\materials\WaterMaterial.cpp" />
     <ClCompile Include="src\graphics\renderers\Entity3dRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\GuiRenderer.cpp" />
+    <ClCompile Include="src\graphics\renderers\NormalEntity3dRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\Renderer.cpp" />
     <ClCompile Include="src\graphics\renderers\RendererController.cpp" />
     <ClCompile Include="src\graphics\renderers\SkyboxRenderer.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="src\graphics\materials\WaterMaterial.h" />
     <ClInclude Include="src\graphics\renderers\Entity3dRenderer.h" />
     <ClInclude Include="src\graphics\renderers\GuiRenderer.h" />
+    <ClInclude Include="src\graphics\renderers\NormalEntity3dRenderer.h" />
     <ClInclude Include="src\graphics\renderers\RendererController.h" />
     <ClInclude Include="src\graphics\renderers\Renderer.h" />
     <ClInclude Include="src\graphics\renderers\SkyboxRenderer.h" />
@@ -227,6 +229,7 @@
     <ClInclude Include="src\graphics\shaders\BasicShader.h" />
     <ClInclude Include="src\graphics\shaders\GuiShader.h" />
     <ClInclude Include="src\graphics\shaders\LightingShader.h" />
+    <ClInclude Include="src\graphics\shaders\NormalEntityShader.h" />
     <ClInclude Include="src\graphics\shaders\Shader.h" />
     <ClInclude Include="src\graphics\shaders\SkyboxShader.h" />
     <ClInclude Include="src\graphics\shaders\TerrainShader.h" />
@@ -250,6 +253,7 @@
     <None Include="src\resources\shaders\Basic.shader" />
     <None Include="src\resources\shaders\Gui.shader" />
     <None Include="src\resources\shaders\Lighting.shader" />
+    <None Include="src\resources\shaders\NormalEntity.shader" />
     <None Include="src\resources\shaders\Skybox.shader" />
     <None Include="src\resources\shaders\Terrain.shader" />
     <None Include="src\resources\shaders\Water.shader" />

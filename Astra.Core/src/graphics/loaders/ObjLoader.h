@@ -15,6 +15,7 @@ namespace Astra::Graphics
 {
 	struct TempVertex
 	{
+	public:
 		Math::Vec3 position;
 		int textureIndex;
 		int normalIndex;
@@ -39,10 +40,38 @@ namespace Astra::Graphics
 		}
 	};
 
+	struct NormalVertex : TempVertex
+	{
+	public:
+		std::vector<Math::Vec3> tangents;
+		Math::Vec3 avgTangent;
+
+		NormalVertex* duplicate;
+		
+		NormalVertex(int index, const Math::Vec3& position)
+			: TempVertex(index, position), duplicate(NULL), avgTangent(Math::Zero)
+		{
+			length = position.Magnitude();
+		}
+
+		inline void AddTangent(const Math::Vec3& tangent) { tangents.push_back(tangent); }
+
+		void AverageTangents()
+		{
+			if (tangents.size() == 0) { return; }
+			for (const Math::Vec3& tangent : tangents)
+			{
+				avgTangent += tangent;
+			}
+			avgTangent.Normalize();
+		}
+	};
+
 	class ObjLoader
 	{
 	private:
 		std::vector<TempVertex*> vertices;
+		std::vector<NormalVertex*> normVertices;
 		std::vector<Math::Vec2> textures;
 		std::vector<Math::Vec3> normals;
 		std::vector<int> indices;
@@ -61,14 +90,28 @@ namespace Astra::Graphics
 			return Get().LoadObjectModelImpl(filepath);
 		}
 
+		static const VertexArray* LoadNormalMappedObjectModel(const char* const filepath)
+		{
+			return Get().LoadNormalMappedObjectModelImpl(filepath);
+		}
+
 	private:
 		ObjLoader();
 		const VertexArray* LoadObjectModelImpl(const std::string& filepath);
-
+		const VertexArray* LoadNormalMappedObjectModelImpl(const std::string& filepath);
+	private:
+		void BasicProcessing(std::ifstream& stream, std::string& line, bool normalMapped);
 		float Convert(std::vector<float>& verticesArray, std::vector<float>& texturesArray, std::vector<float>& normalsArray);
+		float Convert(std::vector<float>& verticesArray, std::vector<float>& texturesArray, std::vector<float>& normalsArray, std::vector<float>& tangentsArray);
+		void CalculateTangents(NormalVertex* vert0, NormalVertex* vert1, NormalVertex* vert2);
+		
+		TempVertex* ProcessVertex(const std::vector<std::string>& data);
+		TempVertex* AlreadyProcessed(TempVertex* previous, int textureIndex, int normalIndex);
+		
+		NormalVertex* ProcessNormVertex(const std::vector<std::string>& data);
+		NormalVertex* AlreadyNormProcessed(NormalVertex* previous, int textureIndex, int normalIndex);
 
-		void ProcessVertex(const std::vector<std::string>& data);
-		void AlreadyProcessed(TempVertex* previous, int textureIndex, int normalIndex);
 		void RemoveUnused();
+		void RemoveNormUnused();
 	};
 }

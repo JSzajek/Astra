@@ -43,6 +43,8 @@ namespace Astra::Graphics
 		glDisableVertexAttribArray(BufferType::Vertices);
 		glDisableVertexAttribArray(BufferType::TextureCoords);
 		glDisableVertexAttribArray(BufferType::Normals);
+		//glDisableVertexAttribArray(BufferType::Indices);
+		glDisableVertexAttribArray(BufferType::Tangents);
 		glBindVertexArray(0);
 	}
 
@@ -55,11 +57,11 @@ namespace Astra::Graphics
 
 	void Renderer::UpdateDynamicVbo()
 	{
-
+		//TODO: Implement
 	}
 
 	void Renderer::UpdateTexture()
 	{
-
+		//TODO: Implement
 	}
 }

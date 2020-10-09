@@ -80,16 +80,26 @@ int main()
     renderer.AddLight(light3);
     renderer.AddLight(light4);
 
-    ImageMaterial* grassMat = new ImageMaterial("res/textures/grassTexture.png", 1, 1, 0, true, true);
-    ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 1, 0, true, true);
+    //ImageMaterial* grassMat = new ImageMaterial("res/textures/grassTexture.png", 1, 1, 0, true, true);
+    //const VertexArray* grassVertArray = ObjLoader::LoadObjectModel("res/grass.obj");
 
-    const VertexArray* grassVertArray = ObjLoader::LoadObjectModel("res/grass.obj");
+    /*ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 1, 0, true, true);
     const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");
-    Entity grassModel = Entity(grassVertArray, grassMat, Vec3(0, terrain.GetHeightOfTerrain(0,0), 0), Vec3(0), Vec3(1));
+    Entity fernModel = Entity(fernVertArray, fernMat, Vec3(-70, 65, 80), Vec3(0), Vec3(1));*/
+    //renderer.AddEntity(&fernModel);
 
-    renderer.AddEntity(&grassModel);
 
-    std::vector<const Entity*> entities;
+    ImageMaterial* barrelMat = new ImageMaterial("res/textures/barrel.png", 1, 10, 0.5f);
+    const VertexArray* barrelVertArray = ObjLoader::LoadObjectModel("res/barrel.obj");
+    Entity barrelModel1 = Entity(barrelVertArray, barrelMat, Vec3(-80, 70, 80), Vec3(0), Vec3(1));
+
+    ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", 1, 10, 0.5f);
+    Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-70, 70, 80), Vec3(0), Vec3(1));
+
+    renderer.AddEntity(&barrelModel1);
+    renderer.AddEntity(&barrelModel2);
+
+    /*std::vector<const Entity*> entities;
     for (int i = 0; i < 20; i++)
     {
         float x = (rand() % 256) - 128;
@@ -98,7 +108,7 @@ int main()
         Entity *entity = new Entity(fernVertArray, fernMat, rand() % 4, Vec3(x, y, z), Vec3(0), Vec3(1));
         entities.emplace_back(entity);
         renderer.AddEntity(entity);
-    }
+    }*/
 
     const float InGameTimeSpeed = 0.00005f;
     short timeDir = 1;
