@@ -69,11 +69,17 @@ namespace Astra::Graphics
 		BindAttribute(0, "position");
 		BindAttribute(1, "textureCoords");
 		BindAttribute(2, "normal");
+		BindAttribute(3, "tangent");
 	}
 
 	ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 	{
 		std::ifstream stream(filepath);
+
+		if (!stream)
+		{
+			Logger::LogError(std::string("Couldn't Open Shader File at ") + filepath);
+		}
 
 		enum class ShaderType
 		{
@@ -98,7 +104,7 @@ namespace Astra::Graphics
 			}
 			else
 			{
-				ss[int(type)] << line << std::endl;
+				ss[static_cast<int>(type)] << line << std::endl;
 			}
 		}
 		return { ss[0].str(), ss[1].str() };

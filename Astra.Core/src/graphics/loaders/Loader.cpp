@@ -40,14 +40,13 @@ namespace Astra::Graphics
 		GLuint verticesID = BindInAttribBuffer(0, vertices, 3);
 		GLuint texturesID = BindInAttribBuffer(1, textureCoords, 2);
 		GLuint normalsID = BindInAttribBuffer(2, normals, 3);
-		GLuint indicesID = BindIndicesBuffer(indices);
+		static_cast<void>(BindIndicesBuffer(indices));
 		UnbindVertexArray();
 
 		VertexArray* vertArray = new VertexArray(id, indices.size(), drawType);
 		(*vertArray)(BufferType::Vertices) = verticesID;
 		(*vertArray)(BufferType::Normals) = normalsID;
 		(*vertArray)(BufferType::TextureCoords) = texturesID;
-		(*vertArray)(BufferType::Indices) = indicesID;
 
 		return vertArray;
 	}
@@ -60,16 +59,15 @@ namespace Astra::Graphics
 		GLuint verticesID = BindInAttribBuffer(0, vertices, 3);
 		GLuint texturesID = BindInAttribBuffer(1, textureCoords, 2);
 		GLuint normalsID = BindInAttribBuffer(2, normals, 3);
-		GLuint indicesID = BindIndicesBuffer(indices);
-		//GLuint tangentsID = BindInAttribBuffer(4, tangents, 3);
+		static_cast<void>(BindIndicesBuffer(indices));
+		GLuint tangentsID = BindInAttribBuffer(3, tangents, 3);
 		UnbindVertexArray();
 
 		VertexArray* vertArray = new VertexArray(id, indices.size(), drawType);
 		(*vertArray)(BufferType::Vertices) = verticesID;
 		(*vertArray)(BufferType::Normals) = normalsID;
 		(*vertArray)(BufferType::TextureCoords) = texturesID;
-		(*vertArray)(BufferType::Indices) = indicesID;
-		//(*vertArray)(BufferType::Tangents) = tangentsID;
+		(*vertArray)(BufferType::Tangents) = tangentsID;
 
 		return vertArray;
 	}

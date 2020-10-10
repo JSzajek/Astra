@@ -4,6 +4,7 @@
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 textureCoords;
 layout(location = 2) in vec3 normal;
+layout(location = 3) in vec3 tangent;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
@@ -18,7 +19,6 @@ uniform vec4 clipPlane;
 
 out vec2 v_TexCoordinates;
 
-out vec3 surfaceNormal;
 out vec3 toLightVector[4];
 out vec3 toCameraVector;
 
@@ -40,13 +40,24 @@ void main()
 
 	v_TexCoordinates = (textureCoords / numberOfRows) + offset;
 
-	surfaceNormal = (modelViewMatrix * vec4(useFakeLighting > 0.5 ? vec3(0, 1, 0) : normal, 0)).xyz;
+	vec3 surfaceNormal = (modelViewMatrix * vec4(useFakeLighting > 0.5 ? vec3(0, 1, 0) : normal, 0)).xyz;
+
+	vec3 norm = normalize(surfaceNormal);
+	vec3 tang = normalize((modelViewMatrix * vec4(tangent, 0.0)).xyz);
+	vec3 bitang = normalize(cross(norm, tang));
+
+	mat3 toTangentSpace = mat3(
+		tang.x, bitang.x, norm.x,
+		tang.y, bitang.y, norm.y,
+		tang.z, bitang.z, norm.z
+	);
+
 
 	for (int i = 0; i < 4; i++)
 	{
-		toLightVector[i] = lightPosition[i] - positionRelativeToCam.xyz;
+		toLightVector[i] = toTangentSpace * (lightPosition[i] - positionRelativeToCam.xyz);
 	}
-	toCameraVector = -positionRelativeToCam.xyz;
+	toCameraVector = toTangentSpace * (-positionRelativeToCam.xyz);
 
 	float distance = length(positionRelativeToCam.xyz);
 	visibility = exp(-pow((distance * density), gradient));
@@ -58,7 +69,6 @@ void main()
 
 in vec2 v_TexCoordinates;
 
-in vec3 surfaceNormal;
 in vec3 toLightVector[4];
 in vec3 toCameraVector;
 
@@ -67,6 +77,7 @@ in float visibility;
 out vec4 out_Color;
 
 uniform sampler2D u_Texture;
+uniform sampler2D u_NormalMap;
 
 uniform vec3 lightColor[4];
 uniform vec3 attenuation[4];
@@ -78,7 +89,8 @@ uniform vec3 fogColor;
 
 void main()
 {
-	vec3 unitNormal = normalize(surfaceNormal);
+	vec4 normalMapValue = 2.0 * texture(u_NormalMap, v_TexCoordinates) - 1.0;
+	vec3 unitNormal = normalize(normalMapValue.rgb);
 	vec3 unitVectorToCamera = normalize(toCameraVector);
 
 	vec3 totalDiffuse = vec3(0);

@@ -11,6 +11,7 @@ namespace Astra::Graphics
 	public:
 		const VertexArray* vertexArray;
 		const ImageMaterial* const material;
+		const Texture const normalMap;
 	private:
 		int m_textureIndex;
 		bool m_normalMapped;

@@ -20,7 +20,7 @@ namespace Astra::Graphics
 		if (m_guis.size() <= 0) { return; }
 		m_shader->Start();
 		glBindVertexArray(m_defaultQuad->vaoId);
-		glEnableVertexAttribArray(BufferType::Vertices);
+		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);
@@ -33,7 +33,7 @@ namespace Astra::Graphics
 		}
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
-		glDisableVertexAttribArray(BufferType::Vertices);
+		glDisableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glBindVertexArray(0);
 		m_shader->Stop();
 	}

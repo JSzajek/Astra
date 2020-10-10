@@ -25,7 +25,7 @@ namespace Astra::Graphics
 		static constexpr const char* ClipPaneTag = "clipPlane";
 	public:
 		TerrainShader(const char* filepath =
-			"C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/shaders/Terrain.shader")
+			"../Astra.Core/src/resources/shaders/Terrain.shader")
 			: Shader(filepath, ShaderType::Terrains)
 		{
 		}

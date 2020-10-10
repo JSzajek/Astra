@@ -8,6 +8,10 @@ namespace Astra::Graphics
 	NormalEntity3dRenderer::NormalEntity3dRenderer(Shader* shader, const Math::Vec3* fogColor)
 		: Renderer(shader), m_skyColor(fogColor)
 	{
+		m_shader->Start();
+		m_shader->SetUniform1i(NormalEntityShader::ModelTexture, 0);
+		m_shader->SetUniform1i(NormalEntityShader::NormalMapTag, 1);
+		m_shader->Stop();
 	}
 
 	void NormalEntity3dRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
@@ -89,7 +93,7 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
-		glEnableVertexAttribArray(4);
+		glEnableVertexAttribArray(3);
 
 
 		m_shader->SetUniform1f(NormalEntityShader::NumberOfRowsTag, entity.material->GetRowCount());
@@ -110,6 +114,8 @@ namespace Astra::Graphics
 		{
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, entity.material->id);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, entity.normalMap.id);
 		}
 	}
 }

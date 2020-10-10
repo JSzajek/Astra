@@ -22,9 +22,14 @@ namespace Astra::Graphics
 		static constexpr const char* OffsetTag = "offset";
 
 		static constexpr const char* ClipPaneTag = "clipPlane";
+
+		static constexpr const char* ModelTexture = "u_Texture";
+		static constexpr const char* NormalMapTag = "u_NormalMap";
+
+
 	public:
 		NormalEntityShader(const char* filepath =
-			"C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/shaders/NormalEntity.shader")
+			"../Astra.Core/src/resources/shaders/NormalEntity.shader")
 			: Shader(filepath, ShaderType::NormalMapped)
 		{
 		}

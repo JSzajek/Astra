@@ -16,11 +16,11 @@ namespace Astra::Graphics
 
 	void VertexArray::AddBuffer(const BufferType& type, const GLuint& id)
 	{
-		vboIds[type] = id;
+		vboIds[static_cast<unsigned short>(type)] = id;
 	}
 
 	GLuint& const VertexArray::operator()(const BufferType& type)
 	{
-		return vboIds[type];
+		return vboIds[static_cast<unsigned short>(type)];
 	}
 }

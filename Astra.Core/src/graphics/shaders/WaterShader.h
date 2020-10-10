@@ -28,7 +28,7 @@ namespace Astra::Graphics
 		static constexpr const char* CameraPositionTag = "cameraPosition";
 	public:
 		WaterShader(const char* filepath =
-			"C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/shaders/Water.shader")
+			"../Astra.Core/src/resources/shaders/Water.shader")
 			: Shader(filepath, ShaderType::Water)
 		{
 		}

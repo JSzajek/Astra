@@ -41,7 +41,6 @@ namespace Astra::Graphics
 	private:
 		GuiShader* m_guiShader;
 		GuiRenderer* m_guiRenderer;
-		BasicShader* m_basicShader;
 		LightingShader* m_lightingShader;
 		TerrainShader* m_terrainShader;
 		SkyboxShader* m_skyboxShader;
