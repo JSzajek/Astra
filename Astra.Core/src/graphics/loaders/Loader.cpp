@@ -33,21 +33,41 @@ namespace Astra::Graphics
 	}
 
 	const VertexArray* Loader::LoadImpl(unsigned int drawType, const std::vector<float>& vertices,
-		const std::vector<int>& indices, const std::vector<float>& texturesCoords,
-		const std::vector<float>& normals)
+										const std::vector<int>& indices, const std::vector<float>& textureCoords,
+										const std::vector<float>& normals)
 	{
 		GLuint id = GenerateVaoId();
-		GLuint verticesID = BindInAttribBuffer(0, vertices, 3, GL_STATIC_DRAW);
-		GLuint texturesID = BindInAttribBuffer(1, texturesCoords, 2, GL_STATIC_DRAW);
-		GLuint normalsID = BindInAttribBuffer(2, normals, 3, GL_STATIC_DRAW);
-		GLuint indicesID = BindIndicesBuffer(indices, GL_STATIC_DRAW);
+		GLuint verticesID = BindInAttribBuffer(0, vertices, 3);
+		GLuint texturesID = BindInAttribBuffer(1, textureCoords, 2);
+		GLuint normalsID = BindInAttribBuffer(2, normals, 3);
+		static_cast<void>(BindIndicesBuffer(indices));
 		UnbindVertexArray();
 
 		VertexArray* vertArray = new VertexArray(id, indices.size(), drawType);
 		(*vertArray)(BufferType::Vertices) = verticesID;
 		(*vertArray)(BufferType::Normals) = normalsID;
 		(*vertArray)(BufferType::TextureCoords) = texturesID;
-		(*vertArray)(BufferType::Indices) = indicesID;
+
+		return vertArray;
+	}
+
+	const VertexArray* Loader::LoadImpl(unsigned int drawType, const std::vector<float>& vertices, 
+										const std::vector<int>& indices, const std::vector<float>& textureCoords, 
+										const std::vector<float>& normals, const std::vector<float>& tangents)
+	{
+		GLuint id = GenerateVaoId();
+		GLuint verticesID = BindInAttribBuffer(0, vertices, 3);
+		GLuint texturesID = BindInAttribBuffer(1, textureCoords, 2);
+		GLuint normalsID = BindInAttribBuffer(2, normals, 3);
+		static_cast<void>(BindIndicesBuffer(indices));
+		GLuint tangentsID = BindInAttribBuffer(3, tangents, 3);
+		UnbindVertexArray();
+
+		VertexArray* vertArray = new VertexArray(id, indices.size(), drawType);
+		(*vertArray)(BufferType::Vertices) = verticesID;
+		(*vertArray)(BufferType::Normals) = normalsID;
+		(*vertArray)(BufferType::TextureCoords) = texturesID;
+		(*vertArray)(BufferType::Tangents) = tangentsID;
 
 		return vertArray;
 	}

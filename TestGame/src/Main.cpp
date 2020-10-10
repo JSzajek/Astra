@@ -80,14 +80,13 @@ int main()
     renderer.AddLight(light3);
     renderer.AddLight(light4);
 
-    ImageMaterial* grassMat = new ImageMaterial("res/textures/grassTexture.png", 1, 1, 0, true, true);
     ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 1, 0, true, true);
-
-    const VertexArray* grassVertArray = ObjLoader::LoadObjectModel("res/grass.obj");
     const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");
-    Entity grassModel = Entity(grassVertArray, grassMat, Vec3(0, terrain.GetHeightOfTerrain(0,0), 0), Vec3(0), Vec3(1));
 
-    renderer.AddEntity(&grassModel);
+    ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", 1, 10, 0.5f);
+    Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-70, 70, 80), Vec3(0), Vec3(1));
+
+    renderer.AddEntity(&barrelModel2);
 
     std::vector<const Entity*> entities;
     for (int i = 0; i < 20; i++)
@@ -139,11 +138,5 @@ int main()
             frames = 0;
         }
     }
-
-    /*for (const Entity* entity : entities)
-    {
-        delete entity;
-    }*/
-
     return 0;
 }

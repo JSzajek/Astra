@@ -7,12 +7,12 @@ namespace Astra::Graphics
 {
 	#define TRACKED_VBOS 4
 	
-	enum BufferType : unsigned short
+	enum class BufferType : unsigned short
 	{
 		Vertices		= 0,
 		TextureCoords	= 1,
 		Normals			= 2,
-		Indices			= 3,
+		Tangents		= 3,
 	};
 
 	struct VertexArray

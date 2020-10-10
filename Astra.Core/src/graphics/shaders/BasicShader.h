@@ -8,7 +8,7 @@ namespace Astra::Graphics
 	{
 	public:
 		BasicShader(const char* filepath =
-			"C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/shaders/Basic.shader")
+			"../Astra.Core/src/resources/shaders/Basic.shader")
 			: Shader(filepath)
 		{
 		}

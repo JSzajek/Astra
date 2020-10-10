@@ -26,12 +26,4 @@ namespace Astra::Graphics
 	{
 		return id == other.id;
 	}
-
-	//void Texture::operator=(const Texture& other)
-	//{
-	//	id = other.id;
-	//	width = other.width;
-	//	height = other.height;
-	//	m_filePath = other.m_filePath;
-	//}
 }

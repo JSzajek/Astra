@@ -12,7 +12,6 @@ namespace Astra::Graphics
 		m_guiShader = new GuiShader();
 		m_guiRenderer = new GuiRenderer(m_guiShader);
 
-		m_basicShader = new BasicShader();
 		m_lightingShader = new LightingShader();
 		m_entityRenderer = new Entity3dRenderer(m_lightingShader, &fogColor);
 
@@ -24,6 +23,9 @@ namespace Astra::Graphics
 
 		m_waterShader = new WaterShader();
 		m_waterRenderer = new WaterRenderer(m_waterShader, m_mainCamera, NearPlane, FarPlane);
+
+		m_normalEntityShader = new NormalEntityShader();
+		m_normalEntityRenderer = new NormalEntity3dRenderer(m_normalEntityShader, &fogColor);
 
 		m_waterBuffer = Loader::LoadWaterFrameBuffer(DefaultReflectionWidth, DefaultReflectionHeight,
 													 DefaultRefractionWidth, DefaultRefractionHeight);
@@ -45,13 +47,18 @@ namespace Astra::Graphics
 	{
 		delete m_guiRenderer;
 		delete m_entityRenderer;
+		delete m_terrainRenderer;
+		delete m_skyboxRenderer;
+		delete m_waterRenderer;
+		delete m_normalEntityRenderer;
 	}
 
 	void RendererController::UpdateScreen(float width, float height)
 	{
 		projectionMatrix = Math::Mat4::Perspective(width, height, FieldOfView, NearPlane, FarPlane);
-		m_entityRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_terrainRenderer->UpdateProjectionMatrix(projectionMatrix);
+		m_entityRenderer->UpdateProjectionMatrix(projectionMatrix);
+		m_normalEntityRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_skyboxRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_waterRenderer->UpdateProjectionMatrix(projectionMatrix);
 	}
@@ -89,6 +96,7 @@ namespace Astra::Graphics
 
 		m_terrainRenderer->Draw(viewMatrix, clipPlane);
 		m_entityRenderer->Draw(viewMatrix, clipPlane);
+		m_normalEntityRenderer->Draw(viewMatrix, clipPlane);
 		m_skyboxRenderer->Draw(viewMatrix);
 	}
 

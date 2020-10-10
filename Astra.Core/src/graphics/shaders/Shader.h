@@ -20,7 +20,8 @@ namespace Astra::Graphics
 		Gui,
 		Terrains,
 		Skybox,
-		Water
+		Water,
+		NormalMapped
 	};
 
 	struct ShaderProgramSource

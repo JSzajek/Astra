@@ -24,7 +24,7 @@ namespace Astra::Graphics
 		static constexpr const char* ClipPaneTag = "clipPlane";
 	public:
 		LightingShader(const char* filepath =
-			"C:/Users/Justin/Documents/Cpp Projects/Astra/Astra.Core/src/resources/shaders/Lighting.shader")
+			"../Astra.Core/src/resources/shaders/Lighting.shader")
 			: Shader(filepath, ShaderType::Lighting)
 		{
 		}

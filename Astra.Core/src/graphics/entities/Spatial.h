@@ -20,6 +20,11 @@ namespace Astra::Graphics
 			}
 		}
 
+		Spatial(const Spatial& other)
+		{
+			memcpy(data, other.data, 3 * 3 * sizeof(float));
+		}
+
 		Spatial(const Math::Vec3& translation)
 			: Spatial()
 		{

@@ -40,9 +40,10 @@ namespace Astra::Graphics
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 
-		glDisableVertexAttribArray(BufferType::Vertices);
-		glDisableVertexAttribArray(BufferType::TextureCoords);
-		glDisableVertexAttribArray(BufferType::Normals);
+		glDisableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
+		glDisableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
+		glDisableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
+		glDisableVertexAttribArray(static_cast<unsigned short>(BufferType::Tangents));
 		glBindVertexArray(0);
 	}
 
@@ -55,11 +56,11 @@ namespace Astra::Graphics
 
 	void Renderer::UpdateDynamicVbo()
 	{
-
+		//TODO: Implement
 	}
 
 	void Renderer::UpdateTexture()
 	{
-
+		//TODO: Implement
 	}
 }

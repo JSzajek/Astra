@@ -30,17 +30,23 @@ namespace Astra::Graphics
 			return instance;
 		}
 		
-		static const VertexArray* Load(unsigned int drawType, const std::vector<float>& vertices,
-			const std::vector<int>& indices, const std::vector<float>& texturesCoords,
-			const std::vector<float>& normals)
+		static const VertexArray* Load(unsigned int drawType, const std::vector<float>& vertices, const std::vector<int>& indices, 
+										const std::vector<float>& texturesCoords, const std::vector<float>& normals)
 		{
 			return Get().LoadImpl(drawType, vertices, indices, texturesCoords, normals);
+		}
+
+		static const VertexArray* Load(unsigned int drawType, const std::vector<float>& vertices, const std::vector<int>& indices,
+										const std::vector<float>& textureCoords, const std::vector<float>& normals, const std::vector<float>& tangents)
+		{
+			return Get().LoadImpl(drawType, vertices, indices, textureCoords, normals, tangents);
 		}
 
 		static const VertexArray* Load(unsigned int drawType, const std::vector<float>& vertices, unsigned int dimensions)
 		{
 			return Get().LoadImpl(drawType, vertices , dimensions);
 		}
+
 
 		static const Texture& LoadTexture(const char* const filepath, GLint clippingOption = GL_REPEAT)
 		{
@@ -65,6 +71,10 @@ namespace Astra::Graphics
 		const VertexArray* LoadImpl(unsigned int drawType, const std::vector<float>& vertices,
 									const std::vector<int>& indices, const std::vector<float>& texturesCoords,
 									const std::vector<float>& normals);
+		
+		const VertexArray* LoadImpl(unsigned int drawType, const std::vector<float>& vertices, 
+									const std::vector<int>& indices, const std::vector<float>& textureCoords, 
+									const std::vector<float>& normals, const std::vector<float>& tangents);
 
 		const VertexArray* LoadImpl(unsigned int drawType, const std::vector<float>& vertices, unsigned int dimensions);
 		
@@ -80,8 +90,8 @@ namespace Astra::Graphics
 		void CreateDepthTextureAttachment(GLuint& id, unsigned int width, unsigned int height);
 		void CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height);
 
-		GLuint BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage, GLboolean normalized = GL_FALSE);
-		GLuint BindIndicesBuffer(const std::vector<int>& data, GLenum usage);
+		GLuint BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage = GL_STATIC_DRAW, GLboolean normalized = GL_FALSE);
+		GLuint BindIndicesBuffer(const std::vector<int>& data, GLenum usage = GL_STATIC_DRAW);
 
 		const GLuint& GenerateVaoId();
 		const GLuint& GenerateVboId();
