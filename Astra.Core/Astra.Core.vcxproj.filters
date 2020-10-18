@@ -108,6 +108,12 @@
     <ClCompile Include="src\graphics\renderers\NormalEntity3dRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\fonts\MetaFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\fonts\TextMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat4.h">
@@ -263,16 +269,13 @@
     <ClInclude Include="src\graphics\fonts\MetaFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\fonts\Font.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\graphics\fonts\Character.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\fonts\Line.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\fonts\GuiText.h">
+    <ClInclude Include="src\graphics\fonts\Word.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

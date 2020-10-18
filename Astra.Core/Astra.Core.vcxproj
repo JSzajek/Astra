@@ -176,6 +176,8 @@
     <ClCompile Include="src\graphics\entities\Light.cpp" />
     <ClCompile Include="src\graphics\entities\Terrain.cpp" />
     <ClCompile Include="src\graphics\entities\WaterTile.cpp" />
+    <ClCompile Include="src\graphics\fonts\MetaFile.cpp" />
+    <ClCompile Include="src\graphics\fonts\TextMesh.cpp" />
     <ClCompile Include="src\graphics\loaders\Loader.cpp" />
     <ClCompile Include="src\graphics\loaders\ObjLoader.cpp" />
     <ClCompile Include="src\graphics\materials\ImageMaterial.cpp" />
@@ -207,11 +209,10 @@
     <ClInclude Include="src\graphics\buffers\WaterFrameBuffer.h" />
     <ClInclude Include="src\graphics\entities\WaterTile.h" />
     <ClInclude Include="src\graphics\fonts\Character.h" />
-    <ClInclude Include="src\graphics\fonts\Font.h" />
-    <ClInclude Include="src\graphics\fonts\GuiText.h" />
     <ClInclude Include="src\graphics\fonts\Line.h" />
     <ClInclude Include="src\graphics\fonts\MetaFile.h" />
     <ClInclude Include="src\graphics\fonts\TextMesh.h" />
+    <ClInclude Include="src\graphics\fonts\Word.h" />
     <ClInclude Include="src\graphics\materials\ImageMaterial.h" />
     <ClInclude Include="src\graphics\materials\Materials.h" />
     <ClInclude Include="src\graphics\materials\SkyboxMaterial.h" />
