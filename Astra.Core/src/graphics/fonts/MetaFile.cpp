@@ -37,7 +37,7 @@ namespace Astra::Graphics
 		std::vector<int> actualValues;
 		actualValues.reserve(numbers.size());
 
-		for (int i = 0; i < actualValues.size(); i++)
+		for (int i = 0; i < numbers.size(); i++)
 		{
 			actualValues.push_back(std::stoi(numbers[i]));
 		}

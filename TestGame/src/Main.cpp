@@ -47,6 +47,10 @@ int main()
     GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
     renderer.AddGui(&gui);
 
+    Texture fontTexture = Loader::LoadTexture("res/fonts/arial.png", GL_REPEAT, false);
+    FontType* font = new FontType(fontTexture.id, "res/fonts/arial.fnt");
+    GuiText* text = new GuiText("This is a test text!", 1, font, Vec2(0, 0), 1, true);
+
     std::vector<const char*> m_textureFiles =
     {
         "res/textures/Default_Skybox/right.png",

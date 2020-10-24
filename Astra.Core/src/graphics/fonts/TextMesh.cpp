@@ -3,36 +3,6 @@
 
 namespace Astra::Graphics
 {
-	GuiText::GuiText(const std::string& text, float fontSize, const FontType& font, const Math::Vec2& position, float maxLineLength, bool centered)
-		: m_textString(text), m_fontSize(fontSize), m_font(font), m_position(position), m_lineMaxSize(maxLineLength),
-			m_centerText(centered), m_color(Math::One), m_numberOfLines(0), m_vertexCount(0), m_textMeshVao(0)
-	{
-	}
-
-	GuiText::GuiText(const GuiText& other)
-		: m_textString(other.m_textString), m_fontSize(other.m_fontSize), m_font(other.m_font), m_position(other.m_position), m_lineMaxSize(other.m_lineMaxSize),
-		m_centerText(other.m_centerText), m_color(other.m_color), m_numberOfLines(other.m_numberOfLines), m_vertexCount(other.m_vertexCount), m_textMeshVao(other.m_textMeshVao)
-	{
-	}
-
-	void GuiText::RemoveText()
-	{
-		// Remove Text
-	}
-
-	void GuiText::SetColor(float r, float g, float b)
-	{
-		m_color.x = r;
-		m_color.y = g;
-		m_color.z = b;
-	}
-
-	void GuiText::SetMeshInfo(unsigned int vao, int vertexCount)
-	{
-		m_textMeshVao = vao;
-		m_vertexCount = vertexCount;
-	}
-
 	FontType::FontType(int textureAtlas, const char* filepath)
 		: m_textureAtlas(textureAtlas), m_loader(new TextMeshCreator(filepath))
 	{
@@ -45,16 +15,16 @@ namespace Astra::Graphics
 
 	FontType::~FontType()
 	{
-		delete m_loader;
+		//delete m_loader;
+	}
+
+	const TextMeshData* FontType::LoadText(GuiText& text) 
+	{ 
+		return m_loader->CreateTextMesh(text); 
 	}
 
 	TextMeshData::TextMeshData(const std::vector<float>& vertexPositions, const std::vector<float>& textureCoords)
 		: VertexPositions(vertexPositions), TextureCoords(textureCoords)
-	{
-	}
-
-	TextMeshData::TextMeshData(const TextMeshData& other)
-		: VertexPositions(other.VertexPositions), TextureCoords(other.TextureCoords)
 	{
 	}
 
@@ -63,10 +33,10 @@ namespace Astra::Graphics
 	{
 	}
 
-	const TextMeshData& TextMeshCreator::CreateTextMesh(GuiText& text)
+	const TextMeshData* TextMeshCreator::CreateTextMesh(GuiText& text)
 	{
 		std::vector<Line> lines = CreateStructure(text);
-		TextMeshData data = CreateQuadVertices(text, lines);
+		const TextMeshData* data = CreateQuadVertices(text, lines);
 		return data;
 	}
 
@@ -108,7 +78,7 @@ namespace Astra::Graphics
 		lines.push_back(currentLine);
 	}
 
-	const TextMeshData& TextMeshCreator::CreateQuadVertices(GuiText& text, const std::vector<Line>& lines)
+	const TextMeshData* TextMeshCreator::CreateQuadVertices(GuiText& text, const std::vector<Line>& lines)
 	{
 		text.SetNumberOfLines(lines.size());
 		double xCursor = 0;
@@ -126,7 +96,8 @@ namespace Astra::Graphics
 				for (auto character : word.GetCharacters())
 				{
 					AddVerticesForCharacter(xCursor, yCursor, character, text.GetFontSize(), vertices);
-					AddTexCoords(textureCoords, character->GetXTextureCoord(), character->GetYTextureCoord(), character->GetXMaxTextureCoord(), character->GetYMaxTextureCoord());
+					AddTexCoords(textureCoords, character->GetXTextureCoord(), character->GetYTextureCoord(), 
+													character->GetXMaxTextureCoord(), character->GetYMaxTextureCoord());
 					xCursor += character->GetXAdvance() * text.GetFontSize();
 				}
 				xCursor += metaData.GetSpaceWidth() * text.GetFontSize();
@@ -134,7 +105,7 @@ namespace Astra::Graphics
 			xCursor = 0;
 			yCursor += LINE_HEIGHT * text.GetFontSize();
 		}
-		return TextMeshData(vertices, textureCoords);
+		return new TextMeshData(vertices, textureCoords);
 	}
 
 	void TextMeshCreator::AddVerticesForCharacter(double xCursor, double yCursor, const Character* character, double fontSize, std::vector<float>& vertices)
@@ -144,7 +115,7 @@ namespace Astra::Graphics
 		double xMax = x + (character->GetXSize() * fontSize);
 		double yMax = y + (character->GetYSize() * fontSize);
 		double xProper = (2 * x) - 1;
-		double yProper = (2 * y) + 1;
+		double yProper = (-2 * y) + 1;
 		double xMaxProper = (2 * xMax) - 1;
 		double yMaxProper = (-2 * yMax) + 1;
 		AddVertices(vertices, xProper, yProper, xMaxProper, yMaxProper);

@@ -108,6 +108,7 @@ namespace Astra::Graphics
 	void RendererController::GuiRender()
 	{
 		m_guiRenderer->Draw(NULL);
+		FontController::Render();
 	}
 
 	void RendererController::UpdateCameraView()

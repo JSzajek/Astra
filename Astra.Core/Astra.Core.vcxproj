@@ -176,6 +176,8 @@
     <ClCompile Include="src\graphics\entities\Light.cpp" />
     <ClCompile Include="src\graphics\entities\Terrain.cpp" />
     <ClCompile Include="src\graphics\entities\WaterTile.cpp" />
+    <ClCompile Include="src\graphics\fonts\FontController.cpp" />
+    <ClCompile Include="src\graphics\fonts\GuiText.cpp" />
     <ClCompile Include="src\graphics\fonts\MetaFile.cpp" />
     <ClCompile Include="src\graphics\fonts\TextMesh.cpp" />
     <ClCompile Include="src\graphics\loaders\Loader.cpp" />
@@ -185,6 +187,7 @@
     <ClCompile Include="src\graphics\materials\TerrainMaterial.cpp" />
     <ClCompile Include="src\graphics\materials\WaterMaterial.cpp" />
     <ClCompile Include="src\graphics\renderers\Entity3dRenderer.cpp" />
+    <ClCompile Include="src\graphics\renderers\FontRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\GuiRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\NormalEntity3dRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\Renderer.cpp" />
@@ -209,6 +212,8 @@
     <ClInclude Include="src\graphics\buffers\WaterFrameBuffer.h" />
     <ClInclude Include="src\graphics\entities\WaterTile.h" />
     <ClInclude Include="src\graphics\fonts\Character.h" />
+    <ClInclude Include="src\graphics\fonts\FontController.h" />
+    <ClInclude Include="src\graphics\fonts\GuiText.h" />
     <ClInclude Include="src\graphics\fonts\Line.h" />
     <ClInclude Include="src\graphics\fonts\MetaFile.h" />
     <ClInclude Include="src\graphics\fonts\TextMesh.h" />
@@ -228,6 +233,7 @@
     <ClInclude Include="src\graphics\loaders\ObjLoader.h" />
     <ClInclude Include="src\graphics\materials\WaterMaterial.h" />
     <ClInclude Include="src\graphics\renderers\Entity3dRenderer.h" />
+    <ClInclude Include="src\graphics\renderers\FontRenderer.h" />
     <ClInclude Include="src\graphics\renderers\GuiRenderer.h" />
     <ClInclude Include="src\graphics\renderers\NormalEntity3dRenderer.h" />
     <ClInclude Include="src\graphics\renderers\RendererController.h" />
@@ -236,6 +242,7 @@
     <ClInclude Include="src\graphics\renderers\TerrainRenderer.h" />
     <ClInclude Include="src\graphics\renderers\WaterRenderer.h" />
     <ClInclude Include="src\graphics\shaders\BasicShader.h" />
+    <ClInclude Include="src\graphics\shaders\FontShader.h" />
     <ClInclude Include="src\graphics\shaders\GuiShader.h" />
     <ClInclude Include="src\graphics\shaders\LightingShader.h" />
     <ClInclude Include="src\graphics\shaders\NormalEntityShader.h" />
@@ -260,6 +267,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\resources\shaders\Basic.shader" />
+    <None Include="src\resources\shaders\Font.shader" />
     <None Include="src\resources\shaders\Gui.shader" />
     <None Include="src\resources\shaders\Lighting.shader" />
     <None Include="src\resources\shaders\NormalEntity.shader" />

@@ -114,6 +114,15 @@
     <ClCompile Include="src\graphics\fonts\TextMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\renderers\FontRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\fonts\GuiText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\fonts\FontController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat4.h">
@@ -278,6 +287,18 @@
     <ClInclude Include="src\graphics\fonts\Word.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\renderers\FontRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\shaders\FontShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\fonts\GuiText.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\fonts\FontController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\resources\shaders\Gui.shader" />
@@ -287,6 +308,7 @@
     <None Include="src\resources\shaders\Skybox.shader" />
     <None Include="src\resources\shaders\Water.shader" />
     <None Include="src\resources\shaders\NormalEntity.shader" />
+    <None Include="src\resources\shaders\Font.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\textures\Default.jpg">

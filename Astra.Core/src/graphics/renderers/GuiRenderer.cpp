@@ -17,7 +17,7 @@ namespace Astra::Graphics
 
 	void GuiRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
 	{
-		if (m_guis.size() <= 0) { return; }
+		if (m_guis.size() == 0) { return; }
 		m_shader->Start();
 		glBindVertexArray(m_defaultQuad->vaoId);
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));

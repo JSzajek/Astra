@@ -75,7 +75,7 @@ namespace Astra::Graphics
 	const VertexArray* Loader::LoadImpl(unsigned int drawType, const std::vector<float>& vertices, unsigned int dimensions)
 	{
 		GLuint id = GenerateVaoId();
-		GLuint vboId = BindInAttribBuffer(0, vertices, dimensions, GL_STATIC_DRAW);
+		GLuint vboId = BindInAttribBuffer(0, vertices, dimensions);
 		UnbindVertexArray();
 
 		VertexArray* vertArray = new VertexArray(id, vertices.size() / dimensions, drawType);
@@ -83,7 +83,16 @@ namespace Astra::Graphics
 		return vertArray;
 	}
 
-	const Texture& Loader::LoadTextureImpl(const char* const filepath, GLint clippingOption)
+	const GLuint Loader::LoadImpl(unsigned int drawType, const std::vector<float>& vertices, const std::vector<float>& textureCoords)
+	{
+		GLuint id = GenerateVaoId();
+		GLuint verticesID = BindInAttribBuffer(0, vertices, 2);
+		GLuint texturesID = BindInAttribBuffer(1, textureCoords, 2);
+		UnbindVertexArray();
+		return id;
+	}
+
+	const Texture& Loader::LoadTextureImpl(const char* const filepath, GLint clippingOption, bool flip)
 	{
 		static int m_bpp;
 		static unsigned char* buffer;
@@ -96,14 +105,13 @@ namespace Astra::Graphics
 
 		Texture texture(filepath);
 
-		stbi_set_flip_vertically_on_load(1);
+		stbi_set_flip_vertically_on_load(flip);
 		buffer = stbi_load(std::string(filepath).c_str(), &texture.width, &texture.height, &m_bpp, 4);
 		
 		if (buffer)
 		{
 			glGenTextures(1, &texture.id);
 			glBindTexture(GL_TEXTURE_2D, texture.id);
-
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clippingOption);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clippingOption);
