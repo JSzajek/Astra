@@ -8,6 +8,7 @@
 
 namespace Astra::Math
 {
+	static const Vec2 const Zero2D = Vec2(0, 0);
 	static const Vec3 const Zero = Vec3(0, 0, 0);
 	static const Vec3 const One = Vec3(1, 1, 1);
 	static const Vec3 const XAxis = Vec3(1, 0, 0);

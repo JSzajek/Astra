@@ -22,27 +22,32 @@ in vec2 v_TexCoordinates;
 out vec4 out_Color;
 
 uniform sampler2D fontAtlas;
+
 uniform vec3 color;
+uniform float width;
+uniform float edge;
 
-const float width = 0.5;
-const float edge = 0.1;
+uniform vec3 outlineColor;
+uniform float outlineWidth;
+uniform float outlineEdge;
 
-const float borderWidth = 0.0;
-const float borderEdge = 0.4;
-
-const vec2 offset = vec2(0, 0);
-
-const vec3 outlineColor = vec3(0.2, 0.2, 0.2);
+uniform vec2 offset;
 
 void main()
 {
 	float distance = 1.0 - texture(fontAtlas, v_TexCoordinates).a;
 	float alpha = 1.0 - smoothstep(width, width + edge, distance);
 
-	float distance2 = 1.0 - texture(fontAtlas, v_TexCoordinates + offset).a;
-	float outlineAlpha = 1.0 - smoothstep(borderWidth, borderWidth + borderEdge, distance2);
-
-	float overallAlpha = alpha + (1.0 - alpha) * outlineAlpha;
-	vec3 overallColor = mix(outlineColor, color, alpha / overallAlpha);
-	out_Color = vec4(overallColor, overallAlpha);
+	if (outlineWidth == outlineEdge)
+	{
+		out_Color = vec4(color, alpha);
+	}
+	else
+	{
+		float outlineDist = 1.0 - texture(fontAtlas, v_TexCoordinates + offset).a;
+		float outlineAlpha = 1.0 - smoothstep(outlineWidth, outlineWidth + outlineEdge, outlineDist);
+		
+		float overallAlpha = alpha + (1.0 - alpha) * outlineAlpha;
+		out_Color = vec4(mix(outlineColor, color, alpha / overallAlpha), overallAlpha);
+	}
 }

@@ -35,8 +35,17 @@ namespace Astra::Graphics
 		glBindVertexArray(text.GetMesh());
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
-		m_shader->SetUniform3f(FontShader::ColorTag, text.GetColor());
-		m_shader->SetUniform2f(FontShader::TranslationTag, text.GetPosition());
+
+		m_shader->SetUniform3f(FontShader::ColorTag, text.Color);
+		m_shader->SetUniform1f(FontShader::WidthTag, text.FontWidth());
+		m_shader->SetUniform1f(FontShader::EdgeTag, text.FontEdge());
+
+		m_shader->SetUniform3f(FontShader::OutlineColorTag, text.OutlineColor);
+		m_shader->SetUniform1f(FontShader::OutlineWidthTag, text.OutlineWidth());
+		m_shader->SetUniform1f(FontShader::OutlineEdgeTag, text.OutlineEdge());
+
+		m_shader->SetUniform2f(FontShader::TranslationTag, text.Position);
+
 		glDrawArrays(GL_TRIANGLES, 0, text.GetVertexCount());
 	}
 }

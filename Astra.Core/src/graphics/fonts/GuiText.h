@@ -9,27 +9,43 @@ namespace Astra::Graphics
 
 	struct GuiText
 	{
+	public:
+		Math::Vec2 Position;
+		Math::Vec3 Color;
+		Math::Vec3 OutlineColor;
+		Math::Vec2 Offset;
 	private:
 		std::string m_textString;
-		float m_fontSize;
 		unsigned int m_textMeshVao;
 		int m_vertexCount;
 
-		Math::Vec3 m_color;
-		Math::Vec2 m_position;
+		float m_fontSize;
+		float m_fontWidth;
+		float m_fontEdge;
+		float m_thickness;
+		
+		float m_outlineSize;
+		float m_outlineWidth;
+		float m_outlineEdge;
+
 		float m_lineMaxSize;
 		int m_numberOfLines;
 		FontType* m_font;
 		bool m_centerText;
 	public:
-		GuiText(const std::string& text, float fontSize, FontType* font, const Math::Vec2& position, float maxLineLength, bool centered);
+		GuiText(const std::string& text, FontType* font, float fontSize, const Math::Vec2& position, float maxLineLength, bool centered);
+		GuiText(const std::string& text, FontType* font, float fontSize = 1, const Math::Vec2& position = Math::Zero2D, const Math::Vec3& color = Math::Zero, float thickness = 0, float outlineSize = 0, const Math::Vec3& outlineColor = Math::Zero,
+					const Math::Vec2& offset = Math::Zero2D, float maxLineLength = 1, bool centered = false);
 		GuiText(const GuiText& other);
-		~GuiText();
+
+		inline const float FontWidth() const { return m_fontWidth; }
+		inline const float FontEdge() const { return m_fontEdge; }
+
+		inline const float OutlineWidth() const { return m_outlineWidth; }
+		inline const float OutlineEdge() const { return m_outlineEdge; }
 
 		inline FontType* GetFontType() const { return m_font; }
-		inline const Math::Vec3& GetColor() const { return m_color; }
 		inline int GetNumberOfLines() const { return m_numberOfLines; }
-		inline const Math::Vec2& GetPosition() const { return m_position; }
 		inline unsigned int GetMesh() const { return m_textMeshVao; }
 		inline int GetVertexCount() const { return m_vertexCount; }
 		inline float GetFontSize() const { return m_fontSize; }
@@ -43,7 +59,6 @@ namespace Astra::Graphics
 		bool operator!=(const GuiText& other);
 
 		void RemoveText();
-		void SetColor(float r, float g, float b);
 		void SetMeshInfo(unsigned int vao, int vertexCount);
 	};
 }
