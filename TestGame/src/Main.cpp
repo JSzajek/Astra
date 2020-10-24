@@ -43,13 +43,13 @@ int main()
     renderer.AddEntity(player.GetRendering());
     worldItems.emplace_back(&player);
 
-    Texture texture = Loader::LoadTexture("res/textures/grassTexture.png");
-    GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
-    renderer.AddGui(&gui);
+    Texture fontTexture = Loader::LoadAtlasTexture("res/fonts/candara.png");
+    FontType* font = new FontType(fontTexture.id, "res/fonts/candara.fnt");
+    GuiText* text = new GuiText("This is a test text!", 3, font, Vec2(0, 0), 1, true);
 
-    Texture fontTexture = Loader::LoadAtlasTexture("res/fonts/arial.png");
-    FontType* font = new FontType(fontTexture.id, "res/fonts/arial.fnt");
-    GuiText* text = new GuiText("This is a test text!", 4, font, Vec2(0, 0), 1, true);
+    Texture texture = Loader::LoadTexture("res/textures/grassTexture.png");
+    GuiTexture gui = GuiTexture(texture.id, Vec2(0, 0.75), Vec2(0.5, 0.5));
+    renderer.AddGui(&gui);
 
     std::vector<const char*> m_textureFiles =
     {

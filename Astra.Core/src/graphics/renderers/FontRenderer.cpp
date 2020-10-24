@@ -5,9 +5,6 @@ namespace Astra::Graphics
 	FontRenderer::FontRenderer(FontShader* shader)
 		: Renderer((Shader*)shader)
 	{
-		/*m_shader->Start();
-		m_shader->SetUniform1i(FontShader::FontAtlasTag, 0);
-		m_shader->Stop();*/
 	}
 
 	void FontRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
@@ -41,13 +38,5 @@ namespace Astra::Graphics
 		m_shader->SetUniform3f(FontShader::ColorTag, text.GetColor());
 		m_shader->SetUniform2f(FontShader::TranslationTag, text.GetPosition());
 		glDrawArrays(GL_TRIANGLES, 0, text.GetVertexCount());
-		/*glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glBindVertexArray(0);*/
-	}
-
-	void FontRenderer::EndRenderering()
-	{
-
 	}
 }

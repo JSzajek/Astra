@@ -18,6 +18,5 @@ namespace Astra::Graphics
 		inline std::unordered_map<FontType*, std::vector<GuiText>>& GetTexts() { return m_texts; }
 	private:
 		void RenderText(const GuiText& text);
-		void EndRenderering();
 	};
 }

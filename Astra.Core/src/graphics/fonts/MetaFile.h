@@ -17,7 +17,7 @@ namespace Astra::Graphics
 	#define PAD_BOTTOM			2
 	#define PAD_RIGHT			3
 
-	#define DESIRED_PADDING		3
+	#define DESIRED_PADDING		8
 	#define SPLITTER			' '
 	#define NUMBER_SEPERATOR	','
 
