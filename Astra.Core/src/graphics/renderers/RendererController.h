@@ -9,6 +9,7 @@
 #include "SkyboxRenderer.h"
 #include "WaterRenderer.h"
 #include "NormalEntity3dRenderer.h"
+#include "../fonts/FontController.h"
 #include "../shaders/GuiShader.h"
 #include "../shaders/BasicShader.h"
 #include "../shaders/LightingShader.h"
@@ -52,7 +53,7 @@ namespace Astra::Graphics
 		SkyboxRenderer* m_skyboxRenderer;
 		WaterRenderer* m_waterRenderer;
 		NormalEntity3dRenderer* m_normalEntityRenderer;
-		
+
 		Camera* m_mainCamera;
 
 		WaterFrameBuffer* m_waterBuffer;
@@ -77,6 +78,7 @@ namespace Astra::Graphics
 		void GuiRender();
 
 		inline void AddGui(const GuiTexture* gui) { m_guiRenderer->AddGui(gui); }
+		inline void AddText(GuiText* text) { FontController::LoadText(*text); }
 		inline void AddEntity(const Entity* entity) 
 		{ 
 			if (entity->IsNormalMapped())
@@ -88,7 +90,9 @@ namespace Astra::Graphics
 				m_entityRenderer->AddEntity(entity); 
 			}
 		}
+
 		inline void AddTerrain(const Terrain* terrain) { m_terrainRenderer->AddTerrain(terrain); }
+		
 		inline void AddLight(Light* light) 
 		{
 			m_terrainRenderer->AddLight(light);
@@ -96,6 +100,7 @@ namespace Astra::Graphics
 			m_normalEntityRenderer->AddLight(light);
 			m_waterRenderer->AddLight(light);
 		}
+
 		inline void AddWaterTile(const WaterTile& tile) 
 		{
 			m_reflectionClipPlane.w = -tile.GetTranslation().y + 1.6f;
@@ -108,6 +113,7 @@ namespace Astra::Graphics
 			m_mainCamera = camera;
 			m_waterRenderer->SetCamera(camera);
 		}
+
 		inline void SetSkyBox(const SkyboxMaterial* material) { m_skyboxRenderer->SetSkyBox(material); }
 	};
 }

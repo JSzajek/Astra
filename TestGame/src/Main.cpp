@@ -43,6 +43,13 @@ int main()
     renderer.AddEntity(player.GetRendering());
     worldItems.emplace_back(&player);
 
+    // TODO: Store Fonts in a directory and handle deletion before game closure or when no references
+
+    Texture fontTexture = Loader::LoadAtlasTexture("res/fonts/candara.png");
+    FontType* font = new FontType(fontTexture.id, "res/fonts/candara.fnt");
+    GuiText* text = new GuiText("This is a test text!", font, 3, Vec2(0, 0), 1, true);
+    GuiText* outlineText = new GuiText("Outlines", font, 3, Vec2(0), Vec3(0), 0, 1, Vec3(0, 0, 1));
+
     Texture texture = Loader::LoadTexture("res/textures/grassTexture.png");
     GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
     renderer.AddGui(&gui);
