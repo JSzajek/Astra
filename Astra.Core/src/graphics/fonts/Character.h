@@ -13,7 +13,7 @@ namespace Astra::Graphics
 		double xAdvance;
 	public:
 		Character(int id, double xTextureCoord, double yTextureCoord, double xMaxTextureCoord, double yMaxTextureCoord, double xOffset, double yOffset, double xSize, double ySize, double xAdvance)
-			: id(id), xTextureCoord(xTextureCoord), yTextureCoord(yTextureCoord), xMaxTextureCoord(xMaxTextureCoord), yMaxTextureCoord(yMaxTextureCoord),
+			: id(id), xTextureCoord(xTextureCoord), yTextureCoord(yTextureCoord), xMaxTextureCoord(xTextureCoord + xMaxTextureCoord), yMaxTextureCoord(yTextureCoord + yMaxTextureCoord),
 				xOffset(xOffset), yOffset(yOffset), xSize(xSize), ySize(ySize), xAdvance(xAdvance)
 		{
 		}

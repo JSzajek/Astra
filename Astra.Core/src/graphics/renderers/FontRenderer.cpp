@@ -39,11 +39,11 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		m_shader->SetUniform3f(FontShader::ColorTag, text.GetColor());
-		//m_shader->SetUniform2f(FontShader::TranslationTag, text.GetPosition());
+		m_shader->SetUniform2f(FontShader::TranslationTag, text.GetPosition());
 		glDrawArrays(GL_TRIANGLES, 0, text.GetVertexCount());
-		glDisableVertexAttribArray(0);
+		/*glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
-		glBindVertexArray(0);
+		glBindVertexArray(0);*/
 	}
 
 	void FontRenderer::EndRenderering()

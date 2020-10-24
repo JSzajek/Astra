@@ -6,7 +6,7 @@ namespace Astra::Graphics
 {
 	GuiText::GuiText(const std::string& text, float fontSize, FontType* font, const Math::Vec2& position, float maxLineLength, bool centered)
 		: m_textString(text), m_fontSize(fontSize), m_font(font), m_position(position), m_lineMaxSize(maxLineLength),
-			m_centerText(centered), m_color(Math::One), m_numberOfLines(0), m_vertexCount(0), m_textMeshVao(0)
+			m_centerText(centered), m_color(Math::Zero), m_numberOfLines(0), m_vertexCount(0), m_textMeshVao(0)
 	{
 		FontController::LoadText(*this);
 	}

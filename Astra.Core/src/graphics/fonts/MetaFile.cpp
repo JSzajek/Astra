@@ -4,7 +4,7 @@
 namespace Astra::Graphics
 {
 	MetaFile::MetaFile(const char* filepath)
-		: m_file(filepath), aspectRatio(Window::width / Window::height)
+		: m_file(filepath), aspectRatio(Window::width / (float)Window::height)
 	{
 		LoadPaddingData();
 		LoadLineSizes();
@@ -80,11 +80,11 @@ namespace Astra::Graphics
 		int id = GetValueOfVariable("id");
 		if (id == SPACE_ASCII)
 		{
-			spaceWidth = (GetValueOfVariable("xadvance") - paddingWidth) * horizontalPerPixelSize;
+			spaceWidth = (GetValueOfVariable("xadvance") - (double)paddingWidth) * horizontalPerPixelSize;
 			return NULL;
 		}
-		double xTex = ((double)GetValueOfVariable("x") + (padding[PAD_LEFT] - DESIRED_PADDING)) / imageSize;
-		double yTex = ((double)GetValueOfVariable("y") + (padding[PAD_TOP] - DESIRED_PADDING)) / imageSize;
+		double xTex = ((double)GetValueOfVariable("x") + (padding[PAD_LEFT] - (double)DESIRED_PADDING)) / imageSize;
+		double yTex = ((double)GetValueOfVariable("y") + (padding[PAD_TOP] - (double)DESIRED_PADDING)) / imageSize;
 		
 		int width = GetValueOfVariable("width") - (paddingWidth - (2 * DESIRED_PADDING));
 		int height = GetValueOfVariable("height") - (paddingHeight - (2 * DESIRED_PADDING));
@@ -95,9 +95,9 @@ namespace Astra::Graphics
 		double xTexSize = (double)width / (double)imageSize;
 		double yTexSize = (double)height / (double)imageSize;
 		
-		double xOffset = (GetValueOfVariable("xoffset") + padding[PAD_LEFT] - DESIRED_PADDING) * horizontalPerPixelSize;
-		double yOffset = (GetValueOfVariable("yoffset") + padding[PAD_TOP] - DESIRED_PADDING) * verticalPerPixelSize;
-		double xAdvance = (GetValueOfVariable("xadvance") - paddingWidth) * horizontalPerPixelSize;
+		double xOffset = (GetValueOfVariable("xoffset") + (double)padding[PAD_LEFT] - (double)DESIRED_PADDING) * horizontalPerPixelSize;
+		double yOffset = (GetValueOfVariable("yoffset") + ((double)padding[PAD_TOP] - (double)DESIRED_PADDING)) * verticalPerPixelSize;
+		double xAdvance = (GetValueOfVariable("xadvance") - (double)paddingWidth) * horizontalPerPixelSize;
 		return new Character(id, xTex, yTex, xTexSize, yTexSize, xOffset, yOffset, quadWidth, quadHeight, xAdvance);
 	}
 }

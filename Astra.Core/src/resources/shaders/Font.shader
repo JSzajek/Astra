@@ -10,7 +10,7 @@ out vec2 v_TexCoordinates;
 
 void main()
 {
-	gl_Position = vec4(position, 0.0, 1.0);
+	gl_Position = vec4(position + translation * vec2(2.0, -2.0), 0.0, 1.0);
 	v_TexCoordinates = textureCoords;
 }
 
@@ -26,5 +26,5 @@ uniform vec3 color;
 
 void main()
 {
-	out_Color = vec4(color, texture2D(fontAtlas, v_TexCoordinates).a);
+	out_Color = vec4(color, texture(fontAtlas, v_TexCoordinates).a);
 }
