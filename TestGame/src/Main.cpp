@@ -105,6 +105,14 @@ int main()
         entities.emplace_back(entity);
         renderer.AddEntity(entity);
     }
+    
+    ParticleSystem partSystem(15, 25, 0.3f, 3);
+   /* ConeParticleSystem partSystem(15, 25, 0.3f, 3, 1);
+    partSystem.SetDirection(Vec3(0, 1, 0), 0.1f);
+    partSystem.SetLifeError(0.1f);
+    partSystem.SetSpeedError(0.4f);
+    partSystem.SetScaleError(0.8f);
+    partSystem.SetRandomRotation(true);*/
 
     const float InGameTimeSpeed = 0.00005f;
     short timeDir = 1;
@@ -122,12 +130,6 @@ int main()
             item->Update();
         }
 
-        if (window.isKeyPressed(GLFW_KEY_Y))
-        {
-            Particle p(player.GetRendering()->GetTranslation(), Vec3(0, 30, 0), 1, 4, 0, 1);
-            renderer.AddParticle(p);
-        }
-
         skybox.BlendFactor() += InGameTimeSpeed * timeDir;
         if (skybox.BlendFactor() >= 1)
         {
@@ -141,6 +143,7 @@ int main()
         }
 
         renderer.Render();
+        partSystem.GenerateParticles(player.GetRendering()->Translation());
         window.Update();
 
         frames++;

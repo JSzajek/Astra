@@ -5,8 +5,8 @@
 
 namespace Astra::Graphics
 {
-	Particle::Particle(const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale)
-		: Position(position), m_velocity(velocity), m_gravity(gravity), m_lifeSpan(lifeSpan), m_elapsedTime(0), Rotation(rotation), Scale(scale)
+	Particle::Particle(const ParticleMaterial* const material, const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale)
+		: Material(material), Position(position), m_velocity(velocity), m_gravity(gravity), m_lifeSpan(lifeSpan), m_elapsedTime(0), Rotation(rotation), Scale(scale)
 	{
 		ParticleController::AddParticle(*this);
 	}

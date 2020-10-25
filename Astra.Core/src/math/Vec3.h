@@ -229,8 +229,15 @@ namespace Astra::Math
 		/// Calculates the direction to the passed vector.
 		/// </summary>
 		/// <param name="other">The other vector to calculate to</param>
-		/// <returns></returns>
+		/// <returns>The direction to the passed vector</returns>
 		float DirectionTo(const Vec3& other) const;
+
+		/// <summary>
+		/// Calculates the cross product to the passed vector.
+		/// </summary>
+		/// <param name="other">The other vector to calculate to</param>
+		/// <returns>The cross product</returns>
+		Vec3 Cross(const Vec3& other) const;
 
 		/// <summary>
 		/// Converts the vector into a 2-dimensional vector.

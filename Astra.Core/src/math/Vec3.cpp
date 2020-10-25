@@ -192,6 +192,11 @@ namespace Astra::Math
 		return acosf(Dot(other) / norm);
 	}
 
+	Vec3 Vec3::Cross(const Vec3& other) const
+	{
+		return Vec3((y * other.z) - (z * other.y), (z * other.x) - (x * other.z), (x * other.y) - (y * other.x));
+	}
+
 	Vec2 Vec3::ToVec2() const
 	{
 		return Vec2(x, z);

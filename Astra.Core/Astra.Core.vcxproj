@@ -186,8 +186,10 @@
     <ClCompile Include="src\graphics\materials\SkyboxMaterial.cpp" />
     <ClCompile Include="src\graphics\materials\TerrainMaterial.cpp" />
     <ClCompile Include="src\graphics\materials\WaterMaterial.cpp" />
+    <ClCompile Include="src\graphics\particles\ConeParticleSystem.cpp" />
     <ClCompile Include="src\graphics\particles\Particle.cpp" />
     <ClCompile Include="src\graphics\particles\ParticleController.cpp" />
+    <ClCompile Include="src\graphics\particles\ParticleSystem.cpp" />
     <ClCompile Include="src\graphics\renderers\Entity3dRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\FontRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\GuiRenderer.cpp" />
@@ -237,6 +239,8 @@
     <ClInclude Include="src\graphics\materials\WaterMaterial.h" />
     <ClInclude Include="src\graphics\particles\Particle.h" />
     <ClInclude Include="src\graphics\particles\ParticleController.h" />
+    <ClInclude Include="src\graphics\particles\ParticleSystem.h" />
+    <ClInclude Include="src\graphics\particles\ConeParticleSystem.h" />
     <ClInclude Include="src\graphics\renderers\Entity3dRenderer.h" />
     <ClInclude Include="src\graphics\renderers\FontRenderer.h" />
     <ClInclude Include="src\graphics\renderers\GuiRenderer.h" />
