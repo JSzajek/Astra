@@ -183,6 +183,7 @@
     <ClCompile Include="src\graphics\loaders\Loader.cpp" />
     <ClCompile Include="src\graphics\loaders\ObjLoader.cpp" />
     <ClCompile Include="src\graphics\materials\ImageMaterial.cpp" />
+    <ClCompile Include="src\graphics\materials\ParticleMaterial.cpp" />
     <ClCompile Include="src\graphics\materials\SkyboxMaterial.cpp" />
     <ClCompile Include="src\graphics\materials\TerrainMaterial.cpp" />
     <ClCompile Include="src\graphics\materials\WaterMaterial.cpp" />
@@ -225,6 +226,7 @@
     <ClInclude Include="src\graphics\fonts\Word.h" />
     <ClInclude Include="src\graphics\materials\ImageMaterial.h" />
     <ClInclude Include="src\graphics\materials\Materials.h" />
+    <ClInclude Include="src\graphics\materials\ParticleMaterial.h" />
     <ClInclude Include="src\graphics\materials\SkyboxMaterial.h" />
     <ClInclude Include="src\graphics\materials\TerrainMaterial.h" />
     <ClInclude Include="src\graphics\buffers\Texture.h" />

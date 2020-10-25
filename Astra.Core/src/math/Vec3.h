@@ -200,6 +200,8 @@ namespace Astra::Math
 		/// <returns>The dot product of the two vectors</returns>
 		float Dot(const Vec3& other) const;
 
+		float DistanceToSquared(const Vec3& other) const;
+		
 		/// <summary>
 		/// Calculates the euclidean distance to the passed vector.
 		/// </summary>
@@ -213,6 +215,12 @@ namespace Astra::Math
 		/// <param name="other">The other vector to calculate to</param>
 		/// <returns>The manhatten distance to the passed vector</returns>
 		float ManhattenDistanceTo(const Vec3& other) const;
+
+		/// <summary>
+		/// Calculates the magnitude of the vector.
+		/// </summary>
+		/// <returns>The magnitude</returns>
+		float MagnitudeSquared() const;
 
 		/// <summary>
 		/// Calculates the magnitude of the vector.

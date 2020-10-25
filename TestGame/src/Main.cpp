@@ -106,13 +106,15 @@ int main()
         renderer.AddEntity(entity);
     }
     
-    ParticleSystem partSystem(15, 25, 0.3f, 3);
-   /* ConeParticleSystem partSystem(15, 25, 0.3f, 3, 1);
+    ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);
+
+    //ParticleSystem partSystem(partMaterial, 15, 5, -0.1f, 3);
+    ConeParticleSystem partSystem(partMaterial, 15, 25, 0.5f, 3, 3);
     partSystem.SetDirection(Vec3(0, 1, 0), 0.1f);
     partSystem.SetLifeError(0.1f);
     partSystem.SetSpeedError(0.4f);
     partSystem.SetScaleError(0.8f);
-    partSystem.SetRandomRotation(true);*/
+    partSystem.SetRandomRotation(true);
 
     const float InGameTimeSpeed = 0.00005f;
     short timeDir = 1;

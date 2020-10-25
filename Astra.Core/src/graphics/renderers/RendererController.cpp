@@ -86,7 +86,7 @@ namespace Astra::Graphics
 		}
 
 		UpdateCameraView();
-		ParticleController::Update();
+		ParticleController::Update(m_mainCamera->GetTranslation());
 		PreRender();
 		PostRender();
 		GuiRender();

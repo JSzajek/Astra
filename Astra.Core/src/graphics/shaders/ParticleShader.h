@@ -8,6 +8,10 @@ namespace Astra::Graphics
 	{
 	public:
 		static constexpr const char* ModelViewMatrixTag = "modelViewMatrix";
+
+		static constexpr const char* TexOffset1Tag = "texOffset1";
+		static constexpr const char* TexOffset2Tag = "texOffset2";
+		static constexpr const char* TexCoordInfoTag = "texCoordInfo";
 	public:
 		ParticleShader(const char* filepath =
 			"../Astra.Core/src/resources/shaders/Particle.shader")

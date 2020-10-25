@@ -15,6 +15,20 @@ namespace Astra::Graphics
 		delete m_defaultQuad;
 	}
 
+	void ParticleRenderer::AddParticle(const Particle& particle)
+	{
+		auto temp = m_particles.find(particle.Material->id);
+		if (temp != m_particles.end())
+		{
+			temp->second.push_back(particle);
+		}
+		else
+		{
+			m_particles[particle.Material->id] = std::vector<Particle>();
+			m_particles[particle.Material->id].push_back(particle);
+		}
+	}
+
 	void ParticleRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
 	{
 		if (m_particles.size() == 0) { return; }
@@ -26,10 +40,18 @@ namespace Astra::Graphics
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDepthMask(GL_FALSE);
 
-		for (const Particle& particle : m_particles)
+		for (const auto& directory : m_particles)
 		{
-			UpdateModelViewMatrix(particle.Position, particle.Rotation, particle.Scale);
-			glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, directory.first);
+			for (const Particle& particle : directory.second)
+			{
+				UpdateModelViewMatrix(particle.Position, particle.Rotation, particle.Scale);
+				m_shader->SetUniform2f(ParticleShader::TexOffset1Tag, particle.GetTexOffset1());
+				m_shader->SetUniform2f(ParticleShader::TexOffset2Tag, particle.GetTexOffset2());
+				m_shader->SetUniform2f(ParticleShader::TexCoordInfoTag, particle.Material->GetRowCount(), particle.GetBlendFactor());
+				glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
+			}
 		}
 
 		glDepthMask(GL_TRUE);

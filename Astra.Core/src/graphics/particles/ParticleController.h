@@ -29,9 +29,9 @@ namespace Astra::Graphics
 			Get().UpdateProjectionMatrixImpl(projectionMatrix);
 		}
 
-		static void Update()
+		static void Update(const Math::Vec3& cameraPosition)
 		{
-			Get().UpdateImpl();
+			Get().UpdateImpl(cameraPosition);
 		}
 
 		static void Render(const Math::Mat4& viewMatrix)
@@ -44,8 +44,10 @@ namespace Astra::Graphics
 		~ParticleController();
 
 		void UpdateProjectionMatrixImpl(const Math::Mat4& projectionMatrix);
-		void UpdateImpl();
+		void UpdateImpl(const Math::Vec3& cameraPosition);
 		void RenderImpl(const Math::Mat4& viewMatrix);
 		void AddParticleImpl(const Particle& particle);
+	private:
+		void InsertionSort(std::vector<Particle>& particles);
 	};
 }
