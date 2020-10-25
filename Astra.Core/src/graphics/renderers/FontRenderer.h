@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Renderer.h"
+#include "../shaders/FontShader.h"
 #include "../fonts/GuiText.h"
 #include "../fonts/TextMesh.h"
-#include "../shaders/FontShader.h"
 
 namespace Astra::Graphics
 {

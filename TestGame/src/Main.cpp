@@ -122,6 +122,12 @@ int main()
             item->Update();
         }
 
+        if (window.isKeyPressed(GLFW_KEY_Y))
+        {
+            Particle p(player.GetRendering()->GetTranslation(), Vec3(0, 30, 0), 1, 4, 0, 1);
+            renderer.AddParticle(p);
+        }
+
         skybox.BlendFactor() += InGameTimeSpeed * timeDir;
         if (skybox.BlendFactor() >= 1)
         {

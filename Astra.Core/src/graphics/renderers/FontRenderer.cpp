@@ -33,8 +33,8 @@ namespace Astra::Graphics
 	void FontRenderer::RenderText(const GuiText& text)
 	{
 		glBindVertexArray(text.GetMesh());
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
+		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
 
 		m_shader->SetUniform3f(FontShader::ColorTag, text.Color);
 		m_shader->SetUniform1f(FontShader::WidthTag, text.FontWidth());

@@ -47,7 +47,7 @@ namespace Astra::Graphics
 			{
 				if (*iter == text)
 				{
-					found->second.erase(iter);
+					iter = found->second.erase(iter);
 				}
 			}
 			if (found->second.empty())

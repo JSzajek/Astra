@@ -123,6 +123,15 @@
     <ClCompile Include="src\graphics\fonts\FontController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\renderers\ParticleRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\particles\Particle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\particles\ParticleController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat4.h">
@@ -299,6 +308,18 @@
     <ClInclude Include="src\graphics\fonts\FontController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\renderers\ParticleRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\shaders\ParticleShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\particles\Particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\particles\ParticleController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\resources\shaders\Gui.shader" />
@@ -309,6 +330,7 @@
     <None Include="src\resources\shaders\Water.shader" />
     <None Include="src\resources\shaders\NormalEntity.shader" />
     <None Include="src\resources\shaders\Font.shader" />
+    <None Include="src\resources\shaders\Particle.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\textures\Default.jpg">
