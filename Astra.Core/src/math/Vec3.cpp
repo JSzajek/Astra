@@ -163,9 +163,19 @@ namespace Astra::Math
 		return sqrtf(powf(other.x - x, 2) + powf(other.y - y, 2) + powf(other.z - z, 2));
 	}
 
+	float Vec3::DistanceToSquared(const Vec3& other) const
+	{
+		return powf(other.x - x, 2) + powf(other.y - y, 2) + powf(other.z - z, 2);
+	}
+
 	float Vec3::ManhattenDistanceTo(const Vec3& other) const
 	{
 		return abs(x - other.x) + abs(y - other.y) + abs(z - other.z);
+	}
+
+	float Vec3::MagnitudeSquared() const
+	{
+		return (x * x) + (y * y) + (z * z);
 	}
 
 	float Vec3::Magnitude() const
@@ -190,6 +200,11 @@ namespace Astra::Math
 			return FLT_EPSILON;
 		}
 		return acosf(Dot(other) / norm);
+	}
+
+	Vec3 Vec3::Cross(const Vec3& other) const
+	{
+		return Vec3((y * other.z) - (z * other.y), (z * other.x) - (x * other.z), (x * other.y) - (y * other.x));
 	}
 
 	Vec2 Vec3::ToVec2() const

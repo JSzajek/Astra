@@ -21,7 +21,8 @@ namespace Astra::Graphics
 		Terrains,
 		Skybox,
 		Water,
-		NormalMapped
+		NormalMapped,
+		Particles
 	};
 
 	struct ShaderProgramSource

@@ -105,6 +105,17 @@ int main()
         entities.emplace_back(entity);
         renderer.AddEntity(entity);
     }
+    
+    ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);
+
+    Vec3 particleCenter(-80, 60, 80);
+    //ParticleSystem partSystem(partMaterial, 15, 5, -0.1f, 3);
+    ConeParticleSystem partSystem(partMaterial, 15, 25, 0.5f, 1.5f, 3);
+    partSystem.SetDirection(Vec3(0, 1, 0), 0.1f);
+    partSystem.SetLifeError(0.1f);
+    partSystem.SetSpeedError(0.4f);
+    partSystem.SetScaleError(0.8f);
+    partSystem.SetRandomRotation(true);
 
     const float InGameTimeSpeed = 0.00005f;
     short timeDir = 1;
@@ -133,6 +144,7 @@ int main()
             skybox.BlendFactor() = 0;
             timeDir = 1;
         }
+        partSystem.GenerateParticles(particleCenter);
 
         renderer.Render();
         window.Update();

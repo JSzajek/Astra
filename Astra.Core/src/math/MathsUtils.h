@@ -31,4 +31,14 @@ namespace Astra::Math
 		float l3 = 1.0f - l1 - l2;
 		return l1 * p1.y + l2 * p2.y + l3 * p3.y;
 	}
+
+	static inline float Random()
+	{
+		return static_cast<float>((float)rand() / RAND_MAX);
+	}
+
+	static inline int DecimalNumbers(float number, unsigned int precision) {
+		float trunc = number - static_cast<int>(number);
+		return static_cast<int>(trunc * pow(10, precision));
+	}
 }

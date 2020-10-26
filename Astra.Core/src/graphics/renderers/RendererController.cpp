@@ -61,6 +61,7 @@ namespace Astra::Graphics
 		m_normalEntityRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_skyboxRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_waterRenderer->UpdateProjectionMatrix(projectionMatrix);
+		ParticleController::UpdateProjectionMatrix(projectionMatrix);
 	}
 
 	void RendererController::Render()
@@ -85,6 +86,7 @@ namespace Astra::Graphics
 		}
 
 		UpdateCameraView();
+		ParticleController::Update(m_mainCamera->GetTranslation());
 		PreRender();
 		PostRender();
 		GuiRender();
@@ -98,6 +100,7 @@ namespace Astra::Graphics
 		m_entityRenderer->Draw(viewMatrix, clipPlane);
 		m_normalEntityRenderer->Draw(viewMatrix, clipPlane);
 		m_skyboxRenderer->Draw(viewMatrix);
+		ParticleController::Render(viewMatrix);
 	}
 
 	void RendererController::PostRender()
