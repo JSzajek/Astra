@@ -31,12 +31,12 @@ int main()
     TerrainMaterial* blendMap = new TerrainMaterial("res/textures/blendMap.png");
 
     //Terrain terrain = Terrain(0, 0, "res/textures/meteorcrater_heightmap.png", &pack, blendMap);
-    Terrain terrain = Terrain(0, 0, 30, 3, 0.2f, &pack, blendMap);
+    Terrain terrain = Terrain(0, 0, 40, 4, 0.01f, 4862, &pack, blendMap);
     renderer.AddTerrain(&terrain);
     terrain.Translation().x -= 128;
     terrain.Translation().z -= 128;
 
-    WaterTile tile1 = WaterTile(0, 0, 0, 128);
+    WaterTile tile1 = WaterTile(0, 0, -2.5f, 128);
     renderer.AddWaterTile(tile1);
 
     Player player(Vec3(-100,50,100),&window, &terrain);

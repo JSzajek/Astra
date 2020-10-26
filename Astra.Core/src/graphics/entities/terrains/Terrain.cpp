@@ -15,7 +15,19 @@ namespace Astra::Graphics
 	{
 		Translation().x = xGrid * Size;
 		Translation().z = zGrid * Size;
-		vertexArray = GeneratePlaneTerrain(amplitude, octaves, roughness);
+		HeightGenerator* generator = new HeightGenerator(amplitude, octaves, roughness);
+		vertexArray = GeneratePlaneTerrain(generator);
+		delete generator;
+	}
+
+	Terrain::Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, int seed, const TerrainMaterialPack* pack, const TerrainMaterial* map)
+		: texturePack(pack), blendMap(map)
+	{
+		Translation().x = xGrid * Size;
+		Translation().z = zGrid * Size;
+		HeightGenerator* generator = new HeightGenerator(amplitude, octaves, roughness, seed);
+		vertexArray = GeneratePlaneTerrain(generator);
+		delete generator;
 	}
 
 	Terrain::~Terrain()
@@ -80,10 +92,9 @@ namespace Astra::Graphics
 
 		return Loader::Load(GL_TRIANGLES, vertices, indices, textureCoords, normals);
 	}
-
-	const VertexArray* Terrain::GeneratePlaneTerrain(float amplitude, int octaves, float roughness)
+	
+	const VertexArray* Terrain::GeneratePlaneTerrain(HeightGenerator* const generator)
 	{
-		HeightGenerator* generator = new HeightGenerator(amplitude, octaves, roughness);
 		m_vertexCount = MAX_VERTICES;
 		m_heights = new float[m_vertexCount * m_vertexCount];
 
@@ -128,7 +139,6 @@ namespace Astra::Graphics
 				indices[pointer++] = bottomRight;
 			}
 		}
-		delete generator;
 		return Loader::Load(GL_TRIANGLES, vertices, indices, textureCoords, normals);
 	}
 

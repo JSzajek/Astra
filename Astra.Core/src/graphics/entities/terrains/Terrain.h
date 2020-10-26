@@ -25,12 +25,13 @@ namespace Astra::Graphics
 	public:
 		Terrain(int xGrid, int zGrid, const char* const heightmap, const TerrainMaterialPack* pack, const TerrainMaterial* map);
 		Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, const TerrainMaterialPack* pack, const TerrainMaterial* map);
+		Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, int seed, const TerrainMaterialPack* pack, const TerrainMaterial* map);
 		~Terrain();
 
 		float GetHeightOfTerrain(int xWorldCoord, int zWorldCoord);
 	private:
 		const VertexArray* GeneratePlaneTerrain(const char* const heightmap);
-		const VertexArray* GeneratePlaneTerrain(float amplitude, int octaves, float roughness);
+		const VertexArray* GeneratePlaneTerrain(HeightGenerator* const generator);
 		float GetHeight(int x, int z, const unsigned char* buffer, const int& imageHeight);
 		float GetHeight(int x, int z, HeightGenerator* const generator);
 		Math::Vec3 CalculateNormal(int x, int z, const unsigned char* buffer, const int& imageHeight);

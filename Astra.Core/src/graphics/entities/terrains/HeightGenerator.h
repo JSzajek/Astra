@@ -17,9 +17,11 @@ namespace Astra::Graphics
 		int m_primeIndex;
 	public:
 		HeightGenerator(float amplitude, int octaves, float roughness);
+		HeightGenerator(float amplitude, int octaves, float roughness, int seed);
 		~HeightGenerator();
 		float GenerateHeight(int x, int z);
 	private:
+		void Init(int seed);
 		float GetNoise(int x, int z, int index) const;
 		float GetSmoothNoise(int x, int z, int index) const;
 		float GetInterpolatedNoise(float x, float z, int index) const;
