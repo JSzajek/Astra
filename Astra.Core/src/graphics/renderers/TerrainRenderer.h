@@ -4,7 +4,7 @@
 
 #include "Renderer.h"
 #include "../loaders/Loader.h"
-#include "../entities/Terrain.h"
+#include "../entities/terrains/Terrain.h"
 #include "../entities/Light.h"
 #include "../shaders/TerrainShader.h"
 

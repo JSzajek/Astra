@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../math/Maths.h"
+#include "../../../math/Maths.h"
 
 namespace Astra::Graphics
 {

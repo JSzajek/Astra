@@ -1,11 +1,10 @@
 #pragma once
 
-#include "Spatial.h"
-#include "../buffers/VertexArray.h"
-#include "../materials/TerrainMaterial.h"
-#include "../loaders/Loader.h"
-
 #include "HeightGenerator.h"
+#include "../Spatial.h"
+#include "../../buffers/VertexArray.h"
+#include "../../materials/TerrainMaterial.h"
+#include "../../loaders/Loader.h"
 
 namespace Astra::Graphics
 {

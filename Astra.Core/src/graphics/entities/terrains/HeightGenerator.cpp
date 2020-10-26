@@ -2,6 +2,8 @@
 
 namespace Astra::Graphics
 {
+	// Implementation based on https://web.archive.org/web/20160530124230/http://freespace.virgin.net/hugo.elias/models/m_perlin.htm
+
 	HeightGenerator::HeightGenerator(float amplitude, int octaves, float roughness)
 		: m_seed(rand()), m_octaves(octaves), m_amplitude(amplitude), m_persistence(roughness)
 	{

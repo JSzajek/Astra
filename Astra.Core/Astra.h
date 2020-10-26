@@ -19,10 +19,11 @@
 #include "src/graphics/renderers/RendererController.h"
 
 #include "src/graphics/entities/Entity.h"
-#include "src/graphics/entities/Terrain.h"
 #include "src/graphics/entities/Camera.h"
 #include "src/graphics/entities/Light.h"
-#include "src/graphics/entities/WaterTile.h"
+
+#include "src/graphics/entities/terrains/Terrain.h"
+#include "src/graphics/entities/terrains/WaterTile.h"
 
 #include "src/graphics/particles/ParticleSystem.h"
 #include "src/graphics/particles/ConeParticleSystem.h"

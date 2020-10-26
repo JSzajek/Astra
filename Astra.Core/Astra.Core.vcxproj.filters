@@ -72,9 +72,6 @@
     <ClCompile Include="src\logger\Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\entities\Terrain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\graphics\renderers\TerrainRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -94,9 +91,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\renderers\WaterRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\entities\WaterTile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\buffers\WaterFrameBuffer.cpp">
@@ -141,7 +135,13 @@
     <ClCompile Include="src\graphics\materials\ParticleMaterial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\entities\HeightGenerator.cpp">
+    <ClCompile Include="src\graphics\entities\terrains\HeightGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\entities\terrains\WaterTile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\entities\terrains\Terrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -239,9 +239,6 @@
     <ClInclude Include="Astra.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\entities\Terrain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\graphics\renderers\TerrainRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -273,9 +270,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\shaders\WaterShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\entities\WaterTile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\buffers\FrameBuffer.h">
@@ -341,7 +335,13 @@
     <ClInclude Include="src\graphics\materials\ParticleMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\entities\HeightGenerator.h">
+    <ClInclude Include="src\graphics\entities\terrains\HeightGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\entities\terrains\WaterTile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\entities\terrains\Terrain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

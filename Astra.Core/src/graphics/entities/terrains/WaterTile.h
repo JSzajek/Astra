@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Spatial.h"
-#include "../materials/WaterMaterial.h"
+#include "../Spatial.h"
+#include "../../materials/WaterMaterial.h"
 
 namespace Astra::Graphics
 {
