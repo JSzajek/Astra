@@ -173,9 +173,10 @@
     <ClCompile Include="src\graphics\buffers\WaterFrameBuffer.cpp" />
     <ClCompile Include="src\graphics\entities\Camera.cpp" />
     <ClCompile Include="src\graphics\entities\Entity.cpp" />
+    <ClCompile Include="src\graphics\entities\terrains\HeightGenerator.cpp" />
     <ClCompile Include="src\graphics\entities\Light.cpp" />
-    <ClCompile Include="src\graphics\entities\Terrain.cpp" />
-    <ClCompile Include="src\graphics\entities\WaterTile.cpp" />
+    <ClCompile Include="src\graphics\entities\terrains\Terrain.cpp" />
+    <ClCompile Include="src\graphics\entities\terrains\WaterTile.cpp" />
     <ClCompile Include="src\graphics\fonts\FontController.cpp" />
     <ClCompile Include="src\graphics\fonts\GuiText.cpp" />
     <ClCompile Include="src\graphics\fonts\MetaFile.cpp" />
@@ -216,7 +217,8 @@
     <ClInclude Include="src\graphics\buffers\CubeMapTexture.h" />
     <ClInclude Include="src\graphics\buffers\FrameBuffer.h" />
     <ClInclude Include="src\graphics\buffers\WaterFrameBuffer.h" />
-    <ClInclude Include="src\graphics\entities\WaterTile.h" />
+    <ClInclude Include="src\graphics\entities\terrains\HeightGenerator.h" />
+    <ClInclude Include="src\graphics\entities\terrains\WaterTile.h" />
     <ClInclude Include="src\graphics\fonts\Character.h" />
     <ClInclude Include="src\graphics\fonts\FontController.h" />
     <ClInclude Include="src\graphics\fonts\GuiText.h" />
@@ -235,7 +237,7 @@
     <ClInclude Include="src\graphics\entities\Entity.h" />
     <ClInclude Include="src\graphics\entities\Light.h" />
     <ClInclude Include="src\graphics\entities\Spatial.h" />
-    <ClInclude Include="src\graphics\entities\Terrain.h" />
+    <ClInclude Include="src\graphics\entities\terrains\Terrain.h" />
     <ClInclude Include="src\graphics\loaders\Loader.h" />
     <ClInclude Include="src\graphics\loaders\ObjLoader.h" />
     <ClInclude Include="src\graphics\materials\WaterMaterial.h" />

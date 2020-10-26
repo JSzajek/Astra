@@ -34,7 +34,7 @@ namespace Astra::Math
 
 	static inline float Random()
 	{
-		return static_cast<float>((float)rand() / RAND_MAX);
+		return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	}
 
 	static inline int DecimalNumbers(float number, unsigned int precision) {

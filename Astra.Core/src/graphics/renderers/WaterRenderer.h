@@ -4,7 +4,7 @@
 #include "../entities/Camera.h"
 #include "../buffers/WaterFrameBuffer.h"
 #include "../buffers/Texture.h"
-#include "../entities/WaterTile.h"
+#include "../entities/terrains/WaterTile.h"
 #include "../entities/Light.h"
 #include "../shaders/WaterShader.h"
 
