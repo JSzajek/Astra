@@ -173,6 +173,7 @@
     <ClCompile Include="src\graphics\buffers\WaterFrameBuffer.cpp" />
     <ClCompile Include="src\graphics\entities\Camera.cpp" />
     <ClCompile Include="src\graphics\entities\Entity.cpp" />
+    <ClCompile Include="src\graphics\entities\HeightGenerator.cpp" />
     <ClCompile Include="src\graphics\entities\Light.cpp" />
     <ClCompile Include="src\graphics\entities\Terrain.cpp" />
     <ClCompile Include="src\graphics\entities\WaterTile.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="src\graphics\buffers\CubeMapTexture.h" />
     <ClInclude Include="src\graphics\buffers\FrameBuffer.h" />
     <ClInclude Include="src\graphics\buffers\WaterFrameBuffer.h" />
+    <ClInclude Include="src\graphics\entities\HeightGenerator.h" />
     <ClInclude Include="src\graphics\entities\WaterTile.h" />
     <ClInclude Include="src\graphics\fonts\Character.h" />
     <ClInclude Include="src\graphics\fonts\FontController.h" />
