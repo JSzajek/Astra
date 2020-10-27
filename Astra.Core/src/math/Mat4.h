@@ -17,6 +17,7 @@ namespace Astra::Math
 		Mat4();
 		Mat4(float diagonal);
 		Mat4(const Mat4& other);
+		void operator=(const Mat4&);
 
 		static Mat4 Identity();
 

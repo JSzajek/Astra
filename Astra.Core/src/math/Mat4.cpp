@@ -18,6 +18,11 @@ namespace Astra::Math
 		memcpy(data, other.data, 16 * sizeof(float));
 	}
 
+	void Mat4::operator=(const Mat4& other)
+	{
+		memcpy(data, other.data, 16 * sizeof(float));
+	}
+
 	void Mat4::SetIdentity()
 	{
 		memset(data, 0, 4 * 4 * sizeof(float));

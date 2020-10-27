@@ -8,7 +8,8 @@ namespace Astra::Graphics
 		: fogColor(fogColor), m_reflectionClipPlane(Math::Vec4(0, 1, 0, 0)),
 			m_refractionClipPlane(Math::Vec4(0, -1, 0, 0))
 	{
-		Init();
+		m_shadowMapController = new ShadowMapController(m_mainCamera, FieldOfView, NearPlane, FarPlane);
+		
 		m_guiShader = new GuiShader();
 		m_guiRenderer = new GuiRenderer(m_guiShader);
 
@@ -27,13 +28,12 @@ namespace Astra::Graphics
 		m_normalEntityShader = new NormalEntityShader();
 		m_normalEntityRenderer = new NormalEntity3dRenderer(m_normalEntityShader, &fogColor);
 
-		m_shadowMapController = new ShadowMapController(m_mainCamera, FieldOfView, NearPlane, FarPlane);
-
 		m_waterBuffer = Loader::LoadWaterFrameBuffer(DefaultReflectionWidth, DefaultReflectionHeight,
 													 DefaultRefractionWidth, DefaultRefractionHeight);
 		m_waterRenderer->SetFrameBuffer(m_waterBuffer);
 
 		modelViewMatrix = Math::Mat4::Identity();
+		Init();
 	}
 
 	void RendererController::Init() const
@@ -68,6 +68,8 @@ namespace Astra::Graphics
 
 	void RendererController::Render()
 	{
+		
+		
 		m_shadowMapController->Render();
 
 		if (m_waterBuffer && m_mainCamera)
@@ -100,7 +102,11 @@ namespace Astra::Graphics
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		glActiveTexture(GL_TEXTURE5);
+		glBindTexture(GL_TEXTURE_2D, m_shadowMapController->GetShadowMap());
+		m_terrainRenderer->SetShadowMatrix(m_shadowMapController->GetToShadowMapSpaceMatrix());
 		m_terrainRenderer->Draw(viewMatrix, clipPlane);
+		
 		m_entityRenderer->Draw(viewMatrix, clipPlane);
 		m_normalEntityRenderer->Draw(viewMatrix, clipPlane);
 		m_skyboxRenderer->Draw(viewMatrix);

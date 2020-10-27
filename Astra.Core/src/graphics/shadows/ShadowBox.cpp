@@ -33,10 +33,10 @@ namespace Astra::Graphics
 		Math::Vec3 forwardVector = rotation * Math::Forward;
 		Math::Vec3 toFar = forwardVector * SHADOW_DISTANCE;
 		Math::Vec3 toNear = forwardVector * m_nearPlane;
-		Math::Vec3 centerNear = toNear + m_camera->GetPosition();
-		Math::Vec3 centerFar = toNear + m_camera->GetPosition();
+		Math::Vec3 centerNear = toNear + m_camera->GetTranslation();
+		Math::Vec3 centerFar = toFar + m_camera->GetTranslation();
 
-		Math::Vec4* points = CalculateFrustumVertices(rotation, forwardVector, centerNear, centerFar);
+		Math::Vec3* points = CalculateFrustumVertices(rotation, forwardVector, centerNear, centerFar);
 		int i = 0;
 		while (i < 8)
 		{
@@ -46,8 +46,8 @@ namespace Astra::Graphics
 				m_maxX = points[i].x;
 				m_minY = points[i].y;
 				m_maxY = points[i].y;
-				m_minY = points[i].z;
-				m_maxY = points[i].z;
+				m_minZ = points[i].z;
+				m_maxZ = points[i].z;
 				i++;
 				continue;
 			}
@@ -85,7 +85,7 @@ namespace Astra::Graphics
 		return true;
 	}
 
-	Math::Vec4* const ShadowBox::CalculateFrustumVertices(const Math::Mat4 rotation, const Math::Vec3& forward, const Math::Vec3& centerNear, const Math::Vec3& centerFar)
+	Math::Vec3* const ShadowBox::CalculateFrustumVertices(const Math::Mat4 rotation, const Math::Vec3& forward, const Math::Vec3& centerNear, const Math::Vec3& centerFar)
 	{
 		Math::Vec3 upVector = rotation * Math::YAxis;
 		Math::Vec3 rightVector = forward.Cross(upVector);
@@ -97,7 +97,7 @@ namespace Astra::Graphics
 		Math::Vec3 nearTop = centerNear + (upVector * m_nearHeight);
 		Math::Vec3 nearBottom = centerNear + (downVector * m_nearHeight);
 
-		Math::Vec4* vertices = new Math::Vec4[8];
+		Math::Vec3* vertices = new Math::Vec3[8];
 		vertices[0] = CalculateLightSpaceFrustumCorner(farTop, rightVector, m_farWidth);
 		vertices[1] = CalculateLightSpaceFrustumCorner(farTop, leftVector, m_farWidth);
 		vertices[2] = CalculateLightSpaceFrustumCorner(farBottom, rightVector, m_farWidth);
@@ -109,18 +109,17 @@ namespace Astra::Graphics
 		return vertices;
 	}
 
-	const Math::Vec4& ShadowBox::CalculateLightSpaceFrustumCorner(const Math::Vec3& start, const Math::Vec3& direction, float width)
+	const Math::Vec3& ShadowBox::CalculateLightSpaceFrustumCorner(const Math::Vec3& start, const Math::Vec3& direction, float width)
 	{
 		Math::Vec3 point(start + (direction * width));
-		Math::Vec4 point4D(point, 1);
-		return m_lightViewMatrix * point4D;
+		return m_lightViewMatrix * point;
 	}
 
 	const Math::Mat4& ShadowBox::CalculateCameraRotationMatrix()
 	{
 		Math::Mat4 rotation(1);
 		rotation = rotation.Rotate(-m_camera->GetYaw(), Math::YAxis);
-		rotation = rotation.Rotate(m_camera->GetPitch(), Math::XAxis);
+		rotation = rotation.Rotate(-m_camera->GetPitch(), Math::XAxis);
 		return rotation;
 	}
 }

@@ -12,6 +12,7 @@ namespace Astra::Graphics
 		m_shader->SetUniform1i(TerrainShader::GTextureTag, 2);
 		m_shader->SetUniform1i(TerrainShader::BTextureTag, 3);
 		m_shader->SetUniform1i(TerrainShader::BlendMapTag, 4);
+		m_shader->SetUniform1i(TerrainShader::ShadowMapTag, 5);
 		m_shader->Stop();
 	}
 
@@ -24,6 +25,7 @@ namespace Astra::Graphics
 			m_shader->SetUniform3f(TerrainShader::SkyColorTag, *m_skyColor);
 		}
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
+		m_shader->SetUniformMat4(TerrainShader::ToShadowSpaceMatrixTag, m_toShadowSpaceMatrix);
 		for (const auto& directory : m_terrains)
 		{
 			std::vector<const Terrain*> terrains = directory.second;

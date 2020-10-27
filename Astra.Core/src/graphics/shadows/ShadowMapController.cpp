@@ -10,7 +10,7 @@ namespace Astra::Graphics
 		m_shader = new ShadowShader();
 		m_box = new ShadowBox(m_lightViewMatrix, camera, fov, near, far);
 		m_buffer = Loader::LoadShadowFrameBuffer(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
-		m_renderer = new ShadowMapRenderer(m_shader, m_buffer, m_projectionMatrix);
+		m_renderer = new ShadowMapRenderer(m_shader, m_buffer, m_projectionViewMatrix);
 	}
 
 	ShadowMapController::~ShadowMapController()
@@ -32,6 +32,7 @@ namespace Astra::Graphics
 		UpdateOrthoProjectionMatrix(m_box->GetWidth(), m_box->GetHeight(), m_box->GetLength());
 		UpdateLightViewMatrix(lightDirection, m_box->GetCenter());
 		m_projectionViewMatrix = m_projectionMatrix * m_lightViewMatrix;
+		m_renderer->SetProjectionViewMatrix(m_projectionViewMatrix);
 	}
 	
 	void ShadowMapController::UpdateLightViewMatrix(Math::Vec3 direction, Math::Vec3 center)
@@ -52,8 +53,7 @@ namespace Astra::Graphics
 		m_projectionMatrix.SetIdentity();
 		m_projectionMatrix.columns[0][0] = 2.0f / width;
 		m_projectionMatrix.columns[1][1] = 2.0f / height;
-		m_projectionMatrix.columns[2][2] = 2.0f / length;
-		m_renderer->SetProjectionViewMatrix(m_projectionMatrix);
+		m_projectionMatrix.columns[2][2] = -2.0f / length;
 	}
 
 	const Math::Mat4& ShadowMapController::CreateOffset()

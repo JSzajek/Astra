@@ -11,6 +11,8 @@ uniform mat4 transformMatrix;
 uniform vec3 lightPosition[4];
 uniform vec4 clipPlane;
 
+uniform mat4 toShadowMapSpace;
+
 out vec2 v_TexCoordinates;
 
 out vec3 surfaceNormal;
@@ -19,12 +21,15 @@ out vec3 toCameraVector;
 
 out float visibility;
 
+out vec4 shadowCoords;
+
 const float density = 0.0035;
 const float gradient = 5.0;
 
 void main()
 {
 	vec4 worldPosition = transformMatrix * vec4(position, 1);
+	shadowCoords = toShadowMapSpace * worldPosition;
 
 	gl_ClipDistance[0] = dot(worldPosition, clipPlane);
 
@@ -55,6 +60,8 @@ in vec3 toCameraVector;
 
 in float visibility;
 
+in vec4 shadowCoords;
+
 out vec4 out_Color;
 
 uniform sampler2D backgroundTexture;
@@ -62,6 +69,7 @@ uniform sampler2D rTexture;
 uniform sampler2D gTexture;
 uniform sampler2D bTexture;
 uniform sampler2D blendMap;
+uniform sampler2D shadowMap;
 
 uniform vec3 lightColor[4];
 uniform vec3 attenuation[4];
@@ -73,6 +81,13 @@ uniform vec3 fogColor;
 
 void main()
 {
+	float objectNearestLight = texture(shadowMap, shadowCoords.xy).r;
+	float lightFactor = 1.0;
+	if (shadowCoords.z > objectNearestLight)
+	{
+		lightFactor = 1.0 - 0.4;
+	}
+
 	vec4 blendMapColor = texture(blendMap, v_TexCoordinates);
 	float backTextureAmount = 1 - (blendMapColor.r + blendMapColor.g + blendMapColor.b);
 	vec2 tiledCoords = v_TexCoordinates * 40;
@@ -109,7 +124,7 @@ void main()
 		totalDiffuse += (brightness * lightColor[i]) / attenuationFactor;
 		totalSpecular += (dampenedFactor * reflectivity * lightColor[i]) / attenuationFactor;
 	}
-	totalDiffuse = max(totalDiffuse, 0.2);
+	totalDiffuse = max(totalDiffuse, 0.2) * lightFactor;
 
 	out_Color = vec4(totalDiffuse, 1) * totalColor + vec4(totalSpecular, 1);
 	out_Color = mix(vec4(fogColor, 1), out_Color, visibility);

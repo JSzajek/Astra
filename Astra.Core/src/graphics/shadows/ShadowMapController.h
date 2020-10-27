@@ -33,7 +33,7 @@ namespace Astra::Graphics
 		inline void SetCamera(Camera* camera) { m_box->SetCamera(camera); }
 		inline void AddEntity(const Entity* entity) { m_renderer->AddEntity(entity); }
 
-		inline const Math::Mat4& GetToShadowMapSpaceMatrix() const { return m_offset * m_projectionViewMatrix; }
+		inline Math::Mat4 GetToShadowMapSpaceMatrix() const { return m_offset * m_projectionViewMatrix; }
 		inline const unsigned int GetShadowMap() const { return m_buffer->GetShadowMap(); }
 		inline const Math::Mat4& GetLightSpaceTransform() const { return m_lightViewMatrix; }
 	private:
