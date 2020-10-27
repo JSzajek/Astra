@@ -10,6 +10,7 @@
 #include "../buffers/CubeMapTexture.h"
 #include "../buffers/FrameBuffer.h"
 #include "../buffers/WaterFrameBuffer.h"
+#include "../buffers/ShadowFrameBuffer.h"
 
 namespace Astra::Graphics
 {
@@ -73,6 +74,11 @@ namespace Astra::Graphics
 			return Get().LoadWaterFrameBufferImpl(reflectionWidth, reflectionHeight, refractionWidth, refractionHeight);
 		}
 
+		static ShadowFrameBuffer* LoadShadowFrameBuffer(unsigned int width, unsigned int height)
+		{
+			return Get().LoadShadowFrameBufferImpl(width, height);
+		}
+
 	private:
 		Loader();
 		~Loader();
@@ -94,11 +100,12 @@ namespace Astra::Graphics
 		const CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);
 
 		WaterFrameBuffer* LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
-															unsigned int refractionWidth, unsigned int refractionHeight);
-		
-		const FrameBuffer& CreateFrameBuffer();
+												   unsigned int refractionWidth, unsigned int refractionHeight);
+		ShadowFrameBuffer* LoadShadowFrameBufferImpl(unsigned int width, unsigned int height);
+
+		const FrameBuffer& CreateFrameBuffer(int drawAttachment = GL_NONE, int readAttachment = GL_NONE);
 		void CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height);
-		void CreateDepthTextureAttachment(GLuint& id, unsigned int width, unsigned int height);
+		GLuint CreateDepthTextureAttachment(GLuint& id, unsigned int width, unsigned int height, int filter = GL_LINEAR, int wrap = GL_REPEAT);
 		void CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height);
 
 		GLuint BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage = GL_STATIC_DRAW, GLboolean normalized = GL_FALSE);

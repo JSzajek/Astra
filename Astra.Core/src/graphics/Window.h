@@ -49,6 +49,8 @@ namespace Astra::Graphics
 		inline float getMouseWheel() { return m_mouseScroll; }
 
 		inline float GetDelta() { return delta; }
+
+		static inline float GetAspectRatio() { return (float)width / float(height); }
 	private:
 		bool Init();
 	};

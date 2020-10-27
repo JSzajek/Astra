@@ -9,23 +9,19 @@ namespace Astra::Math
 
 	Mat4::Mat4(float diagonal)
 	{
-		for (int i = 0; i < 4 * 4; i++)
-		{
-			data[i] = 0;
-		}
-
-		data[0] = diagonal;
-		data[1 + 1 * 4] = diagonal;
-		data[2 + 2 * 4] = diagonal;
-		data[3 + 3 * 4] = diagonal;
+		memset(data, 0, 4 * 4 * sizeof(float));
+		SetDiagonal(diagonal);
 	}
 
 	Mat4::Mat4(const Mat4& other)
 	{
-		for (int i = 0; i < 4 * 4; i++)
-		{
-			data[i] = other.data[i];
-		}
+		memcpy(data, other.data, 16 * sizeof(float));
+	}
+
+	void Mat4::SetIdentity()
+	{
+		memset(data, 0, 4 * 4 * sizeof(float));
+		SetDiagonal(1);
 	}
 
 	Mat4 Mat4::Identity()
@@ -91,6 +87,16 @@ namespace Astra::Math
 		return left.Multiply(right);
 	}
 
+	/// <summary>
+	/// Multiplication operator override.
+	/// </summary>
+	/// <param name="other">The other Mat4 to multiply</param>
+	/// <returns>The multiplied Mat4</returns>
+	Mat4& Mat4::operator*=(const Mat4& other)
+	{
+		return Multiply(other);
+	}
+
 	Mat4& Mat4::Translate(const Vec3& other)
 	{
 		Mat4 translationMatrix = TranslationMatrix(other);
@@ -109,14 +115,129 @@ namespace Astra::Math
 		return *this;
 	}
 
-	/// <summary>
-	/// Multiplication operator override.
-	/// </summary>
-	/// <param name="other">The other Mat4 to multiply</param>
-	/// <returns>The multiplied Mat4</returns>
-	Mat4& Mat4::operator*=(const Mat4& other)
+	const Mat4& Mat4::Inverse() const
 	{
-		return Multiply(other);
+		Mat4 inverse(0);
+
+		inverse.data[0] = data[5] * data[10] * data[15] -
+						  data[5] * data[11] * data[14] -
+						  data[9] * data[6] * data[15] +
+						  data[9] * data[7] * data[14] +
+						  data[13] * data[6] * data[11] -
+						  data[13] * data[7] * data[10];
+
+		inverse.data[4] = -data[4] * data[10] * data[15] +
+						   data[4] * data[11] * data[14] +
+						   data[8] * data[6] * data[15] -
+						   data[8] * data[7] * data[14] -
+						   data[12] * data[6] * data[11] +
+						   data[12] * data[7] * data[10];
+
+		inverse.data[8] = data[4] * data[9] * data[15] -
+						  data[4] * data[11] * data[13] -
+						  data[8] * data[5] * data[15] +
+						  data[8] * data[7] * data[13] +
+						  data[12] * data[5] * data[11] -
+						  data[12] * data[7] * data[9];
+
+		inverse.data[12] = -data[4] * data[9] * data[14] +
+							data[4] * data[10] * data[13] +
+							data[8] * data[5] * data[14] -
+							data[8] * data[6] * data[13] -
+							data[12] * data[5] * data[10] +
+							data[12] * data[6] * data[9];
+
+		inverse.data[1] = -data[1] * data[10] * data[15] +
+						   data[1] * data[11] * data[14] +
+						   data[9] * data[2] * data[15] -
+						   data[9] * data[3] * data[14] -
+						   data[13] * data[2] * data[11] +
+						   data[13] * data[3] * data[10];
+
+		inverse.data[5] = data[0] * data[10] * data[15] -
+						  data[0] * data[11] * data[14] -
+						  data[8] * data[2] * data[15] +
+						  data[8] * data[3] * data[14] +
+						  data[12] * data[2] * data[11] -
+						  data[12] * data[3] * data[10];
+
+		inverse.data[9] = -data[0] * data[9] * data[15] +
+						   data[0] * data[11] * data[13] +
+						   data[8] * data[1] * data[15] -
+						   data[8] * data[3] * data[13] -
+						   data[12] * data[1] * data[11] +
+						   data[12] * data[3] * data[9];
+
+		inverse.data[13] = data[0] * data[9] * data[14] -
+						   data[0] * data[10] * data[13] -
+						   data[8] * data[1] * data[14] +
+						   data[8] * data[2] * data[13] +
+						   data[12] * data[1] * data[10] -
+						   data[12] * data[2] * data[9];
+
+		inverse.data[2] = data[1] * data[6] * data[15] -
+						  data[1] * data[7] * data[14] -
+						  data[5] * data[2] * data[15] +
+						  data[5] * data[3] * data[14] +
+						  data[13] * data[2] * data[7] -
+						  data[13] * data[3] * data[6];
+
+		inverse.data[6] = -data[0] * data[6] * data[15] +
+						   data[0] * data[7] * data[14] +
+						   data[4] * data[2] * data[15] -
+						   data[4] * data[3] * data[14] -
+						   data[12] * data[2] * data[7] +
+						   data[12] * data[3] * data[6];
+
+		inverse.data[10] = data[0] * data[5] * data[15] -
+						   data[0] * data[7] * data[13] -
+						   data[4] * data[1] * data[15] +
+						   data[4] * data[3] * data[13] +
+						   data[12] * data[1] * data[7] -
+						   data[12] * data[3] * data[5];
+
+		inverse.data[14] = -data[0] * data[5] * data[14] +
+							data[0] * data[6] * data[13] +
+							data[4] * data[1] * data[14] -
+							data[4] * data[2] * data[13] -
+							data[12] * data[1] * data[6] +
+							data[12] * data[2] * data[5];
+
+		inverse.data[3] = -data[1] * data[6] * data[11] +
+						   data[1] * data[7] * data[10] +
+						   data[5] * data[2] * data[11] -
+						   data[5] * data[3] * data[10] -
+						   data[9] * data[2] * data[7] +
+						   data[9] * data[3] * data[6];
+
+		inverse.data[7] = data[0] * data[6] * data[11] -
+						  data[0] * data[7] * data[10] -
+						  data[4] * data[2] * data[11] +
+						  data[4] * data[3] * data[10] +
+						  data[8] * data[2] * data[7] -
+						  data[8] * data[3] * data[6];
+
+		inverse.data[11] = -data[0] * data[5] * data[11] +
+							data[0] * data[7] * data[9] +
+							data[4] * data[1] * data[11] -
+							data[4] * data[3] * data[9] -
+							data[8] * data[1] * data[7] +
+							data[8] * data[3] * data[5];
+
+		inverse.data[15] = data[0] * data[5] * data[10] -
+						   data[0] * data[6] * data[9] -
+						   data[4] * data[1] * data[10] +
+						   data[4] * data[2] * data[9] +
+						   data[8] * data[1] * data[6] -
+						   data[8] * data[2] * data[5];
+
+		float det = data[0] * inverse.data[0] + data[1] * inverse.data[4] + data[2] * inverse.data[8] + data[3] * inverse.data[12];
+		det = 1.0f / det;
+		for (int i = 0; i < 16; i++)
+		{
+			inverse.data[i] *= det;
+		}
+		return inverse;
 	}
 
 	Mat4 Mat4::Orthographic(float left, float right, float bottom, float top, float near, float far)
@@ -138,15 +259,16 @@ namespace Astra::Math
 		Mat4 result(1.0f);
 
 		float aspectRatio = width / height;
-		float y_scale = (1.0f / tan(Math::ToRadians(fov / 2.0f)) * aspectRatio);
+		float y_scale = 1.0f / tan(Math::ToRadians(fov / 2.0f));
 		float x_scale = y_scale / aspectRatio;
 		float fulstrumLength = far - near;
 		
-		result.columns[0].x = x_scale;
-		result.columns[1].y = y_scale;
-		result.columns[2].z = -((far + near) / fulstrumLength);
-		result.columns[2].w = -1;
-		result.columns[3].z = -((2 * near * far) / fulstrumLength);
+		result.columns[0][0] = x_scale;
+		result.columns[1][1] = y_scale;
+		result.columns[2][2] = -((far + near) / fulstrumLength);
+		result.columns[2][3] = -1;
+		result.columns[3][2] = -((2 * near * far) / fulstrumLength);
+		result.columns[3][3] = 0;
 		return result;
 	}
 
@@ -185,28 +307,6 @@ namespace Astra::Math
 		result.columns[2][0] = temp[2] * normAxis[0] + s * normAxis[1];
 		result.columns[2][1] = temp[2] * normAxis[1] - s * normAxis[0];
 		result.columns[2][2] = c + temp[2] * normAxis[2];
-
-		/*Mat4 result(1.0f);
-		float c = cos(rad);
-		float c_inv = 1.0f - c;
-		float s = sin(rad);
-
-		float x = axis.x;
-		float y = axis.y;
-		float z = axis.z;
-
-		result.data[0 + 0 * 4] = x * x * c_inv + c;
-		result.data[0 + 1 * 4] = y * x * c_inv + z * s;
-		result.data[0 + 2 * 4] = x * z * c_inv - y * s;
-
-		result.data[1 + 0 * 4] = x * y * c_inv - z * s;
-		result.data[1 + 1 * 4] = y * y * c_inv + c;
-		result.data[1 + 2 * 4] = y * z * c_inv + x * s;
-
-		result.data[2 + 0 * 4] = x * z * c_inv + y * s;
-		result.data[2 + 1 * 4] = y * z * c_inv - x * s;
-		result.data[2 + 2 * 4] = z * z * c_inv + c;
-		*/
 		return result;
 	}
 
@@ -219,5 +319,13 @@ namespace Astra::Math
 		result.data[2 + 2 * 4] = scale.z;
 
 		return result;
+	}
+
+	void Mat4::SetDiagonal(float diagonal)
+	{
+		data[0] = diagonal;
+		data[1 + 1 * 4] = diagonal;
+		data[2 + 2 * 4] = diagonal;
+		data[3 + 3 * 4] = diagonal;
 	}
 }

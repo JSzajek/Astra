@@ -20,6 +20,8 @@ namespace Astra::Math
 
 		static Mat4 Identity();
 
+		void SetIdentity();
+
 		Mat4& Multiply(const Mat4& other);
 
 		/// <summary>
@@ -35,10 +37,6 @@ namespace Astra::Math
 		Vec4 Multiply(const Vec4& other) const;
 		friend Vec4 operator*(const Mat4& left, const Vec4& right);
 
-		Mat4& Translate(const Vec3& other);
-		Mat4& Rotate(float angle, const Vec3& other);
-		Mat4& Scale(const Vec3& other);
-
 		/// <summary>
 		/// Multiplication operator override.
 		/// </summary>
@@ -46,7 +44,10 @@ namespace Astra::Math
 		/// <returns>The multiplied Mat4</returns>
 		Mat4& operator*=(const Mat4& other);
 
-		//float& operator()(unsigned int row, unsigned int col);
+		Mat4& Translate(const Vec3& other);
+		Mat4& Rotate(float angle, const Vec3& other);
+		Mat4& Scale(const Vec3& other);
+		const Mat4& Inverse() const;
 
 		static Mat4 Orthographic(float left, float right, float bottom, float top, float near, float far);
 		static Mat4 Perspective(float width, float height, float fov, float near, float far);
@@ -63,5 +64,7 @@ namespace Astra::Math
 			stream << "(" << other.columns[0].w << ", " << other.columns[1].w << ", " << other.columns[2].w << ", " << other.columns[3].w << ")";
 			return stream;
 		}
+	private:
+		void SetDiagonal(float diagonal);
 	};
 }

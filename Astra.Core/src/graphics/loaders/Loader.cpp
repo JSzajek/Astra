@@ -201,7 +201,7 @@ namespace Astra::Graphics
 	WaterFrameBuffer* Loader::LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
 															  unsigned int refractionWidth, unsigned int refractionHeight)
 	{
-		FrameBuffer reflection = CreateFrameBuffer();
+		FrameBuffer reflection = CreateFrameBuffer(GL_COLOR_ATTACHMENT0);
 		CreateTextureAttachment(reflection.ColorAttachment(), reflectionWidth, reflectionHeight);
 		CreateDepthBufferAttachment(reflection.DepthAttachment(), reflectionWidth, reflectionHeight);
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -210,9 +210,9 @@ namespace Astra::Graphics
 		}
 		UnbindFrameBuffer();
 
-		FrameBuffer refraction = CreateFrameBuffer();
+		FrameBuffer refraction = CreateFrameBuffer(GL_COLOR_ATTACHMENT0);
 		CreateTextureAttachment(refraction.ColorAttachment(), refractionWidth, refractionHeight);
-		CreateDepthTextureAttachment(refraction.DepthAttachment(), refractionWidth, refractionHeight);
+		static_cast<void>(CreateDepthTextureAttachment(refraction.DepthAttachment(), refractionWidth, refractionHeight));
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
 			Logger::LogError("Error Incomplete Refraction FBO.");
@@ -225,12 +225,27 @@ namespace Astra::Graphics
 		return waterFrameBuffer;
 	}
 
-	const FrameBuffer& Loader::CreateFrameBuffer()
+	ShadowFrameBuffer* Loader::LoadShadowFrameBufferImpl(unsigned int width, unsigned int height)
+	{
+		FrameBuffer buffer = CreateFrameBuffer();
+		GLuint id = CreateDepthTextureAttachment(buffer.DepthAttachment(), width, height, GL_NEAREST, GL_CLAMP_TO_EDGE);
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			Logger::LogError("Error Incomplete Shadow FBO.");
+		}
+		UnbindFrameBuffer();
+
+		ShadowFrameBuffer* shadowFrameBuffer = new ShadowFrameBuffer(buffer, id, width, height);
+		return shadowFrameBuffer;
+	}
+
+	const FrameBuffer& Loader::CreateFrameBuffer(int drawAttachment, int readAttachment)
 	{
 		FrameBuffer buffer;
 		glGenFramebuffers(1, &buffer.Id());
 		glBindFramebuffer(GL_FRAMEBUFFER, buffer.Id());
-		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		glDrawBuffer(drawAttachment);
+		glReadBuffer(readAttachment);
 		return buffer;
 	}
 
@@ -245,15 +260,18 @@ namespace Astra::Graphics
 		m_textureIds.push_back(id);
 	}
 
-	void Loader::CreateDepthTextureAttachment(GLuint& id, unsigned int width, unsigned int height)
+	GLuint Loader::CreateDepthTextureAttachment(GLuint& id, unsigned int width, unsigned int height, int filter, int wrap)
 	{
 		glGenTextures(1, &id);
 		glBindTexture(GL_TEXTURE_2D, id);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, id, 0);
 		m_textureIds.push_back(id);
+		return id;
 	}
 
 	void Loader::CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height)

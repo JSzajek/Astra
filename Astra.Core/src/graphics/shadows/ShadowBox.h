@@ -1,0 +1,35 @@
+#pragma once
+
+#include "../entities/Camera.h"
+#include "../../math/Maths.h"
+
+namespace Astra::Graphics
+{
+	#define OFFSET				10.0f
+	#define SHADOW_DISTANCE		100.0f
+
+	class ShadowBox
+	{
+	private:
+		float m_minX, m_maxX;
+		float m_minY, m_maxY;
+		float m_minZ, m_maxZ;
+		Math::Mat4 m_lightViewMatrix;
+		Camera* m_camera;
+		float m_farHeight, m_farWidth, m_nearHeight, m_nearWidth;
+		float m_nearPlane;
+	public:
+		ShadowBox(const Math::Mat4& lightViewMatrix, Camera* camera, float fov, float near, float far);
+		
+		inline const float GetWidth() const { return m_maxX - m_minX; }
+		inline const float GetHeight() const { return m_maxY - m_minY; }
+		inline const float GetLength() const { return m_maxZ - m_minZ; }
+		const Math::Vec3& GetCenter();
+
+		void Update();
+	private:
+		Math::Vec4* const CalculateFrustumVertices(const Math::Mat4 rotation, const Math::Vec3& forward, const Math::Vec3& centerNear, const Math::Vec3& centerFar);
+		const Math::Vec4& CalculateLightSpaceFrustumCorner(const Math::Vec3& start, const Math::Vec3& direction, float width);
+		const Math::Mat4& CalculateCameraRotationMatrix();
+	};
+}

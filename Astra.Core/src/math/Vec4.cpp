@@ -12,6 +12,11 @@ namespace Astra::Math
 	{
 	}
 
+	Vec4::Vec4(const Vec3& other, float _w)
+		: x(other.x), y(other.y), z(other.z), w(_w)
+	{
+	}
+
 	Vec4::Vec4(const Vec4& other)
 		: x(other.x), y(other.y), z(other.z), w(other.w)
 	{

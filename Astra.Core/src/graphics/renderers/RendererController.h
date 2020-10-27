@@ -95,6 +95,14 @@ namespace Astra::Graphics
 				m_entityRenderer->AddEntity(entity); 
 			}
 		}
+
+		void AddDirectionalLight(Light* light)
+		{
+			m_terrainRenderer->AddLight(light);
+			m_entityRenderer->AddLight(light);
+			m_normalEntityRenderer->AddLight(light);
+			m_waterRenderer->AddLight(light);
+		}
 		
 		void AddLight(Light* light) 
 		{
@@ -106,8 +114,8 @@ namespace Astra::Graphics
 
 		void AddWaterTile(const WaterTile& tile) 
 		{
-			m_reflectionClipPlane.w = -tile.GetTranslation().y + 1.6f;
-			m_refractionClipPlane.w = tile.GetTranslation().y + 1.6f;
+			m_reflectionClipPlane.w = -tile.GetTranslation().y + 1.7f;
+			m_refractionClipPlane.w = tile.GetTranslation().y + 1.7f;
 			m_waterRenderer->AddTile(tile); 
 		}
 

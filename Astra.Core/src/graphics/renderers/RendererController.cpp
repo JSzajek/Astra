@@ -100,7 +100,6 @@ namespace Astra::Graphics
 		m_entityRenderer->Draw(viewMatrix, clipPlane);
 		m_normalEntityRenderer->Draw(viewMatrix, clipPlane);
 		m_skyboxRenderer->Draw(viewMatrix);
-		ParticleController::Render(viewMatrix);
 	}
 
 	void RendererController::PostRender()
@@ -110,6 +109,7 @@ namespace Astra::Graphics
 
 	void RendererController::GuiRender()
 	{
+		ParticleController::Render(viewMatrix);
 		m_guiRenderer->Draw(NULL);
 		FontController::Render();
 	}
