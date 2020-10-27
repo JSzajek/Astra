@@ -26,6 +26,9 @@ out vec4 shadowCoords;
 const float density = 0.0035;
 const float gradient = 5.0;
 
+const float shadowDistance = 150.0;
+const float transitionDistance = 10.0;
+
 void main()
 {
 	vec4 worldPosition = transformMatrix * vec4(position, 1);
@@ -47,6 +50,10 @@ void main()
 	float distance = length(positionRelativeToCam.xyz);
 	visibility = exp(-pow((distance * density), gradient));
 	visibility = clamp(visibility, 0, 1);
+
+	distance = distance - (shadowDistance - transitionDistance);
+	distance = distance / transitionDistance;
+	shadowCoords.w = clamp(1.0 - distance, 0.0, 1.0);
 }
 
 #shader fragment
@@ -85,7 +92,7 @@ void main()
 	float lightFactor = 1.0;
 	if (shadowCoords.z > objectNearestLight)
 	{
-		lightFactor = 1.0 - 0.4;
+		lightFactor = 1.0 - (shadowCoords.w * 0.4);
 	}
 
 	vec4 blendMapColor = texture(blendMap, v_TexCoordinates);

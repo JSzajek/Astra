@@ -20,9 +20,23 @@ namespace Astra::Graphics
 		{
 			glBindVertexArray(directory.second.front()->vertexArray->vaoId);
 			glEnableVertexAttribArray(0);
+			glEnableVertexAttribArray(1);
+
+			m_shader->SetUniform1f(ShadowShader::NumberOfRowsTag, directory.second.front()->material->GetRowCount());
+			if (directory.second.front()->material->transparent)
+			{
+				glDisable(GL_CULL_FACE);
+			}
+			if (directory.second.front()->material != NULL)
+			{
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, directory.second.front()->material->id);
+			}
+
 			for (const Entity* entity : directory.second)
 			{
 				PrepareEntity(entity);
+
 				glDrawElements(entity->vertexArray->drawType, entity->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
 			}
 		}
@@ -47,6 +61,8 @@ namespace Astra::Graphics
 
 	void ShadowMapRenderer::PrepareEntity(const Entity* entity)
 	{
+		m_shader->SetUniform2f(ShadowShader::OffsetTag, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
+
 		Math::Mat4 transformMatrix = Math::Mat4Utils::Transformation(*entity);
 		m_shader->SetUniformMat4(ShadowShader::ModelViewProjMatrixTag, projectionViewMatrix * transformMatrix);
 	}
