@@ -25,8 +25,10 @@ namespace Astra::Graphics
 		return inverted * center;
 	}
 
-	void ShadowBox::Update()
+	bool ShadowBox::Update()
 	{
+		if (m_camera == NULL) { return false; }
+
 		Math::Mat4 rotation = CalculateCameraRotationMatrix();
 		Math::Vec3 forwardVector = rotation * Math::Forward;
 		Math::Vec3 toFar = forwardVector * SHADOW_DISTANCE;
@@ -40,51 +42,52 @@ namespace Astra::Graphics
 		{
 			if (i == 0)
 			{
-				m_minX = (*points).x;
-				m_maxX = (*points).x;
-				m_minY = (*points).y;
-				m_maxY = (*points).y;
-				m_minY = (*points).z;
-				m_maxY = (*points).z;
+				m_minX = points[i].x;
+				m_maxX = points[i].x;
+				m_minY = points[i].y;
+				m_maxY = points[i].y;
+				m_minY = points[i].z;
+				m_maxY = points[i].z;
+				i++;
 				continue;
 			}
 
-			if ((*points).x > m_maxX)
+			if (points[i].x > m_maxX)
 			{
-				m_maxX = (*points).x;
+				m_maxX = points[i].x;
 			}
-			else if ((*points).x < m_minX)
+			else if (points[i].x < m_minX)
 			{
-				m_minX = (*points).x;
-			}
-
-			if ((*points).y > m_maxY)
-			{
-				m_maxY = (*points).y;
-			}
-			else if ((*points).y < m_minY)
-			{
-				m_minY = (*points).y;
+				m_minX = points[i].x;
 			}
 
-			if ((*points).z > m_maxZ)
+			if (points[i].y > m_maxY)
 			{
-				m_maxZ = (*points).z;
+				m_maxY = points[i].y;
 			}
-			else if ((*points).z < m_minZ)
+			else if (points[i].y < m_minY)
 			{
-				m_minZ = (*points).z;
+				m_minY = points[i].y;
 			}
 
-			points++;
+			if (points[i].z > m_maxZ)
+			{
+				m_maxZ = points[i].z;
+			}
+			else if (points[i].z < m_minZ)
+			{
+				m_minZ = points[i].z;
+			}
 			i++;
 		}
 		m_maxZ += OFFSET;
+		delete[] points;
+		return true;
 	}
 
 	Math::Vec4* const ShadowBox::CalculateFrustumVertices(const Math::Mat4 rotation, const Math::Vec3& forward, const Math::Vec3& centerNear, const Math::Vec3& centerFar)
 	{
-		Math::Vec3 upVector = rotation * upVector;
+		Math::Vec3 upVector = rotation * Math::YAxis;
 		Math::Vec3 rightVector = forward.Cross(upVector);
 		Math::Vec3 downVector = upVector * -1;
 		Math::Vec3 leftVector = rightVector * -1;

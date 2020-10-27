@@ -11,6 +11,7 @@
 #include "NormalEntity3dRenderer.h"
 #include "../fonts/FontController.h"
 #include "../particles/ParticleController.h"
+#include "../shadows/ShadowMapController.h"
 #include "../shaders/GuiShader.h"
 #include "../shaders/BasicShader.h"
 #include "../shaders/LightingShader.h"
@@ -55,6 +56,8 @@ namespace Astra::Graphics
 		WaterRenderer* m_waterRenderer;
 		NormalEntity3dRenderer* m_normalEntityRenderer;
 
+		ShadowMapController* m_shadowMapController;
+
 		Camera* m_mainCamera;
 
 		WaterFrameBuffer* m_waterBuffer;
@@ -94,6 +97,7 @@ namespace Astra::Graphics
 			{
 				m_entityRenderer->AddEntity(entity); 
 			}
+			m_shadowMapController->AddEntity(entity);
 		}
 
 		void AddDirectionalLight(Light* light)
@@ -102,6 +106,7 @@ namespace Astra::Graphics
 			m_entityRenderer->AddLight(light);
 			m_normalEntityRenderer->AddLight(light);
 			m_waterRenderer->AddLight(light);
+			m_shadowMapController->SetDirectionalLight(light);
 		}
 		
 		void AddLight(Light* light) 
@@ -122,7 +127,10 @@ namespace Astra::Graphics
 		void SetMainCamera(Camera* camera) 
 		{ 
 			m_mainCamera = camera;
+			m_shadowMapController->SetCamera(camera);
 			m_waterRenderer->SetCamera(camera);
 		}
+
+		inline unsigned int GetShadowMapTexture() const { return m_shadowMapController->GetShadowMap(); }
 	};
 }

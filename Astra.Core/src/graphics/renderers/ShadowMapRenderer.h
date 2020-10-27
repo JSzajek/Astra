@@ -18,6 +18,9 @@ namespace Astra::Graphics
 		Math::Mat4 projectionViewMatrix;
 	public:
 		ShadowMapRenderer(ShadowShader* shader, ShadowFrameBuffer* buffer, const Math::Mat4& projectionViewMatrix);
+		
+		inline void SetProjectionViewMatrix(const Math::Mat4& matrix) { projectionViewMatrix = matrix; }
+
 		void AddEntity(const Entity* entity);
 		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 	private:

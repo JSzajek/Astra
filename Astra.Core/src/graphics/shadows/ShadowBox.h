@@ -21,12 +21,14 @@ namespace Astra::Graphics
 	public:
 		ShadowBox(const Math::Mat4& lightViewMatrix, Camera* camera, float fov, float near, float far);
 		
+		inline void SetCamera(Camera* camera) { m_camera = camera; }
+
 		inline const float GetWidth() const { return m_maxX - m_minX; }
 		inline const float GetHeight() const { return m_maxY - m_minY; }
 		inline const float GetLength() const { return m_maxZ - m_minZ; }
 		const Math::Vec3& GetCenter();
 
-		void Update();
+		bool Update();
 	private:
 		Math::Vec4* const CalculateFrustumVertices(const Math::Mat4 rotation, const Math::Vec3& forward, const Math::Vec3& centerNear, const Math::Vec3& centerFar);
 		const Math::Vec4& CalculateLightSpaceFrustumCorner(const Math::Vec3& start, const Math::Vec3& direction, float width);

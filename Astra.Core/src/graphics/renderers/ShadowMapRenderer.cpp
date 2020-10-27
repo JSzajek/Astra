@@ -27,6 +27,7 @@ namespace Astra::Graphics
 			}
 		}
 		UnbindVertexArray();
+		UnbindFrameBuffer();
 		m_shader->Stop();
 	}
 

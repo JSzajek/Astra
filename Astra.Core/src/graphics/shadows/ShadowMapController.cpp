@@ -20,19 +20,21 @@ namespace Astra::Graphics
 
 	void ShadowMapController::Render()
 	{
-		m_box->Update();
-		Prepare(m_light->GetTranslation() * -1);
-		m_renderer->Draw(NULL, NULL);
+		if (m_box->Update() && m_light != NULL)
+		{
+			Prepare(m_light->GetTranslation() * -1);
+			m_renderer->Draw(NULL, NULL);
+		}
 	}
 
-	void ShadowMapController::Prepare(Math::Vec3& lightDirection)
+	void ShadowMapController::Prepare(Math::Vec3 lightDirection)
 	{
 		UpdateOrthoProjectionMatrix(m_box->GetWidth(), m_box->GetHeight(), m_box->GetLength());
 		UpdateLightViewMatrix(lightDirection, m_box->GetCenter());
 		m_projectionViewMatrix = m_projectionMatrix * m_lightViewMatrix;
 	}
 	
-	void ShadowMapController::UpdateLightViewMatrix(Math::Vec3& direction, Math::Vec3 center)
+	void ShadowMapController::UpdateLightViewMatrix(Math::Vec3 direction, Math::Vec3 center)
 	{
 		direction.Normalize();
 		center *= -1;
@@ -51,6 +53,7 @@ namespace Astra::Graphics
 		m_projectionMatrix.columns[0][0] = 2.0f / width;
 		m_projectionMatrix.columns[1][1] = 2.0f / height;
 		m_projectionMatrix.columns[2][2] = 2.0f / length;
+		m_renderer->SetProjectionViewMatrix(m_projectionMatrix);
 	}
 
 	const Math::Mat4& ShadowMapController::CreateOffset()

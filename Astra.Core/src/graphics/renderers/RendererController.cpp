@@ -27,6 +27,8 @@ namespace Astra::Graphics
 		m_normalEntityShader = new NormalEntityShader();
 		m_normalEntityRenderer = new NormalEntity3dRenderer(m_normalEntityShader, &fogColor);
 
+		m_shadowMapController = new ShadowMapController(m_mainCamera, FieldOfView, NearPlane, FarPlane);
+
 		m_waterBuffer = Loader::LoadWaterFrameBuffer(DefaultReflectionWidth, DefaultReflectionHeight,
 													 DefaultRefractionWidth, DefaultRefractionHeight);
 		m_waterRenderer->SetFrameBuffer(m_waterBuffer);
@@ -66,6 +68,8 @@ namespace Astra::Graphics
 
 	void RendererController::Render()
 	{
+		m_shadowMapController->Render();
+
 		if (m_waterBuffer && m_mainCamera)
 		{
 			float distance = 2 * (m_mainCamera->GetTranslation().y - m_refractionClipPlane.w);
