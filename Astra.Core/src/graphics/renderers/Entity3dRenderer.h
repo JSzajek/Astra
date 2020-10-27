@@ -27,6 +27,6 @@ namespace Astra::Graphics
 		void AddLight(Light* light);
 		void UpdateLights();
 	private:
-		void PrepareEntity(const Entity& entity);
+		void PrepareEntity(const Entity* entity);
 	};
 }

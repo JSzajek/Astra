@@ -25,5 +25,6 @@ namespace Astra::Graphics
 		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 	private:
 		void PrepareEntity(const Entity* entity);
+		void InitializePerEntity(const Entity* entity);
 	};
 }

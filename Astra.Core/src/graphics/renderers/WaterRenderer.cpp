@@ -44,7 +44,7 @@ namespace Astra::Graphics
 	void WaterRenderer::PrepareRender()
 	{
 		glBindVertexArray(m_defaultQuad->vaoId);
-		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		if (m_light)
 		{
 			m_shader->SetUniform3f(WaterShader::LightPositionTag, m_light->GetTranslation());

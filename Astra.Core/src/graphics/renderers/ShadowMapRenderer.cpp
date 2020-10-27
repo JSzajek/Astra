@@ -18,25 +18,10 @@ namespace Astra::Graphics
 		m_shader->Start();
 		for (const auto& directory : m_entities)
 		{
-			glBindVertexArray(directory.second.front()->vertexArray->vaoId);
-			glEnableVertexAttribArray(0);
-			glEnableVertexAttribArray(1);
-
-			m_shader->SetUniform1f(ShadowShader::NumberOfRowsTag, directory.second.front()->material->GetRowCount());
-			if (directory.second.front()->material->transparent)
-			{
-				glDisable(GL_CULL_FACE);
-			}
-			if (directory.second.front()->material != NULL)
-			{
-				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, directory.second.front()->material->id);
-			}
-
+			PrepareEntity(directory.second.front());
 			for (const Entity* entity : directory.second)
 			{
-				PrepareEntity(entity);
-
+				InitializePerEntity(entity);
 				glDrawElements(entity->vertexArray->drawType, entity->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
 			}
 		}
@@ -60,6 +45,24 @@ namespace Astra::Graphics
 	}
 
 	void ShadowMapRenderer::PrepareEntity(const Entity* entity)
+	{
+		glBindVertexArray(entity->vertexArray->vaoId);
+		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
+		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
+
+		m_shader->SetUniform1f(ShadowShader::NumberOfRowsTag, entity->material->GetRowCount());
+		if (entity->material->transparent)
+		{
+			glDisable(GL_CULL_FACE);
+		}
+		if (entity->material != NULL)
+		{
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, entity->material->id);
+		}
+	}
+
+	void ShadowMapRenderer::InitializePerEntity(const Entity* entity)
 	{
 		m_shader->SetUniform2f(ShadowShader::OffsetTag, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
 

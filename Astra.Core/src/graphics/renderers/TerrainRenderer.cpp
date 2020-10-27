@@ -90,9 +90,9 @@ namespace Astra::Graphics
 	void TerrainRenderer::PrepareTerrain(const Terrain& terrain)
 	{
 		glBindVertexArray(terrain.vertexArray->vaoId);
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
+		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
+		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
 
 		BindTerrainTextures(terrain);
 

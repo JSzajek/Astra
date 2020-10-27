@@ -15,7 +15,9 @@ namespace Astra::Graphics
 
 	ShadowMapController::~ShadowMapController()
 	{
-
+		delete m_box;
+		delete m_buffer;
+		delete m_renderer;
 	}
 
 	void ShadowMapController::Render()

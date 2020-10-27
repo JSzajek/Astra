@@ -69,7 +69,6 @@ namespace Astra::Graphics
 		Math::Mat4 projectionMatrix;
 		Math::Mat4 viewMatrix;
 		Math::Mat4 modelViewMatrix;
-
 	public:
 		RendererController(const Math::Vec3& fogColor = Math::Vec3(0.5f, 0.6f, 0.6f));
 		~RendererController();
@@ -77,6 +76,7 @@ namespace Astra::Graphics
 		void UpdateScreen(float width, float height);
 		void UpdateCameraView();
 		void Render();
+		void PrepareRender();
 		void PreRender(const Math::Vec4& clipPlane = Renderer::DefaultClipPlane);
 		void PostRender();
 		void GuiRender();

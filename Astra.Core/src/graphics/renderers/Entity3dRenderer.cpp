@@ -21,9 +21,8 @@ namespace Astra::Graphics
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
 		for (const auto& directory : m_entities)
 		{
-			std::vector<const Entity*> entities = directory.second;
-			PrepareEntity(*entities.front());
-			for (const Entity* entity : entities)
+			PrepareEntity(directory.second.front());
+			for (const Entity* entity : directory.second)
 			{
 				m_shader->SetUniform2f(LightingShader::OffsetTag, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
 
@@ -82,31 +81,31 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
-	void Entity3dRenderer::PrepareEntity(const Entity& entity)
+	void Entity3dRenderer::PrepareEntity(const Entity* entity)
 	{
-		glBindVertexArray(entity.vertexArray->vaoId);
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
+		glBindVertexArray(entity->vertexArray->vaoId);
+		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
+		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
+		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
 
-		m_shader->SetUniform1f(LightingShader::NumberOfRowsTag, entity.material->GetRowCount());
+		m_shader->SetUniform1f(LightingShader::NumberOfRowsTag, entity->material->GetRowCount());
 
-		if (entity.material->transparent)
+		if (entity->material->transparent)
 		{
 			glDisable(GL_CULL_FACE);
 		}
 
 		if (m_shader->GetType() == ShaderType::Lighting)
 		{
-			m_shader->SetUniform1f(LightingShader::UseFakeLightingTag, entity.material->fakeLight);
-			m_shader->SetUniform1f(LightingShader::ShineDampenerTag, entity.material->shineDampener);
-			m_shader->SetUniform1f(LightingShader::ReflectivityTag, entity.material->reflectivity);
+			m_shader->SetUniform1f(LightingShader::UseFakeLightingTag, entity->material->fakeLight);
+			m_shader->SetUniform1f(LightingShader::ShineDampenerTag, entity->material->shineDampener);
+			m_shader->SetUniform1f(LightingShader::ReflectivityTag, entity->material->reflectivity);
 		}
 		
-		if (entity.material != NULL)
+		if (entity->material != NULL)
 		{
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, entity.material->id);
+			glBindTexture(GL_TEXTURE_2D, entity->material->id);
 		}
 	}
 }

@@ -8,6 +8,7 @@ namespace Astra::Graphics
 		: fogColor(fogColor), m_reflectionClipPlane(Math::Vec4(0, 1, 0, 0)),
 			m_refractionClipPlane(Math::Vec4(0, -1, 0, 0))
 	{
+		Init();
 		m_shadowMapController = new ShadowMapController(m_mainCamera, FieldOfView, NearPlane, FarPlane);
 		
 		m_guiShader = new GuiShader();
@@ -33,7 +34,6 @@ namespace Astra::Graphics
 		m_waterRenderer->SetFrameBuffer(m_waterBuffer);
 
 		modelViewMatrix = Math::Mat4::Identity();
-		Init();
 	}
 
 	void RendererController::Init() const
@@ -53,6 +53,7 @@ namespace Astra::Graphics
 		delete m_skyboxRenderer;
 		delete m_waterRenderer;
 		delete m_normalEntityRenderer;
+		delete m_shadowMapController;
 	}
 
 	void RendererController::UpdateScreen(float width, float height)
@@ -68,8 +69,6 @@ namespace Astra::Graphics
 
 	void RendererController::Render()
 	{
-		
-		
 		m_shadowMapController->Render();
 
 		if (m_waterBuffer && m_mainCamera)
@@ -92,21 +91,26 @@ namespace Astra::Graphics
 		}
 
 		UpdateCameraView();
-		ParticleController::Update(m_mainCamera->GetTranslation());
+		PrepareRender();
 		PreRender();
 		PostRender();
 		GuiRender();
 	}
 
-	void RendererController::PreRender(const Math::Vec4& clipPlane)
+	void RendererController::PrepareRender()
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		ParticleController::Update(m_mainCamera->GetTranslation());
 
 		glActiveTexture(GL_TEXTURE5);
 		glBindTexture(GL_TEXTURE_2D, m_shadowMapController->GetShadowMap());
 		m_terrainRenderer->SetShadowMatrix(m_shadowMapController->GetToShadowMapSpaceMatrix());
-		m_terrainRenderer->Draw(viewMatrix, clipPlane);
+	}
+
+	void RendererController::PreRender(const Math::Vec4& clipPlane)
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
+		m_terrainRenderer->Draw(viewMatrix, clipPlane);
 		m_entityRenderer->Draw(viewMatrix, clipPlane);
 		m_normalEntityRenderer->Draw(viewMatrix, clipPlane);
 		m_skyboxRenderer->Draw(viewMatrix);
