@@ -156,8 +156,21 @@ namespace Astra::Graphics
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clippingOption);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0);
-		
+
+			if (glfwExtensionSupported("GL_EXT_texture_filter_anisotropic"))
+			{
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0);
+				float maxValue;
+				glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxValue);
+				float amount = fminf(4.0f, maxValue);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
+			}
+			else
+			{
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.2f);
+				Logger::LogWarning("Anisotropic Filtering Not Supported");
+			}
+
 			glBindTexture(GL_TEXTURE_2D, 0);
 			stbi_image_free(buffer);
 

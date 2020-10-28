@@ -9,9 +9,10 @@
 
 namespace Astra::Graphics
 {
-	#define V_SYNC		0	
-	#define MAX_KEYS	1024
-	#define MAX_BUTTONS 32
+	#define V_SYNC			0	
+	#define MULTI_SAMPLE	1
+	#define MAX_KEYS		1024
+	#define MAX_BUTTONS		32
 
 	class Window
 	{

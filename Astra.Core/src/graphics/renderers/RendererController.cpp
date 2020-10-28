@@ -42,7 +42,7 @@ namespace Astra::Graphics
 		glDisable(GL_BLEND);
 		glClearColor(fogColor.x, fogColor.y, fogColor.z, 1);
 
-		glEnable(GL_CLIP_DISTANCE0);
+		glEnable(GL_CLIP_DISTANCE0); 
 	}
 
 	RendererController::~RendererController()
