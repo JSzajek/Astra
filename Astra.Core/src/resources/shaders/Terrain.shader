@@ -26,8 +26,8 @@ out vec4 shadowCoords;
 const float density = 0.0035;
 const float gradient = 5.0;
 
-const float shadowDistance = 150.0;
-const float transitionDistance = 10.0;
+uniform float shadowDistance;
+uniform float transitionDistance;
 
 void main()
 {
@@ -86,14 +86,27 @@ uniform float reflectivity;
 
 uniform vec3 fogColor;
 
+const float mapSize = 2048;
+const int pcfCount = 2;
+const float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
+
 void main()
 {
-	float objectNearestLight = texture(shadowMap, shadowCoords.xy).r;
-	float lightFactor = 1.0;
-	if (shadowCoords.z > objectNearestLight)
+	float texelSize = 1.0 / mapSize;
+	float total = 0.0;
+	for (int x = -pcfCount; x <= pcfCount; x++)
 	{
-		lightFactor = 1.0 - (shadowCoords.w * 0.4);
+		for (int y = -pcfCount; y <= pcfCount; y++)
+		{
+			if (shadowCoords.z > texture(shadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r + 0.005)
+			{
+				total += 1.0;
+			}
+		}
 	}
+
+	total /= totalTexels;
+	float lightFactor = 1.0 - (total * shadowCoords.w);
 
 	vec4 blendMapColor = texture(blendMap, v_TexCoordinates);
 	float backTextureAmount = 1 - (blendMapColor.r + blendMapColor.g + blendMapColor.b);
@@ -131,7 +144,7 @@ void main()
 		totalDiffuse += (brightness * lightColor[i]) / attenuationFactor;
 		totalSpecular += (dampenedFactor * reflectivity * lightColor[i]) / attenuationFactor;
 	}
-	totalDiffuse = max(totalDiffuse, 0.2) * lightFactor;
+	totalDiffuse = max(totalDiffuse * lightFactor, 0.2);
 
 	out_Color = vec4(totalDiffuse, 1) * totalColor + vec4(totalSpecular, 1);
 	out_Color = mix(vec4(fogColor, 1), out_Color, visibility);

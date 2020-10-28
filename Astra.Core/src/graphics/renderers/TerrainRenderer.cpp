@@ -1,6 +1,8 @@
 #include "TerrainRenderer.h"
 #include "../../math/Mat4Utils.h"
 
+#include "../shadows/ShadowBox.h"
+
 namespace Astra::Graphics
 {
 	TerrainRenderer::TerrainRenderer(Shader* shader, const Math::Vec3* fogColor)
@@ -13,6 +15,8 @@ namespace Astra::Graphics
 		m_shader->SetUniform1i(TerrainShader::BTextureTag, 3);
 		m_shader->SetUniform1i(TerrainShader::BlendMapTag, 4);
 		m_shader->SetUniform1i(TerrainShader::ShadowMapTag, 5);
+		m_shader->SetUniform1f(TerrainShader::ShadowDistanceTag, SHADOW_DISTANCE);
+		m_shader->SetUniform1f(TerrainShader::TransitionDistanceTag, TRANSITION_DISTANCE);
 		m_shader->Stop();
 	}
 

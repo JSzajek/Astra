@@ -5,8 +5,9 @@
 
 namespace Astra::Graphics
 {
-	#define OFFSET				10.0f
-	#define SHADOW_DISTANCE		150.0f
+	#define OFFSET					15.0f
+	#define TRANSITION_DISTANCE		10.0f
+	#define SHADOW_DISTANCE			150.0f
 
 	class ShadowBox
 	{

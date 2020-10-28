@@ -26,6 +26,9 @@ namespace Astra::Graphics
 		static constexpr const char* ClipPaneTag = "clipPlane";
 
 		static constexpr const char* ToShadowSpaceMatrixTag = "toShadowMapSpace";
+
+		static constexpr const char* ShadowDistanceTag = "shadowDistance";
+		static constexpr const char* TransitionDistanceTag = "transitionDistance";
 	public:
 		TerrainShader(const char* filepath =
 			"../Astra.Core/src/resources/shaders/Terrain.shader")
