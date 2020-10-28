@@ -31,7 +31,7 @@ namespace Astra::Graphics
 
 		bool Update();
 	private:
-		Math::Vec3* const CalculateFrustumVertices(const Math::Mat4 rotation, const Math::Vec3& forward, const Math::Vec3& centerNear, const Math::Vec3& centerFar);
+		Math::Vec3* const CalculateFrustumVertices(const Math::Mat4& rotation, const Math::Vec3& forward, const Math::Vec3& centerNear, const Math::Vec3& centerFar);
 		const Math::Vec3& CalculateLightSpaceFrustumCorner(const Math::Vec3& start, const Math::Vec3& direction, float width);
 		const Math::Mat4& CalculateCameraRotationMatrix();
 	};

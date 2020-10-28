@@ -86,9 +86,8 @@ uniform float reflectivity;
 
 uniform vec3 fogColor;
 
-const float mapSize = 2048;
-const int pcfCount = 2;
-const float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
+uniform float mapSize;
+uniform int pcfCount;
 
 void main()
 {
@@ -98,14 +97,14 @@ void main()
 	{
 		for (int y = -pcfCount; y <= pcfCount; y++)
 		{
-			if (shadowCoords.z > texture(shadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r + 0.005)
+			if (shadowCoords.z > texture(shadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r + 0.002)
 			{
 				total += 1.0;
 			}
 		}
 	}
 
-	total /= totalTexels;
+	total /= (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);;
 	float lightFactor = 1.0 - (total * shadowCoords.w);
 
 	vec4 blendMapColor = texture(blendMap, v_TexCoordinates);

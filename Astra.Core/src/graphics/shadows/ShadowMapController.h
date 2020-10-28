@@ -8,6 +8,7 @@
 namespace Astra::Graphics
 {
 	#define SHADOW_MAP_SIZE		2048
+	#define PCF_COUNT			2
 	
 	class ShadowMapController
 	{

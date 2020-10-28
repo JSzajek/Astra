@@ -13,7 +13,7 @@ namespace Astra::Graphics
 		m_farWidth = SHADOW_DISTANCE * tanf(Math::ToRadians(fov));
 		m_nearWidth = near * tanf(Math::ToRadians(fov));
 		m_farHeight = m_farWidth / Window::GetAspectRatio();
-		m_farHeight = m_nearWidth / Window::GetAspectRatio();
+		m_nearHeight = m_nearWidth / Window::GetAspectRatio();
 	}
 
 	const Math::Vec3& ShadowBox::GetCenter()
@@ -85,7 +85,7 @@ namespace Astra::Graphics
 		return true;
 	}
 
-	Math::Vec3* const ShadowBox::CalculateFrustumVertices(const Math::Mat4 rotation, const Math::Vec3& forward, const Math::Vec3& centerNear, const Math::Vec3& centerFar)
+	Math::Vec3* const ShadowBox::CalculateFrustumVertices(const Math::Mat4& rotation, const Math::Vec3& forward, const Math::Vec3& centerNear, const Math::Vec3& centerFar)
 	{
 		Math::Vec3 upVector = rotation * Math::YAxis;
 		Math::Vec3 rightVector = forward.Cross(upVector);
