@@ -9,9 +9,10 @@
 
 namespace Astra::Graphics
 {
-	#define V_SYNC		0	
-	#define MAX_KEYS	1024
-	#define MAX_BUTTONS 32
+	#define V_SYNC			0	
+	#define MULTI_SAMPLE	1
+	#define MAX_KEYS		1024
+	#define MAX_BUTTONS		32
 
 	class Window
 	{
@@ -49,6 +50,8 @@ namespace Astra::Graphics
 		inline float getMouseWheel() { return m_mouseScroll; }
 
 		inline float GetDelta() { return delta; }
+
+		static inline float GetAspectRatio() { return (float)width / float(height); }
 	private:
 		bool Init();
 	};

@@ -9,6 +9,8 @@ namespace Astra::Graphics
 			m_refractionClipPlane(Math::Vec4(0, -1, 0, 0))
 	{
 		Init();
+		m_shadowMapController = new ShadowMapController(m_mainCamera, FieldOfView, NearPlane, FarPlane);
+		
 		m_guiShader = new GuiShader();
 		m_guiRenderer = new GuiRenderer(m_guiShader);
 
@@ -40,7 +42,7 @@ namespace Astra::Graphics
 		glDisable(GL_BLEND);
 		glClearColor(fogColor.x, fogColor.y, fogColor.z, 1);
 
-		glEnable(GL_CLIP_DISTANCE0);
+		glEnable(GL_CLIP_DISTANCE0); 
 	}
 
 	RendererController::~RendererController()
@@ -51,6 +53,7 @@ namespace Astra::Graphics
 		delete m_skyboxRenderer;
 		delete m_waterRenderer;
 		delete m_normalEntityRenderer;
+		delete m_shadowMapController;
 	}
 
 	void RendererController::UpdateScreen(float width, float height)
@@ -66,6 +69,8 @@ namespace Astra::Graphics
 
 	void RendererController::Render()
 	{
+		m_shadowMapController->Render();
+
 		if (m_waterBuffer && m_mainCamera)
 		{
 			float distance = 2 * (m_mainCamera->GetTranslation().y - m_refractionClipPlane.w);
@@ -86,21 +91,29 @@ namespace Astra::Graphics
 		}
 
 		UpdateCameraView();
-		ParticleController::Update(m_mainCamera->GetTranslation());
+		PrepareRender();
 		PreRender();
 		PostRender();
 		GuiRender();
 	}
 
+	void RendererController::PrepareRender()
+	{
+		ParticleController::Update(m_mainCamera->GetTranslation());
+
+		glActiveTexture(GL_TEXTURE5);
+		glBindTexture(GL_TEXTURE_2D, m_shadowMapController->GetShadowMap());
+		m_terrainRenderer->SetShadowMatrix(m_shadowMapController->GetToShadowMapSpaceMatrix());
+	}
+
 	void RendererController::PreRender(const Math::Vec4& clipPlane)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		
 		m_terrainRenderer->Draw(viewMatrix, clipPlane);
 		m_entityRenderer->Draw(viewMatrix, clipPlane);
 		m_normalEntityRenderer->Draw(viewMatrix, clipPlane);
-		m_skyboxRenderer->Draw(viewMatrix);
-		ParticleController::Render(viewMatrix);
+		m_skyboxRenderer->Draw(viewMatrix, NULL);
 	}
 
 	void RendererController::PostRender()
@@ -110,6 +123,7 @@ namespace Astra::Graphics
 
 	void RendererController::GuiRender()
 	{
+		ParticleController::Render(viewMatrix);
 		m_guiRenderer->Draw(NULL);
 		FontController::Render();
 	}

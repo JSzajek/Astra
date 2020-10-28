@@ -100,42 +100,42 @@ namespace Astra::Math
 		/// </summary>
 		/// <param name="other">The other Vec3 to add</param>
 		/// <returns>The summation Vec3</returns>
-		friend Vec3& operator+(Vec3 left, const Vec3& right);
+		friend Vec3 operator+(Vec3 left, const Vec3& right);
 
 		/// <summary>
 		/// Subtraction operator override.
 		/// </summary>
 		/// <param name="other">The other Vec3 to subtract</param>
 		/// <returns>The subtracted Vec3</returns>
-		friend Vec3& operator-(Vec3 left, const Vec3& right);
+		friend Vec3 operator-(Vec3 left, const Vec3& right);
 
 		/// <summary>
 		/// Multiplication operator override.
 		/// </summary>
 		/// <param name="other">The other Vec3 to multiply</param>
 		/// <returns>The multiplied Vec3</returns>
-		friend Vec3& operator*(Vec3 left, const Vec3& right);
+		friend Vec3 operator*(Vec3 left, const Vec3& right);
 
 		/// <summary>
 		/// Multiplication operator override.
 		/// </summary>
 		/// <param name="scalar">The scalar to multiply</param>
 		/// <returns>The multiplied Vec3</returns>
-		friend Vec3& operator*(Vec3 left, const float& scalar);
+		friend Vec3 operator*(Vec3 left, const float& scalar);
 
 		/// <summary>
 		/// Division operator override.
 		/// </summary>
 		/// <param name="other">The other Vec3 to divide</param>
 		/// <returns>The divided Vec3</returns>
-		friend Vec3& operator/(Vec3 left, const Vec3& right);
+		friend Vec3 operator/(Vec3 left, const Vec3& right);
 
 		/// <summary>
 		/// Division operator override.
 		/// </summary>
 		/// <param name="scalar">The scalar to divide</param>
 		/// <returns>The divided Vec3</returns>
-		friend Vec3& operator/(Vec3 left, const float& scalar);
+		friend Vec3 operator/(Vec3 left, const float& scalar);
 
 		/// <summary>
 		/// Addition operator override.

@@ -10,8 +10,9 @@ out vec3 v_TexCoordinates;
 
 void main()
 {
-	gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.0);
 	v_TexCoordinates = position;
+	//gl_Position = (projectionMatrix * viewMatrix * vec4(position, 1.0));
+	gl_Position = (projectionMatrix * viewMatrix * vec4(position, 1.0)).xyww;
 }
 
 #shader fragment

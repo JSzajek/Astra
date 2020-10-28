@@ -31,12 +31,12 @@ int main()
     TerrainMaterial* blendMap = new TerrainMaterial("res/textures/blendMap.png");
 
     //Terrain terrain = Terrain(0, 0, "res/textures/meteorcrater_heightmap.png", &pack, blendMap);
-    Terrain terrain = Terrain(0, 0, 30, 3, 0.2f, &pack, blendMap);
+    Terrain terrain = Terrain(0, 0, 40, 4, 0.01f, 4862, &pack, blendMap);
     renderer.AddTerrain(&terrain);
     terrain.Translation().x -= 128;
     terrain.Translation().z -= 128;
 
-    WaterTile tile1 = WaterTile(0, 0, 0, 128);
+    WaterTile tile1 = WaterTile(0, 0, -2.5f, 128);
     renderer.AddWaterTile(tile1);
 
     Player player(Vec3(-100,50,100),&window, &terrain);
@@ -78,12 +78,12 @@ int main()
     SkyboxMaterial skybox(m_textureFiles, m_nightTextureFiles);
     renderer.SetSkyBox(&skybox);
 
-    Light* light1 = new Light(Math::Vec3(20000, 20000, 2000), Math::Vec3(0.4f));  // Sun 
+    Light* light1 = new Light(Math::Vec3(20000, 20000, 20000), Math::Vec3(0.75f));  // Sun 
     Light* light2 = new Light(Math::Vec3(-20, 50, 20), Math::Vec3(0, 1, 1), Math::Vec3(1, 0.01f, 0.002f));
     Light* light3 = new Light(Math::Vec3(20, 50, -20), Math::Vec3(1, 0, 0), Math::Vec3(1, 0.01f, 0.002f));
     Light* light4 =  new Light(Math::Vec3(-20, 50, -20), Math::Vec3(1, 0, 1), Math::Vec3(1, 0.01f, 0.002f));
 
-    renderer.AddLight(light1);
+    renderer.AddDirectionalLight(light1);
     renderer.AddLight(light2);
     renderer.AddLight(light3);
     renderer.AddLight(light4);
@@ -92,7 +92,7 @@ int main()
     const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");
 
     ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", 1, 10, 0.5f);
-    Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-70, 70, 80), Vec3(0), Vec3(1));
+    Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-70, terrain.GetHeightOfTerrain(-70, 80) + 5, 80), Vec3(0), Vec3(1));
 
     renderer.AddEntity(&barrelModel2);
 
@@ -109,7 +109,7 @@ int main()
     
     ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);
 
-    Vec3 particleCenter(-80, 60, 80);
+    Vec3 particleCenter(-80, terrain.GetHeightOfTerrain(-80, 80) + 5, 80);
     //ParticleSystem partSystem(partMaterial, 15, 5, -0.1f, 3);
     ConeParticleSystem partSystem(partMaterial, 15, 25, 0.5f, 1.5f, 3);
     partSystem.SetDirection(Vec3(0, 1, 0), 0.1f);
@@ -145,8 +145,8 @@ int main()
             skybox.BlendFactor() = 0;
             timeDir = 1;
         }
-        partSystem.GenerateParticles(particleCenter);
 
+        partSystem.GenerateParticles(particleCenter);
         renderer.Render();
         window.Update();
 

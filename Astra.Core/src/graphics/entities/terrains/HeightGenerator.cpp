@@ -7,6 +7,27 @@ namespace Astra::Graphics
 	HeightGenerator::HeightGenerator(float amplitude, int octaves, float roughness)
 		: m_seed(rand()), m_octaves(octaves), m_amplitude(amplitude), m_persistence(roughness)
 	{
+		Init(m_seed);
+	}
+
+	HeightGenerator::HeightGenerator(float amplitude, int octaves, float roughness, int seed)
+		: m_seed(seed), m_octaves(octaves), m_amplitude(amplitude), m_persistence(roughness)
+	{
+		Init(m_seed);
+	}
+
+	HeightGenerator::~HeightGenerator()
+	{
+		delete[] m_primals;
+	}
+
+	void HeightGenerator::Init(int seed)
+	{
+		printf("Generating Terrain With Seed: %i\n", m_seed);
+
+		m_seed = seed;
+
+		srand(m_seed);
 		m_primeIndex = rand() % MaxPrimals;
 		m_primals = new int[MaxPrimals * 3];
 		for (int i = 0; i < MaxPrimals; i++)
@@ -16,11 +37,6 @@ namespace Astra::Graphics
 				m_primals[j + i * 3] = rand();
 			}
 		}
-	}
-
-	HeightGenerator::~HeightGenerator()
-	{
-		delete[] m_primals;
 	}
 
 	float HeightGenerator::GenerateHeight(int x, int z)

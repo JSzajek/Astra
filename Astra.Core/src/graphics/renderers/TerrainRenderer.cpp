@@ -1,6 +1,8 @@
 #include "TerrainRenderer.h"
 #include "../../math/Mat4Utils.h"
 
+#include "../shadows/ShadowMapController.h"
+
 namespace Astra::Graphics
 {
 	TerrainRenderer::TerrainRenderer(Shader* shader, const Math::Vec3* fogColor)
@@ -12,6 +14,11 @@ namespace Astra::Graphics
 		m_shader->SetUniform1i(TerrainShader::GTextureTag, 2);
 		m_shader->SetUniform1i(TerrainShader::BTextureTag, 3);
 		m_shader->SetUniform1i(TerrainShader::BlendMapTag, 4);
+		m_shader->SetUniform1i(TerrainShader::ShadowMapTag, 5);
+		m_shader->SetUniform1f(TerrainShader::ShadowDistanceTag, SHADOW_DISTANCE);
+		m_shader->SetUniform1f(TerrainShader::TransitionDistanceTag, TRANSITION_DISTANCE);
+		m_shader->SetUniform1f(TerrainShader::MapSizeTag, SHADOW_MAP_SIZE);
+		m_shader->SetUniform1i(TerrainShader::PcfCountTag, PCF_COUNT);
 		m_shader->Stop();
 	}
 
@@ -24,6 +31,7 @@ namespace Astra::Graphics
 			m_shader->SetUniform3f(TerrainShader::SkyColorTag, *m_skyColor);
 		}
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
+		m_shader->SetUniformMat4(TerrainShader::ToShadowSpaceMatrixTag, m_toShadowSpaceMatrix);
 		for (const auto& directory : m_terrains)
 		{
 			std::vector<const Terrain*> terrains = directory.second;
@@ -88,9 +96,9 @@ namespace Astra::Graphics
 	void TerrainRenderer::PrepareTerrain(const Terrain& terrain)
 	{
 		glBindVertexArray(terrain.vertexArray->vaoId);
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
+		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
+		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
 
 		BindTerrainTextures(terrain);
 

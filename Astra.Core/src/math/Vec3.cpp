@@ -81,32 +81,32 @@ namespace Astra::Math
 		return *this;
 	}
 
-	Vec3& operator+(Vec3 left, const Vec3& right)
+	Vec3 operator+(Vec3 left, const Vec3& right)
 	{
 		return left.Add(right);
 	}
 
-	Vec3& operator-(Vec3 left, const Vec3& right)
+	Vec3 operator-(Vec3 left, const Vec3& right)
 	{
 		return left.Subtract(right);
 	}
 
-	Vec3& operator*(Vec3 left, const Vec3& right)
+	Vec3 operator*(Vec3 left, const Vec3& right)
 	{
 		return left.Multiply(right);
 	}
 
-	Vec3& operator*(Vec3 left, const float& scalar)
+	Vec3 operator*(Vec3 left, const float& scalar)
 	{
 		return left.Multiply(scalar);
 	}
 
-	Vec3& operator/(Vec3 left, const Vec3& right)
+	Vec3 operator/(Vec3 left, const Vec3& right)
 	{
 		return left.Divide(right);
 	}
 
-	Vec3& operator/(Vec3 left, const float& scalar)
+	Vec3 operator/(Vec3 left, const float& scalar)
 	{
 		return left.Divide(scalar);
 	}

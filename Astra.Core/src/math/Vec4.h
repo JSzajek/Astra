@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Vec3.h"
 #include <iostream>
 
 namespace Astra::Math
@@ -32,6 +33,8 @@ namespace Astra::Math
 		/// </summary>
 		/// <param name="_value">The value across the Vec4</param>
 		Vec4(const float& _value);
+
+		Vec4(const Vec3& other, float _w);
 
 		/// <summary>
 		/// Copy constructor of the <see cref="Vec4"/> class.

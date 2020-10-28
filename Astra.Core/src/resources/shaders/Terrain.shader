@@ -11,6 +11,8 @@ uniform mat4 transformMatrix;
 uniform vec3 lightPosition[4];
 uniform vec4 clipPlane;
 
+uniform mat4 toShadowMapSpace;
+
 out vec2 v_TexCoordinates;
 
 out vec3 surfaceNormal;
@@ -19,12 +21,18 @@ out vec3 toCameraVector;
 
 out float visibility;
 
+out vec4 shadowCoords;
+
 const float density = 0.0035;
 const float gradient = 5.0;
+
+uniform float shadowDistance;
+uniform float transitionDistance;
 
 void main()
 {
 	vec4 worldPosition = transformMatrix * vec4(position, 1);
+	shadowCoords = toShadowMapSpace * worldPosition;
 
 	gl_ClipDistance[0] = dot(worldPosition, clipPlane);
 
@@ -42,6 +50,10 @@ void main()
 	float distance = length(positionRelativeToCam.xyz);
 	visibility = exp(-pow((distance * density), gradient));
 	visibility = clamp(visibility, 0, 1);
+
+	distance = distance - (shadowDistance - transitionDistance);
+	distance = distance / transitionDistance;
+	shadowCoords.w = clamp(1.0 - distance, 0.0, 1.0);
 }
 
 #shader fragment
@@ -55,6 +67,8 @@ in vec3 toCameraVector;
 
 in float visibility;
 
+in vec4 shadowCoords;
+
 out vec4 out_Color;
 
 uniform sampler2D backgroundTexture;
@@ -62,6 +76,7 @@ uniform sampler2D rTexture;
 uniform sampler2D gTexture;
 uniform sampler2D bTexture;
 uniform sampler2D blendMap;
+uniform sampler2D shadowMap;
 
 uniform vec3 lightColor[4];
 uniform vec3 attenuation[4];
@@ -71,8 +86,27 @@ uniform float reflectivity;
 
 uniform vec3 fogColor;
 
+uniform float mapSize;
+uniform int pcfCount;
+
 void main()
 {
+	float texelSize = 1.0 / mapSize;
+	float total = 0.0;
+	for (int x = -pcfCount; x <= pcfCount; x++)
+	{
+		for (int y = -pcfCount; y <= pcfCount; y++)
+		{
+			if (shadowCoords.z > texture(shadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r + 0.002)
+			{
+				total += 1.0;
+			}
+		}
+	}
+
+	total /= (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);;
+	float lightFactor = 1.0 - (total * shadowCoords.w);
+
 	vec4 blendMapColor = texture(blendMap, v_TexCoordinates);
 	float backTextureAmount = 1 - (blendMapColor.r + blendMapColor.g + blendMapColor.b);
 	vec2 tiledCoords = v_TexCoordinates * 40;
@@ -109,7 +143,7 @@ void main()
 		totalDiffuse += (brightness * lightColor[i]) / attenuationFactor;
 		totalSpecular += (dampenedFactor * reflectivity * lightColor[i]) / attenuationFactor;
 	}
-	totalDiffuse = max(totalDiffuse, 0.2);
+	totalDiffuse = max(totalDiffuse * lightFactor, 0.2);
 
 	out_Color = vec4(totalDiffuse, 1) * totalColor + vec4(totalSpecular, 1);
 	out_Color = mix(vec4(fogColor, 1), out_Color, visibility);

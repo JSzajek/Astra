@@ -60,6 +60,11 @@ namespace Astra::Graphics
 		glfwMakeContextCurrent(m_window);
 		glfwSetWindowUserPointer(m_window, this);
 	
+	#if MULTI_SAMPLE
+		glfwWindowHint(GLFW_SAMPLES, 4);
+		glEnable(GL_MULTISAMPLE);
+	#endif
+
 	#if V_SYNC
 		glfwSwapInterval(0);
 	#endif
