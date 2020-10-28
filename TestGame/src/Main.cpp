@@ -55,9 +55,6 @@ int main()
     GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
     renderer.AddGui(&gui);
 
-    //GuiTexture gui2 = GuiTexture(renderer.GetShadowMapTexture(), Vec2(0.25), Vec2(0.25));
-    //renderer.AddGui(&gui2);
-
     std::vector<const char*> m_textureFiles =
     {
         "res/textures/Default_Skybox/right.png",
@@ -148,8 +145,8 @@ int main()
             skybox.BlendFactor() = 0;
             timeDir = 1;
         }
-        partSystem.GenerateParticles(particleCenter);
 
+        partSystem.GenerateParticles(particleCenter);
         renderer.Render();
         window.Update();
 

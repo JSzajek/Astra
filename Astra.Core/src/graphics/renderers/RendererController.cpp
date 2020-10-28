@@ -113,7 +113,7 @@ namespace Astra::Graphics
 		m_terrainRenderer->Draw(viewMatrix, clipPlane);
 		m_entityRenderer->Draw(viewMatrix, clipPlane);
 		m_normalEntityRenderer->Draw(viewMatrix, clipPlane);
-		m_skyboxRenderer->Draw(viewMatrix);
+		m_skyboxRenderer->Draw(viewMatrix, NULL);
 	}
 
 	void RendererController::PostRender()

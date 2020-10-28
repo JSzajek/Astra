@@ -247,7 +247,7 @@ namespace Astra::Math
 
 	Mat4 Mat4::Orthographic(float left, float right, float bottom, float top, float near, float far)
 	{
-		Mat4 result(1.0f);
+		Mat4 result;
 		result.data[0 + 0 * 4] = 2.0f / (right - left);
 		result.data[1 + 1 * 4] = 2.0f / (top - bottom);
 		result.data[2 + 2 * 4] = 2.0f / (near - far);
@@ -255,14 +255,12 @@ namespace Astra::Math
 		result.data[0 + 3 * 4] = (left + right) / (left - right);
 		result.data[1 + 3 * 4] = (bottom + top) / (bottom - top);
 		result.data[2 + 3 * 4] = (far + near) / (far - near);
-		
 		return result;
 	}
 
 	Mat4 Mat4::Perspective(float width, float height, float fov, float near, float far)
 	{
-		Mat4 result(1.0f);
-
+		Mat4 result;
 		float aspectRatio = width / height;
 		float y_scale = 1.0f / tan(Math::ToRadians(fov / 2.0f));
 		float x_scale = y_scale / aspectRatio;

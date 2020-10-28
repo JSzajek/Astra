@@ -18,7 +18,7 @@ namespace Astra::Graphics
 		m_shader->SetUniform1f(TerrainShader::ShadowDistanceTag, SHADOW_DISTANCE);
 		m_shader->SetUniform1f(TerrainShader::TransitionDistanceTag, TRANSITION_DISTANCE);
 		m_shader->SetUniform1f(TerrainShader::MapSizeTag, SHADOW_MAP_SIZE);
-		m_shader->SetUniform1f(TerrainShader::PcfCountTag, PCF_COUNT);
+		m_shader->SetUniform1i(TerrainShader::PcfCountTag, PCF_COUNT);
 		m_shader->Stop();
 	}
 
