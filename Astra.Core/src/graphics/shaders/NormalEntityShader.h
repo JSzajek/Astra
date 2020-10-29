@@ -23,7 +23,7 @@ namespace Astra::Graphics
 
 		static constexpr const char* ClipPaneTag = "clipPlane";
 
-		static constexpr const char* ModelTexture = "u_Texture";
+		static constexpr const char* ModelTextureTag = "u_Texture";
 		static constexpr const char* NormalMapTag = "u_NormalMap";
 
 

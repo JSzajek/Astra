@@ -10,15 +10,15 @@ namespace Astra::Graphics
 	{
 		m_shader->Start();
 		m_shader->SetUniform1i(TerrainShader::BackgroundTextureTag, 0);
-		m_shader->SetUniform1i(TerrainShader::RTextureTag, 1);
-		m_shader->SetUniform1i(TerrainShader::GTextureTag, 2);
-		m_shader->SetUniform1i(TerrainShader::BTextureTag, 3);
-		m_shader->SetUniform1i(TerrainShader::BlendMapTag, 4);
-		m_shader->SetUniform1i(TerrainShader::ShadowMapTag, 5);
-		m_shader->SetUniform1f(TerrainShader::ShadowDistanceTag, SHADOW_DISTANCE);
-		m_shader->SetUniform1f(TerrainShader::TransitionDistanceTag, TRANSITION_DISTANCE);
-		m_shader->SetUniform1f(TerrainShader::MapSizeTag, SHADOW_MAP_SIZE);
-		m_shader->SetUniform1i(TerrainShader::PcfCountTag, PCF_COUNT);
+		m_shader->SetUniform1i(TerrainShader::RTextureTag,			1);
+		m_shader->SetUniform1i(TerrainShader::GTextureTag,			2);
+		m_shader->SetUniform1i(TerrainShader::BTextureTag,			3);
+		m_shader->SetUniform1i(TerrainShader::BlendMapTag,			4);
+		m_shader->SetUniform1i(Shader::ShadowMapTag,				5);
+		m_shader->SetUniform1f(Shader::ShadowDistanceTag,			SHADOW_DISTANCE);
+		m_shader->SetUniform1f(Shader::TransitionDistanceTag,		TRANSITION_DISTANCE);
+		m_shader->SetUniform1f(Shader::MapSizeTag,					SHADOW_MAP_SIZE);
+		m_shader->SetUniform1i(Shader::PcfCountTag,					PCF_COUNT);
 		m_shader->Stop();
 	}
 

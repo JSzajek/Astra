@@ -9,7 +9,7 @@ namespace Astra::Graphics
 			m_refractionClipPlane(Math::Vec4(0, -1, 0, 0))
 	{
 		Init();
-		m_shadowMapController = new ShadowMapController(m_mainCamera, FieldOfView, NearPlane, FarPlane);
+		m_shadowMapController = new ShadowMapController(FieldOfView, NearPlane, FarPlane);
 		
 		m_guiShader = new GuiShader();
 		m_guiRenderer = new GuiRenderer(m_guiShader);
@@ -103,7 +103,10 @@ namespace Astra::Graphics
 
 		glActiveTexture(GL_TEXTURE5);
 		glBindTexture(GL_TEXTURE_2D, m_shadowMapController->GetShadowMap());
-		m_terrainRenderer->SetShadowMatrix(m_shadowMapController->GetToShadowMapSpaceMatrix());
+		const Math::Mat4& toShadowMap = m_shadowMapController->GetToShadowMapSpaceMatrix();
+		m_terrainRenderer->SetShadowMatrix(toShadowMap);
+		m_entityRenderer->SetShadowMatrix(toShadowMap);
+		m_normalEntityRenderer->SetShadowMatrix(toShadowMap);
 	}
 
 	void RendererController::PreRender(const Math::Vec4& clipPlane)

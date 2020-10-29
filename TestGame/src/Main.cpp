@@ -92,7 +92,7 @@ int main()
     const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");
 
     ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", 1, 10, 0.5f);
-    Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-70, terrain.GetHeightOfTerrain(-70, 80) + 5, 80), Vec3(0), Vec3(1));
+    Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-40, terrain.GetHeightOfTerrain(-40, 40), 40), Vec3(0), Vec3(1));
 
     renderer.AddEntity(&barrelModel2);
 

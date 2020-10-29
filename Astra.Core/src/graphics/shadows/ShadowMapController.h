@@ -25,12 +25,12 @@ namespace Astra::Graphics
 		Math::Mat4 m_projectionViewMatrix;
 		Math::Mat4 m_offset;
 	public:
-		ShadowMapController(Camera* camera, float fov, float near, float far);
+		ShadowMapController(float fov, float near, float far);
 		~ShadowMapController();
 		
 		void Render();
+		void SetDirectionalLight(Light* light);
 
-		inline void SetDirectionalLight(Light* light) { m_light = light; }
 		inline void SetCamera(Camera* camera) { m_box->SetCamera(camera); }
 		inline void AddEntity(const Entity* entity) { m_renderer->AddEntity(entity); }
 
@@ -38,8 +38,8 @@ namespace Astra::Graphics
 		inline const unsigned int GetShadowMap() const { return m_buffer->GetShadowMap(); }
 		inline const Math::Mat4& GetLightSpaceTransform() const { return m_lightViewMatrix; }
 	private:
-		void Prepare(Math::Vec3 lightDirection);
-		void UpdateLightViewMatrix(Math::Vec3 direction, Math::Vec3 center);
+		void Prepare();
+		void UpdateLightViewMatrix(Math::Vec3 direction);
 		void UpdateOrthoProjectionMatrix(float width, float height, float length);
 		const Math::Mat4& CreateOffset();
 	};
