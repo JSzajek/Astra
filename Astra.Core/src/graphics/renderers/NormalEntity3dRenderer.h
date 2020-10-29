@@ -20,8 +20,11 @@ namespace Astra::Graphics
 		std::vector<const Light*> m_lights;
 		const Math::Vec3* m_skyColor;
 		Math::Mat4 m_viewMatrix;
+		Math::Mat4 m_toShadowSpaceMatrix;
 	public:
 		NormalEntity3dRenderer(Shader* shader, const Math::Vec3* fogColor);
+		
+		inline void SetShadowMatrix(const Math::Mat4& shadowMatrix) { m_toShadowSpaceMatrix = shadowMatrix; }
 
 		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 		void AddEntity(const Entity* entity);

@@ -1,6 +1,7 @@
 #include "Entity3dRenderer.h"
 #include "../../math/Mat4Utils.h"
 
+#include "../shadows/ShadowMapController.h"
 #include <functional>
 
 namespace Astra::Graphics
@@ -8,6 +9,14 @@ namespace Astra::Graphics
 	Entity3dRenderer::Entity3dRenderer(Shader* shader, const Math::Vec3* fogColor)
 		: Renderer(shader), m_skyColor(fogColor)
 	{
+		m_shader->Start();
+		m_shader->SetUniform1i(LightingShader::ModelTextureTag,		0);
+		m_shader->SetUniform1i(Shader::ShadowMapTag,				5);
+		m_shader->SetUniform1f(Shader::ShadowDistanceTag,			SHADOW_DISTANCE);
+		m_shader->SetUniform1f(Shader::TransitionDistanceTag,		TRANSITION_DISTANCE);
+		m_shader->SetUniform1f(Shader::MapSizeTag,					SHADOW_MAP_SIZE);
+		m_shader->SetUniform1i(Shader::PcfCountTag,					PCF_COUNT);
+		m_shader->Stop();
 	}
 
 	void Entity3dRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
@@ -19,6 +28,7 @@ namespace Astra::Graphics
 			m_shader->SetUniform3f(LightingShader::SkyColorTag, *m_skyColor);
 		}
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
+		m_shader->SetUniformMat4(Shader::ToShadowSpaceMatrixTag, m_toShadowSpaceMatrix);
 		for (const auto& directory : m_entities)
 		{
 			PrepareEntity(directory.second.front());

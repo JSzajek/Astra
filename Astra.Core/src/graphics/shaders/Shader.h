@@ -38,6 +38,14 @@ namespace Astra::Graphics
 		static constexpr const char* ProjectionMatrixTag = "projectionMatrix";
 		static constexpr const char* ViewMatrixTag = "viewMatrix";
 		static constexpr const char* TransformMatrixTag = "transformMatrix";
+
+		// Shadow based tags
+		static constexpr const char* ShadowMapTag = "shadowMap";
+		static constexpr const char* ToShadowSpaceMatrixTag = "toShadowMapSpace";
+		static constexpr const char* ShadowDistanceTag = "shadowDistance";
+		static constexpr const char* TransitionDistanceTag = "transitionDistance";
+		static constexpr const char* MapSizeTag = "mapSize";
+		static constexpr const char* PcfCountTag = "pcfCount";
 	private:
 		GLuint m_id;
 		const char* m_filepath;

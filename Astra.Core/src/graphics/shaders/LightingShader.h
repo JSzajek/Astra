@@ -13,7 +13,7 @@ namespace Astra::Graphics
 		static constexpr const char* LightColorTag = "lightColor";
 		static constexpr const char* ShineDampenerTag = "shineDampener";
 		static constexpr const char* ReflectivityTag = "reflectivity";
-
+		static constexpr const char* ModelTextureTag = "u_Texture";
 		static constexpr const char* SkyColorTag = "fogColor";
 
 		static constexpr const char* UseFakeLightingTag = "useFakeLighting";

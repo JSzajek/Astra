@@ -4,11 +4,11 @@
 
 namespace Astra::Graphics
 {
-	ShadowMapController::ShadowMapController(Camera* camera, float fov, float near, float far)
+	ShadowMapController::ShadowMapController(float fov, float near, float far)
 		: m_projectionMatrix(1), m_lightViewMatrix(1), m_projectionViewMatrix(1), m_offset(CreateOffset())
 	{
 		m_shader = new ShadowShader();
-		m_box = new ShadowBox(m_lightViewMatrix, camera, fov, near, far);
+		m_box = new ShadowBox(fov, near, far);
 		m_buffer = Loader::LoadShadowFrameBuffer(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
 		m_renderer = new ShadowMapRenderer(m_shader, m_buffer, m_projectionViewMatrix);
 	}
@@ -20,34 +20,37 @@ namespace Astra::Graphics
 		delete m_renderer;
 	}
 
+	void ShadowMapController::SetDirectionalLight(Light* light) 
+	{ 
+		m_light = light;
+		UpdateLightViewMatrix(m_light->GetTranslation() * -1);
+	}
+
 	void ShadowMapController::Render()
 	{
 		if (m_box->Update() && m_light != NULL)
 		{
-			Prepare(m_light->GetTranslation() * -1);
+			Prepare();
 			m_renderer->Draw(NULL, NULL);
 		}
 	}
 
-	void ShadowMapController::Prepare(Math::Vec3 lightDirection)
+	void ShadowMapController::Prepare()
 	{
 		UpdateOrthoProjectionMatrix(m_box->GetWidth(), m_box->GetHeight(), m_box->GetLength());
-		UpdateLightViewMatrix(lightDirection, m_box->GetCenter());
 		m_projectionViewMatrix = m_projectionMatrix * m_lightViewMatrix;
 		m_renderer->SetProjectionViewMatrix(m_projectionViewMatrix);
 	}
 	
-	void ShadowMapController::UpdateLightViewMatrix(Math::Vec3 direction, Math::Vec3 center)
+	void ShadowMapController::UpdateLightViewMatrix(Math::Vec3 direction)
 	{
 		direction.Normalize();
-		center *= -1;
 		m_lightViewMatrix.SetIdentity();
 		float pitch = Math::ToDegrees(acosf(Math::Vec2(direction.x, direction.z).Magnitude()));
-		m_lightViewMatrix = m_lightViewMatrix.Rotate(pitch, Math::XAxis);
+		m_lightViewMatrix.Rotate(pitch, Math::XAxis);
 		float yaw = Math::ToDegrees(atanf(direction.x / direction.z));
 		yaw = direction.z > 0 ? yaw - 180 : yaw;
-		m_lightViewMatrix = m_lightViewMatrix.Rotate(-yaw, Math::YAxis);
-		m_lightViewMatrix = m_lightViewMatrix.Translate(center);
+		m_lightViewMatrix.Rotate(-yaw, Math::YAxis);
 	}
 
 	void ShadowMapController::UpdateOrthoProjectionMatrix(float width, float height, float length)
