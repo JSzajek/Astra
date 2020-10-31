@@ -49,6 +49,7 @@ namespace Astra::Math
 		Mat4& Rotate(float angle, const Vec3& other);
 		Mat4& Scale(const Vec3& other);
 		const Mat4& Inverse() const;
+		void Transpose();
 
 		static Mat4 Orthographic(float left, float right, float bottom, float top, float near, float far);
 		static Mat4 Perspective(float width, float height, float fov, float near, float far);

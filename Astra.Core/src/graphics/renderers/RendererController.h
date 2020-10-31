@@ -13,6 +13,7 @@
 #include "../particles/ParticleController.h"
 #include "../shadows/ShadowMapController.h"
 #include "../shaders/GuiShader.h"
+#include "../shaders/EntityShader.h"
 #include "../shaders/BasicShader.h"
 #include "../shaders/LightingShader.h"
 #include "../shaders/TerrainShader.h"
@@ -44,7 +45,8 @@ namespace Astra::Graphics
 	private:
 		GuiShader* m_guiShader;
 		GuiRenderer* m_guiRenderer;
-		LightingShader* m_lightingShader;
+		//LightingShader* m_lightingShader;
+		EntityShader* m_entityShader;
 		TerrainShader* m_terrainShader;
 		SkyboxShader* m_skyboxShader;
 		WaterShader* m_waterShader;

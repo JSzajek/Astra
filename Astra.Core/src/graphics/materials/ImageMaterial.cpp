@@ -4,23 +4,17 @@
 
 namespace Astra::Graphics
 {
-	ImageMaterial::ImageMaterial()
-		: Texture(Loader::LoadTexture(Texture::DefaultTexture)), m_rowCount(1), reflectivity(0), shineDampener(1), transparent(false), fakeLight(false)
+	ImageMaterial::ImageMaterial(const char* const filepath, int rowCount, float reflectivity, 
+								 bool transparent, bool fakeLight, const Math::Vec3& specular)
+		: m_diffuse(Loader::LoadTexture(filepath)), m_rowCount(rowCount), Reflectivity(reflectivity), /*Ambient(ambient), Diffuse(diffuse),*/ Specular(specular),
+			Transparent(transparent), FakeLight(fakeLight)
 	{
 	}
 
-	ImageMaterial::ImageMaterial(const char* const filepath)
-		: Texture(Loader::LoadTexture(filepath)), m_rowCount(1), reflectivity(0), shineDampener(1), transparent(false), fakeLight(false)
+	ImageMaterial::ImageMaterial(const char* const diffusepath, const char* const specularpath,
+								 int rowCount, float reflectivity, bool transparent, bool fakeLight)
+		: m_diffuse(Loader::LoadTexture(diffusepath)), m_rowCount(rowCount), Reflectivity(reflectivity), Transparent(transparent), FakeLight(fakeLight), Specular(0)
 	{
-	}
-
-	ImageMaterial::ImageMaterial(const char* const filepath, int rowCount)
-		: Texture(Loader::LoadTexture(filepath)), m_rowCount(rowCount), reflectivity(0), shineDampener(1), transparent(false), fakeLight(false)
-	{
-	}
-
-	ImageMaterial::ImageMaterial(const char* const filepath, int rowCount, float shineDampener, float reflectivity, bool transparent, bool fakeLight)
-		: Texture(Loader::LoadTexture(filepath)), m_rowCount(rowCount), shineDampener(shineDampener), reflectivity(reflectivity), transparent(transparent), fakeLight(fakeLight)
-	{
+		m_specular = specularpath != NULL ? Loader::LoadTexture(specularpath) : Loader::LoadTexture(diffusepath, GL_REPEAT, true, true);
 	}
 }

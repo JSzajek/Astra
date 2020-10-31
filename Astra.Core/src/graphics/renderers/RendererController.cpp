@@ -14,8 +14,9 @@ namespace Astra::Graphics
 		m_guiShader = new GuiShader();
 		m_guiRenderer = new GuiRenderer(m_guiShader);
 
-		m_lightingShader = new LightingShader();
-		m_entityRenderer = new Entity3dRenderer(m_lightingShader, &fogColor);
+		//m_lightingShader = new LightingShader();
+		m_entityShader = new EntityShader();
+		m_entityRenderer = new Entity3dRenderer(m_entityShader, &fogColor);
 
 		m_terrainShader = new TerrainShader();
 		m_terrainRenderer = new TerrainRenderer(m_terrainShader, &fogColor);

@@ -81,13 +81,13 @@ namespace Astra::Graphics
 			{
 				m_shader->SetUniform3f(TerrainShader::GetLightPositionTag(i), m_lights[i]->GetTranslation());
 				m_shader->SetUniform3f(TerrainShader::GetLightColorTag(i), m_lights[i]->GetColor());
-				m_shader->SetUniform3f(TerrainShader::GetAttenuationTag(i), m_lights[i]->GetAttenuation());
+				//m_shader->SetUniform3f(TerrainShader::GetAttenuationTag(i), m_lights[i]->GetAttenuation());
 			}
 			else
 			{
 				m_shader->SetUniform3f(TerrainShader::GetLightPositionTag(i), Math::Vec3(0));
 				m_shader->SetUniform3f(TerrainShader::GetLightColorTag(i), Math::Vec3(0));
-				m_shader->SetUniform3f(TerrainShader::GetAttenuationTag(i), Math::Vec3(1, 0, 0));
+				//m_shader->SetUniform3f(TerrainShader::GetAttenuationTag(i), Math::Vec3(1, 0, 0));
 			}
 		}
 		m_shader->Stop();

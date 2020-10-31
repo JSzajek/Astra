@@ -6,7 +6,7 @@ namespace Astra::Graphics
 {
 	class Texture
 	{
-	protected:
+	public:
 		static constexpr const char* const DefaultTexture = "../Astra.Core/src/resources/textures/Default.jpg";
 	public:
 		GLuint id;

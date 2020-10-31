@@ -16,4 +16,6 @@ namespace Astra::Math
 	static const Vec3 const ZAxis = Vec3(0, 0, 1);
 	
 	static const Vec3 const Forward = Vec3(0, 0, -1);
+
+	static const Vec4 const Back4D = Vec4(0, 0, 0, 1);
 }

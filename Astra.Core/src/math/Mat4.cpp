@@ -245,6 +245,28 @@ namespace Astra::Math
 		return inverse;
 	}
 
+	void Mat4::Transpose()
+	{
+		float result[4 * 4];
+		result[0]  = data[0];
+		result[1]  = data[4];
+		result[2]  = data[8];
+		result[3]  = data[12];
+		result[4]  = data[1];
+		result[5]  = data[5];
+		result[6]  = data[9];
+		result[7]  = data[13];
+		result[8]  = data[2];
+		result[9]  = data[6];
+		result[10] = data[10];
+		result[11] = data[14];
+		result[12] = data[3];
+		result[13] = data[7];
+		result[14] = data[11];
+		result[15] = data[15];
+		memcpy(data, result, 4 * 4 * sizeof(float));
+	}
+
 	Mat4 Mat4::Orthographic(float left, float right, float bottom, float top, float near, float far)
 	{
 		Mat4 result;

@@ -103,7 +103,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;_DEBUG</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <BasicRuntimeChecks>UninitializedLocalUsageCheck</BasicRuntimeChecks>
@@ -138,7 +138,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;_DEBUG</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <BasicRuntimeChecks>UninitializedLocalUsageCheck</BasicRuntimeChecks>
@@ -222,6 +222,9 @@
     <ClInclude Include="src\graphics\buffers\FrameBuffer.h" />
     <ClInclude Include="src\graphics\buffers\ShadowFrameBuffer.h" />
     <ClInclude Include="src\graphics\buffers\WaterFrameBuffer.h" />
+    <ClInclude Include="src\graphics\entities\DirectionalLight.h" />
+    <ClInclude Include="src\graphics\entities\PointLight.h" />
+    <ClInclude Include="src\graphics\entities\SpotLight.h" />
     <ClInclude Include="src\graphics\entities\terrains\HeightGenerator.h" />
     <ClInclude Include="src\graphics\entities\terrains\WaterTile.h" />
     <ClInclude Include="src\graphics\fonts\Character.h" />
@@ -262,6 +265,7 @@
     <ClInclude Include="src\graphics\renderers\TerrainRenderer.h" />
     <ClInclude Include="src\graphics\renderers\WaterRenderer.h" />
     <ClInclude Include="src\graphics\shaders\BasicShader.h" />
+    <ClInclude Include="src\graphics\shaders\EntityShader.h" />
     <ClInclude Include="src\graphics\shaders\FontShader.h" />
     <ClInclude Include="src\graphics\shaders\GuiShader.h" />
     <ClInclude Include="src\graphics\shaders\LightingShader.h" />
@@ -291,6 +295,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\resources\shaders\Basic.shader" />
+    <None Include="src\resources\shaders\Entity.shader" />
     <None Include="src\resources\shaders\Font.shader" />
     <None Include="src\resources\shaders\Gui.shader" />
     <None Include="src\resources\shaders\Lighting.shader" />

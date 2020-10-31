@@ -49,6 +49,11 @@ namespace Astra::Graphics
 		glUniform4f(GetUniformLocation(name), vector.x, vector.y, vector.z, vector.w);
 	}
 
+	void Shader::SetUniform4f(const GLchar* name, const Math::Vec3& vector, float w)
+	{
+		glUniform4f(GetUniformLocation(name), vector.x, vector.y, vector.z, w);
+	}
+
 	void Shader::SetUniformMat4(const GLchar* name, const Math::Mat4& matrix)
 	{
 		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.data);

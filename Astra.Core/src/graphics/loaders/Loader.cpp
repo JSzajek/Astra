@@ -128,7 +128,7 @@ namespace Astra::Graphics
 		}
 	}
 
-	const Texture& Loader::LoadTextureImpl(const char* const filepath, GLint clippingOption, bool flip)
+	const Texture& Loader::LoadTextureImpl(const char* const filepath, GLint clippingOption, bool flip, bool invert)
 	{
 		static int m_bpp;
 		static unsigned char* buffer;
@@ -142,7 +142,7 @@ namespace Astra::Graphics
 		Texture texture(filepath);
 
 		stbi_set_flip_vertically_on_load(flip);
-		buffer = stbi_load(std::string(filepath).c_str(), &texture.width, &texture.height, &m_bpp, 4);
+		buffer = stbi_load(std::string(filepath).c_str(), &texture.width, &texture.height, &m_bpp, !invert ? 4 : 1);
 		
 		if (buffer)
 		{

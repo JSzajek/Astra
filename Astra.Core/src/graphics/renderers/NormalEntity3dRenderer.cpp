@@ -81,13 +81,13 @@ namespace Astra::Graphics
 			{
 				m_shader->SetUniform3f(NormalEntityShader::GetLightPositionTag(i), NormalEntityShader::ConvertToEyeSpacePosition(m_lights[i]->GetTranslation(), m_viewMatrix));
 				m_shader->SetUniform3f(NormalEntityShader::GetLightColorTag(i), m_lights[i]->GetColor());
-				m_shader->SetUniform3f(NormalEntityShader::GetAttenuationTag(i), m_lights[i]->GetAttenuation());
+				//m_shader->SetUniform3f(NormalEntityShader::GetAttenuationTag(i), m_lights[i]->GetAttenuation());
 			}
 			else					   
 			{
 				m_shader->SetUniform3f(NormalEntityShader::GetLightPositionTag(i), Math::Vec3(0));
 				m_shader->SetUniform3f(NormalEntityShader::GetLightColorTag(i), Math::Vec3(0));
-				m_shader->SetUniform3f(NormalEntityShader::GetAttenuationTag(i), Math::Vec3(1, 0, 0));
+				//m_shader->SetUniform3f(NormalEntityShader::GetAttenuationTag(i), Math::Vec3(1, 0, 0));
 			}
 		}
 		m_shader->Stop();
@@ -102,22 +102,22 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Tangents));
 
 		m_shader->SetUniform1f(NormalEntityShader::NumberOfRowsTag, entity->material->GetRowCount());
-		if (entity->material->transparent)
+		//if (entity->material->transparent)
 		{
 			glDisable(GL_CULL_FACE);
 		}
 
 		if (m_shader->GetType() == ShaderType::NormalMapped)
 		{
-			m_shader->SetUniform1f(NormalEntityShader::UseFakeLightingTag, entity->material->fakeLight);
-			m_shader->SetUniform1f(NormalEntityShader::ShineDampenerTag, entity->material->shineDampener);
-			m_shader->SetUniform1f(NormalEntityShader::ReflectivityTag, entity->material->reflectivity);
+			//m_shader->SetUniform1f(NormalEntityShader::UseFakeLightingTag, entity->material->fakeLight);
+			//m_shader->SetUniform1f(NormalEntityShader::ShineDampenerTag, entity->material->shineDampener);
+			//m_shader->SetUniform1f(NormalEntityShader::ReflectivityTag, entity->material->reflectivity);
 		}
 
 		if (entity->material != NULL)
 		{
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, entity->material->id);
+			glBindTexture(GL_TEXTURE_2D, entity->material->GetId());
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, entity->normalMap.id);
 		}

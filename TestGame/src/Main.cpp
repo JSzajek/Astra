@@ -78,25 +78,34 @@ int main()
     SkyboxMaterial skybox(m_textureFiles, m_nightTextureFiles);
     renderer.SetSkyBox(&skybox);
 
-    Light* light1 = new Light(Math::Vec3(20000, 20000, 20000), Math::Vec3(0.75f));  // Sun 
-    Light* light2 = new Light(Math::Vec3(-20, 50, 20), Math::Vec3(0, 1, 1), Math::Vec3(1, 0.01f, 0.002f));
-    Light* light3 = new Light(Math::Vec3(20, 50, -20), Math::Vec3(1, 0, 0), Math::Vec3(1, 0.01f, 0.002f));
-    Light* light4 =  new Light(Math::Vec3(-20, 50, -20), Math::Vec3(1, 0, 1), Math::Vec3(1, 0.01f, 0.002f));
+    //Light* light1 = new Light(Math::Vec3(20000, 20000, 20000), Math::Vec3(0.75f));  // Sun 
+    //Light* light2 = new Light(Math::Vec3(-20, 50, 20), Math::Vec3(0, 1, 1), Math::Vec3(1, 0.01f, 0.002f));
+    //Light* light3 = new Light(Math::Vec3(20, 50, -20), Math::Vec3(1, 0, 0), Math::Vec3(1, 0.01f, 0.002f));
 
-    renderer.AddDirectionalLight(light1);
-    renderer.AddLight(light2);
-    renderer.AddLight(light3);
+    Vec3 light_pos = Math::Vec3(-45, terrain.GetHeightOfTerrain(-45, 45) + 7, 45);
+    const VertexArray* cubeVertArray = ObjLoader::LoadObjectModel("res/cube.obj");
+    Entity light_indicator = Entity(cubeVertArray, light_pos, Vec3(0), Vec3(0.5f));
+    Light* light4 = new DirectionalLight(light_pos, Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.4f), Vec3(0.5f), Vec3(1.0f));
+    //Light* light4 = new PointLight(light_pos, Vec3(1), Vec3(1), Vec3(1.0f));
+
+    //light_pos.y += 18;
+    //Light* light4 = new SpotLight(light_pos, Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.4f), Vec3(0.5f), Vec3(0.7f), cosf(Math::ToRadians(12.5)), cosf(Math::ToRadians(17.5)));
+
+    //renderer.AddDirectionalLight(light1);
+    //renderer.AddLight(light2);
+    //renderer.AddLight(light3);
+    renderer.AddEntity(&light_indicator);
     renderer.AddLight(light4);
 
-    ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 1, 0, true, true);
-    const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");
+    /*ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 1, 0, true, true);
+    const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");*/
 
-    ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", 1, 10, 0.5f);
+    /*ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", 1, 10, 0.5f);
     Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-40, terrain.GetHeightOfTerrain(-40, 40), 40), Vec3(0), Vec3(1));
 
-    renderer.AddEntity(&barrelModel2);
+    renderer.AddEntity(&barrelModel2);*/
 
-    std::vector<const Entity*> entities;
+   /* std::vector<const Entity*> entities;
     for (int i = 0; i < 20; i++)
     {
         float x = (rand() % 256) - 128;
@@ -105,18 +114,18 @@ int main()
         Entity *entity = new Entity(fernVertArray, fernMat, rand() % 4, Vec3(x, y, z), Vec3(0), Vec3(1));
         entities.emplace_back(entity);
         renderer.AddEntity(entity);
-    }
+    }*/
     
-    ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);
+    //ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);
 
-    Vec3 particleCenter(-80, terrain.GetHeightOfTerrain(-80, 80) + 5, 80);
-    //ParticleSystem partSystem(partMaterial, 15, 5, -0.1f, 3);
-    ConeParticleSystem partSystem(partMaterial, 15, 25, 0.5f, 1.5f, 3);
-    partSystem.SetDirection(Vec3(0, 1, 0), 0.1f);
-    partSystem.SetLifeError(0.1f);
-    partSystem.SetSpeedError(0.4f);
-    partSystem.SetScaleError(0.8f);
-    partSystem.SetRandomRotation(true);
+    //Vec3 particleCenter(-80, terrain.GetHeightOfTerrain(-80, 80) + 5, 80);
+    ////ParticleSystem partSystem(partMaterial, 15, 5, -0.1f, 3);
+    //ConeParticleSystem partSystem(partMaterial, 15, 25, 0.5f, 1.5f, 3);
+    //partSystem.SetDirection(Vec3(0, 1, 0), 0.1f);
+    //partSystem.SetLifeError(0.1f);
+    //partSystem.SetSpeedError(0.4f);
+    //partSystem.SetScaleError(0.8f);
+    //partSystem.SetRandomRotation(true);
 
     const float InGameTimeSpeed = 0.00005f;
     short timeDir = 1;
@@ -124,6 +133,8 @@ int main()
     Timer time;
     float timer = 0;
     unsigned int frames = 0;
+
+    //float dist = light_pos.DistanceTo(player.GetRendering()->GetTranslation());
 
     while (!window.Closed())
     {
@@ -146,7 +157,7 @@ int main()
             timeDir = 1;
         }
 
-        partSystem.GenerateParticles(particleCenter);
+        //partSystem.GenerateParticles(particleCenter);
         renderer.Render();
         window.Update();
 

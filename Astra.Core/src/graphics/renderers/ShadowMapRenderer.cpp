@@ -51,14 +51,14 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
 
 		m_shader->SetUniform1f(ShadowShader::NumberOfRowsTag, entity->material->GetRowCount());
-		if (entity->material->transparent)
+		if (entity->material->Transparent)
 		{
 			glDisable(GL_CULL_FACE);
 		}
 		if (entity->material != NULL)
 		{
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, entity->material->id);
+			glBindTexture(GL_TEXTURE_2D, entity->material->GetId());
 		}
 	}
 
