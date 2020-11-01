@@ -5,14 +5,19 @@
 
 namespace Astra::Graphics
 {
-	WaterRenderer::WaterRenderer(Shader* shader, Camera* camera, float near, float far)
-		: Renderer(shader), m_camera(camera), m_buffer(NULL), m_light(NULL)
+	WaterRenderer::WaterRenderer(Camera* camera, float near, float far)
+		: Renderer(), m_camera(camera), m_buffer(NULL), m_light(NULL), m_near(near), m_far(far)
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLES, { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 }, 2);
+	}
+
+	void WaterRenderer::SetShader(Shader* shader)
+	{
+		Renderer::SetShader(shader);
 
 		m_shader->Start();
-		m_shader->SetUniform1f(WaterShader::NearPlaneTag, near);
-		m_shader->SetUniform1f(WaterShader::FarPlaneTag, far);
+		m_shader->SetUniform1f(WaterShader::NearPlaneTag, m_near);
+		m_shader->SetUniform1f(WaterShader::FarPlaneTag, m_far);
 
 		m_shader->SetUniform1i(WaterShader::ReflectionTextureTag, 0);
 		m_shader->SetUniform1i(WaterShader::RefractionTextureTag, 1);

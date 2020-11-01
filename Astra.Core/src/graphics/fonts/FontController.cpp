@@ -56,4 +56,9 @@ namespace Astra::Graphics
 			}
 		}
 	}
+
+	void FontController::ClearImpl()
+	{
+		m_fontRenderer->Clear();
+	}
 }

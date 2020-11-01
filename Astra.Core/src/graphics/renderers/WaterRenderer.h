@@ -18,8 +18,17 @@ namespace Astra::Graphics
 		WaterFrameBuffer* m_buffer;
 		std::vector<WaterTile> m_waterTiles;
 		const Light* m_light;
+		float m_near, m_far;
 	public:
-		WaterRenderer(Shader* shader, Camera* camera, float near, float far);
+		WaterRenderer(Camera* camera, float near, float far);
+		
+		void SetShader(Shader* shader) override;
+		inline void Clear() override 
+		{ 
+			m_waterTiles.clear(); 
+			m_light = NULL;
+		}
+
 		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 		void AddTile(const WaterTile& tile) { m_waterTiles.push_back(tile); }
 		inline void SetCamera(Camera* camera) { m_camera = camera; }

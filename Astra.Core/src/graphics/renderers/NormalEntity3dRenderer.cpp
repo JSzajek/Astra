@@ -6,9 +6,15 @@
 
 namespace Astra::Graphics
 {
-	NormalEntity3dRenderer::NormalEntity3dRenderer(Shader* shader, const Math::Vec3* fogColor)
-		: Renderer(shader), m_skyColor(fogColor)
+	NormalEntity3dRenderer::NormalEntity3dRenderer(const Math::Vec3* fogColor)
+		: Renderer(), m_skyColor(fogColor)
 	{
+	}
+
+	void NormalEntity3dRenderer::SetShader(Shader* shader)
+	{
+		Renderer::SetShader(shader);
+
 		m_shader->Start();
 		m_shader->SetUniform1i(NormalEntityShader::ModelTextureTag,	0);
 		m_shader->SetUniform1i(NormalEntityShader::NormalMapTag,	1);
@@ -18,6 +24,12 @@ namespace Astra::Graphics
 		m_shader->SetUniform1f(Shader::MapSizeTag,					SHADOW_MAP_SIZE);
 		m_shader->SetUniform1i(Shader::PcfCountTag,					PCF_COUNT);
 		m_shader->Stop();
+	}
+
+	void NormalEntity3dRenderer::Clear()
+	{
+		m_entities.clear();
+		m_lights.clear();
 	}
 
 	void NormalEntity3dRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)

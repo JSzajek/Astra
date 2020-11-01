@@ -5,8 +5,9 @@
 namespace Astra::Graphics
 {
 	ParticleRenderer::ParticleRenderer(ParticleShader* shader)
-		: Renderer((Shader*)shader)
-	{
+		: Renderer()
+	{	
+		Renderer::SetShader(shader);
 		m_defaultQuad = Loader::Load(GL_TRIANGLE_STRIP, { -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5 }, 2);
 	}
 

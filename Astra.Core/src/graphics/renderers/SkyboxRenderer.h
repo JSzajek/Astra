@@ -66,6 +66,7 @@ namespace Astra::Graphics
 	public:
 		SkyboxRenderer(Shader* shader, const Math::Vec3* fogColor);
 
+		inline void Clear() override { m_material = NULL; }
 		inline void SetSkyBox(const SkyboxMaterial* material) { m_material = material; }
 
 		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;

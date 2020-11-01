@@ -4,9 +4,9 @@
 
 namespace Astra::Graphics
 {
-	GuiRenderer::GuiRenderer(GuiShader* shader)
-		: Renderer((Shader*)shader)
+	GuiRenderer::GuiRenderer(Shader* shader) : Renderer()
 	{
+		Renderer::SetShader(shader);
 		m_defaultQuad = Loader::Load(GL_TRIANGLE_STRIP, { -1, 1, -1, -1, 1, 1, 1, -1 }, 2);
 	}
 

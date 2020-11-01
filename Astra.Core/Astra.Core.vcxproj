@@ -204,6 +204,7 @@
     <ClCompile Include="src\graphics\renderers\SkyboxRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\TerrainRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\WaterRenderer.cpp" />
+    <ClCompile Include="src\graphics\scenes\Scene.cpp" />
     <ClCompile Include="src\graphics\shaders\Shader.cpp" />
     <ClCompile Include="src\graphics\shadows\ShadowBox.cpp" />
     <ClCompile Include="src\graphics\shadows\ShadowMapController.cpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="src\graphics\renderers\SkyboxRenderer.h" />
     <ClInclude Include="src\graphics\renderers\TerrainRenderer.h" />
     <ClInclude Include="src\graphics\renderers\WaterRenderer.h" />
+    <ClInclude Include="src\graphics\scenes\Scene.h" />
     <ClInclude Include="src\graphics\shaders\BasicShader.h" />
     <ClInclude Include="src\graphics\shaders\EntityShader.h" />
     <ClInclude Include="src\graphics\shaders\FontShader.h" />

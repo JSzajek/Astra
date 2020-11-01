@@ -7,6 +7,7 @@
 #include <string>
 #include <sstream>
 #include <unordered_map>
+#include <tuple>
 
 #include "../../math/Maths.h"
 #include "../../utils/FileUtils.h"
@@ -53,8 +54,9 @@ namespace Astra::Graphics
 		std::unordered_map<std::string, GLint> indexDirectory;
 		std::unordered_map<std::string, GLint> failedDirectory;
 		ShaderType m_type;
+		std::tuple<const char*, int>* m_replace;
 	public:
-		Shader(const char* filepath, ShaderType type = ShaderType::Basic);
+		Shader(const char* filepath, ShaderType type = ShaderType::Basic, std::tuple<const char*, int>* replace = NULL);
 		~Shader();
 
 		void SetUniform1i(const GLchar* name, const int& value);

@@ -3,8 +3,9 @@
 namespace Astra::Graphics
 {
 	FontRenderer::FontRenderer(FontShader* shader)
-		: Renderer((Shader*)shader)
+		: Renderer()
 	{
+		Renderer::SetShader(shader);
 	}
 
 	void FontRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)

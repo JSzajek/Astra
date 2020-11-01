@@ -18,7 +18,8 @@ namespace Astra::Graphics
 	public:
 		ParticleRenderer(ParticleShader* shader);
 		~ParticleRenderer();
-
+		
+		inline void Clear() override { m_particles.clear(); }
 		inline std::unordered_map<GLuint, std::vector<Particle>>& GetParticles() { return m_particles; }
 		
 		void AddParticle(const Particle& particle);

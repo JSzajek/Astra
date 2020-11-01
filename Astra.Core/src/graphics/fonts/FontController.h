@@ -40,6 +40,11 @@ namespace Astra::Graphics
 			Get().RemoveTextImpl(text);
 		}
 
+		static void Clear()
+		{
+			Get().ClearImpl();
+		}
+
 	private:
 		FontController();
 		~FontController();
@@ -47,5 +52,6 @@ namespace Astra::Graphics
 		void RenderImpl();
 		void LoadTextImpl(GuiText& text);
 		void RemoveTextImpl(GuiText& text);
+		void ClearImpl();
 	};
 }

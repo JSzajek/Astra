@@ -3,14 +3,16 @@
 namespace Astra::Graphics
 {
 	SkyboxRenderer::SkyboxRenderer(Shader* shader, const Math::Vec3* fogColor)
-		: Renderer(shader), m_skyColor(fogColor), m_blendFactor(0), m_material(NULL)
+		: Renderer(), m_skyColor(fogColor), m_blendFactor(0), m_material(NULL)
 	{
-		m_cube = Loader::Load(GL_TRIANGLES, Vertices, 3);
+		Renderer::SetShader(shader);
 
 		m_shader->Start();
 		m_shader->SetUniform1i(SkyboxShader::FirstCubeMapTag, 0);
 		m_shader->SetUniform1i(SkyboxShader::SecondCubeMapTag, 1);
 		m_shader->Stop();
+
+		m_cube = Loader::Load(GL_TRIANGLES, Vertices, 3);
 	}
 
 	void SkyboxRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)

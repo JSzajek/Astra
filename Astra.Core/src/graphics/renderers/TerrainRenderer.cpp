@@ -5,21 +5,33 @@
 
 namespace Astra::Graphics
 {
-	TerrainRenderer::TerrainRenderer(Shader* shader, const Math::Vec3* fogColor)
-		: Renderer(shader), m_skyColor(fogColor)
+	TerrainRenderer::TerrainRenderer(const Math::Vec3* fogColor)
+		: Renderer(), m_skyColor(fogColor)
 	{
+	}
+
+	void TerrainRenderer::SetShader(Shader* shader)
+	{
+		Renderer::SetShader(shader);
+
 		m_shader->Start();
 		m_shader->SetUniform1i(TerrainShader::BackgroundTextureTag, 0);
-		m_shader->SetUniform1i(TerrainShader::RTextureTag,			1);
-		m_shader->SetUniform1i(TerrainShader::GTextureTag,			2);
-		m_shader->SetUniform1i(TerrainShader::BTextureTag,			3);
-		m_shader->SetUniform1i(TerrainShader::BlendMapTag,			4);
-		m_shader->SetUniform1i(Shader::ShadowMapTag,				5);
-		m_shader->SetUniform1f(Shader::ShadowDistanceTag,			SHADOW_DISTANCE);
-		m_shader->SetUniform1f(Shader::TransitionDistanceTag,		TRANSITION_DISTANCE);
-		m_shader->SetUniform1f(Shader::MapSizeTag,					SHADOW_MAP_SIZE);
-		m_shader->SetUniform1i(Shader::PcfCountTag,					PCF_COUNT);
+		m_shader->SetUniform1i(TerrainShader::RTextureTag, 1);
+		m_shader->SetUniform1i(TerrainShader::GTextureTag, 2);
+		m_shader->SetUniform1i(TerrainShader::BTextureTag, 3);
+		m_shader->SetUniform1i(TerrainShader::BlendMapTag, 4);
+		m_shader->SetUniform1i(Shader::ShadowMapTag, 5);
+		m_shader->SetUniform1f(Shader::ShadowDistanceTag, SHADOW_DISTANCE);
+		m_shader->SetUniform1f(Shader::TransitionDistanceTag, TRANSITION_DISTANCE);
+		m_shader->SetUniform1f(Shader::MapSizeTag, SHADOW_MAP_SIZE);
+		m_shader->SetUniform1i(Shader::PcfCountTag, PCF_COUNT);
 		m_shader->Stop();
+	}
+
+	inline void TerrainRenderer::Clear() 
+	{ 
+		m_terrains.clear();
+		m_lights.clear();
 	}
 
 	void TerrainRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)

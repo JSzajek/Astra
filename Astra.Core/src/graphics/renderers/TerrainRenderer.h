@@ -20,8 +20,11 @@ namespace Astra::Graphics
 		const Math::Vec3* m_skyColor;
 		Math::Mat4 m_toShadowSpaceMatrix;
 	public:
-		TerrainRenderer(Shader* shader, const Math::Vec3* fogColor);
+		TerrainRenderer(const Math::Vec3* fogColor);
 		
+		void SetShader(Shader* shader) override;
+
+		inline void Clear() override;
 		inline void SetShadowMatrix(const Math::Mat4& shadowMatrix) { m_toShadowSpaceMatrix = shadowMatrix; }
 
 		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;

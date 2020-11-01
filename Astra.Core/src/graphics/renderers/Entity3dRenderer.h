@@ -19,16 +19,21 @@ namespace Astra::Graphics
 		std::unordered_map<GLuint, std::vector<const Entity*>> m_entities;
 		std::vector<const Light*> m_lights;
 		const Light* m_light;
+		const Light* m_directionalLight;
 		const Math::Vec3* m_skyColor;
 		Math::Mat4 m_toShadowSpaceMatrix;
 	public:
-		Entity3dRenderer(Shader* shader, const Math::Vec3* fogColor);
+		Entity3dRenderer(const Math::Vec3* fogColor);
 
+		void SetShader(Shader* shader) override;
+		
+		void Clear() override;
 		inline void SetShadowMatrix(const Math::Mat4& shadowMatrix) { m_toShadowSpaceMatrix = shadowMatrix; }
 
 		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 		void AddEntity(const Entity* entity);
-		void AddLight(Light* light);
+		void AddLight(const Light* light);
+		void AddDirectionalLight(const Light* light) { m_directionalLight = light; }
 		void UpdateLights();
 	private:
 		void PrepareEntity(const Entity* entity);

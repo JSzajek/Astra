@@ -7,14 +7,19 @@ namespace Astra::Graphics
 {
 	const Math::Vec4 Renderer::DefaultClipPlane = Math::Vec4(0);
 
-	Renderer::Renderer(Shader* shader)
-		: m_shader(shader)
+	Renderer::Renderer()
+		: m_shader(NULL)
 	{
 	}
 
 	Renderer::~Renderer()
 	{
 		delete m_shader;
+	}
+
+	void Renderer::SetShader(Shader* shader)
+	{
+		m_shader = shader;
 	}
 
 	void Renderer::UpdateProjectionMatrix(const Math::Mat4& projectionMatrix)

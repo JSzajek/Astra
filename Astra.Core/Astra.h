@@ -16,7 +16,11 @@
 #include "src/graphics/buffers/Texture.h"
 #include "src/graphics/buffers/WaterFrameBuffer.h"
 
+#include "src/graphics/fonts/TextMesh.h"
+
 #include "src/graphics/renderers/RendererController.h"
+
+#include "src/graphics/scenes/Scene.h"
 
 #include "src/graphics/entities/Entity.h"
 #include "src/graphics/entities/Camera.h"

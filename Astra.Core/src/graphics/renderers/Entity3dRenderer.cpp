@@ -9,9 +9,15 @@
 
 namespace Astra::Graphics
 {
-	Entity3dRenderer::Entity3dRenderer(Shader* shader, const Math::Vec3* fogColor)
-		: Renderer(shader), m_skyColor(fogColor)
+	Entity3dRenderer::Entity3dRenderer(const Math::Vec3* fogColor)
+		: Renderer(), m_skyColor(fogColor), m_light(NULL)
 	{
+	}
+
+	void Entity3dRenderer::SetShader(Shader* shader)
+	{
+		Renderer::SetShader(shader);
+
 		m_shader->Start();
 		m_shader->SetUniform1i(DIFFUSE_MAP, 0);
 		m_shader->SetUniform1i(SPECULAR_MAP, 1);
@@ -24,6 +30,13 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
+	void Entity3dRenderer::Clear()
+	{
+		m_light = NULL;
+		m_lights.clear();
+		m_entities.clear();
+	}
+
 	void Entity3dRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
@@ -33,7 +46,7 @@ namespace Astra::Graphics
 			m_shader->SetUniform3f(LightingShader::SkyColorTag, *m_skyColor);
 		}*/
 
-		if (m_light != NULL)
+		/*if (m_light != NULL)
 		{
 			m_shader->SetUniform4f(LIGHT_VECTOR, m_light->GetTranslation(), !m_light->IsDirectional());
 			if (m_light->GetType() == LightType::Directional)
@@ -60,7 +73,22 @@ namespace Astra::Graphics
 			m_shader->SetUniform3f(LIGHT_AMBIENT, m_light->GetAmbient());
 			m_shader->SetUniform3f(LIGHT_DIFFUSE, m_light->GetDiffuse());
 			m_shader->SetUniform3f(LIGHT_SPECULAR, m_light->GetSpecular());
+		}*/
+
+		for (int i = 0; i < m_lights.size(); i++)
+		{
+			m_shader->SetUniform3f(EntityShader::GetPointLightPositionTag(i), m_lights[i]->GetTranslation());
+			m_shader->SetUniform3f(EntityShader::GetPointLightAmbientTag(i), m_lights[i]->GetAmbient());
+			m_shader->SetUniform3f(EntityShader::GetPointLightDiffuseTag(i), m_lights[i]->GetDiffuse());
+			m_shader->SetUniform3f(EntityShader::GetPointLightSpecularTag(i), m_lights[i]->GetSpecular());
+			m_shader->SetUniform3f(EntityShader::GetPointLightAttenuationTag(i), (static_cast<const PointLight*>(m_lights[i]))->GetAttenuation());
 		}
+
+		m_shader->SetUniform3f(DIR_LIGHT_DIRECTION, m_directionalLight->GetRotation());
+		m_shader->SetUniform3f(DIR_LIGHT_AMBIENT, m_directionalLight->GetAmbient());
+		m_shader->SetUniform3f(DIR_LIGHT_DIFFUSE, m_directionalLight->GetDiffuse());
+		m_shader->SetUniform3f(DIR_LIGHT_SPECULAR, m_directionalLight->GetSpecular());
+
 
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
 		m_shader->SetUniform4f(Shader::InverseViewVectorTag, viewMatrix.Inverse() * Math::Back4D);
@@ -98,9 +126,9 @@ namespace Astra::Graphics
 		}
 	}
 
-	void Entity3dRenderer::AddLight(Light* light)
+	void Entity3dRenderer::AddLight(const Light* light)
 	{
-		m_light = light;
+		m_lights.emplace_back(light);
 		/*if (m_lights.size() + 1 > MAX_LIGHTS)
 		{
 			Logger::Log("Too Many Lights");

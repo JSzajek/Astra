@@ -5,8 +5,9 @@
 namespace Astra::Graphics
 {
 	ShadowMapRenderer::ShadowMapRenderer(ShadowShader* shader, ShadowFrameBuffer* buffer, const Math::Mat4& projectionViewMatrix)
-		: Renderer((Shader*) shader), m_buffer(buffer), projectionViewMatrix(projectionViewMatrix)
+		: Renderer(), m_buffer(buffer), projectionViewMatrix(projectionViewMatrix)
 	{
+		Renderer::SetShader(shader);
 	}
 
 	void ShadowMapRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)

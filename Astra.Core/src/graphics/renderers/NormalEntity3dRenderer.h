@@ -22,8 +22,11 @@ namespace Astra::Graphics
 		Math::Mat4 m_viewMatrix;
 		Math::Mat4 m_toShadowSpaceMatrix;
 	public:
-		NormalEntity3dRenderer(Shader* shader, const Math::Vec3* fogColor);
+		NormalEntity3dRenderer(const Math::Vec3* fogColor);
 		
+		void SetShader(Shader* shader) override;
+
+		void Clear() override;
 		inline void SetShadowMatrix(const Math::Mat4& shadowMatrix) { m_toShadowSpaceMatrix = shadowMatrix; }
 
 		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;
