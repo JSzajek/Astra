@@ -5,11 +5,12 @@
 
 #include "../entities/PointLight.h"
 #include "../entities/SpotLight.h"
+#include "../shadows/ShadowMapController.h"
 
 namespace Astra::Graphics
 {
 	WaterRenderer::WaterRenderer(Camera* camera, const Math::Vec3* fogColor, float near, float far)
-		: Renderer(), m_camera(camera), m_fogColor(fogColor), m_buffer(NULL), m_near(near), m_far(far)
+		: Renderer(), m_camera(camera), m_fogColor(fogColor), m_buffer(NULL), m_near(near), m_far(far), m_toShadowSpaceMatrix(1)
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLES, { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 }, 2);
 	}
@@ -28,6 +29,12 @@ namespace Astra::Graphics
 		m_shader->SetUniform1i(NORMALMAP_TEXTURE, 3);
 		m_shader->SetUniform1i(DEPTHMAP_TEXTURE, 4);
 		m_shader->SetUniform1i(SPECULAR_MAP, 5);
+
+		m_shader->SetUniform1i(Shader::ShadowMapTag, 6);
+		m_shader->SetUniform1f(Shader::ShadowDistanceTag, SHADOW_DISTANCE);
+		m_shader->SetUniform1f(Shader::TransitionDistanceTag, TRANSITION_DISTANCE);
+		m_shader->SetUniform1f(Shader::MapSizeTag, SHADOW_MAP_SIZE);
+		m_shader->SetUniform1i(Shader::PcfCountTag, PCF_COUNT);
 		m_shader->Stop();
 	}
 
@@ -41,25 +48,11 @@ namespace Astra::Graphics
 	{
 		m_shader->Start();
 		m_shader->SetUniform3f(FOG_COLOR, *m_fogColor);
-		//m_shader->SetUniform3f(CAMERA_POSITION, m_camera->GetTranslation());
-
-		for (int i = 0; i < m_lights.size(); i++)
-		{
-			m_shader->SetUniform3f(Shader::GetPointLightPositionTag(i), m_lights[i]->GetTranslation());
-			m_shader->SetUniform3f(Shader::GetPointLightAmbientTag(i), m_lights[i]->GetAmbient());
-			m_shader->SetUniform3f(Shader::GetPointLightDiffuseTag(i), m_lights[i]->GetDiffuse());
-			m_shader->SetUniform3f(Shader::GetPointLightSpecularTag(i), m_lights[i]->GetSpecular());
-			m_shader->SetUniform3f(Shader::GetPointLightAttenuationTag(i), (static_cast<const PointLight*>(m_lights[i]))->GetAttenuation());
-		}
-
-		m_shader->SetUniform3f(DIR_LIGHT_DIRECTION, m_directionalLight->GetRotation());
-		m_shader->SetUniform3f(DIR_LIGHT_AMBIENT, m_directionalLight->GetAmbient());
-		m_shader->SetUniform3f(DIR_LIGHT_DIFFUSE, m_directionalLight->GetDiffuse());
-		m_shader->SetUniform3f(DIR_LIGHT_SPECULAR, m_directionalLight->GetSpecular());
 
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
 		m_shader->SetUniform4f(Shader::InverseViewVectorTag, viewMatrix.Inverse() * Math::Back4D);
-		
+		m_shader->SetUniformMat4(Shader::ToShadowSpaceMatrixTag, m_toShadowSpaceMatrix);
+
 		PrepareRender();
 		for (const WaterTile* tile: m_waterTiles)
 		{
@@ -72,20 +65,58 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
-	void WaterRenderer::AddLight(const Light* light)
+	void WaterRenderer::AddLight(Light* light)
 	{
-		m_lights.emplace_back(light);
+		switch (light->GetType())
+		{
+		case LightType::Directional:
+			m_directionalLight = light;
+			break;
+		case LightType::Point:
+			m_lights.emplace_back(light);
+			break;
+		case LightType::Spotlight:
+			break;
+		}
+		light->SetCallback(std::bind(&WaterRenderer::UpdateLight, this, light));
+		UpdateLight(light);
+	}
+
+	void WaterRenderer::UpdateLight(const Light* light)
+	{
+		m_shader->Start();
+		if (light->GetType() == LightType::Directional)
+		{
+			m_shader->SetUniform3f(DIR_LIGHT_DIRECTION, m_directionalLight->GetRotation());
+			m_shader->SetUniform3f(DIR_LIGHT_AMBIENT, m_directionalLight->GetAmbient());
+			m_shader->SetUniform3f(DIR_LIGHT_DIFFUSE, m_directionalLight->GetDiffuse());
+			m_shader->SetUniform3f(DIR_LIGHT_SPECULAR, m_directionalLight->GetSpecular());
+		}
+
+		if (light->GetType() == LightType::Point)
+		{
+			int i = 0;
+			for (; i < m_lights.size(); i++)
+			{
+				if (m_lights[i] == light)
+				{
+					break;
+				}
+			}
+
+			m_shader->SetUniform3f(Shader::GetPointLightPositionTag(i), m_lights[i]->GetTranslation());
+			m_shader->SetUniform3f(Shader::GetPointLightAmbientTag(i), m_lights[i]->GetAmbient());
+			m_shader->SetUniform3f(Shader::GetPointLightDiffuseTag(i), m_lights[i]->GetDiffuse());
+			m_shader->SetUniform3f(Shader::GetPointLightSpecularTag(i), m_lights[i]->GetSpecular());
+			m_shader->SetUniform3f(Shader::GetPointLightAttenuationTag(i), (static_cast<const PointLight*>(m_lights[i]))->GetAttenuation());
+		}
+		m_shader->Stop();
 	}
 
 	void WaterRenderer::PrepareRender()
 	{
 		glBindVertexArray(m_defaultQuad->vaoId);
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
-		/*if (m_light)
-		{
-			m_shader->SetUniform3f(WaterShader::LightPositionTag, m_light->GetTranslation());
-			m_shader->SetUniform3f(WaterShader::LightColorTag, m_light->GetColor());
-		}*/
 		if (m_buffer)
 		{
 			glActiveTexture(GL_TEXTURE0);
@@ -104,7 +135,6 @@ namespace Astra::Graphics
 		m_shader->SetUniform1f(WAVE_STRENGTH, tile->material->waveStrength);
 		m_shader->SetUniform4f(BASE_WATER_COLOR, tile->material->baseColor);
 		m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, tile->material->reflectivity);
-		//m_shader->SetUniform1f(WaterShader::ShineDampenerTag, tile->material->shineDampener);
 
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, tile->material->dudvTexture.id);

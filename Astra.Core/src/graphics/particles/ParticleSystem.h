@@ -13,11 +13,12 @@ namespace Astra::Graphics
 		float m_gravityComplient;
 		float m_lifeSpan;
 		const ParticleMaterial* const m_material;
+		const Math::Vec3* m_center;
 	public:
-		ParticleSystem(const ParticleMaterial* const material, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan);
+		ParticleSystem(const ParticleMaterial* const material, const Math::Vec3* center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan);
 		
-		void GenerateParticles(const Math::Vec3& center);
+		void GenerateParticles() const;
 	private:
-		void EmitParticle(const Math::Vec3& center);
+		void EmitParticle() const;
 	};
 }

@@ -57,10 +57,13 @@ int main()
     GuiText* text = new GuiText("This is a test text!", font, 3, Vec2(0, 0), 1, true);
     GuiText* outlineText = new GuiText("Outlines", font, 3, Vec2(0), Vec3(0), 0, 1, Vec3(0, 0, 1));
 
+    mainScene->AddText(text);
+    mainScene->AddText(outlineText);
+
     Texture texture = Loader::LoadTexture("res/textures/grassTexture.png");
     GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
     mainScene->AddGui(&gui);
-    
+
     std::vector<const char*> m_textureFiles =
     {
         "res/textures/Default_Skybox/right.png",
@@ -107,15 +110,15 @@ int main()
     mainScene->AddPointLight(light4);
     mainScene->SetDirectionalLight(dir_light);
 
-    /*ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 1, 0, true, true);
-    const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");*/
+    ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 0.25f, true, true);
+    const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");
 
-    ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", 1, 10, 0.5f);
+    ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", 1, 0.5f);
     Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-38, terrain.GetHeightOfTerrain(-38, 38) + 5, 38), Vec3(0), Vec3(1));
 
     mainScene->AddEntity(&barrelModel2);
 
-   /* std::vector<const Entity*> entities;
+    std::vector<const Entity*> entities;
     for (int i = 0; i < 20; i++)
     {
         float x = (rand() % 256) - 128;
@@ -123,13 +126,15 @@ int main()
         float y = terrain.GetHeightOfTerrain(x, z);
         Entity *entity = new Entity(fernVertArray, fernMat, rand() % 4, Vec3(x, y, z), Vec3(0), Vec3(1));
         entities.emplace_back(entity);
-        renderer.AddEntity(entity);
-    }*/
+        mainScene->AddEntity(entity);
+    }
     
-    //ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);
+    ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);
 
-    //Vec3 particleCenter(-80, terrain.GetHeightOfTerrain(-80, 80) + 5, 80);
-    ////ParticleSystem partSystem(partMaterial, 15, 5, -0.1f, 3);
+    Vec3 particleCenter(-80, terrain.GetHeightOfTerrain(-80, 80) + 5, 80);
+    ParticleSystem partSystem(partMaterial, &particleCenter, 15, 5, -0.1f, 3);
+    mainScene->AddParticleSystem(&partSystem);
+    
     //ConeParticleSystem partSystem(partMaterial, 15, 25, 0.5f, 1.5f, 3);
     //partSystem.SetDirection(Vec3(0, 1, 0), 0.1f);
     //partSystem.SetLifeError(0.1f);
@@ -147,8 +152,6 @@ int main()
     Timer time;
     float timer = 0;
     unsigned int frames = 0;
-
-    //float dist = light_pos.DistanceTo(player.GetRendering()->GetTranslation());
 
     while (!window.Closed())
     {
@@ -173,7 +176,6 @@ int main()
             timeDir = 1;
         }
 
-        //partSystem.GenerateParticles(particleCenter);
         //renderer.Render();
         RendererController::Render();
         window.Update();

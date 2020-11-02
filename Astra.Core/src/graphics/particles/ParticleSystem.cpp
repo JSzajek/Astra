@@ -4,12 +4,12 @@
 
 namespace Astra::Graphics
 {
-	ParticleSystem::ParticleSystem(const ParticleMaterial* const material, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan)
-		: m_material(material), m_particlePerSecond(particlesPerSecond), m_speed(speed), m_gravityComplient(gravityComplient), m_lifeSpan(lifeSpan)
+	ParticleSystem::ParticleSystem(const ParticleMaterial* const material, const Math::Vec3* center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan)
+		: m_material(material), m_center(center), m_particlePerSecond(particlesPerSecond), m_speed(speed), m_gravityComplient(gravityComplient), m_lifeSpan(lifeSpan)
 	{
 	}
 
-	void ParticleSystem::GenerateParticles(const Math::Vec3& center)
+	void ParticleSystem::GenerateParticles() const
 	{
 		float delta = Window::delta;
 		float particlesToCreate = m_particlePerSecond * (delta * 10);
@@ -17,15 +17,15 @@ namespace Astra::Graphics
 		float partialParticle = static_cast<int>(particlesToCreate) % 1;
 		for (int i = 0; i < count; i++)
 		{
-			EmitParticle(center);
+			EmitParticle();
 		}
 		if (Math::Random() < partialParticle)
 		{
-			EmitParticle(center);
+			EmitParticle();
 		}
 	}
 	
-	void ParticleSystem::EmitParticle(const Math::Vec3& center)
+	void ParticleSystem::EmitParticle() const
 	{
 		float xDir = Math::Random() * 2.0f - 1.0f;
 		float zDir = Math::Random() * 2.0f - 1.0f;
@@ -33,6 +33,6 @@ namespace Astra::Graphics
 		velocity.Normalize();
 		velocity *= m_speed;
 
-		Particle particle(m_material, center, velocity, m_gravityComplient, m_lifeSpan, 0, 1);
+		auto* particle = new Particle(m_material, *m_center, velocity, m_gravityComplient, m_lifeSpan, 0, 1);
 	}
 }

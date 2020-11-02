@@ -42,7 +42,7 @@ namespace Astra::Graphics
 		static constexpr const char* InverseViewVectorTag = "inverseViewVector";
 
 		// Shadow based tags
-		static constexpr const char* ShadowMapTag = "shadowMap";
+		static constexpr const char* ShadowMapTag = "material.shadowMap";
 		static constexpr const char* ToShadowSpaceMatrixTag = "toShadowMapSpace";
 		static constexpr const char* ShadowDistanceTag = "shadowDistance";
 		static constexpr const char* TransitionDistanceTag = "transitionDistance";

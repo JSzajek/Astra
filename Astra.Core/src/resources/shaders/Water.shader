@@ -7,14 +7,18 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 transformMatrix;
 uniform mat4 normalMatrix;
+uniform mat4 toShadowMapSpace;
+
 uniform vec4 inverseViewVector;
+uniform float shadowDistance;
+uniform float transitionDistance;
 
 out vec2 v_TexCoordinates;
-//out vec3 v_Normal;
 out vec3 v_FragPosition;
 out vec3 v_viewVector;
-out float visibility;
-out vec4 clipSpace;
+out vec4 v_ClipSpace;
+out float v_Visibility;
+out vec4 v_ShadowCoords;
 
 const float tiling = 3.0;
 const float density = 0.0035;
@@ -23,19 +27,23 @@ const float gradient = 5.0;
 void main()
 {
 	vec4 worldPosition = transformMatrix * vec4(position.x, 0.0, position.y, 1.0);
+	v_ShadowCoords = toShadowMapSpace * worldPosition;
 	vec4 positionRelativeToCam = viewMatrix * worldPosition;
-	clipSpace = projectionMatrix * positionRelativeToCam;
-	
-	gl_Position = clipSpace;
+	v_ClipSpace = projectionMatrix * positionRelativeToCam;
 	
 	v_TexCoordinates = vec2(position.x / 2.0 + 0.5, position.y / 2.0 + 0.5) * tiling;
-	//v_Normal = mat3(normalMatrix) * normal;
 	v_FragPosition = worldPosition.xyz;
 	v_viewVector = inverseViewVector.xyz - v_FragPosition;
 
 	float distance = length(positionRelativeToCam.xyz);
-	visibility = exp(-pow((distance * density), gradient));
-	visibility = clamp(visibility, 0, 1);
+	v_Visibility = exp(-pow((distance * density), gradient));
+	v_Visibility = clamp(v_Visibility, 0, 1);
+
+	distance = distance - (shadowDistance - transitionDistance);
+	distance = distance / transitionDistance;
+	v_ShadowCoords.w = clamp(1.0 - distance, 0.0, 1.0);
+	
+	gl_Position = v_ClipSpace;
 }
 
 #shader fragment
@@ -45,11 +53,11 @@ void main()
 #define BLINN 1
 
 in vec2 v_TexCoordinates;
-//in vec3 v_Normal;
 in vec3 v_FragPosition;
 in vec3 v_viewVector;
-in float visibility;
-in vec4 clipSpace;
+in vec4 v_ClipSpace;
+in float v_Visibility;
+in vec4 v_ShadowCoords;
 
 out vec4 out_Color;
 
@@ -61,6 +69,7 @@ struct Material
 	sampler2D normalMap;
 	sampler2D depthMap;
 	sampler2D specularMap;
+	sampler2D shadowMap;
 	float reflectivity;
 };
 uniform Material material;
@@ -105,6 +114,8 @@ uniform SpotLight spotLight;
 const float kPi = 3.14159265;
 
 uniform vec3 fogColor;
+uniform float mapSize;
+uniform int pcfCount;
 
 uniform float nearPlane;
 uniform float farPlane;
@@ -114,15 +125,15 @@ uniform float waveStrength;
 
 uniform vec4 baseWaterColor;
 
-vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth);
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth);
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth);
+vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor);
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor);
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor);
 
 void main()
 {
 	vec3 viewDir = normalize(v_viewVector);
 
-	vec2 normDeviceSpace = (clipSpace.xy / clipSpace.w) / 2.0 + 0.5;
+	vec2 normDeviceSpace = (v_ClipSpace.xy / v_ClipSpace.w) / 2.0 + 0.5;
 	vec2 reflectTexCoords = vec2(normDeviceSpace.x, -normDeviceSpace.y);
 
 	// water depth = floor distance - water distance
@@ -151,25 +162,42 @@ void main()
 
 	vec3 color = reflectColor.rgb;
 	vec3 specColor = texture(material.specularMap, v_TexCoordinates).rgb;
-	vec3 totalReflective = CalcDirLight(directionalLight, normal, color, specColor, viewDir, waterDepth);
+
+	float texelSize = 1.0 / mapSize;
+	float total = 0.0;
+	for (int x = -pcfCount; x <= pcfCount; x++)
+	{
+		for (int y = -pcfCount; y <= pcfCount; y++)
+		{
+			if (v_ShadowCoords.z > texture(material.shadowMap, v_ShadowCoords.xy + vec2(x, y) * texelSize).r + 0.002)
+			{
+				total += 1.0;
+			}
+		}
+	}
+
+	total /= (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);;
+	float lightFactor = 1.0 - (total * v_ShadowCoords.w);
+
+	vec3 totalReflective = CalcDirLight(directionalLight, normal, color, specColor, viewDir, waterDepth, lightFactor);
 	for (int i = 0; i < NR_POINT_LIGHTS; i++)
 	{
-		totalReflective += CalcPointLight(pointLights[0], normal, color, specColor, viewDir, waterDepth);
+		totalReflective += CalcPointLight(pointLights[0], normal, color, specColor, viewDir, waterDepth, lightFactor);
 	}
-	totalReflective += CalcSpotLight(spotLight, normal, color, specColor, viewDir, waterDepth);
+	totalReflective += CalcSpotLight(spotLight, normal, color, specColor, viewDir, waterDepth, lightFactor);
 
 	out_Color = mix(vec4(totalReflective, reflectColor.a), refractColor, refractiveFactor);
 	out_Color = mix(out_Color, baseWaterColor, 0.2);
 	out_Color.a = clamp(waterDepth / 5.0, 0, 1);
-	out_Color = mix(vec4(fogColor, 1), out_Color, visibility);
+	out_Color = mix(vec4(fogColor, 1), out_Color, v_Visibility);
 }
 
-vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth)
+vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor)
 {
 	vec3 lightDir = normalize(-light.direction);
 
 	// diffuse shading
-	float diff = max(dot(normal, lightDir), 0.0);
+	float diff = max(dot(normal, lightDir), 0.0) * lightFactor;
 
 	// specular shading
 #if BLINN
@@ -189,12 +217,12 @@ vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColo
 	return (ambient + diffuse + specular);
 }
 
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth)
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor)
 {
 	vec3 lightDir = normalize(light.position - v_FragPosition);
 
 	// diffuse shading
-	float diff = max(dot(normal, lightDir), 0.0);
+	float diff = max(dot(normal, lightDir), 0.0) * lightFactor;
 
 	// specular shading
 #if BLINN
@@ -221,14 +249,14 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, v
 	return (ambient + diffuse + specular);
 }
 
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth)
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor)
 {
 	if (light.cutOff < 0.02) { return vec3(0); }
 
 	vec3 lightDir = normalize(light.position - v_FragPosition);
 
 	// diffuse shading
-	float diff = max(dot(normal, lightDir), 0.0);
+	float diff = max(dot(normal, lightDir), 0.0) * lightFactor;
 
 	// specular shading
 #if BLINN

@@ -23,11 +23,11 @@ namespace Astra::Graphics
 		m_shader->SetUniform1i(B_TEXTURE, 3);
 		m_shader->SetUniform1i(BLEND_MAP, 4);
 		m_shader->SetUniform1i(SPECULAR_MAP, 5);
-	/*	m_shader->SetUniform1i(Shader::ShadowMapTag, 6);
+		m_shader->SetUniform1i(Shader::ShadowMapTag, 6);
 		m_shader->SetUniform1f(Shader::ShadowDistanceTag, SHADOW_DISTANCE);
 		m_shader->SetUniform1f(Shader::TransitionDistanceTag, TRANSITION_DISTANCE);
 		m_shader->SetUniform1f(Shader::MapSizeTag, SHADOW_MAP_SIZE);
-		m_shader->SetUniform1i(Shader::PcfCountTag, PCF_COUNT);*/
+		m_shader->SetUniform1i(Shader::PcfCountTag, PCF_COUNT);
 		m_shader->Stop();
 	}
 
@@ -43,28 +43,9 @@ namespace Astra::Graphics
 		m_shader->SetUniform3f(FOG_COLOR, *m_fogColor);
 		m_shader->SetUniform4f(CLIP_PLANE, clipPlane);
 
-		//if (m_shader->GetType() == ShaderType::Terrains)
-		//{
-		//	//m_shader->SetUniform4f(TerrainShader::ClipPaneTag, clipPlane);
-		//}
-		
-		for (int i = 0; i < m_lights.size(); i++)
-		{
-			m_shader->SetUniform3f(Shader::GetPointLightPositionTag(i), m_lights[i]->GetTranslation());
-			m_shader->SetUniform3f(Shader::GetPointLightAmbientTag(i), m_lights[i]->GetAmbient());
-			m_shader->SetUniform3f(Shader::GetPointLightDiffuseTag(i), m_lights[i]->GetDiffuse());
-			m_shader->SetUniform3f(Shader::GetPointLightSpecularTag(i), m_lights[i]->GetSpecular());
-			m_shader->SetUniform3f(Shader::GetPointLightAttenuationTag(i), (static_cast<const PointLight*>(m_lights[i]))->GetAttenuation());
-		}
-
-		m_shader->SetUniform3f(DIR_LIGHT_DIRECTION, m_directionalLight->GetRotation());
-		m_shader->SetUniform3f(DIR_LIGHT_AMBIENT, m_directionalLight->GetAmbient());
-		m_shader->SetUniform3f(DIR_LIGHT_DIFFUSE, m_directionalLight->GetDiffuse());
-		m_shader->SetUniform3f(DIR_LIGHT_SPECULAR, m_directionalLight->GetSpecular());
-
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
 		m_shader->SetUniform4f(Shader::InverseViewVectorTag, viewMatrix.Inverse() * Math::Back4D);
-		//m_shader->SetUniformMat4(TerrainShader::ToShadowSpaceMatrixTag, m_toShadowSpaceMatrix);
+		m_shader->SetUniformMat4(TerrainShader::ToShadowSpaceMatrixTag, m_toShadowSpaceMatrix);
 		for (const auto& directory : m_terrains)
 		{
 			PrepareTerrain(directory.second.front());
@@ -96,37 +77,52 @@ namespace Astra::Graphics
 		}
 	}
 
-	void TerrainRenderer::AddLight(const Light* light)
+	void TerrainRenderer::AddLight(Light* light)
 	{
-		m_lights.emplace_back(light);
-		/*if (m_lights.size() + 1 > MAX_LIGHTS)
+		switch (light->GetType())
 		{
-			Logger::Log("Too Many Lights");
-			m_lights.pop_back();
+		case LightType::Directional:
+			m_directionalLight = light;
+			break;
+		case LightType::Point:
+			m_lights.emplace_back(light);
+			break;
+		case LightType::Spotlight:
+			break;
 		}
-		light->SetCallback(std::bind(&TerrainRenderer::UpdateLights, this));
-		UpdateLights();*/
+		light->SetCallback(std::bind(&TerrainRenderer::UpdateLight, this, light));
+		UpdateLight(light);
 	}
 
-	void TerrainRenderer::UpdateLights()
+	void TerrainRenderer::UpdateLight(const Light* light)
 	{
-		//m_shader->Start();
-		//for (int i = 0; i < MAX_LIGHTS; i++)
-		//{
-		//	if (i < m_lights.size())
-		//	{
-		//		m_shader->SetUniform3f(TerrainShader::GetLightPositionTag(i), m_lights[i]->GetTranslation());
-		//		m_shader->SetUniform3f(TerrainShader::GetLightColorTag(i), m_lights[i]->GetColor());
-		//		//m_shader->SetUniform3f(TerrainShader::GetAttenuationTag(i), m_lights[i]->GetAttenuation());
-		//	}
-		//	else
-		//	{
-		//		m_shader->SetUniform3f(TerrainShader::GetLightPositionTag(i), Math::Vec3(0));
-		//		m_shader->SetUniform3f(TerrainShader::GetLightColorTag(i), Math::Vec3(0));
-		//		//m_shader->SetUniform3f(TerrainShader::GetAttenuationTag(i), Math::Vec3(1, 0, 0));
-		//	}
-		//}
-		//m_shader->Stop();
+		m_shader->Start();
+		if (light->GetType() == LightType::Directional)
+		{
+			m_shader->SetUniform3f(DIR_LIGHT_DIRECTION, m_directionalLight->GetRotation());
+			m_shader->SetUniform3f(DIR_LIGHT_AMBIENT, m_directionalLight->GetAmbient());
+			m_shader->SetUniform3f(DIR_LIGHT_DIFFUSE, m_directionalLight->GetDiffuse());
+			m_shader->SetUniform3f(DIR_LIGHT_SPECULAR, m_directionalLight->GetSpecular());
+		}
+
+		if (light->GetType() == LightType::Point)
+		{
+			int i = 0;
+			for (; i < m_lights.size(); i++)
+			{
+				if (m_lights[i] == light)
+				{
+					break;
+				}
+			}
+
+			m_shader->SetUniform3f(Shader::GetPointLightPositionTag(i), m_lights[i]->GetTranslation());
+			m_shader->SetUniform3f(Shader::GetPointLightAmbientTag(i), m_lights[i]->GetAmbient());
+			m_shader->SetUniform3f(Shader::GetPointLightDiffuseTag(i), m_lights[i]->GetDiffuse());
+			m_shader->SetUniform3f(Shader::GetPointLightSpecularTag(i), m_lights[i]->GetSpecular());
+			m_shader->SetUniform3f(Shader::GetPointLightAttenuationTag(i), (static_cast<const PointLight*>(m_lights[i]))->GetAttenuation());
+		}
+		m_shader->Stop();
 	}
 
 	void TerrainRenderer::PrepareTerrain(const Terrain* terrain)
@@ -137,12 +133,6 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
 
 		BindTerrainTextures(terrain);
-
-		/*if (m_shader->GetType() == ShaderType::Terrains)
-		{
-			m_shader->SetUniform1f(TerrainShader::ShineDampenerTag, 1);
-			m_shader->SetUniform1f(TerrainShader::ReflectivityTag, 0);
-		}*/
 	}
 
 	void TerrainRenderer::BindTerrainTextures(const Terrain* terrain)

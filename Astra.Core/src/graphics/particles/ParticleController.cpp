@@ -30,7 +30,9 @@ namespace Astra::Graphics
 				bool stillAlive = (*particlesIter)->Update(cameraPosition);
 				if (!stillAlive)
 				{
+					auto* temp = (*particlesIter);
 					particlesIter = (*iter).second.erase(particlesIter);
+					delete temp;
 				}
 				else
 				{

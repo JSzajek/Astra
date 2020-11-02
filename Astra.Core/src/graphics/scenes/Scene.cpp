@@ -24,7 +24,7 @@ namespace Astra::Graphics
 		
 	}
 
-	void Scene::AddPointLight(const PointLight* light)
+	void Scene::AddPointLight(PointLight* light)
 	{
 		m_pointlights.push_back(light);
 	}

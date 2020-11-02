@@ -30,9 +30,8 @@ namespace Astra::Graphics
 
 		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 		void AddTerrain(const Terrain* terrain);
-		void AddLight(const Light* light);
-		void AddDirectionalLight(const Light* light) { m_directionalLight = light; }
-		void UpdateLights();
+		void AddLight(Light* light);
+		void UpdateLight(const Light* light);
 	private:
 		void PrepareTerrain(const Terrain* terrain);
 		void BindTerrainTextures(const Terrain* terrain);

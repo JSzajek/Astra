@@ -19,7 +19,7 @@ namespace Astra::Graphics
 		Math::Vec3 m_ambient;
 		Math::Vec3 m_diffuse;
 		Math::Vec3 m_specular;
-		std::function<void()> m_lightChanged;
+		std::function<void(const Light*)> m_lightChanged;
 	protected:
 		LightType m_type;
 	protected:
@@ -38,14 +38,14 @@ namespace Astra::Graphics
 
 		inline virtual bool IsDirectional() const { return false; }
 
-		inline void SetCallback(std::function<void()> callback) { m_lightChanged = callback; }
+		inline void SetCallback(std::function<void(const Light*)> callback) { m_lightChanged = callback; }
 		
 		inline void SetColor(const Math::Vec3& color) 
 		{ 
 			m_color = color;
 			if (m_lightChanged != NULL)
 			{
-				m_lightChanged();
+				m_lightChanged(this);
 			}
 		}
 
@@ -63,7 +63,7 @@ namespace Astra::Graphics
 			rows[0] = translation;
 			if (m_lightChanged != NULL)
 			{
-				m_lightChanged();
+				m_lightChanged(this);
 			}
 		}
 	};

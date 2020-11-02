@@ -9,18 +9,22 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 transformMatrix;
 uniform mat4 normalMatrix;
+uniform mat4 toShadowMapSpace;
 
 uniform vec4 inverseViewVector;
 uniform float useFakeLighting;
 uniform float numberOfRows;
 uniform vec2 offset;
 uniform vec4 clipPlane;
+uniform float shadowDistance;
+uniform float transitionDistance;
 
 out vec2 v_TexCoordinates;
 out vec3 v_Normal;
 out vec3 v_FragPosition;
 out vec3 v_viewVector;
-out float visibility;
+out float v_Visibility;
+out vec4 v_ShadowCoords;
 
 const float density = 0.0035;
 const float gradient = 5.0;
@@ -28,6 +32,7 @@ const float gradient = 5.0;
 void main()
 {
 	vec4 worldPosition = transformMatrix * vec4(position, 1);
+	v_ShadowCoords = toShadowMapSpace * worldPosition;
 	vec4 positionRelativeToCam = viewMatrix * worldPosition;
 
 	gl_ClipDistance[0] = dot(worldPosition, clipPlane);
@@ -39,8 +44,12 @@ void main()
 	v_viewVector = inverseViewVector.xyz - v_FragPosition;
 
 	float distance = length(positionRelativeToCam.xyz);
-	visibility = exp(-pow((distance * density), gradient));
-	visibility = clamp(visibility, 0, 1);
+	v_Visibility = exp(-pow((distance * density), gradient));
+	v_Visibility = clamp(v_Visibility, 0, 1);
+
+	distance = distance - (shadowDistance - transitionDistance);
+	distance = distance / transitionDistance;
+	v_ShadowCoords.w = clamp(1.0 - distance, 0.0, 1.0);
 
 	gl_Position = projectionMatrix * positionRelativeToCam;
 }
@@ -55,7 +64,8 @@ in vec2 v_TexCoordinates;
 in vec3 v_Normal;
 in vec3 v_FragPosition;
 in vec3 v_viewVector;
-in float visibility;
+in float v_Visibility;
+in vec4 v_ShadowCoords;
 
 out vec4 out_Color;
 
@@ -63,6 +73,7 @@ struct Material
 {
 	sampler2D diffuseMap;
 	sampler2D specularMap;
+	sampler2D shadowMap;
 	float reflectivity;
 };
 uniform Material material;
@@ -107,10 +118,12 @@ uniform SpotLight spotLight;
 const float kPi = 3.14159265;
 
 uniform vec3 fogColor;
+uniform float mapSize;
+uniform int pcfCount;
 
-vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir);
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir);
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir);
+vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor);
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor);
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor);
 
 void main()
 {
@@ -118,27 +131,43 @@ void main()
 	vec3 viewDir = normalize(v_viewVector);
 
 	vec4 textureColor = texture(material.diffuseMap, v_TexCoordinates);
+	if (textureColor.a < 0.5) { discard; }
 	vec3 color = textureColor.rgb;
-
 	vec3 specColor = texture(material.specularMap, v_TexCoordinates).rgb;
+	
+	float texelSize = 1.0 / mapSize;
+	float total = 0.0;
+	for (int x = -pcfCount; x <= pcfCount; x++)
+	{
+		for (int y = -pcfCount; y <= pcfCount; y++)
+		{
+			if (v_ShadowCoords.z > texture(material.shadowMap, v_ShadowCoords.xy + vec2(x, y) * texelSize).r + 0.002)
+			{
+				total += 1.0;
+			}
+		}
+	}
 
-	vec3 result = CalcDirLight(directionalLight, norm, color, specColor, viewDir);
+	total /= (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);;
+	float lightFactor = 1.0 - (total * v_ShadowCoords.w);
+
+	vec3 result = CalcDirLight(directionalLight, norm, color, specColor, viewDir, lightFactor);
 	for (int i = 0; i < NR_POINT_LIGHTS; i++)
 	{
-		result += CalcPointLight(pointLights[0], norm, color, specColor, viewDir);
+		result += CalcPointLight(pointLights[0], norm, color, specColor, viewDir, lightFactor);
 	}
-	result += CalcSpotLight(spotLight, norm, color, specColor, viewDir);
+	result += CalcSpotLight(spotLight, norm, color, specColor, viewDir, lightFactor);
 
-	out_Color = vec4(result, 1.0);
-	out_Color = mix(vec4(fogColor, 1), out_Color, visibility);
+	out_Color = vec4(result, textureColor.a);
+	out_Color = mix(vec4(fogColor, 1), out_Color, v_Visibility);
 }
 
-vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir)
+vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor)
 {
 	vec3 lightDir = normalize(-light.direction);
 	
 	// diffuse shading
-	float diff = max(dot(normal, lightDir), 0.0);
+	float diff = max(dot(normal, lightDir), 0.0) * lightFactor;
 	
 	// specular shading
 #if BLINN
@@ -158,12 +187,12 @@ vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColo
 	return (ambient + diffuse + specular);
 }
 
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir)
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor)
 {
 	vec3 lightDir = normalize(light.position - v_FragPosition);
 	
 	// diffuse shading
-	float diff = max(dot(normal, lightDir), 0.0);
+	float diff = max(dot(normal, lightDir), 0.0) * lightFactor;
 	
 	// specular shading
 #if BLINN
@@ -190,14 +219,14 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, v
 	return (ambient + diffuse + specular);
 }
 
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir)
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor)
 {
 	if (light.cutOff < 0.02) { return vec3(0); }
 
 	vec3 lightDir = normalize(light.position - v_FragPosition);
 	
 	// diffuse shading
-	float diff = max(dot(normal, lightDir), 0.0);
+	float diff = max(dot(normal, lightDir), 0.0) * lightFactor;
 	
 	// specular shading
 #if BLINN

@@ -21,12 +21,11 @@ namespace Astra::Graphics
 		m_shader->Start();
 		m_shader->SetUniform1i(DIFFUSE_MAP, 0);
 		m_shader->SetUniform1i(SPECULAR_MAP, 1);
-		//m_shader->SetUniform1i(LightingShader::ModelTextureTag,		0);
-		//m_shader->SetUniform1i(Shader::ShadowMapTag,				5);
-		//m_shader->SetUniform1f(Shader::ShadowDistanceTag,			SHADOW_DISTANCE);
-		//m_shader->SetUniform1f(Shader::TransitionDistanceTag,		TRANSITION_DISTANCE);
-		//m_shader->SetUniform1f(Shader::MapSizeTag,					SHADOW_MAP_SIZE);
-		//m_shader->SetUniform1i(Shader::PcfCountTag,					PCF_COUNT);
+		m_shader->SetUniform1i(Shader::ShadowMapTag,				6);
+		m_shader->SetUniform1f(Shader::ShadowDistanceTag,			SHADOW_DISTANCE);
+		m_shader->SetUniform1f(Shader::TransitionDistanceTag,		TRANSITION_DISTANCE);
+		m_shader->SetUniform1f(Shader::MapSizeTag,					SHADOW_MAP_SIZE);
+		m_shader->SetUniform1i(Shader::PcfCountTag,					PCF_COUNT);
 		m_shader->Stop();
 	}
 
@@ -42,52 +41,9 @@ namespace Astra::Graphics
 		m_shader->SetUniform3f(FOG_COLOR, *m_fogColor);
 		m_shader->SetUniform4f(CLIP_PLANE, clipPlane);
 
-		/*if (m_light != NULL)
-		{
-			m_shader->SetUniform4f(LIGHT_VECTOR, m_light->GetTranslation(), !m_light->IsDirectional());
-			if (m_light->GetType() == LightType::Directional)
-			{
-				m_shader->SetUniform3f(LIGHT_DIRECTION, m_light->GetRotation());
-			}
-			else
-			{
-				if (m_light->GetType() == LightType::Point)
-				{
-					m_shader->SetUniform3f(LIGHT_ATTENUATION, (static_cast<const PointLight*>(m_light))->GetAttenuation());
-				}
-				else if (m_light->GetType() == LightType::Spotlight)
-				{
-					m_shader->SetUniform3f(LIGHT_DIRECTION, m_light->GetRotation());
-					m_shader->SetUniform1f(LIGHT_CUTOFF, (static_cast<const SpotLight*>(m_light))->GetCutOff());
-					m_shader->SetUniform1f(LIGHT_OUTER_CUTOFF, (static_cast<const SpotLight*>(m_light))->GetOuterCutOff());
-				}
-				else
-				{
-					m_shader->SetUniform3f(LIGHT_ATTENUATION, Math::Zero);
-				}
-			}
-			m_shader->SetUniform3f(LIGHT_AMBIENT, m_light->GetAmbient());
-			m_shader->SetUniform3f(LIGHT_DIFFUSE, m_light->GetDiffuse());
-			m_shader->SetUniform3f(LIGHT_SPECULAR, m_light->GetSpecular());
-		}*/
-
-		for (int i = 0; i < m_lights.size(); i++)
-		{
-			m_shader->SetUniform3f(Shader::GetPointLightPositionTag(i), m_lights[i]->GetTranslation());
-			m_shader->SetUniform3f(Shader::GetPointLightAmbientTag(i), m_lights[i]->GetAmbient());
-			m_shader->SetUniform3f(Shader::GetPointLightDiffuseTag(i), m_lights[i]->GetDiffuse());
-			m_shader->SetUniform3f(Shader::GetPointLightSpecularTag(i), m_lights[i]->GetSpecular());
-			m_shader->SetUniform3f(Shader::GetPointLightAttenuationTag(i), (static_cast<const PointLight*>(m_lights[i]))->GetAttenuation());
-		}
-
-		m_shader->SetUniform3f(DIR_LIGHT_DIRECTION, m_directionalLight->GetRotation());
-		m_shader->SetUniform3f(DIR_LIGHT_AMBIENT, m_directionalLight->GetAmbient());
-		m_shader->SetUniform3f(DIR_LIGHT_DIFFUSE, m_directionalLight->GetDiffuse());
-		m_shader->SetUniform3f(DIR_LIGHT_SPECULAR, m_directionalLight->GetSpecular());
-
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
 		m_shader->SetUniform4f(Shader::InverseViewVectorTag, viewMatrix.Inverse() * Math::Back4D);
-		//m_shader->SetUniformMat4(Shader::ToShadowSpaceMatrixTag, m_toShadowSpaceMatrix);
+		m_shader->SetUniformMat4(Shader::ToShadowSpaceMatrixTag, m_toShadowSpaceMatrix);
 		for (const auto& directory : m_entities)
 		{
 			PrepareEntity(directory.second.front());
@@ -121,38 +77,49 @@ namespace Astra::Graphics
 		}
 	}
 
-	void Entity3dRenderer::AddLight(const Light* light)
+	void Entity3dRenderer::AddLight(Light* light)
 	{
-		m_lights.emplace_back(light);
-		/*if (m_lights.size() + 1 > MAX_LIGHTS)
+		switch (light->GetType())
 		{
-			Logger::Log("Too Many Lights");
-			m_lights.pop_back();
+			case LightType::Directional:
+				m_directionalLight = light;
+				break;
+			case LightType::Point:
+				m_lights.emplace_back(light);
+				break;
+			case LightType::Spotlight:
+				break;
 		}
-		m_lights.emplace_back(light);
-		light->SetCallback(std::bind(&Entity3dRenderer::UpdateLights, this));
-		UpdateLights();*/
+		light->SetCallback(std::bind(&Entity3dRenderer::UpdateLight, this, light));
+		UpdateLight(light);
 	}
 
-	void Entity3dRenderer::UpdateLights()
+	void Entity3dRenderer::UpdateLight(const Light* light)
 	{
-		/*m_shader->Start();
-		for (int i = 0; i < MAX_LIGHTS; i++)
+		m_shader->Start();
+		if (light->GetType() == LightType::Directional)
 		{
-			if (i < m_lights.size())
-			{
-				m_shader->SetUniform3f(LightingShader::GetLightPositionTag(i), m_lights[i]->GetTranslation());
-				m_shader->SetUniform3f(LightingShader::GetLightColorTag(i), m_lights[i]->GetColor());
-				m_shader->SetUniform3f(LightingShader::GetAttenuationTag(i), m_lights[i]->GetAttenuation());
-			}
-			else
-			{
-				m_shader->SetUniform3f(LightingShader::GetLightPositionTag(i), Math::Vec3(0));
-				m_shader->SetUniform3f(LightingShader::GetLightColorTag(i), Math::Vec3(0));
-				m_shader->SetUniform3f(LightingShader::GetAttenuationTag(i), Math::Vec3(1, 0, 0));
-			}
+			m_shader->SetUniform3f(DIR_LIGHT_DIRECTION, m_directionalLight->GetRotation());
+			m_shader->SetUniform3f(DIR_LIGHT_AMBIENT, m_directionalLight->GetAmbient());
+			m_shader->SetUniform3f(DIR_LIGHT_DIFFUSE, m_directionalLight->GetDiffuse());
+			m_shader->SetUniform3f(DIR_LIGHT_SPECULAR, m_directionalLight->GetSpecular());
 		}
-		m_shader->Stop();*/
+
+		if (light->GetType() == LightType::Point)
+		{
+			int i = 0;
+			for (; i < m_lights.size(); i++)
+			{
+				if (m_lights[i] == light) { break; }
+			}
+
+			m_shader->SetUniform3f(Shader::GetPointLightPositionTag(i), m_lights[i]->GetTranslation());
+			m_shader->SetUniform3f(Shader::GetPointLightAmbientTag(i), m_lights[i]->GetAmbient());
+			m_shader->SetUniform3f(Shader::GetPointLightDiffuseTag(i), m_lights[i]->GetDiffuse());
+			m_shader->SetUniform3f(Shader::GetPointLightSpecularTag(i), m_lights[i]->GetSpecular());
+			m_shader->SetUniform3f(Shader::GetPointLightAttenuationTag(i), (static_cast<const PointLight*>(m_lights[i]))->GetAttenuation());
+		}
+		m_shader->Stop();
 	}
 
 	void Entity3dRenderer::PrepareEntity(const Entity* entity)
@@ -169,18 +136,8 @@ namespace Astra::Graphics
 			glDisable(GL_CULL_FACE);
 		}
 
-		/*if (m_shader->GetType() == ShaderType::Lighting)
-		{
-			m_shader->SetUniform1f(LightingShader::UseFakeLightingTag, entity->material->fakeLight);
-			m_shader->SetUniform1f(LightingShader::ShineDampenerTag, entity->material->shineDampener);
-			m_shader->SetUniform1f(LightingShader::ReflectivityTag, entity->material->reflectivity);
-		}*/
-
 		if (entity->material != NULL)
 		{
-			//m_shader->SetUniform3f(MATERIAL_AMBIENT, entity->material->Ambient);
-			//m_shader->SetUniform3f(MATERIAL_DIFFUSE, entity->material->Diffuse);
-			//m_shader->SetUniform3f(MATERIAL_SPECULAR, entity->material->Specular);
 			m_shader->SetUniform1f(FAKE_LIGHT, entity->material->FakeLight);
 			m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, entity->material->Reflectivity);
 

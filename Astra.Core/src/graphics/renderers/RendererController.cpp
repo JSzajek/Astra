@@ -56,11 +56,11 @@ namespace Astra::Graphics
 
 		// Create Shaders
 		auto& pointLights = scene->GetPointLights();
-
-		m_entityRenderer->SetShader(new EntityShader(pointLights.size()));
-		m_terrainRenderer->SetShader(new TerrainShader(pointLights.size()));
-		m_normalEntityRenderer->SetShader(new NormalEntityShader(pointLights.size()));
-		m_waterRenderer->SetShader(new WaterShader(pointLights.size()));
+		size_t numOfLights = pointLights.size();
+		m_entityRenderer->SetShader(new EntityShader(numOfLights));
+		m_terrainRenderer->SetShader(new TerrainShader(numOfLights));
+		m_normalEntityRenderer->SetShader(new NormalEntityShader(numOfLights));
+		m_waterRenderer->SetShader(new WaterShader(numOfLights));
 
 		// Clear Renderers
 		Clear();
@@ -73,10 +73,11 @@ namespace Astra::Graphics
 		m_skyboxRenderer->SetSkyBox(scene->GetSkyBox());
 
 		auto* dirLight = scene->GetDirectionalLight();
-		m_entityRenderer->AddDirectionalLight(dirLight);
-		m_terrainRenderer->AddDirectionalLight(dirLight);
-		m_normalEntityRenderer->AddDirectionalLight(dirLight);
-		m_waterRenderer->AddDirectionalLight(dirLight);
+		m_shadowMapController->SetDirectionalLight(dirLight);
+		m_entityRenderer->AddLight(dirLight);
+		m_terrainRenderer->AddLight(dirLight);
+		m_normalEntityRenderer->AddLight(dirLight);
+		m_waterRenderer->AddLight(dirLight);
 
 		Math::Vec3 fogColor = scene->GetFogColor();
 		m_fogColor->x = fogColor.x;
@@ -122,6 +123,10 @@ namespace Astra::Graphics
 
 			m_waterRenderer->AddTile(tile);
 		}
+		for (auto* system : scene->GetParticles())
+		{
+			m_systems.emplace_back(system);
+		}
 
 		m_block = false;
 
@@ -143,6 +148,7 @@ namespace Astra::Graphics
 		m_waterRenderer->Clear();
 		FontController::Clear();
 		ParticleController::Clear();
+		m_systems.clear();
 	}
 
 	void RendererController::UpdateScreenImpl(float width, float height)
@@ -163,6 +169,11 @@ namespace Astra::Graphics
 		if (m_currentScene == NULL || m_block) { return; }
 
 		m_shadowMapController->Render();
+
+		for (auto* system : m_systems)
+		{
+			system->GenerateParticles();
+		}
 
 		if (m_waterBuffer && m_mainCamera)
 		{
@@ -203,6 +214,7 @@ namespace Astra::Graphics
 		m_terrainRenderer->SetShadowMatrix(toShadowMap);
 		m_entityRenderer->SetShadowMatrix(toShadowMap);
 		m_normalEntityRenderer->SetShadowMatrix(toShadowMap);
+		m_waterRenderer->SetShadowMatrix(toShadowMap);
 	}
 
 	void RendererController::PreRender(const Math::Vec4& clipPlane)
