@@ -12,8 +12,7 @@ uniform mat4 transformMatrix;
 uniform mat4 normalMatrix;
 uniform mat4 toShadowMapSpace;
 
-//uniform vec4 inverseViewVector;
-uniform float useFakeLighting;
+uniform vec4 inverseViewVector;
 uniform float numberOfRows;
 uniform vec2 offset;
 uniform vec4 clipPlane;
@@ -23,9 +22,10 @@ uniform float transitionDistance;
 out vec2 v_TexCoordinates;
 out vec3 v_Normal;
 out vec3 v_FragPosition;
-out vec3 v_viewVector;
+out vec3 v_ViewVector;
 out float v_Visibility;
 out vec4 v_ShadowCoords;
+out mat3 v_ToTangentSpace;
 
 const float density = 0.0035;
 const float gradient = 5.0;
@@ -40,9 +40,8 @@ void main()
 
 	v_TexCoordinates = (textureCoords / numberOfRows) + offset;
 
-	v_Normal = useFakeLighting > 0.5 ? vec3(0, 1, 0) : mat3(normalMatrix) * normal;
 	v_FragPosition = worldPosition.xyz;
-	//v_viewVector = inverseViewVector.xyz - v_FragPosition;
+	v_ViewVector = inverseViewVector.xyz - v_FragPosition;
 
 	float distance = length(positionRelativeToCam.xyz);
 	v_Visibility = exp(-pow((distance * density), gradient));
@@ -56,16 +55,14 @@ void main()
 
 	mat4 modelViewMatrix = viewMatrix * transformMatrix;
 
-	vec3 norm = normalize(v_Normal);
-	vec3 tang = normalize((modelViewMatrix * vec4(tangent, 0.0)).xyz);
-	vec3 bitang = normalize(cross(norm, tang));
+	vec3 T = normalize((normalMatrix * vec4(tangent, 0.0)).xyz);
+	vec3 N = normalize((normalMatrix * vec4(normal, 0.0)).xyz);
+	vec3 B = cross(N, T);
+	T = normalize(T - dot(T, N) * N);
+	v_ToTangentSpace = transpose(mat3(T, B, N));
 
-	mat3 toTangentSpace = mat3(
-		tang.x, bitang.x, norm.x,
-		tang.y, bitang.y, norm.y,
-		tang.z, bitang.z, norm.z
-	);
-	v_viewVector = toTangentSpace * (-positionRelativeToCam.xyz);
+	v_ViewVector = v_ToTangentSpace * v_ViewVector;
+	v_FragPosition = v_ToTangentSpace * v_FragPosition;
 }
 
 #shader fragment
@@ -75,11 +72,11 @@ void main()
 #define BLINN 1
 
 in vec2 v_TexCoordinates;
-in vec3 v_Normal;
 in vec3 v_FragPosition;
-in vec3 v_viewVector;
+in vec3 v_ViewVector;
 in float v_Visibility;
 in vec4 v_ShadowCoords;
+in mat3 v_ToTangentSpace;
 
 out vec4 out_Color;
 
@@ -136,15 +133,14 @@ uniform vec3 fogColor;
 uniform float mapSize;
 uniform int pcfCount;
 
-vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor);
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor);
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor);
+vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor);
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor);
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor);
 
 void main()
 {
-	vec4 normalMapValue = 2.0 * texture(material.normalMap, v_TexCoordinates) - 1.0;
-	vec3 norm = normalize(normalMapValue.rgb);
-	vec3 viewDir = normalize(v_viewVector);
+	vec3 norm = normalize((2.0 * texture(material.normalMap, v_TexCoordinates) - 1.0).rgb);
+	vec3 viewDir = normalize(v_ViewVector);
 
 	vec4 textureColor = texture(material.diffuseMap, v_TexCoordinates);
 	if (textureColor.a < 0.5) { discard; }
@@ -167,20 +163,21 @@ void main()
 	total /= (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);;
 	float lightFactor = 1.0 - (total * v_ShadowCoords.w);
 
-	vec3 result = CalcDirLight(directionalLight, norm, color, specColor, viewDir, lightFactor);
+	vec3 result = CalcDirLight(directionalLight, norm, specColor, viewDir, lightFactor);
 	for (int i = 0; i < NR_POINT_LIGHTS; i++)
 	{
-		result += CalcPointLight(pointLights[0], norm, color, specColor, viewDir, lightFactor);
+		result += CalcPointLight(pointLights[0], norm, specColor, viewDir, lightFactor);
 	}
-	result += CalcSpotLight(spotLight, norm, color, specColor, viewDir, lightFactor);
+	result += CalcSpotLight(spotLight, norm, specColor, viewDir, lightFactor);
+	result *= color;
 
 	out_Color = vec4(result, 1.0);
 	out_Color = mix(vec4(fogColor, 1), out_Color, v_Visibility);
 }
 
-vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor)
+vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor)
 {
-	vec3 lightDir = normalize(-light.direction);
+	vec3 lightDir = normalize(v_ToTangentSpace * -light.direction);
 
 	// diffuse shading
 	float diff = max(dot(normal, lightDir), 0.0) * lightFactor;
@@ -197,15 +194,15 @@ vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColo
 #endif
 
 	// combine results
-	vec3 ambient = light.ambient * color;
-	vec3 diffuse = light.diffuse * diff * color;
+	vec3 ambient = light.ambient;
+	vec3 diffuse = light.diffuse * diff;
 	vec3 specular = light.specular * spec * specColor;
 	return (ambient + diffuse + specular);
 }
 
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor)
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor)
 {
-	vec3 lightDir = normalize(light.position - v_FragPosition);
+	vec3 lightDir = normalize((v_ToTangentSpace * light.position) - v_FragPosition);
 
 	// diffuse shading
 	float diff = max(dot(normal, lightDir), 0.0) * lightFactor;
@@ -226,8 +223,8 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, v
 	float attenuation = 1.0 / (light.attenuation.x + light.attenuation.y * distance + light.attenuation.z * (distance * distance));
 
 	// combine results
-	vec3 ambient = light.ambient * color;
-	vec3 diffuse = light.diffuse * diff * color;
+	vec3 ambient = light.ambient;
+	vec3 diffuse = light.diffuse * diff;
 	vec3 specular = light.specular * spec * specColor;
 	ambient *= attenuation;
 	diffuse *= attenuation;
@@ -235,11 +232,11 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, v
 	return (ambient + diffuse + specular);
 }
 
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor)
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor)
 {
 	if (light.cutOff < 0.02) { return vec3(0); }
 
-	vec3 lightDir = normalize(light.position - v_FragPosition);
+	vec3 lightDir = normalize((v_ToTangentSpace * light.position) - v_FragPosition);
 
 	// diffuse shading
 	float diff = max(dot(normal, lightDir), 0.0) * lightFactor;
@@ -265,8 +262,8 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec
 	float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
 
 	// combine results
-	vec3 ambient = light.ambient * color;
-	vec3 diffuse = light.diffuse * diff * color;
+	vec3 ambient = light.ambient;
+	vec3 diffuse = light.diffuse * diff;
 	vec3 specular = light.specular * spec * specColor;
 	ambient *= attenuation * intensity;
 	diffuse *= attenuation * intensity;

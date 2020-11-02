@@ -20,7 +20,7 @@ namespace Astra::Graphics
 			{
 			case StringUtils::str2int("v"):
 				if (!normalMapped) {
-					vertices.emplace_back(new TempVertex(vertices.size(), Math::Vec3(std::stof(split[1]), std::stof(split[2]), std::stof(split[3]))));
+					vertices.emplace_back(new Vertex(vertices.size(), Math::Vec3(std::stof(split[1]), std::stof(split[2]), std::stof(split[3]))));
 				}
 				else {
 					normVertices.emplace_back(new NormalVertex(normVertices.size(), Math::Vec3(std::stof(split[1]), std::stof(split[2]), std::stof(split[3]))));
@@ -83,7 +83,7 @@ namespace Astra::Graphics
 
 		const VertexArray* result = Loader::Load(GL_TRIANGLES, verticesArray, indices, texturesArray, normalsArray);
 
-		for (TempVertex* vertex : vertices)
+		for (Vertex* vertex : vertices)
 		{
 			delete vertex;
 		}
@@ -158,7 +158,7 @@ namespace Astra::Graphics
 		float furthest = 0;
 		for (int i = 0; i < vertices.size(); i++)
 		{
-			TempVertex* current = vertices[i];
+			Vertex* current = vertices[i];
 			if (current == NULL) { continue; }
 			if (current->length > furthest)
 			{
@@ -239,10 +239,10 @@ namespace Astra::Graphics
 		vert2->AddTangent(tangent);
 	}
 
-	TempVertex* ObjLoader::ProcessVertex(const std::vector<std::string>& data)
+	Vertex* ObjLoader::ProcessVertex(const std::vector<std::string>& data)
 	{
 		int currentVertexPointer = std::stoi(data[0]) - 1;
-		TempVertex* currentVertex = vertices[currentVertexPointer];
+		Vertex* currentVertex = vertices[currentVertexPointer];
 		
 		int textureIndex = textures.size() > 0 && !data[1].empty() ? std::stoi(data[1]) - 1 : -1;
 		int normalIndex = normals.size() > 0 && !data[2].empty() ? std::stoi(data[2]) - 1 : -1;
@@ -310,7 +310,7 @@ namespace Astra::Graphics
 		}
 	}
 
-	TempVertex* ObjLoader::AlreadyProcessed(TempVertex* previous, int textureIndex, int normalIndex)
+	Vertex* ObjLoader::AlreadyProcessed(Vertex* previous, int textureIndex, int normalIndex)
 	{
 		if (previous->SameTextureAndNormal(textureIndex, normalIndex))
 		{
@@ -319,14 +319,14 @@ namespace Astra::Graphics
 		}
 		else
 		{
-			TempVertex* other = previous->duplicate;
+			Vertex* other = previous->duplicate;
 			if (other != NULL)
 			{
 				return AlreadyProcessed(other, textureIndex, normalIndex);
 			}
 			else
 			{
-				TempVertex* duplicate = new TempVertex(vertices.size(), previous->position);
+				Vertex* duplicate = new Vertex(vertices.size(), previous->position);
 				duplicate->textureIndex = textureIndex;
 				duplicate->normalIndex = normalIndex;
 				previous->duplicate = duplicate;
@@ -339,7 +339,7 @@ namespace Astra::Graphics
 
 	void ObjLoader::RemoveUnused()
 	{
-		std::vector<TempVertex*>::iterator iter = vertices.begin();
+		std::vector<Vertex*>::iterator iter = vertices.begin();
 		while (iter != vertices.end())
 		{
 			if (!(*iter)->IsSet())

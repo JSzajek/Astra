@@ -43,7 +43,7 @@ namespace Astra::Graphics
 		m_shader->SetUniform4f(CLIP_PLANE, clipPlane);
 
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
-		//m_shader->SetUniform4f(Shader::InverseViewVectorTag, viewMatrix.Inverse() * Math::Back4D);
+		m_shader->SetUniform4f(Shader::InverseViewVectorTag, viewMatrix.Inverse() * Math::Back4D);
 		m_shader->SetUniformMat4(Shader::ToShadowSpaceMatrixTag, m_toShadowSpaceMatrix);
 		for (const auto& directory : m_entities)
 		{
@@ -142,7 +142,6 @@ namespace Astra::Graphics
 
 		if (entity->material != NULL)
 		{
-			m_shader->SetUniform1f(FAKE_LIGHT, entity->material->FakeLight);
 			m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, entity->material->Reflectivity);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, entity->material->GetId());

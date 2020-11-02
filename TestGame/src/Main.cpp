@@ -91,7 +91,7 @@ int main()
     //Light* light2 = new Light(Math::Vec3(-20, 50, 20), Math::Vec3(0, 1, 1), Math::Vec3(1, 0.01f, 0.002f));
     //Light* light3 = new Light(Math::Vec3(20, 50, -20), Math::Vec3(1, 0, 0), Math::Vec3(1, 0.01f, 0.002f));
 
-    Vec3 light_pos = Math::Vec3(-30, terrain.GetHeightOfTerrain(-30, 30) + 7, 30);
+    Vec3 light_pos = Math::Vec3(-40, terrain.GetHeightOfTerrain(-40, 40) + 7, 40);
     const VertexArray* cubeVertArray = ObjLoader::LoadObjectModel("res/cube.obj");
     Entity light_indicator = Entity(cubeVertArray, light_pos, Vec3(0), Vec3(0.5f));
     DirectionalLight* dir_light = new DirectionalLight(Vec3(0), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0.6f));
@@ -113,7 +113,7 @@ int main()
     ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 0.25f, true, true);
     const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");
 
-    ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", 1, 0.5f);
+    ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.png", 1, 32);
     Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-38, terrain.GetHeightOfTerrain(-38, 38) + 5, 38), Vec3(0), Vec3(1));
 
     mainScene->AddEntity(&barrelModel2);

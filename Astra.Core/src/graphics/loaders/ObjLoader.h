@@ -13,7 +13,7 @@
 
 namespace Astra::Graphics
 {
-	struct TempVertex
+	struct Vertex
 	{
 	public:
 		Math::Vec3 position;
@@ -22,9 +22,9 @@ namespace Astra::Graphics
 		int index;
 		float length;
 
-		TempVertex* duplicate;
+		Vertex* duplicate;
 
-		TempVertex(int index, const Math::Vec3& position)
+		Vertex(int index, const Math::Vec3& position)
 			: index(index), position(position), textureIndex(-1), normalIndex(-1), duplicate(NULL)
 		{
 			length = position.Magnitude();
@@ -40,7 +40,7 @@ namespace Astra::Graphics
 		}
 	};
 
-	struct NormalVertex : TempVertex
+	struct NormalVertex : Vertex
 	{
 	public:
 		std::vector<Math::Vec3> tangents;
@@ -49,7 +49,7 @@ namespace Astra::Graphics
 		NormalVertex* duplicate;
 		
 		NormalVertex(int index, const Math::Vec3& position)
-			: TempVertex(index, position), duplicate(NULL), avgTangent(Math::Zero)
+			: Vertex(index, position), duplicate(NULL), avgTangent(Math::Zero)
 		{
 			length = position.Magnitude();
 		}
@@ -70,7 +70,7 @@ namespace Astra::Graphics
 	class ObjLoader
 	{
 	private:
-		std::vector<TempVertex*> vertices;
+		std::vector<Vertex*> vertices;
 		std::vector<NormalVertex*> normVertices;
 		std::vector<Math::Vec2> textures;
 		std::vector<Math::Vec3> normals;
@@ -105,8 +105,8 @@ namespace Astra::Graphics
 		float Convert(std::vector<float>& verticesArray, std::vector<float>& texturesArray, std::vector<float>& normalsArray, std::vector<float>& tangentsArray);
 		void CalculateTangents(NormalVertex* vert0, NormalVertex* vert1, NormalVertex* vert2);
 		
-		TempVertex* ProcessVertex(const std::vector<std::string>& data);
-		TempVertex* AlreadyProcessed(TempVertex* previous, int textureIndex, int normalIndex);
+		Vertex* ProcessVertex(const std::vector<std::string>& data);
+		Vertex* AlreadyProcessed(Vertex* previous, int textureIndex, int normalIndex);
 		
 		NormalVertex* ProcessNormVertex(const std::vector<std::string>& data);
 		NormalVertex* AlreadyNormProcessed(NormalVertex* previous, int textureIndex, int normalIndex);

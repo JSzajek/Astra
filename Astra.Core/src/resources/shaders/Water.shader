@@ -125,9 +125,9 @@ uniform float waveStrength;
 
 uniform vec4 baseWaterColor;
 
-vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor);
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor);
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor);
+vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor);
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor);
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor);
 
 void main()
 {
@@ -179,12 +179,13 @@ void main()
 	total /= (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);;
 	float lightFactor = 1.0 - (total * v_ShadowCoords.w);
 
-	vec3 totalReflective = CalcDirLight(directionalLight, normal, color, specColor, viewDir, waterDepth, lightFactor);
+	vec3 totalReflective = CalcDirLight(directionalLight, normal, specColor, viewDir, waterDepth, lightFactor);
 	for (int i = 0; i < NR_POINT_LIGHTS; i++)
 	{
-		totalReflective += CalcPointLight(pointLights[0], normal, color, specColor, viewDir, waterDepth, lightFactor);
+		totalReflective += CalcPointLight(pointLights[0], normal, specColor, viewDir, waterDepth, lightFactor);
 	}
-	totalReflective += CalcSpotLight(spotLight, normal, color, specColor, viewDir, waterDepth, lightFactor);
+	totalReflective += CalcSpotLight(spotLight, normal, specColor, viewDir, waterDepth, lightFactor);
+	totalReflective *= color;
 
 	out_Color = mix(vec4(totalReflective, reflectColor.a), refractColor, refractiveFactor);
 	out_Color = mix(out_Color, baseWaterColor, 0.2);
@@ -192,7 +193,7 @@ void main()
 	out_Color = mix(vec4(fogColor, 1), out_Color, v_Visibility);
 }
 
-vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor)
+vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor)
 {
 	vec3 lightDir = normalize(-light.direction);
 
@@ -211,13 +212,13 @@ vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColo
 #endif
 
 	// combine results
-	vec3 ambient = light.ambient * color;
-	vec3 diffuse = light.diffuse * diff * color;
+	vec3 ambient = light.ambient;
+	vec3 diffuse = light.diffuse * diff;
 	vec3 specular = light.specular * spec * specColor * clamp(waterDepth / 5.0, 0, 1);
 	return (ambient + diffuse + specular);
 }
 
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor)
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor)
 {
 	vec3 lightDir = normalize(light.position - v_FragPosition);
 
@@ -240,8 +241,8 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, v
 	float attenuation = 1.0 / (light.attenuation.x + light.attenuation.y * distance + light.attenuation.z * (distance * distance));
 
 	// combine results
-	vec3 ambient = light.ambient * color;
-	vec3 diffuse = light.diffuse * diff * color;
+	vec3 ambient = light.ambient;
+	vec3 diffuse = light.diffuse * diff;
 	vec3 specular = light.specular * spec * specColor * clamp(waterDepth / 5.0, 0, 1);
 	ambient *= attenuation;
 	diffuse *= attenuation;
@@ -249,7 +250,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, v
 	return (ambient + diffuse + specular);
 }
 
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor)
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor)
 {
 	if (light.cutOff < 0.02) { return vec3(0); }
 
@@ -279,8 +280,8 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec
 	float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
 
 	// combine results
-	vec3 ambient = light.ambient * color;
-	vec3 diffuse = light.diffuse * diff * color;
+	vec3 ambient = light.ambient;
+	vec3 diffuse = light.diffuse * diff;
 	vec3 specular = light.specular * spec * specColor * clamp(waterDepth / 5.0, 0, 1);
 	ambient *= attenuation * intensity;
 	diffuse *= attenuation * intensity;

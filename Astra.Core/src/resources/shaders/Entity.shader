@@ -121,9 +121,9 @@ uniform vec3 fogColor;
 uniform float mapSize;
 uniform int pcfCount;
 
-vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor);
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor);
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor);
+vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor);
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor);
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor);
 
 void main()
 {
@@ -151,18 +151,19 @@ void main()
 	total /= (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);;
 	float lightFactor = 1.0 - (total * v_ShadowCoords.w);
 
-	vec3 result = CalcDirLight(directionalLight, norm, color, specColor, viewDir, lightFactor);
+	vec3 result = CalcDirLight(directionalLight, norm, specColor, viewDir, lightFactor);
 	for (int i = 0; i < NR_POINT_LIGHTS; i++)
 	{
-		result += CalcPointLight(pointLights[0], norm, color, specColor, viewDir, lightFactor);
+		result += CalcPointLight(pointLights[0], norm, specColor, viewDir, lightFactor);
 	}
-	result += CalcSpotLight(spotLight, norm, color, specColor, viewDir, lightFactor);
+	result += CalcSpotLight(spotLight, norm, specColor, viewDir, lightFactor);
+	result *= color;
 
 	out_Color = vec4(result, textureColor.a);
 	out_Color = mix(vec4(fogColor, 1), out_Color, v_Visibility);
 }
 
-vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor)
+vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor)
 {
 	vec3 lightDir = normalize(-light.direction);
 	
@@ -181,13 +182,13 @@ vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 color, vec3 specColo
 #endif
 	
 	// combine results
-	vec3 ambient = light.ambient * color;
-	vec3 diffuse = light.diffuse * diff * color;
+	vec3 ambient = light.ambient;
+	vec3 diffuse = light.diffuse * diff;
 	vec3 specular = light.specular * spec * specColor;
 	return (ambient + diffuse + specular);
 }
 
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor)
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor)
 {
 	vec3 lightDir = normalize(light.position - v_FragPosition);
 	
@@ -210,8 +211,8 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, v
 	float attenuation = 1.0 / (light.attenuation.x + light.attenuation.y * distance + light.attenuation.z * (distance * distance));
 	
 	// combine results
-	vec3 ambient = light.ambient * color;
-	vec3 diffuse = light.diffuse * diff * color;
+	vec3 ambient = light.ambient;
+	vec3 diffuse = light.diffuse * diff;
 	vec3 specular = light.specular * spec * specColor;
 	ambient *= attenuation;
 	diffuse *= attenuation;
@@ -219,7 +220,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 color, vec3 specColor, v
 	return (ambient + diffuse + specular);
 }
 
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec3 viewDir, float lightFactor)
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor)
 {
 	if (light.cutOff < 0.02) { return vec3(0); }
 
@@ -249,8 +250,8 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 color, vec3 specColor, vec
 	float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
 	
 	// combine results
-	vec3 ambient = light.ambient * color;
-	vec3 diffuse = light.diffuse * diff * color;
+	vec3 ambient = light.ambient;
+	vec3 diffuse = light.diffuse * diff;
 	vec3 specular = light.specular * spec * specColor;
 	ambient *= attenuation * intensity;
 	diffuse *= attenuation * intensity;
