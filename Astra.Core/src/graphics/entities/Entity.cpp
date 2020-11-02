@@ -63,5 +63,4 @@ namespace Astra::Graphics
 		int row = m_textureIndex / material->GetRowCount();
 		return (float)row / (float)material->GetRowCount();
 	}
-
 }

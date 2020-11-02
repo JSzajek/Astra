@@ -8,7 +8,7 @@ namespace Astra::Graphics
 		Renderer::SetShader(shader);
 	}
 
-	void FontRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
+	void FontRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		if (m_texts.size() == 0) { return; }
 		m_shader->Start();
@@ -37,15 +37,15 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
 
-		m_shader->SetUniform3f(FontShader::ColorTag, text->Color);
-		m_shader->SetUniform1f(FontShader::WidthTag, text->FontWidth());
-		m_shader->SetUniform1f(FontShader::EdgeTag, text->FontEdge());
+		m_shader->SetUniform3f(COLOR_TAG, text->Color);
+		m_shader->SetUniform1f(WIDTH_TAG, text->FontWidth());
+		m_shader->SetUniform1f(EDGE_TAG, text->FontEdge());
 
-		m_shader->SetUniform3f(FontShader::OutlineColorTag, text->OutlineColor);
-		m_shader->SetUniform1f(FontShader::OutlineWidthTag, text->OutlineWidth());
-		m_shader->SetUniform1f(FontShader::OutlineEdgeTag, text->OutlineEdge());
+		m_shader->SetUniform3f(OUTLINE_COLOR_TAG, text->OutlineColor);
+		m_shader->SetUniform1f(OUTLINE_WIDTH_TAG, text->OutlineWidth());
+		m_shader->SetUniform1f(OUTLINE_EDGE_TAG, text->OutlineEdge());
 
-		m_shader->SetUniform2f(FontShader::TranslationTag, text->Position);
+		m_shader->SetUniform2f(TRANSLATION_TAG, text->Position);
 
 		glDrawArrays(GL_TRIANGLES, 0, text->GetVertexCount());
 	}

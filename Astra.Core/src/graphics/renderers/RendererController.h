@@ -14,8 +14,6 @@
 #include "../shadows/ShadowMapController.h"
 #include "../shaders/GuiShader.h"
 #include "../shaders/EntityShader.h"
-#include "../shaders/BasicShader.h"
-#include "../shaders/LightingShader.h"
 #include "../shaders/TerrainShader.h"
 #include "../shaders/SkyboxShader.h"
 #include "../shaders/WaterShader.h"
@@ -62,7 +60,6 @@ namespace Astra::Graphics
 		std::vector<const ParticleSystem*> m_systems;
 
 		Math::Vec3* m_fogColor;
-
 		Math::Mat4 projectionMatrix;
 		Math::Mat4 viewMatrix;
 		Math::Mat4 modelViewMatrix;
@@ -106,8 +103,8 @@ namespace Astra::Graphics
 		void Clear();
 
 		void PrepareRender();
-		void PreRender(const Math::Vec4& clipPlane = Renderer::DefaultClipPlane);
-		void PostRender();
+		void PreRender(const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane = Renderer::DefaultClipPlane);
+		void PostRender(const Math::Vec4& inverseViewVector);
 		void GuiRender();
 
 		//inline void AddGui(const GuiTexture* gui) { m_guiRenderer->AddGui(gui); }

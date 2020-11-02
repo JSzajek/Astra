@@ -4,12 +4,12 @@
 
 namespace Astra::Graphics
 {
+	#define MODEL_VIEW_PROJ_MATRIX_TAG		"mvpMatrix"
+	#define NUMBER_OF_ROWS_TAG				"numberOfRows"
+	#define OFFSET_TAG						"offset"
+	
 	class ShadowShader : public Shader
 	{
-	public:
-		static constexpr const char* ModelViewProjMatrixTag = "mvpMatrix";
-		static constexpr const char* NumberOfRowsTag = "numberOfRows";
-		static constexpr const char* OffsetTag = "offset";
 	public:
 		ShadowShader(const char* filepath =
 			"../Astra.Core/src/resources/shaders/Shadow.shader")

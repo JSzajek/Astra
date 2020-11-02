@@ -159,6 +159,9 @@
     <ClCompile Include="src\graphics\scenes\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\entities\Spatial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat4.h">
@@ -230,9 +233,6 @@
     <ClInclude Include="src\graphics\renderers\Entity3dRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\shaders\BasicShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\graphics\entities\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -240,9 +240,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\entities\Spatial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\shaders\LightingShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\entities\Light.h">
@@ -389,11 +386,12 @@
     <ClInclude Include="src\graphics\scenes\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\utils\Properties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\resources\shaders\Gui.shader" />
-    <None Include="src\resources\shaders\Basic.shader" />
-    <None Include="src\resources\shaders\Lighting.shader" />
     <None Include="src\resources\shaders\Terrain.shader" />
     <None Include="src\resources\shaders\Skybox.shader" />
     <None Include="src\resources\shaders\Water.shader" />

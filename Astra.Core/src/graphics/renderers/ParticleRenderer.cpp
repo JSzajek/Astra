@@ -31,7 +31,7 @@ namespace Astra::Graphics
 		}
 	}
 
-	void ParticleRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
+	void ParticleRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		if (m_particles.size() == 0) { return; }
 		m_shader->Start();
@@ -49,9 +49,9 @@ namespace Astra::Graphics
 			for (const Particle* particle : directory.second)
 			{
 				UpdateModelViewMatrix(particle->Position, particle->Rotation, particle->Scale);
-				m_shader->SetUniform2f(ParticleShader::TexOffset1Tag, particle->GetTexOffset1());
-				m_shader->SetUniform2f(ParticleShader::TexOffset2Tag, particle->GetTexOffset2());
-				m_shader->SetUniform2f(ParticleShader::TexCoordInfoTag, particle->Material->GetRowCount(), particle->GetBlendFactor());
+				m_shader->SetUniform2f(TEX_OFFSET_1_TAG, particle->GetTexOffset1());
+				m_shader->SetUniform2f(TEX_OFFSET_2_TAG, particle->GetTexOffset2());
+				m_shader->SetUniform2f(TEX_COORD_INFO_TAG, particle->Material->GetRowCount(), particle->GetBlendFactor());
 				glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
 			}
 		}
@@ -79,6 +79,6 @@ namespace Astra::Graphics
 		modelMatrix = modelMatrix.Rotate(rotation, Math::Vec3(0, 0, 1));
 		modelMatrix = modelMatrix.Scale(Math::Vec3(scale));
 		Math::Mat4 modelViewMatrix = m_viewMatrix * modelMatrix;
-		m_shader->SetUniformMat4(ParticleShader::ModelViewMatrixTag, modelViewMatrix);
+		m_shader->SetUniformMat4(MODEL_VIEW_MATRIX_TAG, modelViewMatrix);
 	}
 }

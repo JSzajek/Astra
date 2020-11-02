@@ -10,7 +10,7 @@ namespace Astra::Graphics
 		Renderer::SetShader(shader);
 	}
 
-	void ShadowMapRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
+	void ShadowMapRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		BindFrameBuffer(m_buffer->GetBuffer().GetId(), m_buffer->GetWidth(), m_buffer->GetHeight());
 		glEnable(GL_DEPTH_TEST);
@@ -51,7 +51,7 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
 
-		m_shader->SetUniform1f(ShadowShader::NumberOfRowsTag, entity->material->GetRowCount());
+		m_shader->SetUniform1f(NUMBER_OF_ROWS_TAG, entity->material->GetRowCount());
 		if (entity->material->Transparent)
 		{
 			glDisable(GL_CULL_FACE);
@@ -65,9 +65,8 @@ namespace Astra::Graphics
 
 	void ShadowMapRenderer::InitializePerEntity(const Entity* entity)
 	{
-		m_shader->SetUniform2f(ShadowShader::OffsetTag, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
+		m_shader->SetUniform2f(OFFSET_TAG, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
 
-		Math::Mat4 transformMatrix = Math::Mat4Utils::Transformation(*entity);
-		m_shader->SetUniformMat4(ShadowShader::ModelViewProjMatrixTag, projectionViewMatrix * transformMatrix);
+		m_shader->SetUniformMat4(MODEL_VIEW_PROJ_MATRIX_TAG, projectionViewMatrix * (*entity->GetModelMatrix()));
 	}
 }

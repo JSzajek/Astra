@@ -5,15 +5,15 @@
 
 namespace Astra::Graphics
 {
+	#define FIRST_CUBE_MAP_TAG		"cubeMap"
+	#define SECOND_CUBE_MAP_TAG		"cubeMap2"
+	#define BLEND_FACTOR_TAG		"blendFactor"
+
+	#define RotationSpeed			1.0f
+
 	class SkyboxShader : public Shader
 	{
 	public:
-		static constexpr const char* FogColorTag = "fogColor";
-		static constexpr const char* FirstCubeMapTag = "cubeMap";
-		static constexpr const char* SecondCubeMapTag = "cubeMap2";
-		static constexpr const char* BlendFactorTag = "blendFactor";
-
-		static constexpr const float RotationSpeed = 1.0f;
 	private:
 		float m_rotation;
 	public:

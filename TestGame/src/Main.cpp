@@ -35,8 +35,8 @@ int main()
 
     //Terrain terrain = Terrain(0, 0, "res/textures/meteorcrater_heightmap.png", &pack, blendMap);
     Terrain terrain = Terrain(0, 0, 40, 4, 0.01f, 4862, &pack, blendMap);
-    terrain.Translation().x -= 128;
-    terrain.Translation().z -= 128;
+    terrain(TRANSLATION, SUB_EQ, X, 128);
+    terrain(TRANSLATION, SUB_EQ, Z, 128);
     
     mainScene->AddTerrain(&terrain);
 
@@ -162,7 +162,7 @@ int main()
             item->Update();
         }
 
-        barrelModel2.Rotation().y += 0.5f;
+        barrelModel2(ROTATION, SUM_EQ, Y, 0.5f);
 
         skybox.BlendFactor() += InGameTimeSpeed * timeDir;
         if (skybox.BlendFactor() >= 1)

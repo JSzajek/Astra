@@ -5,12 +5,13 @@
 namespace Astra::Graphics
 {
 	WaterTile::WaterTile(float xCenter, float zCenter, float height, WaterMaterial* const material)
-		: m_size(DefaultSize), material(material)
+		: Spatial(), m_size(DefaultSize), material(material)
 	{
 		rows[0].x = xCenter;
 		rows[0].y = height;
 		rows[0].z = zCenter;
 		rows[2] = m_size;
+		UpdateMatrices();
 	}
 
 	WaterTile::WaterTile(float xCenter, float zCenter, float height, float size, WaterMaterial* const material)
@@ -20,6 +21,7 @@ namespace Astra::Graphics
 		rows[0].y = height;
 		rows[0].z = zCenter;
 		rows[2] = m_size;
+		UpdateMatrices();
 	}
 
 	WaterTile::WaterTile(const WaterTile& other)
@@ -28,11 +30,9 @@ namespace Astra::Graphics
 		memcpy(data, other.data, 3 * 3 * sizeof(float));
 	}
 
-
-	Math::Vec3& WaterTile::Rotation()
+	Math::Vec3* WaterTile::Rotation()
 	{
-		static Math::Vec3 empty;
 		Logger::LogWarning("Accessing Deleted Function.");
-		return empty;
+		return NULL;
 	}
 }

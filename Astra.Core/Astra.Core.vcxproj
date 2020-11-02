@@ -174,6 +174,7 @@
     <ClCompile Include="src\graphics\buffers\WaterFrameBuffer.cpp" />
     <ClCompile Include="src\graphics\entities\Camera.cpp" />
     <ClCompile Include="src\graphics\entities\Entity.cpp" />
+    <ClCompile Include="src\graphics\entities\Spatial.cpp" />
     <ClCompile Include="src\graphics\entities\terrains\HeightGenerator.cpp" />
     <ClCompile Include="src\graphics\entities\Light.cpp" />
     <ClCompile Include="src\graphics\entities\terrains\Terrain.cpp" />
@@ -266,11 +267,9 @@
     <ClInclude Include="src\graphics\renderers\TerrainRenderer.h" />
     <ClInclude Include="src\graphics\renderers\WaterRenderer.h" />
     <ClInclude Include="src\graphics\scenes\Scene.h" />
-    <ClInclude Include="src\graphics\shaders\BasicShader.h" />
     <ClInclude Include="src\graphics\shaders\EntityShader.h" />
     <ClInclude Include="src\graphics\shaders\FontShader.h" />
     <ClInclude Include="src\graphics\shaders\GuiShader.h" />
-    <ClInclude Include="src\graphics\shaders\LightingShader.h" />
     <ClInclude Include="src\graphics\shaders\NormalEntityShader.h" />
     <ClInclude Include="src\graphics\shaders\ParticleShader.h" />
     <ClInclude Include="src\graphics\shaders\Shader.h" />
@@ -291,16 +290,15 @@
     <ClInclude Include="src\math\Vec3.h" />
     <ClInclude Include="src\math\Vec4.h" />
     <ClInclude Include="src\utils\FileUtils.h" />
+    <ClInclude Include="src\utils\Properties.h" />
     <ClInclude Include="src\utils\StringUtils.h" />
     <ClInclude Include="src\utils\Timer.h" />
     <ClInclude Include="src\utils\vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\resources\shaders\Basic.shader" />
     <None Include="src\resources\shaders\Entity.shader" />
     <None Include="src\resources\shaders\Font.shader" />
     <None Include="src\resources\shaders\Gui.shader" />
-    <None Include="src\resources\shaders\Lighting.shader" />
     <None Include="src\resources\shaders\NormalEntity.shader" />
     <None Include="src\resources\shaders\Particle.shader" />
     <None Include="src\resources\shaders\Shadow.shader" />

@@ -19,13 +19,13 @@ namespace Astra::Graphics
 		Renderer::SetShader(shader);
 
 		m_shader->Start();
-		m_shader->SetUniform1i(DIFFUSE_MAP, 0);
-		m_shader->SetUniform1i(SPECULAR_MAP, 1);
-		m_shader->SetUniform1i(Shader::ShadowMapTag,				6);
-		m_shader->SetUniform1f(Shader::ShadowDistanceTag,			SHADOW_DISTANCE);
-		m_shader->SetUniform1f(Shader::TransitionDistanceTag,		TRANSITION_DISTANCE);
-		m_shader->SetUniform1f(Shader::MapSizeTag,					SHADOW_MAP_SIZE);
-		m_shader->SetUniform1i(Shader::PcfCountTag,					PCF_COUNT);
+		m_shader->SetUniform1i(DIFFUSE_MAP,				0);
+		m_shader->SetUniform1i(SPECULAR_MAP,			1);
+		m_shader->SetUniform1i(SHADOW_MAP_TAG,			6);
+		m_shader->SetUniform1f(SHADOW_DISTANCE_TAG,		SHADOW_DISTANCE);
+		m_shader->SetUniform1f(TRANSITION_DISTANCE_TAG,	TRANSITION_DISTANCE);
+		m_shader->SetUniform1f(SHADOW_MAP_SIZE_TAG,		SHADOW_MAP_SIZE);
+		m_shader->SetUniform1i(PCF_COUNT_TAG,			PCF_COUNT);
 		m_shader->Stop();
 	}
 
@@ -35,27 +35,23 @@ namespace Astra::Graphics
 		m_entities.clear();
 	}
 
-	void Entity3dRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
+	void Entity3dRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
 		m_shader->SetUniform3f(FOG_COLOR, *m_fogColor);
 		m_shader->SetUniform4f(CLIP_PLANE, clipPlane);
 
-		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
-		m_shader->SetUniform4f(Shader::InverseViewVectorTag, viewMatrix.Inverse() * Math::Back4D);
-		m_shader->SetUniformMat4(Shader::ToShadowSpaceMatrixTag, m_toShadowSpaceMatrix);
+		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
+		m_shader->SetUniform4f(INVERSE_VIEW_VECTOR_TAG, inverseViewVector);
+		m_shader->SetUniformMat4(TO_SHADOW_SPACE_MATRIX_TAG, m_toShadowSpaceMatrix);
 		for (const auto& directory : m_entities)
 		{
 			PrepareEntity(directory.second.front());
 			for (const Entity* entity : directory.second)
 			{
 				m_shader->SetUniform2f(OFFSET_TAG, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
-
-				Math::Mat4 model_matrix = Math::Mat4Utils::Transformation(*entity);
-				Math::Mat4 normal_matrix = model_matrix.Inverse();
-				normal_matrix.Transpose();
-				m_shader->SetUniformMat4(NORMAL_MATRIX, normal_matrix);
-				m_shader->SetUniformMat4(Shader::TransformMatrixTag, model_matrix);
+				m_shader->SetUniformMat4(NORMAL_MATRIX_TAG, entity->GetNormalMatrix());
+				m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, entity->GetModelMatrix());
 				glDrawElements(entity->vertexArray->drawType, entity->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
 			}
 		}

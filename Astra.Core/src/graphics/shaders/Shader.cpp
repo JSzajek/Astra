@@ -59,6 +59,11 @@ namespace Astra::Graphics
 		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.data);
 	}
 
+	void Shader::SetUniformMat4(const GLchar* name, const Math::Mat4* const matrix)
+	{
+		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix->data);
+	}
+
 	void Shader::Start() const
 	{
 		glUseProgram(m_id);

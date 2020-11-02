@@ -25,7 +25,7 @@ namespace Astra::Graphics
 	void Renderer::UpdateProjectionMatrix(const Math::Mat4& projectionMatrix)
 	{
 		m_shader->Start();
-		m_shader->SetUniformMat4(Shader::ProjectionMatrixTag, projectionMatrix);
+		m_shader->SetUniformMat4(PROJECTION_MATRIX_TAG, projectionMatrix);
 		m_shader->Stop();
 	}
 

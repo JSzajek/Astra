@@ -35,5 +35,9 @@ namespace Astra::Graphics
 		float GetMaterialXOffset() const;
 		float GetMaterialYOffset() const;
 		inline const bool IsNormalMapped() const { return m_normalMapped; }
+
+		
+
+		
 	};
 }

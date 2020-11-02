@@ -33,21 +33,34 @@ namespace Astra::Graphics
 		std::string FragmentSource;
 	};
 
+	#define PROJECTION_MATRIX_TAG		"projectionMatrix"
+	#define VIEW_MATRIX_TAG				"viewMatrix"
+	#define TRANSFORM_MATRIX_TAG		"transformMatrix"
+	#define NORMAL_MATRIX_TAG			"normalMatrix"
+
+	#define INVERSE_VIEW_VECTOR_TAG		"inverseViewVector"
+	#define CLIP_PLANE					"clipPlane"
+	#define FOG_COLOR					"fogColor"
+
+	#define DIFFUSE_MAP					"material.diffuseMap"
+	#define SPECULAR_MAP				"material.specularMap"
+	#define MATERIAL_REFLECTIVITY		"material.reflectivity"
+
+	#define DIR_LIGHT_DIRECTION			"directionalLight.direction"
+	#define DIR_LIGHT_AMBIENT			"directionalLight.ambient"
+	#define DIR_LIGHT_DIFFUSE			"directionalLight.diffuse"
+	#define DIR_LIGHT_SPECULAR			"directionalLight.specular"
+
+	// Shadow based tags
+	#define SHADOW_MAP_TAG				"material.shadowMap"
+	#define TO_SHADOW_SPACE_MATRIX_TAG	"toShadowMapSpace"
+	#define SHADOW_DISTANCE_TAG			"shadowDistance"
+	#define TRANSITION_DISTANCE_TAG		"transitionDistance"
+	#define SHADOW_MAP_SIZE_TAG			"mapSize"
+	#define PCF_COUNT_TAG				"pcfCount"
+
 	class Shader
 	{
-	public:
-		static constexpr const char* ProjectionMatrixTag = "projectionMatrix";
-		static constexpr const char* ViewMatrixTag = "viewMatrix";
-		static constexpr const char* TransformMatrixTag = "transformMatrix";
-		static constexpr const char* InverseViewVectorTag = "inverseViewVector";
-
-		// Shadow based tags
-		static constexpr const char* ShadowMapTag = "material.shadowMap";
-		static constexpr const char* ToShadowSpaceMatrixTag = "toShadowMapSpace";
-		static constexpr const char* ShadowDistanceTag = "shadowDistance";
-		static constexpr const char* TransitionDistanceTag = "transitionDistance";
-		static constexpr const char* MapSizeTag = "mapSize";
-		static constexpr const char* PcfCountTag = "pcfCount";
 	private:
 		GLuint m_id;
 		const char* m_filepath;
@@ -67,6 +80,7 @@ namespace Astra::Graphics
 		void SetUniform4f(const GLchar* name, const Math::Vec4& value);
 		void SetUniform4f(const GLchar* name, const Math::Vec3& vector, float w);
 		virtual void SetUniformMat4(const GLchar* name, const Math::Mat4& matrix);
+		void SetUniformMat4(const GLchar* name, const Math::Mat4* const matrix);
 
 		void Start() const;
 		void Stop() const;

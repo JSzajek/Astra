@@ -17,7 +17,7 @@ void Player::Update()
     float delta = _window->delta;
     CheckInput();
 
-    m_body->Rotation().y += currentTurnSpeed * delta;
+    (*m_body)(ROTATION, SUM_EQ, Y, currentTurnSpeed * delta);
 #if LOCKED_CAMERA
     //m_camera->Swivel() = m_body->GetRotation().y;
 #else
@@ -48,11 +48,11 @@ void Player::Update()
 
     float distance = currentSpeed * delta;
     float y_rot = ToRadians(m_body->GetRotation().y);
-    m_body->Translation().x += distance * sin(y_rot);
-    m_body->Translation().z += distance * cos(y_rot);
+    (*m_body)(TRANSLATION, SUM_EQ, X, distance * sin(y_rot));
+    (*m_body)(TRANSLATION, SUM_EQ, Z, distance * cos(y_rot));
 
     upwardsSpeed += GRAVITY * delta;
-    m_body->Translation().y += upwardsSpeed * delta;
+    (*m_body)(TRANSLATION, SUM_EQ, Y, upwardsSpeed * delta);
 
     m_camera->LookAt(m_body->GetTranslation());
     
@@ -61,7 +61,7 @@ void Player::Update()
     {
         upwardsSpeed = 0;
         isGrounded = true;
-        m_body->Translation().y = terrainHeight;
+        (*m_body)(TRANSLATION, EQ, Y, terrainHeight);
     }
 
     float mouseWheel = _window->getMouseWheel();

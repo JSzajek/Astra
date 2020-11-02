@@ -180,24 +180,25 @@ namespace Astra::Graphics
 			float distance = 2 * (m_mainCamera->GetTranslation().y - m_refractionClipPlane.w);
 
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetReflectionBuffer().GetId(), 320, 180);
-			m_mainCamera->Translation().y -= distance;
+			m_mainCamera->Translation()->y -= distance;
 			m_mainCamera->InvertPitch();
 			viewMatrix = Math::Mat4Utils::ViewMatrix(*m_mainCamera);
-			PreRender(m_reflectionClipPlane);
+			PreRender(viewMatrix.Inverse() * Math::Back4D, m_reflectionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 
-			m_mainCamera->Translation().y += distance;
+			m_mainCamera->Translation()->y += distance;
 			m_mainCamera->InvertPitch();
 			viewMatrix = Math::Mat4Utils::ViewMatrix(*m_mainCamera);
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetRefractionBuffer().GetId(), 1280, 720);
-			PreRender(m_refractionClipPlane);
+			PreRender(viewMatrix.Inverse() * Math::Back4D, m_refractionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 		}
 
 		UpdateCameraView();
+		Math::Vec4 inverseView = viewMatrix.Inverse() * Math::Back4D;
 		PrepareRender();
-		PreRender();
-		PostRender();
+		PreRender(inverseView);
+		PostRender(inverseView);
 		GuiRender();
 	}
 
@@ -217,23 +218,24 @@ namespace Astra::Graphics
 		m_waterRenderer->SetShadowMatrix(toShadowMap);
 	}
 
-	void RendererController::PreRender(const Math::Vec4& clipPlane)
+	void RendererController::PreRender(const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		if (m_currentScene == NULL || m_block) { return; }
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		m_terrainRenderer->Draw(viewMatrix, clipPlane);
-		m_entityRenderer->Draw(viewMatrix, clipPlane);
-		m_normalEntityRenderer->Draw(viewMatrix, clipPlane);
+
+		m_terrainRenderer->Draw(viewMatrix, inverseViewVector, clipPlane);
+		m_entityRenderer->Draw(viewMatrix, inverseViewVector, clipPlane);
+		m_normalEntityRenderer->Draw(viewMatrix, inverseViewVector, clipPlane);
 		m_skyboxRenderer->Draw(viewMatrix, NULL);
 	}
 
-	void RendererController::PostRender()
+	void RendererController::PostRender(const Math::Vec4& inverseViewVector)
 	{
 		if (m_currentScene == NULL || m_block) { return; }
 
-		m_waterRenderer->Draw(viewMatrix);
+		m_waterRenderer->Draw(viewMatrix, inverseViewVector);
 	}
 
 	void RendererController::GuiRender()

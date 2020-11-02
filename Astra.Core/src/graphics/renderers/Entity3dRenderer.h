@@ -4,8 +4,6 @@
 
 #include "Renderer.h"
 #include "../loaders/Loader.h"
-#include "../shaders/LightingShader.h"
-#include "../shaders/BasicShader.h"
 #include "../entities/Entity.h"
 #include "../entities/Light.h"
 
@@ -29,7 +27,7 @@ namespace Astra::Graphics
 		void Clear() override;
 		inline void SetShadowMatrix(const Math::Mat4& shadowMatrix) { m_toShadowSpaceMatrix = shadowMatrix; }
 
-		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;
+		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 		void AddEntity(const Entity* entity);
 		void AddLight(Light* light);
 		void UpdateLight(const Light* light);
