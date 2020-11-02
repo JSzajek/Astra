@@ -1,12 +1,14 @@
 #include "TerrainRenderer.h"
 #include "../../math/Mat4Utils.h"
 
+#include "../entities/PointLight.h"
+#include "../entities/SpotLight.h"
 #include "../shadows/ShadowMapController.h"
 
 namespace Astra::Graphics
 {
 	TerrainRenderer::TerrainRenderer(const Math::Vec3* fogColor)
-		: Renderer(), m_skyColor(fogColor)
+		: Renderer(), m_fogColor(fogColor)
 	{
 	}
 
@@ -15,16 +17,17 @@ namespace Astra::Graphics
 		Renderer::SetShader(shader);
 
 		m_shader->Start();
-		m_shader->SetUniform1i(TerrainShader::BackgroundTextureTag, 0);
-		m_shader->SetUniform1i(TerrainShader::RTextureTag, 1);
-		m_shader->SetUniform1i(TerrainShader::GTextureTag, 2);
-		m_shader->SetUniform1i(TerrainShader::BTextureTag, 3);
-		m_shader->SetUniform1i(TerrainShader::BlendMapTag, 4);
-		m_shader->SetUniform1i(Shader::ShadowMapTag, 5);
+		m_shader->SetUniform1i(BACKGROUND_TEXTURE, 0);
+		m_shader->SetUniform1i(R_TEXTURE, 1);
+		m_shader->SetUniform1i(G_TEXTURE, 2);
+		m_shader->SetUniform1i(B_TEXTURE, 3);
+		m_shader->SetUniform1i(BLEND_MAP, 4);
+		m_shader->SetUniform1i(SPECULAR_MAP, 5);
+	/*	m_shader->SetUniform1i(Shader::ShadowMapTag, 6);
 		m_shader->SetUniform1f(Shader::ShadowDistanceTag, SHADOW_DISTANCE);
 		m_shader->SetUniform1f(Shader::TransitionDistanceTag, TRANSITION_DISTANCE);
 		m_shader->SetUniform1f(Shader::MapSizeTag, SHADOW_MAP_SIZE);
-		m_shader->SetUniform1i(Shader::PcfCountTag, PCF_COUNT);
+		m_shader->SetUniform1i(Shader::PcfCountTag, PCF_COUNT);*/
 		m_shader->Stop();
 	}
 
@@ -37,20 +40,41 @@ namespace Astra::Graphics
 	void TerrainRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
-		if (m_shader->GetType() == ShaderType::Terrains)
+		m_shader->SetUniform3f(FOG_COLOR, *m_fogColor);
+		m_shader->SetUniform4f(CLIP_PLANE, clipPlane);
+
+		//if (m_shader->GetType() == ShaderType::Terrains)
+		//{
+		//	//m_shader->SetUniform4f(TerrainShader::ClipPaneTag, clipPlane);
+		//}
+		
+		for (int i = 0; i < m_lights.size(); i++)
 		{
-			m_shader->SetUniform4f(TerrainShader::ClipPaneTag, clipPlane);
-			m_shader->SetUniform3f(TerrainShader::SkyColorTag, *m_skyColor);
+			m_shader->SetUniform3f(Shader::GetPointLightPositionTag(i), m_lights[i]->GetTranslation());
+			m_shader->SetUniform3f(Shader::GetPointLightAmbientTag(i), m_lights[i]->GetAmbient());
+			m_shader->SetUniform3f(Shader::GetPointLightDiffuseTag(i), m_lights[i]->GetDiffuse());
+			m_shader->SetUniform3f(Shader::GetPointLightSpecularTag(i), m_lights[i]->GetSpecular());
+			m_shader->SetUniform3f(Shader::GetPointLightAttenuationTag(i), (static_cast<const PointLight*>(m_lights[i]))->GetAttenuation());
 		}
+
+		m_shader->SetUniform3f(DIR_LIGHT_DIRECTION, m_directionalLight->GetRotation());
+		m_shader->SetUniform3f(DIR_LIGHT_AMBIENT, m_directionalLight->GetAmbient());
+		m_shader->SetUniform3f(DIR_LIGHT_DIFFUSE, m_directionalLight->GetDiffuse());
+		m_shader->SetUniform3f(DIR_LIGHT_SPECULAR, m_directionalLight->GetSpecular());
+
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
-		m_shader->SetUniformMat4(TerrainShader::ToShadowSpaceMatrixTag, m_toShadowSpaceMatrix);
+		m_shader->SetUniform4f(Shader::InverseViewVectorTag, viewMatrix.Inverse() * Math::Back4D);
+		//m_shader->SetUniformMat4(TerrainShader::ToShadowSpaceMatrixTag, m_toShadowSpaceMatrix);
 		for (const auto& directory : m_terrains)
 		{
-			std::vector<const Terrain*> terrains = directory.second;
-			PrepareTerrain(*terrains.front());
-			for (const Terrain* terrain : terrains)
+			PrepareTerrain(directory.second.front());
+			for (const Terrain* terrain : directory.second)
 			{
-				m_shader->SetUniformMat4(Shader::TransformMatrixTag, Math::Mat4Utils::Transformation(*terrain));
+				Math::Mat4 model_matrix = Math::Mat4Utils::Transformation(*terrain);
+				Math::Mat4 normal_matrix = model_matrix.Inverse();
+				normal_matrix.Transpose();
+				m_shader->SetUniformMat4(NORMAL_MATRIX, normal_matrix);
+				m_shader->SetUniformMat4(Shader::TransformMatrixTag, model_matrix);
 				glDrawElements(terrain->vertexArray->drawType, terrain->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
 			}
 		}
@@ -72,67 +96,71 @@ namespace Astra::Graphics
 		}
 	}
 
-	void TerrainRenderer::AddLight(Light* light)
+	void TerrainRenderer::AddLight(const Light* light)
 	{
-		if (m_lights.size() + 1 > MAX_LIGHTS)
+		m_lights.emplace_back(light);
+		/*if (m_lights.size() + 1 > MAX_LIGHTS)
 		{
 			Logger::Log("Too Many Lights");
 			m_lights.pop_back();
 		}
-		m_lights.emplace_back(light);
 		light->SetCallback(std::bind(&TerrainRenderer::UpdateLights, this));
-		UpdateLights();
+		UpdateLights();*/
 	}
 
 	void TerrainRenderer::UpdateLights()
 	{
-		m_shader->Start();
-		for (int i = 0; i < MAX_LIGHTS; i++)
-		{
-			if (i < m_lights.size())
-			{
-				m_shader->SetUniform3f(TerrainShader::GetLightPositionTag(i), m_lights[i]->GetTranslation());
-				m_shader->SetUniform3f(TerrainShader::GetLightColorTag(i), m_lights[i]->GetColor());
-				//m_shader->SetUniform3f(TerrainShader::GetAttenuationTag(i), m_lights[i]->GetAttenuation());
-			}
-			else
-			{
-				m_shader->SetUniform3f(TerrainShader::GetLightPositionTag(i), Math::Vec3(0));
-				m_shader->SetUniform3f(TerrainShader::GetLightColorTag(i), Math::Vec3(0));
-				//m_shader->SetUniform3f(TerrainShader::GetAttenuationTag(i), Math::Vec3(1, 0, 0));
-			}
-		}
-		m_shader->Stop();
+		//m_shader->Start();
+		//for (int i = 0; i < MAX_LIGHTS; i++)
+		//{
+		//	if (i < m_lights.size())
+		//	{
+		//		m_shader->SetUniform3f(TerrainShader::GetLightPositionTag(i), m_lights[i]->GetTranslation());
+		//		m_shader->SetUniform3f(TerrainShader::GetLightColorTag(i), m_lights[i]->GetColor());
+		//		//m_shader->SetUniform3f(TerrainShader::GetAttenuationTag(i), m_lights[i]->GetAttenuation());
+		//	}
+		//	else
+		//	{
+		//		m_shader->SetUniform3f(TerrainShader::GetLightPositionTag(i), Math::Vec3(0));
+		//		m_shader->SetUniform3f(TerrainShader::GetLightColorTag(i), Math::Vec3(0));
+		//		//m_shader->SetUniform3f(TerrainShader::GetAttenuationTag(i), Math::Vec3(1, 0, 0));
+		//	}
+		//}
+		//m_shader->Stop();
 	}
 
-	void TerrainRenderer::PrepareTerrain(const Terrain& terrain)
+	void TerrainRenderer::PrepareTerrain(const Terrain* terrain)
 	{
-		glBindVertexArray(terrain.vertexArray->vaoId);
+		glBindVertexArray(terrain->vertexArray->vaoId);
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
 
 		BindTerrainTextures(terrain);
 
-		// TODO: Add shine and reflectivity back to terrains
-		if (m_shader->GetType() == ShaderType::Terrains)
+		/*if (m_shader->GetType() == ShaderType::Terrains)
 		{
 			m_shader->SetUniform1f(TerrainShader::ShineDampenerTag, 1);
 			m_shader->SetUniform1f(TerrainShader::ReflectivityTag, 0);
-		}
+		}*/
 	}
 
-	void TerrainRenderer::BindTerrainTextures(const Terrain& terrain)
+	void TerrainRenderer::BindTerrainTextures(const Terrain* terrain)
 	{
+		// TODO: Add shine and reflectivity back to terrains
+		m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, 1);
+
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, terrain.texturePack->backgroundTexture->id);
+		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->backgroundTexture->id);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, terrain.texturePack->rTexture->id);
+		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->rTexture->id);
 		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, terrain.texturePack->gTexture->id);
+		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->gTexture->id);
 		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, terrain.texturePack->bTexture->id);
+		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->bTexture->id);
 		glActiveTexture(GL_TEXTURE4);
-		glBindTexture(GL_TEXTURE_2D, terrain.blendMap->id);
+		glBindTexture(GL_TEXTURE_2D, terrain->blendMap->id);
+		glActiveTexture(GL_TEXTURE5);
+		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->specularTexture.id);
 	}
 }

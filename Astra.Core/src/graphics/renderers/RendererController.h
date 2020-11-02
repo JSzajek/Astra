@@ -91,7 +91,6 @@ namespace Astra::Graphics
 		{
 			return Get().SetCurrentSceneImpl(scene);
 		}
-
 	private:
 		RendererController();
 		~RendererController();

@@ -18,9 +18,8 @@ namespace Astra::Graphics
 	private:
 		std::unordered_map<GLuint, std::vector<const Entity*>> m_entities;
 		std::vector<const Light*> m_lights;
-		const Light* m_light;
 		const Light* m_directionalLight;
-		const Math::Vec3* m_skyColor;
+		const Math::Vec3* m_fogColor;
 		Math::Mat4 m_toShadowSpaceMatrix;
 	public:
 		Entity3dRenderer(const Math::Vec3* fogColor);

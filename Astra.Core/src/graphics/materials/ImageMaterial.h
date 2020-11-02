@@ -12,15 +12,13 @@ namespace Astra::Graphics
 		Texture m_diffuse;
 		Texture m_specular;
 	public:
-		Math::Vec3 Specular;
 		float Reflectivity;
 		bool Transparent;
 		bool FakeLight;
 	public:
 		ImageMaterial(const char* const filepath = Texture::DefaultTexture, 
 					  int rowCount = 1, float reflectivity = 0.25,
-					  bool transparent = false, bool fakeLight = false,
-					  const Math::Vec3& specular = Math::Vec3(0.7f));
+					  bool transparent = false, bool fakeLight = false);
 
 		ImageMaterial(const char* const filepath,
 					  const char* const specularpath = NULL,

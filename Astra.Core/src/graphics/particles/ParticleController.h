@@ -19,7 +19,7 @@ namespace Astra::Graphics
 			return instance;
 		}
 
-		static void AddParticle(const Particle& particle)
+		static void AddParticle(Particle* particle)
 		{
 			Get().AddParticleImpl(particle);
 		}
@@ -51,9 +51,9 @@ namespace Astra::Graphics
 		void UpdateProjectionMatrixImpl(const Math::Mat4& projectionMatrix);
 		void UpdateImpl(const Math::Vec3& cameraPosition);
 		void RenderImpl(const Math::Mat4& viewMatrix);
-		void AddParticleImpl(const Particle& particle);
+		void AddParticleImpl(Particle* particle);
 		void ClearImpl();
 	private:
-		void InsertionSort(std::vector<Particle>& particles);
+		void InsertionSort(std::vector<Particle*>& particles);
 	};
 }

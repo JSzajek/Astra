@@ -33,7 +33,7 @@ namespace Astra::Graphics
 		std::vector<const Entity*> m_entities;
 		std::vector<const ParticleSystem*> m_particles;
 		std::vector<const GuiTexture*> m_guis;
-		std::vector<const GuiText*> m_texts;
+		std::vector<GuiText*> m_texts;
 		std::vector<const PointLight*> m_pointlights;
 		//std::vector<const SpotLight*> m_spotlights;
 		std::vector<const Terrain*> m_terrains;
@@ -53,18 +53,22 @@ namespace Astra::Graphics
 		inline void AddEntity(const Entity* entity) { m_entities.push_back(entity); }
 		inline void AddParticleSystem(const ParticleSystem* system) { m_particles.push_back(system); }
 		inline void AddGui(const GuiTexture* gui) { m_guis.push_back(gui); }
-		inline void AddText(const GuiText* text) { m_texts.push_back(text); }
+		inline void AddText(GuiText* text) { m_texts.push_back(text); }
 		inline void AddTerrain(const Terrain* terrain) { m_terrains.push_back(terrain); }
 		inline void AddWaterTile(const WaterTile* tile) { m_tiles.push_back(tile); }
 		
 		inline const DirectionalLight* const GetDirectionalLight() const { return m_mainLight; }
 		inline const Math::Vec3& const GetFogColor() const { return m_fogColor; }
+		inline const SkyboxMaterial* const GetSkyBox() const { return m_skybox; }
 
 		inline Camera* const GetCamera() const { return m_mainCamera; }
 		inline const std::vector<const Entity*>& const GetEntities() const { return m_entities; }
 		inline const std::vector<const PointLight*>& const GetPointLights() const { return m_pointlights; }
 		inline const std::vector<const Terrain*>& const GetTerrains() const { return m_terrains; }
 		inline const std::vector<const GuiTexture*>& const GetGuis() const { return m_guis; }
+		inline const std::vector<GuiText*>& const GetTexts() const { return m_texts; }
+		inline const std::vector<const WaterTile*>& const GetWaterTiles() const { return m_tiles; }
+		inline const std::vector<const ParticleSystem*>& const GetParticles() const { return m_particles; }
 		
 		void AddPointLight(const PointLight* light);
 		void AddSpotLight(const SpotLight* light);

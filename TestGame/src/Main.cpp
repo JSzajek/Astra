@@ -88,10 +88,10 @@ int main()
     //Light* light2 = new Light(Math::Vec3(-20, 50, 20), Math::Vec3(0, 1, 1), Math::Vec3(1, 0.01f, 0.002f));
     //Light* light3 = new Light(Math::Vec3(20, 50, -20), Math::Vec3(1, 0, 0), Math::Vec3(1, 0.01f, 0.002f));
 
-    Vec3 light_pos = Math::Vec3(-45, terrain.GetHeightOfTerrain(-45, 45) + 7, 45);
+    Vec3 light_pos = Math::Vec3(-30, terrain.GetHeightOfTerrain(-30, 30) + 7, 30);
     const VertexArray* cubeVertArray = ObjLoader::LoadObjectModel("res/cube.obj");
     Entity light_indicator = Entity(cubeVertArray, light_pos, Vec3(0), Vec3(0.5f));
-    DirectionalLight* dir_light = new DirectionalLight(Vec3(0), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.4f), Vec3(0.5f), Vec3(1.0f));
+    DirectionalLight* dir_light = new DirectionalLight(Vec3(0), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0.6f));
     //Light* light4 = new DirectionalLight(light_pos, Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.4f), Vec3(0.5f), Vec3(1.0f));
     PointLight* light4 = new PointLight(light_pos, Vec3(1), Vec3(1), Vec3(1.0f));
 
@@ -110,10 +110,10 @@ int main()
     /*ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 1, 0, true, true);
     const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");*/
 
-    /*ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", 1, 10, 0.5f);
-    Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-40, terrain.GetHeightOfTerrain(-40, 40), 40), Vec3(0), Vec3(1));
+    ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", 1, 10, 0.5f);
+    Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-38, terrain.GetHeightOfTerrain(-38, 38) + 5, 38), Vec3(0), Vec3(1));
 
-    renderer.AddEntity(&barrelModel2);*/
+    mainScene->AddEntity(&barrelModel2);
 
    /* std::vector<const Entity*> entities;
     for (int i = 0; i < 20; i++)
@@ -158,6 +158,8 @@ int main()
         {
             item->Update();
         }
+
+        barrelModel2.Rotation().y += 0.5f;
 
         skybox.BlendFactor() += InGameTimeSpeed * timeDir;
         if (skybox.BlendFactor() >= 1)

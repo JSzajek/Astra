@@ -20,7 +20,7 @@ namespace Astra::Graphics
 		m_skyboxRenderer = new SkyboxRenderer(new SkyboxShader(), m_fogColor);
 		m_entityRenderer = new Entity3dRenderer(m_fogColor);
 		m_terrainRenderer = new TerrainRenderer(m_fogColor);
-		m_waterRenderer = new WaterRenderer(m_mainCamera, NearPlane, FarPlane);
+		m_waterRenderer = new WaterRenderer(m_mainCamera, m_fogColor, NearPlane, FarPlane);
 		m_normalEntityRenderer = new NormalEntity3dRenderer(m_fogColor);
 		
 		m_waterBuffer = Loader::LoadWaterFrameBuffer(DefaultReflectionWidth, DefaultReflectionHeight,
@@ -58,9 +58,9 @@ namespace Astra::Graphics
 		auto& pointLights = scene->GetPointLights();
 
 		m_entityRenderer->SetShader(new EntityShader(pointLights.size()));
-		m_terrainRenderer->SetShader(new TerrainShader());
-		m_normalEntityRenderer->SetShader(new NormalEntityShader());
-		m_waterRenderer->SetShader(new WaterShader());
+		m_terrainRenderer->SetShader(new TerrainShader(pointLights.size()));
+		m_normalEntityRenderer->SetShader(new NormalEntityShader(pointLights.size()));
+		m_waterRenderer->SetShader(new WaterShader(pointLights.size()));
 
 		// Clear Renderers
 		Clear();
@@ -70,7 +70,13 @@ namespace Astra::Graphics
 		m_shadowMapController->SetCamera(m_mainCamera);
 		m_waterRenderer->SetCamera(m_mainCamera);
 
-		m_entityRenderer->AddDirectionalLight(scene->GetDirectionalLight());
+		m_skyboxRenderer->SetSkyBox(scene->GetSkyBox());
+
+		auto* dirLight = scene->GetDirectionalLight();
+		m_entityRenderer->AddDirectionalLight(dirLight);
+		m_terrainRenderer->AddDirectionalLight(dirLight);
+		m_normalEntityRenderer->AddDirectionalLight(dirLight);
+		m_waterRenderer->AddDirectionalLight(dirLight);
 
 		Math::Vec3 fogColor = scene->GetFogColor();
 		m_fogColor->x = fogColor.x;
@@ -79,23 +85,42 @@ namespace Astra::Graphics
 
 		for (auto* entity : scene->GetEntities())
 		{
-			m_entityRenderer->AddEntity(entity);
+			if (entity->IsNormalMapped())
+			{
+				m_normalEntityRenderer->AddEntity(entity);
+			}
+			else
+			{
+				m_entityRenderer->AddEntity(entity);
+			}
 			m_shadowMapController->AddEntity(entity);
 		}
-
 		for (auto* light : scene->GetPointLights())
 		{
 			m_entityRenderer->AddLight(light);
+			m_normalEntityRenderer->AddLight(light);
+			m_terrainRenderer->AddLight(light);
+			m_waterRenderer->AddLight(light);
 		}
-
 		for (auto* terrain : scene->GetTerrains())
 		{
 			m_terrainRenderer->AddTerrain(terrain);
 		}
-
 		for (auto* gui : scene->GetGuis())
 		{
 			m_guiRenderer->AddGui(gui);
+		}
+		for (auto* text : scene->GetTexts())
+		{
+			FontController::LoadText(text);
+		}
+		for (auto* tile : scene->GetWaterTiles())
+		{
+			// Determine better method of offseting clipping planes.
+			m_reflectionClipPlane.w = -tile->GetTranslation().y + 0.5f;
+			m_refractionClipPlane.w = tile->GetTranslation().y + 0.5f;
+
+			m_waterRenderer->AddTile(tile);
 		}
 
 		m_block = false;
@@ -171,8 +196,9 @@ namespace Astra::Graphics
 
 		ParticleController::Update(m_mainCamera->GetTranslation());
 
-		glActiveTexture(GL_TEXTURE5);
+		glActiveTexture(GL_TEXTURE6);
 		glBindTexture(GL_TEXTURE_2D, m_shadowMapController->GetShadowMap());
+
 		const Math::Mat4& toShadowMap = m_shadowMapController->GetToShadowMapSpaceMatrix();
 		m_terrainRenderer->SetShadowMatrix(toShadowMap);
 		m_entityRenderer->SetShadowMatrix(toShadowMap);

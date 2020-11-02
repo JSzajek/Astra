@@ -18,12 +18,12 @@ namespace Astra::Graphics
 		m_fontRenderer->Draw(NULL, NULL);
 	}
 
-	void FontController::LoadTextImpl(GuiText& text)
+	void FontController::LoadTextImpl(GuiText* text)
 	{
-		FontType* font = text.GetFontType();
+		FontType* font = text->GetFontType();
 		const TextMeshData* data = font->LoadText(text);
 		int vao = Loader::Load(GL_TRIANGLES, data->VertexPositions, data->TextureCoords);
-		text.SetMeshInfo(vao, data->GetVertexCount());
+		text->SetMeshInfo(vao, data->GetVertexCount());
 		auto found = m_fontRenderer->GetTexts().find(font);
 		if (found != m_fontRenderer->GetTexts().end())
 		{
@@ -31,16 +31,16 @@ namespace Astra::Graphics
 		}
 		else
 		{
-			std::vector<GuiText> textBatch = std::vector<GuiText>();
+			std::vector<GuiText*> textBatch = std::vector<GuiText*>();
 			textBatch.push_back(text);
 			m_fontRenderer->GetTexts().insert(std::make_pair(font, textBatch));
 		}
 		delete data; // Clean up
 	}
 
-	void FontController::RemoveTextImpl(GuiText& text)
+	void FontController::RemoveTextImpl(GuiText* text)
 	{
-		auto found = m_fontRenderer->GetTexts().find(text.GetFontType());
+		auto found = m_fontRenderer->GetTexts().find(text->GetFontType());
 		if (found != m_fontRenderer->GetTexts().end())
 		{
 			for (auto iter = found->second.begin(); iter != found->second.end(); iter++)
@@ -52,7 +52,7 @@ namespace Astra::Graphics
 			}
 			if (found->second.empty())
 			{
-				m_fontRenderer->GetTexts().erase(text.GetFontType());
+				m_fontRenderer->GetTexts().erase(text->GetFontType());
 			}
 		}
 	}

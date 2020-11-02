@@ -3,7 +3,7 @@
 namespace Astra::Graphics
 {
 	SkyboxRenderer::SkyboxRenderer(Shader* shader, const Math::Vec3* fogColor)
-		: Renderer(), m_skyColor(fogColor), m_blendFactor(0), m_material(NULL)
+		: Renderer(), m_fogColor(fogColor), m_blendFactor(0), m_material(NULL)
 	{
 		Renderer::SetShader(shader);
 
@@ -18,7 +18,7 @@ namespace Astra::Graphics
 	void SkyboxRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
-		m_shader->SetUniform3f(SkyboxShader::FogColorTag, *m_skyColor);
+		m_shader->SetUniform3f(SkyboxShader::FogColorTag, *m_fogColor);
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
 	
 		glBindVertexArray(m_cube->vaoId);

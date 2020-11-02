@@ -10,7 +10,7 @@
 namespace Astra::Graphics
 {
 	Entity3dRenderer::Entity3dRenderer(const Math::Vec3* fogColor)
-		: Renderer(), m_skyColor(fogColor), m_light(NULL)
+		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL)
 	{
 	}
 
@@ -32,7 +32,6 @@ namespace Astra::Graphics
 
 	void Entity3dRenderer::Clear()
 	{
-		m_light = NULL;
 		m_lights.clear();
 		m_entities.clear();
 	}
@@ -40,11 +39,8 @@ namespace Astra::Graphics
 	void Entity3dRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
-		/*if (m_shader->GetType() == ShaderType::Lighting)
-		{
-			m_shader->SetUniform4f(LightingShader::ClipPaneTag, clipPlane);
-			m_shader->SetUniform3f(LightingShader::SkyColorTag, *m_skyColor);
-		}*/
+		m_shader->SetUniform3f(FOG_COLOR, *m_fogColor);
+		m_shader->SetUniform4f(CLIP_PLANE, clipPlane);
 
 		/*if (m_light != NULL)
 		{
@@ -77,18 +73,17 @@ namespace Astra::Graphics
 
 		for (int i = 0; i < m_lights.size(); i++)
 		{
-			m_shader->SetUniform3f(EntityShader::GetPointLightPositionTag(i), m_lights[i]->GetTranslation());
-			m_shader->SetUniform3f(EntityShader::GetPointLightAmbientTag(i), m_lights[i]->GetAmbient());
-			m_shader->SetUniform3f(EntityShader::GetPointLightDiffuseTag(i), m_lights[i]->GetDiffuse());
-			m_shader->SetUniform3f(EntityShader::GetPointLightSpecularTag(i), m_lights[i]->GetSpecular());
-			m_shader->SetUniform3f(EntityShader::GetPointLightAttenuationTag(i), (static_cast<const PointLight*>(m_lights[i]))->GetAttenuation());
+			m_shader->SetUniform3f(Shader::GetPointLightPositionTag(i), m_lights[i]->GetTranslation());
+			m_shader->SetUniform3f(Shader::GetPointLightAmbientTag(i), m_lights[i]->GetAmbient());
+			m_shader->SetUniform3f(Shader::GetPointLightDiffuseTag(i), m_lights[i]->GetDiffuse());
+			m_shader->SetUniform3f(Shader::GetPointLightSpecularTag(i), m_lights[i]->GetSpecular());
+			m_shader->SetUniform3f(Shader::GetPointLightAttenuationTag(i), (static_cast<const PointLight*>(m_lights[i]))->GetAttenuation());
 		}
 
 		m_shader->SetUniform3f(DIR_LIGHT_DIRECTION, m_directionalLight->GetRotation());
 		m_shader->SetUniform3f(DIR_LIGHT_AMBIENT, m_directionalLight->GetAmbient());
 		m_shader->SetUniform3f(DIR_LIGHT_DIFFUSE, m_directionalLight->GetDiffuse());
 		m_shader->SetUniform3f(DIR_LIGHT_SPECULAR, m_directionalLight->GetSpecular());
-
 
 		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
 		m_shader->SetUniform4f(Shader::InverseViewVectorTag, viewMatrix.Inverse() * Math::Back4D);
@@ -98,7 +93,7 @@ namespace Astra::Graphics
 			PrepareEntity(directory.second.front());
 			for (const Entity* entity : directory.second)
 			{
-				//m_shader->SetUniform2f(LightingShader::OffsetTag, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
+				m_shader->SetUniform2f(OFFSET_TAG, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
 
 				Math::Mat4 model_matrix = Math::Mat4Utils::Transformation(*entity);
 				Math::Mat4 normal_matrix = model_matrix.Inverse();
@@ -167,7 +162,7 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
 
-		//m_shader->SetUniform1f(LightingShader::NumberOfRowsTag, entity->material->GetRowCount());
+		m_shader->SetUniform1f(NUMBER_OF_ROWS, entity->material->GetRowCount());
 
 		if (entity->material->Transparent)
 		{
@@ -186,6 +181,7 @@ namespace Astra::Graphics
 			//m_shader->SetUniform3f(MATERIAL_AMBIENT, entity->material->Ambient);
 			//m_shader->SetUniform3f(MATERIAL_DIFFUSE, entity->material->Diffuse);
 			//m_shader->SetUniform3f(MATERIAL_SPECULAR, entity->material->Specular);
+			m_shader->SetUniform1f(FAKE_LIGHT, entity->material->FakeLight);
 			m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, entity->material->Reflectivity);
 
 			glActiveTexture(GL_TEXTURE0);

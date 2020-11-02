@@ -12,7 +12,7 @@ namespace Astra::Graphics
 		m_fontWidth = (0.0176 * log(fontSize) + 0.4677) + m_thickness;
 		m_fontEdge = -0.062 * log(fontSize) + 0.1818;
 
-		FontController::LoadText(*this);
+		FontController::LoadText(this);
 	}
 
 	GuiText::GuiText(const std::string& text, FontType* font, float fontSize, const Math::Vec2& position, const Math::Vec3& color, float thickness, 
@@ -26,7 +26,7 @@ namespace Astra::Graphics
 		m_outlineWidth = (0.0176 * log(m_outlineSize) + m_fontWidth);
 		m_outlineEdge = -0.062 * log(m_outlineSize) + 0.4;
 
-		FontController::LoadText(*this);
+		FontController::LoadText(this);
 	}
 
 	GuiText::GuiText(const GuiText& other)
@@ -48,7 +48,7 @@ namespace Astra::Graphics
 
 	void GuiText::RemoveText()
 	{
-		FontController::RemoveText(*this);
+		FontController::RemoveText(this);
 	}
 
 	void GuiText::SetMeshInfo(unsigned int vao, int vertexCount)

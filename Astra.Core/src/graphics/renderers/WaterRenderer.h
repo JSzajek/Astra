@@ -16,34 +16,27 @@ namespace Astra::Graphics
 		const VertexArray* m_defaultQuad;
 		Camera* m_camera;
 		WaterFrameBuffer* m_buffer;
-		std::vector<WaterTile> m_waterTiles;
-		const Light* m_light;
+		std::vector<const WaterTile*> m_waterTiles;
+		std::vector<const Light*> m_lights;
+		const Light* m_directionalLight;
+		const Math::Vec3* m_fogColor;
 		float m_near, m_far;
 	public:
-		WaterRenderer(Camera* camera, float near, float far);
+		WaterRenderer(Camera* camera, const Math::Vec3* fogColor, float near, float far);
 		
 		void SetShader(Shader* shader) override;
-		inline void Clear() override 
-		{ 
-			m_waterTiles.clear(); 
-			m_light = NULL;
-		}
+		void Clear() override;
 
 		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;
-		void AddTile(const WaterTile& tile) { m_waterTiles.push_back(tile); }
+		void AddTile(const WaterTile* tile) { m_waterTiles.emplace_back(tile); }
 		inline void SetCamera(Camera* camera) { m_camera = camera; }
 		inline void SetFrameBuffer(WaterFrameBuffer* frameBuffer) { m_buffer = frameBuffer; }
-		inline void AddLight(const Light* light) 
-		{
-			if (m_light == NULL)
-			{
-				m_light = light; 
-			}
-		}
+		void AddLight(const Light* light);
+		void AddDirectionalLight(const Light* light) { m_directionalLight = light; }
 	protected:
 		void UnbindVertexArray() override;
 	private:
 		void PrepareRender();
-		void PrepareTile(const WaterTile& tile);
+		void PrepareTile(const WaterTile* tile);
 	};
 }

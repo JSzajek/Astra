@@ -30,12 +30,12 @@ namespace Astra::Graphics
 			Get().RenderImpl();
 		}
 
-		static void LoadText(GuiText& text)
+		static void LoadText(GuiText* text)
 		{
 			Get().LoadTextImpl(text);
 		}
 
-		static void RemoveText(GuiText& text)
+		static void RemoveText(GuiText* text)
 		{
 			Get().RemoveTextImpl(text);
 		}
@@ -50,8 +50,8 @@ namespace Astra::Graphics
 		~FontController();
 
 		void RenderImpl();
-		void LoadTextImpl(GuiText& text);
-		void RemoveTextImpl(GuiText& text);
+		void LoadTextImpl(GuiText* text);
+		void RemoveTextImpl(GuiText* text);
 		void ClearImpl();
 	};
 }

@@ -18,7 +18,8 @@ namespace Astra::Graphics
 	private:
 		std::unordered_map<GLuint, std::vector<const Entity*>> m_entities;
 		std::vector<const Light*> m_lights;
-		const Math::Vec3* m_skyColor;
+		const Math::Vec3* m_fogColor;
+		const Light* m_directionalLight;
 		Math::Mat4 m_viewMatrix;
 		Math::Mat4 m_toShadowSpaceMatrix;
 	public:
@@ -31,7 +32,8 @@ namespace Astra::Graphics
 
 		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 		void AddEntity(const Entity* entity);
-		void AddLight(Light* light);
+		void AddLight(const Light* light);
+		void AddDirectionalLight(const Light* light) { m_directionalLight = light; }
 		void UpdateLights();
 	private:
 		void PrepareEntity(const Entity* entity);

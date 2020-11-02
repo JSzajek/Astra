@@ -27,7 +27,7 @@ namespace Astra::Graphics
 			auto particlesIter = (*iter).second.begin();
 			while (particlesIter != (*iter).second.end())
 			{
-				bool stillAlive = (*particlesIter).Update(cameraPosition);
+				bool stillAlive = (*particlesIter)->Update(cameraPosition);
 				if (!stillAlive)
 				{
 					particlesIter = (*iter).second.erase(particlesIter);
@@ -50,7 +50,7 @@ namespace Astra::Graphics
 		}
 	}
 
-	void ParticleController::AddParticleImpl(const Particle& particle)
+	void ParticleController::AddParticleImpl(Particle* particle)
 	{
 		m_particleRenderer->AddParticle(particle);
 	}
@@ -60,12 +60,12 @@ namespace Astra::Graphics
 		m_particleRenderer->Draw(viewMatrix, NULL);
 	}
 
-	void ParticleController::InsertionSort(std::vector<Particle>& particles)
+	void ParticleController::InsertionSort(std::vector<Particle*>& particles)
 	{
 		for (auto it = particles.begin(); it != particles.end(); it++)
 		{
 			auto const insertion_point = std::upper_bound(particles.begin(), it, *it,
-					[](const Particle& a, const Particle& b) {return a.GetDistance() > b.GetDistance(); });
+					[](const Particle* a, const Particle* b) {return a->GetDistance() > b->GetDistance(); });
 			std::rotate(insertion_point, it, it + 1);
 		}
 	}

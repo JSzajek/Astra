@@ -28,11 +28,11 @@ namespace Astra::Graphics
 		MetaFile metaData;
 	public:
 		TextMeshCreator(const char* filepath);
-		const TextMeshData* CreateTextMesh(GuiText& text);
+		const TextMeshData* CreateTextMesh(const GuiText* text);
 	private:
-		std::vector<Line> CreateStructure(GuiText& text);
-		void CompleteStructure(std::vector<Line>& lines, Line& currentLine, const Word& currentWord, const GuiText& text);
-		const TextMeshData* CreateQuadVertices(GuiText& text, const std::vector<Line>& lines);
+		std::vector<Line> CreateStructure(const GuiText* text);
+		void CompleteStructure(std::vector<Line>& lines, Line& currentLine, const Word& currentWord, const GuiText* text);
+		const TextMeshData* CreateQuadVertices(const GuiText* text, const std::vector<Line>& lines);
 		void AddVerticesForCharacter(double xCursor, double yCursor, const Character* character, double fontSize, std::vector<float>& vertices);
 		void AddVertices(std::vector<float>& vertices, double x, double y, double maxX, double maxY);
 		void AddTexCoords(std::vector<float>& texCoords, double x, double y, double maxX, double maxY);
@@ -50,6 +50,6 @@ namespace Astra::Graphics
 
 		inline int GetTextureAtlas() const { return m_textureAtlas; }
 		
-		const TextMeshData* LoadText(GuiText& text);
+		const TextMeshData* LoadText(const GuiText* text);
 	};
 }

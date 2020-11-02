@@ -10,8 +10,9 @@ namespace Astra::Graphics
 	}
 
 	TerrainMaterialPack::TerrainMaterialPack(const TerrainMaterial* background, const TerrainMaterial* red,
-												const TerrainMaterial* green, const TerrainMaterial* blue)
-		: backgroundTexture(background), rTexture(red), gTexture(green), bTexture(blue)
+											 const TerrainMaterial* green, const TerrainMaterial* blue)
+		: backgroundTexture(background), rTexture(red), gTexture(green), bTexture(blue),
+			specularTexture(Loader::LoadTexture(Texture::DefaultSpecular))
 	{
 	}
 }

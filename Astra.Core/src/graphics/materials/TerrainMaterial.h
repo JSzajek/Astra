@@ -18,6 +18,8 @@ namespace Astra::Graphics
 		const TerrainMaterial* rTexture;
 		const TerrainMaterial* gTexture;
 		const TerrainMaterial* bTexture;
+
+		const Texture specularTexture;
 	
 		TerrainMaterialPack(const TerrainMaterial* background, const TerrainMaterial* red,
 							const TerrainMaterial* green, const TerrainMaterial* blue);

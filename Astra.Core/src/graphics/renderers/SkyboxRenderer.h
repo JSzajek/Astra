@@ -61,7 +61,7 @@ namespace Astra::Graphics
 	private:
 		const VertexArray* m_cube;
 		const SkyboxMaterial* m_material;
-		const Math::Vec3* m_skyColor;
+		const Math::Vec3* m_fogColor;
 		float m_blendFactor;
 	public:
 		SkyboxRenderer(Shader* shader, const Math::Vec3* fogColor);

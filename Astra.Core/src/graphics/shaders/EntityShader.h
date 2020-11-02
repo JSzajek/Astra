@@ -4,7 +4,14 @@
 
 namespace Astra::Graphics
 {	
+	#define FAKE_LIGHT					"useFakeLighting"
+	#define NUMBER_OF_ROWS				"numberOfRows"
+	#define OFFSET_TAG					"offset"
+	#define CLIP_PLANE					"clipPlane"
+
 	#define NORMAL_MATRIX				"normalMatrix"
+
+	#define FOG_COLOR					"fogColor"
 
 	#define DIFFUSE_MAP					"material.diffuseMap"
 	#define SPECULAR_MAP				"material.specularMap"
@@ -18,49 +25,10 @@ namespace Astra::Graphics
 	class EntityShader : public Shader
 	{
 	public:
-		static constexpr const char* LightPositionTag = "lightPosition";
-		static constexpr const char* LightColorTag = "lightPosition";
-	public:
 		EntityShader(int numOfLights, const char* filepath =
 			"../Astra.Core/src/resources/shaders/Entity.shader")
 			: Shader(filepath, ShaderType::Lighting, &std::make_tuple("NR_POINT_LIGHTS %i", numOfLights))
 		{
-		}
-
-		static const char* GetPointLightPositionTag(int index)
-		{
-			sprintf(GetBuffer(), "pointLights[%i].position", index);
-			return GetBuffer();
-		}
-
-		static const char* GetPointLightAmbientTag(int index)
-		{
-			sprintf(GetBuffer(), "pointLights[%i].ambient", index);
-			return GetBuffer();
-		}
-
-		static const char* GetPointLightDiffuseTag(int index)
-		{
-			sprintf(GetBuffer(), "pointLights[%i].diffuse", index);
-			return GetBuffer();
-		}
-
-		static const char* GetPointLightSpecularTag(int index)
-		{
-			sprintf(GetBuffer(), "pointLights[%i].specular", index);
-			return GetBuffer();
-		}
-
-		static const char* GetPointLightAttenuationTag(int index)
-		{
-			sprintf(GetBuffer(), "pointLights[%i].attenuation", index);
-			return GetBuffer();
-		}
-	private:
-		static char* GetBuffer()
-		{
-			static char m_buffer[64];
-			return m_buffer;
 		}
 	};
 }

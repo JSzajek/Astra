@@ -17,7 +17,8 @@ namespace Astra::Graphics
 	private:
 		std::unordered_map<GLuint, std::vector<const Terrain*>> m_terrains;
 		std::vector<const Light*> m_lights;
-		const Math::Vec3* m_skyColor;
+		const Math::Vec3* m_fogColor;
+		const Light* m_directionalLight;
 		Math::Mat4 m_toShadowSpaceMatrix;
 	public:
 		TerrainRenderer(const Math::Vec3* fogColor);
@@ -29,10 +30,11 @@ namespace Astra::Graphics
 
 		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 		void AddTerrain(const Terrain* terrain);
-		void AddLight(Light* light);
+		void AddLight(const Light* light);
+		void AddDirectionalLight(const Light* light) { m_directionalLight = light; }
 		void UpdateLights();
 	private:
-		void PrepareTerrain(const Terrain& terrain);
-		void BindTerrainTextures(const Terrain& terrain);
+		void PrepareTerrain(const Terrain* terrain);
+		void BindTerrainTextures(const Terrain* terrain);
 	};
 }

@@ -9,7 +9,7 @@ namespace Astra::Graphics
 		: Material(material), Position(position), m_velocity(velocity), m_gravity(gravity), m_lifeSpan(lifeSpan), m_elapsedTime(0), Rotation(rotation), Scale(scale),
 			m_texOffset1(0), m_texOffset2(0), m_blendFactor(0), m_distance(0)
 	{
-		ParticleController::AddParticle(*this);
+		ParticleController::AddParticle(this);
 	}
 
 	Particle::Particle(const Particle& other)

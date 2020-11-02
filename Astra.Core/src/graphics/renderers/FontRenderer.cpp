@@ -19,7 +19,7 @@ namespace Astra::Graphics
 		{
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, directory.first->GetTextureAtlas());
-			for (const GuiText& text : directory.second)
+			for (const GuiText* text : directory.second)
 			{
 				RenderText(text);
 			}
@@ -31,22 +31,22 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
-	void FontRenderer::RenderText(const GuiText& text)
+	void FontRenderer::RenderText(const GuiText* text)
 	{
-		glBindVertexArray(text.GetMesh());
+		glBindVertexArray(text->GetMesh());
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
 
-		m_shader->SetUniform3f(FontShader::ColorTag, text.Color);
-		m_shader->SetUniform1f(FontShader::WidthTag, text.FontWidth());
-		m_shader->SetUniform1f(FontShader::EdgeTag, text.FontEdge());
+		m_shader->SetUniform3f(FontShader::ColorTag, text->Color);
+		m_shader->SetUniform1f(FontShader::WidthTag, text->FontWidth());
+		m_shader->SetUniform1f(FontShader::EdgeTag, text->FontEdge());
 
-		m_shader->SetUniform3f(FontShader::OutlineColorTag, text.OutlineColor);
-		m_shader->SetUniform1f(FontShader::OutlineWidthTag, text.OutlineWidth());
-		m_shader->SetUniform1f(FontShader::OutlineEdgeTag, text.OutlineEdge());
+		m_shader->SetUniform3f(FontShader::OutlineColorTag, text->OutlineColor);
+		m_shader->SetUniform1f(FontShader::OutlineWidthTag, text->OutlineWidth());
+		m_shader->SetUniform1f(FontShader::OutlineEdgeTag, text->OutlineEdge());
 
-		m_shader->SetUniform2f(FontShader::TranslationTag, text.Position);
+		m_shader->SetUniform2f(FontShader::TranslationTag, text->Position);
 
-		glDrawArrays(GL_TRIANGLES, 0, text.GetVertexCount());
+		glDrawArrays(GL_TRIANGLES, 0, text->GetVertexCount());
 	}
 }

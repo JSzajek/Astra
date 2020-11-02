@@ -80,5 +80,42 @@ namespace Astra::Graphics
 		ShaderProgramSource ParseShader(const std::string& filepath);
 		unsigned int CompileShader(unsigned int type, const std::string& source);
 		unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
+	public:
+		static const char* GetPointLightPositionTag(int index)
+		{
+			sprintf(GetBuffer(), "pointLights[%i].position", index);
+			return GetBuffer();
+		}
+
+		static const char* GetPointLightAmbientTag(int index)
+		{
+			sprintf(GetBuffer(), "pointLights[%i].ambient", index);
+			return GetBuffer();
+		}
+
+		static const char* GetPointLightDiffuseTag(int index)
+		{
+			sprintf(GetBuffer(), "pointLights[%i].diffuse", index);
+			return GetBuffer();
+		}
+
+		static const char* GetPointLightSpecularTag(int index)
+		{
+			sprintf(GetBuffer(), "pointLights[%i].specular", index);
+			return GetBuffer();
+		}
+
+		static const char* GetPointLightAttenuationTag(int index)
+		{
+			sprintf(GetBuffer(), "pointLights[%i].attenuation", index);
+			return GetBuffer();
+		}
+	private:
+		static char* GetBuffer()
+		{
+			static char m_buffer[64];
+			return m_buffer;
+		}
+	
 	};
 }
