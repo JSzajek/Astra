@@ -5,6 +5,7 @@
 
 namespace Astra::Graphics
 {
+#if _DEBUG
 	struct Gizmo
 	{
 	private:
@@ -18,4 +19,5 @@ namespace Astra::Graphics
 
 		inline unsigned int GetTextureId() const { return m_texture.id; }
 	};
+#endif
 }

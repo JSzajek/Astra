@@ -9,6 +9,7 @@
 
 namespace Astra::Graphics
 {
+#if _DEBUG
 	class GizmoRenderer : public Renderer
 	{
 	private:
@@ -27,4 +28,5 @@ namespace Astra::Graphics
 	private:
 		void UpdateModelViewMatrix(const Math::Vec3& position, float scale);
 	};
+#endif
 }

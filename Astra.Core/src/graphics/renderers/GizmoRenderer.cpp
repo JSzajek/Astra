@@ -4,6 +4,7 @@
 
 namespace Astra::Graphics
 {
+#if _DEBUG
 	GizmoRenderer::GizmoRenderer(GizmoShader* shader)
 	{
 		Renderer::SetShader(shader);
@@ -76,4 +77,5 @@ namespace Astra::Graphics
 		Math::Mat4 modelViewMatrix = m_viewMatrix * modelMatrix;
 		m_shader->SetUniformMat4(MODEL_VIEW_MATRIX_TAG, modelViewMatrix);
 	}
+#endif
 }

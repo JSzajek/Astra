@@ -1,12 +1,16 @@
 #pragma once
 
 #include "Light.h"
+#include "../gizmos/Gizmo.h"
 
 namespace Astra::Graphics
 {
 	class PointLight : public Light
 	{
 	private:
+	#if _DEBUG
+		const Gizmo* m_gizmo;
+	#endif
 		Math::Vec3 m_attenuation;
 	public:
 		PointLight(const Math::Vec3& translation, const Math::Vec3& ambient,
@@ -15,8 +19,14 @@ namespace Astra::Graphics
 			: Light(translation, ambient, diffuse, specular), m_attenuation(constant, linear, quadratic)
 		{
 			m_type = LightType::Point;
+		#if _DEBUG
+			m_gizmo = new Gizmo("../Astra.Core/src/resources/textures/PointLight.png", translation, 3);
+		#endif
 		}
 
 		inline const Math::Vec3& GetAttenuation() const { return m_attenuation; }
+	#if _DEBUG
+		inline const Gizmo* const GetGizmo() const { return m_gizmo; }
+	#endif
 	};
 }

@@ -5,6 +5,7 @@
 
 namespace Astra::Graphics
 {
+#if _DEBUG
 	Gizmo::Gizmo(const char* const imagepath, const Math::Vec3& position, float scale)
 		: Position(position), Scale(scale), m_texture(Loader::LoadTexture(imagepath))
 	{
@@ -15,4 +16,5 @@ namespace Astra::Graphics
 		: Position(other.Position), Scale(other.Scale), m_texture(other.m_texture)
 	{
 	}
+#endif
 }

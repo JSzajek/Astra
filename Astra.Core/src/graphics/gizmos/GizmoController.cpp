@@ -2,6 +2,7 @@
 
 namespace Astra::Graphics
 {
+#if _DEBUG
 	GizmoController::GizmoController()
 	{
 		m_gizmoRenderer = new GizmoRenderer(new GizmoShader());
@@ -31,4 +32,5 @@ namespace Astra::Graphics
 	{
 		m_gizmoRenderer->Clear();
 	}
+#endif
 }

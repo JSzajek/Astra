@@ -97,8 +97,6 @@ int main()
     DirectionalLight* dir_light = new DirectionalLight(Vec3(0), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0.6f));
     //Light* light4 = new DirectionalLight(light_pos, Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.4f), Vec3(0.5f), Vec3(1.0f));
     PointLight* light4 = new PointLight(light_pos, Vec3(1), Vec3(1), Vec3(1.0f));
-    Gizmo* temp = new Gizmo("res/textures/point_light.png", light_pos, 3);
-    mainScene->AddGizmo(temp);
 
     //light_pos.y += 18;
     //Light* light4 = new SpotLight(light_pos, Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.4f), Vec3(0.5f), Vec3(0.7f), cosf(Math::ToRadians(12.5)), cosf(Math::ToRadians(17.5)));

@@ -4,6 +4,7 @@
 
 namespace Astra::Graphics
 {
+#if _DEBUG
 	#define MODEL_VIEW_MATRIX_TAG	"modelViewMatrix"
 
 	class GizmoShader : public Shader
@@ -15,4 +16,5 @@ namespace Astra::Graphics
 		{
 		}
 	};
+#endif
 }

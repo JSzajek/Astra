@@ -4,6 +4,7 @@
 
 namespace Astra::Graphics
 {
+#if _DEBUG
 	class GizmoController
 	{
 	private:
@@ -47,4 +48,5 @@ namespace Astra::Graphics
 		void AddGizmoImpl(const Gizmo* gizmo);
 		void ClearImpl();
 	};
+#endif
 }

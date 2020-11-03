@@ -78,6 +78,9 @@ namespace Astra::Graphics
 		m_terrainRenderer->AddLight(dirLight);
 		m_normalEntityRenderer->AddLight(dirLight);
 		m_waterRenderer->AddLight(dirLight);
+	#if _DEBUG
+		GizmoController::AddGizmo(dirLight->GetGizmo());
+	#endif
 
 		Math::Vec3 fogColor = scene->GetFogColor();
 		m_fogColor->x = fogColor.x;
@@ -102,6 +105,9 @@ namespace Astra::Graphics
 			m_normalEntityRenderer->AddLight(light);
 			m_terrainRenderer->AddLight(light);
 			m_waterRenderer->AddLight(light);
+		#if _DEBUG
+			GizmoController::AddGizmo(light->GetGizmo());
+		#endif
 		}
 		for (auto* terrain : scene->GetTerrains())
 		{
@@ -126,12 +132,11 @@ namespace Astra::Graphics
 		for (auto* system : scene->GetParticles())
 		{
 			m_systems.emplace_back(system);
+		#if _DEBUG
+			GizmoController::AddGizmo(system->GetGizmo());
+		#endif
 		}
-		for (const auto* gizmo : scene->GetGizmos())
-		{
-			GizmoController::AddGizmo(gizmo);
-		}
-
+	
 		m_block = false;
 
 		// Update Projection Matrix
@@ -152,8 +157,10 @@ namespace Astra::Graphics
 		m_waterRenderer->Clear();
 		FontController::Clear();
 		ParticleController::Clear();
-		GizmoController::Clear();
 		m_systems.clear();
+	#if _DEBUG
+		GizmoController::Clear();
+	#endif
 	}
 
 	void RendererController::UpdateScreenImpl(float width, float height)
@@ -167,7 +174,9 @@ namespace Astra::Graphics
 		m_skyboxRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_waterRenderer->UpdateProjectionMatrix(projectionMatrix);
 		ParticleController::UpdateProjectionMatrix(projectionMatrix);
+	#if _DEBUG
 		GizmoController::UpdateProjectionMatrix(projectionMatrix);
+	#endif
 	}
 
 	void RendererController::RenderImpl()
@@ -249,7 +258,9 @@ namespace Astra::Graphics
 		if (m_currentScene == NULL || m_block) { return; }
 
 		ParticleController::Render(viewMatrix);
+	#if _DEBUG
 		GizmoController::Render(viewMatrix);
+	#endif
 		m_guiRenderer->Draw(NULL);
 		FontController::Render();
 	}
