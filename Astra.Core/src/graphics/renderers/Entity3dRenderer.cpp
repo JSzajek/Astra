@@ -134,7 +134,7 @@ namespace Astra::Graphics
 
 		if (entity->material != NULL)
 		{
-			m_shader->SetUniform1f(FAKE_LIGHT, entity->material->FakeLight);
+			m_shader->SetUniform1i(FAKE_LIGHT, entity->material->FakeLight);
 			m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, entity->material->Reflectivity);
 
 			glActiveTexture(GL_TEXTURE0);

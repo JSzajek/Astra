@@ -12,7 +12,7 @@ uniform mat4 normalMatrix;
 uniform mat4 toShadowMapSpace;
 
 uniform vec4 inverseViewVector;
-uniform float useFakeLighting;
+uniform int useFakeLighting;
 uniform float numberOfRows;
 uniform vec2 offset;
 uniform vec4 clipPlane;

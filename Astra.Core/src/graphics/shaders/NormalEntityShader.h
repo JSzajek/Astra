@@ -9,6 +9,12 @@ namespace Astra::Graphics
 	#define OFFSET_TAG					"offset"
 	
 	#define NORMAL_MAP					"material.normalMap"
+	#define PARALLAX_MAP				"material.parallaxMap"
+
+	#define NORMAL_MAPPED_FLAG_TAG		"flags[0]"
+	#define PARALLAX_MAPPED_FLAG_TAG	"flags[1]"
+	
+	#define HEIGHT_SCALE				"heightScale"
 
 	class NormalEntityShader : public Shader
 	{

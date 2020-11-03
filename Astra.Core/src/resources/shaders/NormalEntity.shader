@@ -13,6 +13,7 @@ uniform mat4 normalMatrix;
 uniform mat4 toShadowMapSpace;
 
 uniform vec4 inverseViewVector;
+uniform int useFakeLighting;
 uniform float numberOfRows;
 uniform vec2 offset;
 uniform vec4 clipPlane;
@@ -41,6 +42,7 @@ void main()
 	v_TexCoordinates = (textureCoords / numberOfRows) + offset;
 
 	v_FragPosition = worldPosition.xyz;
+	v_Normal = useFakeLighting > 0.5 ? vec3(0, 1, 0) : mat3(normalMatrix) * normal;
 	v_ViewVector = inverseViewVector.xyz - v_FragPosition;
 
 	float distance = length(positionRelativeToCam.xyz);
@@ -73,7 +75,8 @@ void main()
 
 in vec2 v_TexCoordinates;
 in vec3 v_FragPosition;
-in vec3 v_ViewVector;
+in vec3 v_Normal;
+in vec3 v_ViewVector; 
 in float v_Visibility;
 in vec4 v_ShadowCoords;
 in mat3 v_ToTangentSpace;
@@ -85,6 +88,7 @@ struct Material
 	sampler2D diffuseMap;
 	sampler2D normalMap; 
 	sampler2D specularMap;
+	sampler2D parallaxMap;
 	sampler2D shadowMap;
 	float reflectivity;
 };
@@ -129,23 +133,33 @@ uniform SpotLight spotLight;
 
 const float kPi = 3.14159265;
 
+uniform int flags[2];
+// flag[0] -> 0/1 normal mapped
+// flag[1] -> 0/1 parallax mapped
+
 uniform vec3 fogColor;
 uniform float mapSize;
 uniform int pcfCount;
+
+uniform float heightScale;
 
 vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor);
 
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir);
+
 void main()
 {
-	vec3 norm = normalize((2.0 * texture(material.normalMap, v_TexCoordinates) - 1.0).rgb);
+	vec3 norm = flags[0] < 0.5 ? normalize(v_Normal) : normalize((2.0 * texture(material.normalMap, v_TexCoordinates) - 1.0).rgb);
 	vec3 viewDir = normalize(v_ViewVector);
 
-	vec4 textureColor = texture(material.diffuseMap, v_TexCoordinates);
+	vec2 texCoords = flags[1] < 0.5 ? v_TexCoordinates : ParallaxMapping(v_TexCoordinates, viewDir);
+
+	vec4 textureColor = texture(material.diffuseMap, texCoords);
 	if (textureColor.a < 0.5) { discard; }
 	vec3 color = textureColor.rgb;
-	vec3 specColor = texture(material.specularMap, v_TexCoordinates).rgb;
+	vec3 specColor = texture(material.specularMap, texCoords).rgb;
 
 	float texelSize = 1.0 / mapSize;
 	float total = 0.0;
@@ -173,6 +187,13 @@ void main()
 
 	out_Color = vec4(result, 1.0);
 	out_Color = mix(vec4(fogColor, 1), out_Color, v_Visibility);
+}
+
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
+{
+	float height = texture(material.parallaxMap, texCoords).r;
+	vec2 p = viewDir.xy / viewDir.z * (height * heightScale);
+	return texCoords - p;
 }
 
 vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor)

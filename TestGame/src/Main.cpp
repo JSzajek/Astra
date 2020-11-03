@@ -115,8 +115,11 @@ int main()
 
     ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.png", 1, 32);
     Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-38, terrain.GetHeightOfTerrain(-38, 38) + 5, 38), Vec3(0), Vec3(1));
-
     mainScene->AddEntity(&barrelModel2);
+
+    ImageMaterial* brickMat = new ImageMaterial("res/textures/bricks.jpg", "res/textures/bricks_specular.jpg", 1, 16);
+    Entity brick = Entity("res/plane.obj", "res/textures/bricks_normal.jpg", "res/textures/bricks_heightmap.jpg", 0.1f, brickMat, Vec3(-50, terrain.GetHeightOfTerrain(-50, 50) + 5, 50), Vec3(90, 0, 0), Vec3(5, 1, 5));
+    mainScene->AddEntity(&brick);
 
     std::vector<const Entity*> entities;
     for (int i = 0; i < 20; i++)
