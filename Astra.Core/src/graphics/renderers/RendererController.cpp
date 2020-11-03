@@ -127,6 +127,10 @@ namespace Astra::Graphics
 		{
 			m_systems.emplace_back(system);
 		}
+		for (const auto* gizmo : scene->GetGizmos())
+		{
+			GizmoController::AddGizmo(gizmo);
+		}
 
 		m_block = false;
 
@@ -148,6 +152,7 @@ namespace Astra::Graphics
 		m_waterRenderer->Clear();
 		FontController::Clear();
 		ParticleController::Clear();
+		GizmoController::Clear();
 		m_systems.clear();
 	}
 
@@ -162,6 +167,7 @@ namespace Astra::Graphics
 		m_skyboxRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_waterRenderer->UpdateProjectionMatrix(projectionMatrix);
 		ParticleController::UpdateProjectionMatrix(projectionMatrix);
+		GizmoController::UpdateProjectionMatrix(projectionMatrix);
 	}
 
 	void RendererController::RenderImpl()
@@ -243,6 +249,7 @@ namespace Astra::Graphics
 		if (m_currentScene == NULL || m_block) { return; }
 
 		ParticleController::Render(viewMatrix);
+		GizmoController::Render(viewMatrix);
 		m_guiRenderer->Draw(NULL);
 		FontController::Render();
 	}

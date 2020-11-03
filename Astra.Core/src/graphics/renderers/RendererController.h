@@ -11,6 +11,7 @@
 #include "NormalEntity3dRenderer.h"
 #include "../fonts/FontController.h"
 #include "../particles/ParticleController.h"
+#include "../gizmos/GizmoController.h"
 #include "../shadows/ShadowMapController.h"
 #include "../shaders/GuiShader.h"
 #include "../shaders/EntityShader.h"
@@ -106,57 +107,5 @@ namespace Astra::Graphics
 		void PreRender(const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane = Renderer::DefaultClipPlane);
 		void PostRender(const Math::Vec4& inverseViewVector);
 		void GuiRender();
-
-		//inline void AddGui(const GuiTexture* gui) { m_guiRenderer->AddGui(gui); }
-		//inline void AddText(GuiText* text) { FontController::LoadText(*text); }
-		//inline void AddParticle(const Particle& particle) { ParticleController::AddParticle(particle); }
-		//inline void AddTerrain(const Terrain* terrain) { m_terrainRenderer->AddTerrain(terrain); }
-		//inline void SetSkyBox(const SkyboxMaterial* material) { m_skyboxRenderer->SetSkyBox(material); }
-		//
-		//void AddEntity(const Entity* entity) 
-		//{ 
-		//	if (entity->IsNormalMapped())
-		//	{
-		//		m_normalEntityRenderer->AddEntity(entity);
-		//	}
-		//	else
-		//	{
-		//		m_entityRenderer->AddEntity(entity); 
-		//	}
-		//	m_shadowMapController->AddEntity(entity);
-		//}
-
-		//void AddDirectionalLight(Light* light)
-		//{
-		//	m_terrainRenderer->AddLight(light);
-		//	m_entityRenderer->AddLight(light);
-		//	m_normalEntityRenderer->AddLight(light);
-		//	m_waterRenderer->AddLight(light);
-		//	m_shadowMapController->SetDirectionalLight(light);
-		//}
-		//
-		//void AddLight(Light* light) 
-		//{
-		//	m_terrainRenderer->AddLight(light);
-		//	m_entityRenderer->AddLight(light);
-		//	m_normalEntityRenderer->AddLight(light);
-		//	m_waterRenderer->AddLight(light);
-		//}
-
-		//void AddWaterTile(const WaterTile& tile) 
-		//{
-		//	m_reflectionClipPlane.w = -tile.GetTranslation().y + 1.7f;
-		//	m_refractionClipPlane.w = tile.GetTranslation().y + 1.7f;
-		//	m_waterRenderer->AddTile(tile); 
-		//}
-
-		//void SetMainCamera(Camera* camera) 
-		//{ 
-		//	m_mainCamera = camera;
-		//	m_shadowMapController->SetCamera(camera);
-		//	m_waterRenderer->SetCamera(camera);
-		//}
-
-		//inline unsigned int GetShadowMapTexture() const { return m_shadowMapController->GetShadowMap(); }
 	};
 }

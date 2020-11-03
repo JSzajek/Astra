@@ -16,6 +16,7 @@
 #include "../fonts/GuiText.h"
 #include "../materials/SkyboxMaterial.h"
 #include "../entities/terrains/Terrain.h"
+#include "../gizmos/Gizmo.h"
 
 namespace Astra::Graphics
 {
@@ -38,6 +39,7 @@ namespace Astra::Graphics
 		//std::vector<const SpotLight*> m_spotlights;
 		std::vector<const Terrain*> m_terrains;
 		std::vector<const WaterTile*> m_tiles;
+		std::vector<const Gizmo*> m_gizmos;
 	public:
 		Scene(Camera* main, const Math::Vec3& fogColor = Math::Vec3(0.5f, 0.6f, 0.6f));
 		~Scene();
@@ -56,6 +58,7 @@ namespace Astra::Graphics
 		inline void AddText(GuiText* text) { m_texts.push_back(text); }
 		inline void AddTerrain(const Terrain* terrain) { m_terrains.push_back(terrain); }
 		inline void AddWaterTile(const WaterTile* tile) { m_tiles.push_back(tile); }
+		inline void AddGizmo(const Gizmo* gizmo) { m_gizmos.push_back(gizmo); }
 		
 		inline DirectionalLight* const GetDirectionalLight() const { return m_mainLight; }
 		inline const Math::Vec3& const GetFogColor() const { return m_fogColor; }
@@ -69,6 +72,7 @@ namespace Astra::Graphics
 		inline const std::vector<GuiText*>& const GetTexts() const { return m_texts; }
 		inline const std::vector<const WaterTile*>& const GetWaterTiles() const { return m_tiles; }
 		inline const std::vector<const ParticleSystem*>& const GetParticles() const { return m_particles; }
+		inline const std::vector<const Gizmo*>& const GetGizmos() const { return m_gizmos; }
 		
 		void AddPointLight(PointLight* light);
 		void AddSpotLight(const SpotLight* light);

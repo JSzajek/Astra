@@ -24,7 +24,8 @@ namespace Astra::Graphics
 		Water,
 		NormalMapped,
 		Particles,
-		Shadows
+		Shadows,
+		Gizmos
 	};
 
 	struct ShaderProgramSource

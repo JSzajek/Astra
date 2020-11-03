@@ -162,6 +162,15 @@
     <ClCompile Include="src\graphics\entities\Spatial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\gizmos\Gizmo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\renderers\GizmoRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\gizmos\GizmoController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat4.h">
@@ -389,6 +398,18 @@
     <ClInclude Include="src\utils\Properties.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\shaders\GizmoShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\gizmos\Gizmo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\gizmos\GizmoController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\renderers\GizmoRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\resources\shaders\Gui.shader" />
@@ -400,6 +421,7 @@
     <None Include="src\resources\shaders\Particle.shader" />
     <None Include="src\resources\shaders\Shadow.shader" />
     <None Include="src\resources\shaders\Entity.shader" />
+    <None Include="src\resources\shaders\Gizmo.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\textures\Default.jpg">
