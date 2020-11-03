@@ -34,7 +34,7 @@ namespace Astra::Graphics
 			Get().UpdateImpl(cameraPosition);
 		}
 
-		static void Render(const Math::Mat4& viewMatrix)
+		static void Render(const Math::Mat4* viewMatrix)
 		{
 			Get().RenderImpl(viewMatrix);
 		}
@@ -50,7 +50,7 @@ namespace Astra::Graphics
 
 		void UpdateProjectionMatrixImpl(const Math::Mat4& projectionMatrix);
 		void UpdateImpl(const Math::Vec3& cameraPosition);
-		void RenderImpl(const Math::Mat4& viewMatrix);
+		void RenderImpl(const Math::Mat4* viewMatrix);
 		void AddParticleImpl(Particle* particle);
 		void ClearImpl();
 	private:

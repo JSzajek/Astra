@@ -9,6 +9,7 @@ namespace Astra::Graphics
 	{
 		Renderer::SetShader(shader);
 		m_defaultQuad = Loader::Load(GL_TRIANGLE_STRIP, { -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5 }, 2);
+		m_modelViewMatrix = new Math::Mat4(1);
 	}
 
 	GizmoRenderer::~GizmoRenderer()
@@ -31,7 +32,7 @@ namespace Astra::Graphics
 		}
 	}
 
-	void GizmoRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void GizmoRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		if (m_gizmos.size() == 0) { return; }
 		m_shader->Start();
@@ -62,20 +63,20 @@ namespace Astra::Graphics
 
 	void GizmoRenderer::UpdateModelViewMatrix(const Math::Vec3& position, float scale)
 	{
-		Math::Mat4 modelMatrix = Math::Mat4(1);
-		modelMatrix = modelMatrix.Translate(position);
-		modelMatrix.columns[0][0] = m_viewMatrix.columns[0][0];
-		modelMatrix.columns[0][1] = m_viewMatrix.columns[1][0];
-		modelMatrix.columns[0][2] = m_viewMatrix.columns[2][0];
-		modelMatrix.columns[1][0] = m_viewMatrix.columns[0][1];
-		modelMatrix.columns[1][1] = m_viewMatrix.columns[1][1];
-		modelMatrix.columns[1][2] = m_viewMatrix.columns[2][1];
-		modelMatrix.columns[2][0] = m_viewMatrix.columns[0][2];
-		modelMatrix.columns[2][1] = m_viewMatrix.columns[1][2];
-		modelMatrix.columns[2][2] = m_viewMatrix.columns[2][2];
-		modelMatrix = modelMatrix.Scale(Math::Vec3(scale));
-		Math::Mat4 modelViewMatrix = m_viewMatrix * modelMatrix;
-		m_shader->SetUniformMat4(MODEL_VIEW_MATRIX_TAG, modelViewMatrix);
+		m_modelViewMatrix->SetIdentity();
+		m_modelViewMatrix->Translate(position);
+		m_modelViewMatrix->columns[0][0] = m_viewMatrix->columns[0].x;
+		m_modelViewMatrix->columns[0][1] = m_viewMatrix->columns[1].x;
+		m_modelViewMatrix->columns[0][2] = m_viewMatrix->columns[2].x;
+		m_modelViewMatrix->columns[1][0] = m_viewMatrix->columns[0].y;
+		m_modelViewMatrix->columns[1][1] = m_viewMatrix->columns[1].y;
+		m_modelViewMatrix->columns[1][2] = m_viewMatrix->columns[2].y;
+		m_modelViewMatrix->columns[2][0] = m_viewMatrix->columns[0].z;
+		m_modelViewMatrix->columns[2][1] = m_viewMatrix->columns[1].z;
+		m_modelViewMatrix->columns[2][2] = m_viewMatrix->columns[2].z;
+		m_modelViewMatrix->Scale(scale);
+		*m_modelViewMatrix = (*m_viewMatrix) * (*m_modelViewMatrix);
+		m_shader->SetUniformMat4(MODEL_VIEW_MATRIX_TAG, m_modelViewMatrix);
 	}
 #endif
 }

@@ -147,8 +147,8 @@ namespace Astra::Graphics
 
 	float Terrain::GetHeightOfTerrain(int xWorldCoord, int zWorldCoord)
 	{
-		int xTerrain = xWorldCoord - Translation()->x;
-		int zTerrain = zWorldCoord - Translation()->z;
+		int xTerrain = xWorldCoord - GetTranslation().x;
+		int zTerrain = zWorldCoord - GetTranslation().z;
 
 		float gridSquareSize = Size / (float)(m_vertexCount - 1);
 		int xGrid = floorf(xTerrain / gridSquareSize);

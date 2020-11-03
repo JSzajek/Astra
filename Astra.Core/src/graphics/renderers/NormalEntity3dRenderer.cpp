@@ -36,9 +36,8 @@ namespace Astra::Graphics
 		m_lights.clear();
 	}
 
-	void NormalEntity3dRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void NormalEntity3dRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
-		m_viewMatrix = viewMatrix;
 		m_shader->Start();
 		m_shader->SetUniform3f(FOG_COLOR, *m_fogColor);
 		m_shader->SetUniform4f(CLIP_PLANE, clipPlane);

@@ -23,6 +23,11 @@ namespace Astra::Math
 		value = value < low ? low : (value > high ? high : value);
 	}
 
+	template <typename T> T Clamp(T value, const T& low, const T& high)
+	{
+		return value < low ? low : (value > high ? high : value);
+	}
+
 	inline float BarryCentric(Vec3 p1, Vec3 p2, Vec3 p3, Vec2 pos)
 	{
 		float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);

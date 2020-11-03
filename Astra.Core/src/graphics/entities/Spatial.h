@@ -51,9 +51,9 @@ namespace Astra::Graphics
 		inline const Math::Mat4* const GetModelMatrix() const { return modelMatrix; }
 		inline const Math::Mat4* const GetNormalMatrix() const { return normalMatrix; }
 
-		void operator()(unsigned int _type, unsigned int _op, unsigned int _index, float _val);
+		virtual void operator()(unsigned int _type, unsigned int _op, unsigned int _index, float _val);
 	protected:
-		void UpdateMatrices();
+		virtual void UpdateMatrices();
 	private:
 		void UpdateVector(Math::Vec3* _vec, unsigned int _op, unsigned int _index, float _val);
 	};

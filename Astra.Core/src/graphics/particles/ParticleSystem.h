@@ -20,11 +20,12 @@ namespace Astra::Graphics
 		const Math::Vec3* m_center;
 	public:
 		ParticleSystem(const ParticleMaterial* const material, const Math::Vec3* center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan);
-		
-		void GenerateParticles() const;
 	#if _DEBUG
+		~ParticleSystem();
 		inline const Gizmo* const GetGizmo() const { return m_gizmo; }
 	#endif
+		
+		void GenerateParticles() const;
 	private:
 		void EmitParticle() const;
 	};

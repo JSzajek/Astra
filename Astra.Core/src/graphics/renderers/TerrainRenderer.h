@@ -28,7 +28,7 @@ namespace Astra::Graphics
 		inline void Clear() override;
 		inline void SetShadowMatrix(const Math::Mat4& shadowMatrix) { m_toShadowSpaceMatrix = shadowMatrix; }
 
-		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
+		void Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 		void AddTerrain(const Terrain* terrain);
 		void AddLight(Light* light);
 		void UpdateLight(const Light* light);

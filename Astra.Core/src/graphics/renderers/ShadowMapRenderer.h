@@ -23,7 +23,7 @@ namespace Astra::Graphics
 
 		inline void Clear() override { m_entities.clear(); }
 		void AddEntity(const Entity* entity);
-		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
+		void Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 	private:
 		void PrepareEntity(const Entity* entity);
 		void InitializePerEntity(const Entity* entity);

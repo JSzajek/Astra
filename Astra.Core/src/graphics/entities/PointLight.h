@@ -23,10 +23,14 @@ namespace Astra::Graphics
 			m_gizmo = new Gizmo("../Astra.Core/src/resources/textures/PointLight.png", translation, 3);
 		#endif
 		}
-
-		inline const Math::Vec3& GetAttenuation() const { return m_attenuation; }
 	#if _DEBUG
+		~PointLight()
+		{
+			delete m_gizmo;
+		}
 		inline const Gizmo* const GetGizmo() const { return m_gizmo; }
 	#endif
+
+		inline const Math::Vec3& GetAttenuation() const { return m_attenuation; }
 	};
 }

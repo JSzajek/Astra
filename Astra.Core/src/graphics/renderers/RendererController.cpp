@@ -20,7 +20,7 @@ namespace Astra::Graphics
 		m_skyboxRenderer = new SkyboxRenderer(new SkyboxShader(), m_fogColor);
 		m_entityRenderer = new Entity3dRenderer(m_fogColor);
 		m_terrainRenderer = new TerrainRenderer(m_fogColor);
-		m_waterRenderer = new WaterRenderer(m_mainCamera, m_fogColor, NearPlane, FarPlane);
+		m_waterRenderer = new WaterRenderer(m_fogColor, NearPlane, FarPlane);
 		m_normalEntityRenderer = new NormalEntity3dRenderer(m_fogColor);
 		
 		m_waterBuffer = Loader::LoadWaterFrameBuffer(DefaultReflectionWidth, DefaultReflectionHeight,
@@ -68,7 +68,7 @@ namespace Astra::Graphics
 		// Pass new Scene information
 		m_mainCamera = scene->GetCamera();
 		m_shadowMapController->SetCamera(m_mainCamera);
-		m_waterRenderer->SetCamera(m_mainCamera);
+		viewMatrix = m_mainCamera->GetViewMatrix();
 
 		m_skyboxRenderer->SetSkyBox(scene->GetSkyBox());
 
@@ -196,25 +196,25 @@ namespace Astra::Graphics
 
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetReflectionBuffer().GetId(), 320, 180);
 			m_mainCamera->Translation()->y -= distance;
-			m_mainCamera->InvertPitch();
-			viewMatrix = Math::Mat4Utils::ViewMatrix(*m_mainCamera);
-			PreRender(viewMatrix.Inverse() * Math::Back4D, m_reflectionClipPlane);
+			m_mainCamera->InvertPitch(); // Updates the view matrix
+			PreRender(viewMatrix->Inverse() * Math::Back4D, m_reflectionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 
 			m_mainCamera->Translation()->y += distance;
-			m_mainCamera->InvertPitch();
-			viewMatrix = Math::Mat4Utils::ViewMatrix(*m_mainCamera);
+			m_mainCamera->InvertPitch(); // Updates the view matrix
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetRefractionBuffer().GetId(), 1280, 720);
-			PreRender(viewMatrix.Inverse() * Math::Back4D, m_refractionClipPlane);
+			PreRender(viewMatrix->Inverse() * Math::Back4D, m_refractionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 		}
 
-		UpdateCameraView();
-		Math::Vec4 inverseView = viewMatrix.Inverse() * Math::Back4D;
-		PrepareRender();
-		PreRender(inverseView);
-		PostRender(inverseView);
-		GuiRender();
+		if (m_mainCamera)
+		{
+			Math::Vec4 inverseView = viewMatrix->Inverse() * Math::Back4D;
+			PrepareRender();
+			PreRender(inverseView);
+			PostRender(inverseView);
+			GuiRender();
+		}
 	}
 
 	void RendererController::PrepareRender()
@@ -239,7 +239,6 @@ namespace Astra::Graphics
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-
 		m_terrainRenderer->Draw(viewMatrix, inverseViewVector, clipPlane);
 		m_entityRenderer->Draw(viewMatrix, inverseViewVector, clipPlane);
 		m_normalEntityRenderer->Draw(viewMatrix, inverseViewVector, clipPlane);
@@ -263,20 +262,5 @@ namespace Astra::Graphics
 	#endif
 		m_guiRenderer->Draw(NULL);
 		FontController::Render();
-	}
-
-	void RendererController::UpdateCameraView()
-	{
-		if (m_currentScene == NULL || m_block) { return; }
-
-		if (m_mainCamera != nullptr)
-		{
-			m_mainCamera->UpdatePosition();
-			viewMatrix = Math::Mat4Utils::ViewMatrix(*m_mainCamera);
-		}
-		else
-		{
-			Logger::LogWarning("No Main Camera detected.");
-		}
 	}
 }

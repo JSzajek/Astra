@@ -15,7 +15,7 @@ namespace Astra::Graphics
 		delete m_defaultQuad;
 	}
 
-	void GuiRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void GuiRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		if (m_guis.size() == 0) { return; }
 		m_shader->Start();

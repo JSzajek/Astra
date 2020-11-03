@@ -29,7 +29,7 @@ namespace Astra::Math
 			return Get().TransformationImpl(entity->GetTranslation(), entity->GetRotation(), entity->GetScale());
 		}
 
-		static Mat4 ViewMatrix(const Graphics::Camera& camera)
+		static Mat4 ViewMatrix(const Graphics::Camera* camera)
 		{
 			return Get().ViewMatrixImpl(camera);
 		}
@@ -56,12 +56,12 @@ namespace Astra::Math
 			return result;
 		}
 
-		Mat4 ViewMatrixImpl(const Graphics::Camera& camera)
+		Mat4 ViewMatrixImpl(const Graphics::Camera* camera)
 		{
 			Mat4 result(1);
-			result = result.Rotate(camera.GetPitch(), XAxis);
-			result = result.Rotate(camera.GetYaw(), YAxis);
-			result = result.Translate(*camera.GetInvertedPosition());
+			result.Rotate(camera->GetPitch(), XAxis);
+			result.Rotate(camera->GetYaw(), YAxis);
+			result.Translate(*camera->GetInvertedPosition());
 			return result;
 		}
 	};

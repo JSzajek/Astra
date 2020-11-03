@@ -24,10 +24,14 @@ namespace Astra::Graphics
 			m_gizmo = new Gizmo("../Astra.Core/src/resources/textures/DirectionalLight.png", position, 3);
 		#endif
 		}
-		
-		inline bool IsDirectional() const override { return true; }
 	#if _DEBUG
+		~DirectionalLight()
+		{
+			delete m_gizmo;
+		}
 		inline const Gizmo* const GetGizmo() const { return m_gizmo; }
 	#endif
+		
+		inline bool IsDirectional() const override { return true; }
 	};
 }

@@ -8,7 +8,7 @@ namespace Astra::Graphics
 		Renderer::SetShader(shader);
 	}
 
-	void FontRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void FontRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		if (m_texts.size() == 0) { return; }
 		m_shader->Start();

@@ -40,9 +40,8 @@ void Player::Update()
         change.Normalize();
         change *= PanSpeed;
 
-        m_camera->Swivel() += -change.x;
-        m_camera->Pitch() += change.y;
-        Clamp(m_camera->Pitch(), (float)MIN_PITCH, (float)MAX_PITCH);
+        m_camera->operator()(SWIVEL, SUM_EQ, NULL, -change.x);
+        m_camera->operator()(PITCH, EQ, NULL, Clamp(m_camera->GetPitch() + change.y, (float)MIN_PITCH, (float)MAX_PITCH));
     }
 #endif
 
@@ -67,8 +66,7 @@ void Player::Update()
     float mouseWheel = _window->getMouseWheel();
     if (mouseWheel != 0)
     {
-        m_camera->Distance() += mouseWheel * -1 * ZoomPower * 0.1f;
-        Clamp(m_camera->Distance(), (float)MIN_DISTANCE, (float)MAX_DISTANCE);
+        m_camera->operator()(DISTANCE, EQ, NULL, Clamp(m_camera->GetDistance() + (mouseWheel * -1 * ZoomPower * 0.1f), (float)MIN_DISTANCE, (float)MAX_DISTANCE));
     }
 }
 

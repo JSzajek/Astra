@@ -14,7 +14,8 @@ namespace Astra::Graphics
 	private:
 		const VertexArray* m_defaultQuad;
 		std::unordered_map<unsigned int, std::vector<Particle*>> m_particles;
-		Math::Mat4 m_viewMatrix;
+		const Math::Mat4* m_viewMatrix;
+		Math::Mat4* m_modelViewMatrix;
 	public:
 		ParticleRenderer(ParticleShader* shader);
 		~ParticleRenderer();
@@ -23,7 +24,7 @@ namespace Astra::Graphics
 		inline std::unordered_map<unsigned int, std::vector<Particle*>>& GetParticles() { return m_particles; }
 		
 		void AddParticle(Particle* particle);
-		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
+		void Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 	private:
 		void UpdateModelViewMatrix(const Math::Vec3& position, float rotation, float scale);
 	};

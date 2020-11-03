@@ -53,6 +53,7 @@ namespace Astra::Graphics
 		ShadowMapController* m_shadowMapController;
 
 		Camera* m_mainCamera;
+		const Math::Mat4* viewMatrix;
 
 		WaterFrameBuffer* m_waterBuffer;
 		Math::Vec4 m_reflectionClipPlane;
@@ -62,7 +63,6 @@ namespace Astra::Graphics
 
 		Math::Vec3* m_fogColor;
 		Math::Mat4 projectionMatrix;
-		Math::Mat4 viewMatrix;
 		Math::Mat4 modelViewMatrix;
 
 		const Scene* m_currentScene;
@@ -99,7 +99,7 @@ namespace Astra::Graphics
 		void RenderImpl();
 		
 		void Init() const;
-		void UpdateCameraView();
+		//void UpdateCameraView();
 		bool SetCurrentSceneImpl(const Scene* scene);
 		void Clear();
 

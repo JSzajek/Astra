@@ -120,6 +120,12 @@ namespace Astra::Math
 		return *this;
 	}
 
+	Mat4& Mat4::Scale(float scale)
+	{
+		Multiply(ScaleMatrix(scale));
+		return *this;
+	}
+
 	const Mat4& Mat4::Inverse() const
 	{
 		Mat4 inverse(0);
@@ -332,6 +338,17 @@ namespace Astra::Math
 		result.columns[2][0] = temp[2] * normAxis[0] + s * normAxis[1];
 		result.columns[2][1] = temp[2] * normAxis[1] - s * normAxis[0];
 		result.columns[2][2] = c + temp[2] * normAxis[2];
+		return result;
+	}
+
+	Mat4 Mat4::ScaleMatrix(float scale)
+	{
+		Mat4 result(1.0f);
+
+		result.data[0 + 0 * 4] = scale;
+		result.data[1 + 1 * 4] = scale;
+		result.data[2 + 2 * 4] = scale;
+		
 		return result;
 	}
 

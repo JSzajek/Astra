@@ -26,11 +26,15 @@ namespace Astra::Graphics
 			m_gizmo = new Gizmo("../Astra.Core/src/resources/textures/SpotLight.png", translation, 3);
 		#endif
 		}
+	#if _DEBUG
+		~SpotLight()
+		{
+			delete m_gizmo;
+		}
+		inline const Gizmo* const GetGizmo() const { return m_gizmo; }
+	#endif
 
 		inline float GetCutOff() const { return m_cutOff; }
 		inline float GetOuterCutOff() const { return m_outerCutOff; }
-	#if _DEBUG
-		inline const Gizmo* const GetGizmo() const { return m_gizmo; }
-	#endif
 	};
 }

@@ -10,7 +10,7 @@ namespace Astra::Graphics
 		Renderer::SetShader(shader);
 	}
 
-	void ShadowMapRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void ShadowMapRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		BindFrameBuffer(m_buffer->GetBuffer().GetId(), m_buffer->GetWidth(), m_buffer->GetHeight());
 		glEnable(GL_DEPTH_TEST);

@@ -12,6 +12,13 @@ namespace Astra::Graphics
 	#endif
 	}
 
+#if _DEBUG
+	ParticleSystem::~ParticleSystem()
+	{
+		delete m_gizmo;
+	}
+#endif
+
 	void ParticleSystem::GenerateParticles() const
 	{
 		float delta = Window::delta;

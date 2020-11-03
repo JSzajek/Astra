@@ -15,7 +15,8 @@ namespace Astra::Graphics
 	private:
 		const VertexArray* m_defaultQuad;
 		std::unordered_map<unsigned int, std::vector<const Gizmo*>> m_gizmos;
-		Math::Mat4 m_viewMatrix;
+		const Math::Mat4* m_viewMatrix;
+		Math::Mat4* m_modelViewMatrix;
 	public:
 		GizmoRenderer(GizmoShader* shader);
 		~GizmoRenderer();
@@ -24,7 +25,7 @@ namespace Astra::Graphics
 		inline std::unordered_map<unsigned int, std::vector<const Gizmo*>>& GetGizmos() { return m_gizmos; }
 
 		void AddGizmo(const Gizmo* gizmo);
-		void Draw(const Math::Mat4& viewMatrix, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
+		void Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 	private:
 		void UpdateModelViewMatrix(const Math::Vec3& position, float scale);
 	};

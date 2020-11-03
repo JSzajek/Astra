@@ -9,8 +9,8 @@
 
 namespace Astra::Graphics
 {
-	WaterRenderer::WaterRenderer(Camera* camera, const Math::Vec3* fogColor, float near, float far)
-		: Renderer(), m_camera(camera), m_fogColor(fogColor), m_buffer(NULL), m_near(near), m_far(far), m_toShadowSpaceMatrix(1)
+	WaterRenderer::WaterRenderer(const Math::Vec3* fogColor, float near, float far)
+		: Renderer(), m_fogColor(fogColor), m_buffer(NULL), m_near(near), m_far(far), m_toShadowSpaceMatrix(1)
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLES, { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 }, 2);
 	}
@@ -44,7 +44,7 @@ namespace Astra::Graphics
 		m_waterTiles.clear();
 	}
 
-	void WaterRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void WaterRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
 		m_shader->SetUniform3f(FOG_COLOR, *m_fogColor);

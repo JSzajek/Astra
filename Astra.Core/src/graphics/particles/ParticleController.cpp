@@ -57,7 +57,7 @@ namespace Astra::Graphics
 		m_particleRenderer->AddParticle(particle);
 	}
 
-	void ParticleController::RenderImpl(const Math::Mat4& viewMatrix)
+	void ParticleController::RenderImpl(const Math::Mat4* viewMatrix)
 	{
 		m_particleRenderer->Draw(viewMatrix, NULL);
 	}
