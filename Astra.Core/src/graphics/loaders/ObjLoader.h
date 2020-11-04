@@ -49,7 +49,7 @@ namespace Astra::Graphics
 		NormalVertex* duplicate;
 		
 		NormalVertex(int index, const Math::Vec3& position)
-			: Vertex(index, position), duplicate(NULL), avgTangent(Math::Zero)
+			: Vertex(index, position), duplicate(NULL), avgTangent(Math::Vec3::Zero)
 		{
 			length = position.Magnitude();
 		}

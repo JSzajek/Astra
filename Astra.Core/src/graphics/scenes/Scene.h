@@ -39,11 +39,26 @@ namespace Astra::Graphics
 		std::vector<const Terrain*> m_terrains;
 		std::vector<const WaterTile*> m_tiles;
 	public:
-		Scene(Camera* main, const Math::Vec3& fogColor = Math::Vec3(0.5f, 0.6f, 0.6f));
-		~Scene();
+		Scene(Camera* main, const Math::Vec3& fogColor = Math::Vec3(0.5f, 0.6f, 0.6f))
+			: m_editing(false), m_mainCamera(main), m_fogColor(fogColor), m_skybox(NULL), m_mainLight(NULL), m_spotLight(NULL)
+		{
+		}
 
-		void Start();
-		void End();
+		~Scene()
+		{
+		}
+
+		inline void Start()
+		{
+			// Start Scene Creation
+			m_editing = true;
+		}
+
+		inline void End()
+		{
+			// End Scene Creation and Push to Render Loop
+			m_editing = false;
+		}
 
 		inline void SetMainCamera(Camera* camera) { m_mainCamera = camera; }
 		inline void SetDirectionalLight(DirectionalLight* light) { m_mainLight = light; }
@@ -69,7 +84,8 @@ namespace Astra::Graphics
 		inline const std::vector<GuiText*>& const GetTexts() const { return m_texts; }
 		inline const std::vector<const WaterTile*>& const GetWaterTiles() const { return m_tiles; }
 		inline const std::vector<const ParticleSystem*>& const GetParticles() const { return m_particles; }
-		void AddPointLight(PointLight* light);
-		void AddSpotLight(const SpotLight* light);
+		
+		inline void AddPointLight(PointLight* light) { m_pointlights.push_back(light); }
+		inline void AddSpotLight(const SpotLight* light) { m_spotLight = light; }
 	};
 }

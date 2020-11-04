@@ -47,10 +47,10 @@ namespace Astra::Graphics
 		direction.Normalize();
 		m_lightViewMatrix.SetIdentity();
 		float pitch = Math::ToDegrees(acosf(Math::Vec2(direction.x, direction.z).Magnitude()));
-		m_lightViewMatrix.Rotate(pitch, Math::XAxis);
+		m_lightViewMatrix.Rotate(pitch, Math::Vec3::X_Axis);
 		float yaw = Math::ToDegrees(atanf(direction.x / direction.z));
 		yaw = direction.z > 0 ? yaw - 180 : yaw;
-		m_lightViewMatrix.Rotate(-yaw, Math::YAxis);
+		m_lightViewMatrix.Rotate(-yaw, Math::Vec3::Y_Axis);
 	}
 
 	void ShadowMapController::UpdateOrthoProjectionMatrix(float width, float height, float length)

@@ -2,6 +2,15 @@
 
 namespace Astra::Math
 {
+	const Vec2 Vec2::X_Axis		= Vec2(1,0);
+	const Vec2 Vec2::Y_Axis		= Vec2(0,1);
+	const Vec2 Vec2::Zero		= Vec2(0);
+	const Vec2 Vec2::One		= Vec2(1);
+	const Vec2 Vec2::Left		= Vec2(-1,0);
+	const Vec2 Vec2::Right		= Vec2(1,0);
+	const Vec2 Vec2::Up			= Vec2(0,-1);
+	const Vec2 Vec2::Down		= Vec2(0,1);
+
 	Vec2::Vec2()
 		: x(0), y(0)
 	{

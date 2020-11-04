@@ -34,8 +34,8 @@ namespace Astra::Graphics
 		bool m_centerText;
 	public:
 		GuiText(const std::string& text, FontType* font, float fontSize, const Math::Vec2& position, float maxLineLength, bool centered);
-		GuiText(const std::string& text, FontType* font, float fontSize = 1, const Math::Vec2& position = Math::Zero2D, const Math::Vec3& color = Math::Zero, float thickness = 0, float outlineSize = 0, const Math::Vec3& outlineColor = Math::Zero,
-					const Math::Vec2& offset = Math::Zero2D, float maxLineLength = 1, bool centered = false);
+		GuiText(const std::string& text, FontType* font, float fontSize = 1, const Math::Vec2& position = Math::Vec2::Zero, const Math::Vec3& color = Math::Vec3::Zero, float thickness = 0, float outlineSize = 0, const Math::Vec3& outlineColor = Math::Vec3::Zero,
+					const Math::Vec2& offset = Math::Vec2::Zero, float maxLineLength = 1, bool centered = false);
 		GuiText(const GuiText& other);
 
 		inline const float FontWidth() const { return m_fontWidth; }

@@ -6,7 +6,7 @@ namespace Astra::Graphics
 {
 	ConeParticleSystem::ConeParticleSystem(const ParticleMaterial* const material, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, float scale)
 		: m_material(material), m_particlePerSecond(particlesPerSecond), m_speed(speed), m_gravityComplient(gravityComplient), m_lifeSpan(lifeSpan), m_scale(scale),
-			m_speedError(0), m_lifeError(0), m_scaleError(0), m_randomRotation(false), m_direction(Math::Zero), m_directionDeviation(0)
+			m_speedError(0), m_lifeError(0), m_scaleError(0), m_randomRotation(false), m_direction(Math::Vec3::Zero), m_directionDeviation(0)
 	{
 	}
 
@@ -65,9 +65,9 @@ namespace Astra::Graphics
 		Math::Vec3 direction(x, y, z);
 		if (coneDir.x != 0 || coneDir.y != 0 || (coneDir.z != 1 && coneDir.z != -1))
 		{
-			Math::Vec3 rotAxis = coneDir.Cross(Math::ZAxis);
+			Math::Vec3 rotAxis = coneDir.Cross(Math::Vec3::Z_Axis);
 			rotAxis.Normalize();
-			float rotAngle = acosf(coneDir.Dot(Math::ZAxis));
+			float rotAngle = acosf(coneDir.Dot(Math::Vec3::Z_Axis));
 			Math::Mat4 rotMat(1);
 			rotMat = rotMat.Rotate(-Math::ToDegrees(rotAngle), rotAxis);
 			direction = rotMat * direction;

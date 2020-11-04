@@ -2,6 +2,17 @@
 
 namespace Astra::Math
 {
+	const Vec3 Vec3::X_Axis		= Vec3(1, 0, 0);
+	const Vec3 Vec3::Y_Axis		= Vec3(0, 1, 0);
+	const Vec3 Vec3::Z_Axis		= Vec3(0, 0, 1);
+	const Vec3 Vec3::Zero		= Vec3(0);
+	const Vec3 Vec3::One		= Vec3(1);
+	const Vec3 Vec3::Left		= Vec3(-1, 0, 0);
+	const Vec3 Vec3::Right		= Vec3(1, 0, 0);
+	const Vec3 Vec3::Up			= Vec3(0, 1, 0);
+	const Vec3 Vec3::Down		= Vec3(0, -1, 0);
+	const Vec3 Vec3::Forward	= Vec3(0, 0, -1);
+	const Vec3 Vec3::Back		= Vec3(0, 0, 1);
 
 	Vec3::Vec3()
 		: x(0), y(0), z(0)

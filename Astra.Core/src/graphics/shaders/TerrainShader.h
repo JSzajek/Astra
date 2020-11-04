@@ -13,8 +13,6 @@ namespace Astra::Graphics
 	class TerrainShader : public Shader
 	{
 	public:
-		//static constexpr const char* ClipPaneTag = "clipPlane";
-	public:
 		TerrainShader(int numOfLights, const char* filepath =
 			"../Astra.Core/src/resources/shaders/Terrain.shader")
 			: Shader(filepath, ShaderType::Terrains, &std::make_tuple("NR_POINT_LIGHTS %i", numOfLights))

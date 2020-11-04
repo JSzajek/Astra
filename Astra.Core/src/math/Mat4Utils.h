@@ -41,9 +41,9 @@ namespace Astra::Math
 		{
 			Mat4 result(1);
 			result = result.Translate(translation);
-			result = result.Rotate(rotation.x, XAxis);
-			result = result.Rotate(rotation.y, YAxis);
-			result = result.Rotate(rotation.z, ZAxis);
+			result = result.Rotate(rotation.x, Vec3::X_Axis);
+			result = result.Rotate(rotation.y, Vec3::Y_Axis);
+			result = result.Rotate(rotation.z, Vec3::Z_Axis);
 			result = result.Scale(scale);
 			return result;
 		}
@@ -59,8 +59,8 @@ namespace Astra::Math
 		Mat4 ViewMatrixImpl(const Graphics::Camera* camera)
 		{
 			Mat4 result(1);
-			result.Rotate(camera->GetPitch(), XAxis);
-			result.Rotate(camera->GetYaw(), YAxis);
+			result.Rotate(camera->GetPitch(), Vec3::X_Axis);
+			result.Rotate(camera->GetYaw(), Vec3::Y_Axis);
 			result.Translate(*camera->GetInvertedPosition());
 			return result;
 		}

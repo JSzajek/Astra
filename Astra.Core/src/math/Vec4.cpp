@@ -2,6 +2,19 @@
 
 namespace Astra::Math
 {
+	const Vec4 Vec4::X_Axis		= Vec4(1, 0, 0, 0);
+	const Vec4 Vec4::Y_Axis		= Vec4(0, 1, 0, 0);
+	const Vec4 Vec4::Z_Axis		= Vec4(0, 0, 1, 0);
+	const Vec4 Vec4::W_Axis		= Vec4(0, 0, 0, 1);
+	const Vec4 Vec4::Zero		= Vec4(0);
+	const Vec4 Vec4::One		= Vec4(1);
+	const Vec4 Vec4::Left		= Vec4(-1, 0, 0, 0);
+	const Vec4 Vec4::Right		= Vec4(1, 0, 0, 0);
+	const Vec4 Vec4::Up			= Vec4(0, 1, 0, 0);
+	const Vec4 Vec4::Down		= Vec4(0, -1, 0, 0);
+	const Vec4 Vec4::Forward	= Vec4(0, 0, -1, 0);
+	const Vec4 Vec4::Back		= Vec4(0, 0, 1, 0);
+
 	Vec4::Vec4(const float& _x, const float& _y, const float& _z, const float& _w)
 		: x(_x), y(_y), z(_z), w(_w)
 	{

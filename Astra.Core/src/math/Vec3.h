@@ -11,6 +11,18 @@ namespace Astra::Math
 	struct Vec3
 	{
 	public:
+		static const Vec3 X_Axis;
+		static const Vec3 Y_Axis;
+		static const Vec3 Z_Axis;
+		static const Vec3 Zero;
+		static const Vec3 One;
+		static const Vec3 Left;
+		static const Vec3 Right;
+		static const Vec3 Up;
+		static const Vec3 Down;
+		static const Vec3 Forward;
+		static const Vec3 Back;
+	public:
 		float x, y, z;
 	public:
 	

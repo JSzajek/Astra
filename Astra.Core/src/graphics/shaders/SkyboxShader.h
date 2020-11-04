@@ -31,7 +31,7 @@ namespace Astra::Graphics
 			copy.columns[3].y = 0;
 			copy.columns[3].z = 0;
 			m_rotation += RotationSpeed * Window::delta;
-			copy = copy.Rotate(m_rotation, Math::YAxis);
+			copy = copy.Rotate(m_rotation, Math::Vec3::Y_Axis);
 			Shader::SetUniformMat4(name, copy);
 		}
 	};

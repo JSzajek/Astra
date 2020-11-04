@@ -156,9 +156,6 @@
     <ClCompile Include="src\graphics\shadows\ShadowBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\scenes\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\graphics\entities\Spatial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

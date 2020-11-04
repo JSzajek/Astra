@@ -19,7 +19,7 @@ namespace Astra::Graphics
 	{
 		m_shader->Start();
 		m_shader->SetUniform3f(FOG_COLOR, *m_fogColor);
-		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
+		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, *viewMatrix);
 	
 		glBindVertexArray(m_cube->vaoId);
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content

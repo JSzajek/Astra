@@ -5,11 +5,26 @@
 
 namespace Astra::Math
 {
+	
+
 	/// <summary>
 	/// Struct representing a 3-dimensional vector.
 	/// </summary>
 	struct Vec4
 	{
+	public:
+		static const Vec4 X_Axis;
+		static const Vec4 Y_Axis;
+		static const Vec4 Z_Axis;
+		static const Vec4 W_Axis;
+		static const Vec4 Zero;
+		static const Vec4 One;
+		static const Vec4 Left;
+		static const Vec4 Right;
+		static const Vec4 Up;
+		static const Vec4 Down;
+		static const Vec4 Forward;
+		static const Vec4 Back;
 	public:
 		float x, y, z, w;
 	public:

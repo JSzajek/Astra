@@ -77,7 +77,7 @@ namespace Astra::Graphics
 		m_modelViewMatrix->columns[2][0] = m_viewMatrix->columns[0].z;
 		m_modelViewMatrix->columns[2][1] = m_viewMatrix->columns[1].z;
 		m_modelViewMatrix->columns[2][2] = m_viewMatrix->columns[2].z;
-		m_modelViewMatrix->Rotate(rotation, Math::ZAxis);
+		m_modelViewMatrix->Rotate(rotation, Math::Vec3::Z_Axis);
 		m_modelViewMatrix->Scale(scale);
 		*m_modelViewMatrix = (*m_viewMatrix) * (*m_modelViewMatrix);
 		m_shader->SetUniformMat4(MODEL_VIEW_MATRIX_TAG, m_modelViewMatrix);
