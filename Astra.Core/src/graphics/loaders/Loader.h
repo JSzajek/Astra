@@ -53,9 +53,9 @@ namespace Astra::Graphics
 			return Get().LoadImpl(drawType, vertices, textureCoords);
 		}
 
-		static const Texture& LoadTexture(const char* const filepath, GLint clippingOption = GL_REPEAT, bool flip = true)
+		static const Texture& LoadTexture(const char* const filepath, GLint clippingOption = GL_REPEAT, bool flip = true, bool invert = false)
 		{
-			return Get().LoadTextureImpl(filepath, clippingOption, flip);
+			return Get().LoadTextureImpl(filepath, clippingOption, flip, invert);
 		}
 
 		static const Texture& LoadAtlasTexture(const char* const filepath)
@@ -95,7 +95,7 @@ namespace Astra::Graphics
 		const GLuint LoadImpl(unsigned int drawType, const std::vector<float>& vertices, const std::vector<float>& textureCoords);
 		
 		const Texture& LoadAtlasTextureImpl(const char* const filepath);
-		const Texture& LoadTextureImpl(const char* const filepath, GLint clippingOption, bool flip);
+		const Texture& LoadTextureImpl(const char* const filepath, GLint clippingOption, bool flip, bool invert);
 		
 		const CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);
 

@@ -4,9 +4,9 @@
 
 namespace Astra::Graphics
 {
-	GuiRenderer::GuiRenderer(GuiShader* shader)
-		: Renderer((Shader*)shader)
+	GuiRenderer::GuiRenderer(Shader* shader) : Renderer()
 	{
+		Renderer::SetShader(shader);
 		m_defaultQuad = Loader::Load(GL_TRIANGLE_STRIP, { -1, 1, -1, -1, 1, 1, 1, -1 }, 2);
 	}
 
@@ -15,7 +15,7 @@ namespace Astra::Graphics
 		delete m_defaultQuad;
 	}
 
-	void GuiRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
+	void GuiRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		if (m_guis.size() == 0) { return; }
 		m_shader->Start();
@@ -28,7 +28,7 @@ namespace Astra::Graphics
 		{
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, gui->GetId());
-			m_shader->SetUniformMat4(Shader::TransformMatrixTag, Math::Mat4Utils::Transformation(*gui));
+			m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, Math::Mat4Utils::Transformation(*gui));
 			glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
 		}
 		glEnable(GL_DEPTH_TEST);

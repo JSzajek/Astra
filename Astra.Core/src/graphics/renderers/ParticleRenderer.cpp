@@ -5,31 +5,35 @@
 namespace Astra::Graphics
 {
 	ParticleRenderer::ParticleRenderer(ParticleShader* shader)
-		: Renderer((Shader*)shader)
-	{
+		: Renderer()
+	{	
+		Renderer::SetShader(shader);
 		m_defaultQuad = Loader::Load(GL_TRIANGLE_STRIP, { -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5 }, 2);
+		m_modelViewMatrix = new Math::Mat4(1);
 	}
 
 	ParticleRenderer::~ParticleRenderer()
 	{
+		delete m_modelViewMatrix;
 		delete m_defaultQuad;
 	}
 
-	void ParticleRenderer::AddParticle(const Particle& particle)
+	void ParticleRenderer::AddParticle(Particle* particle)
 	{
-		auto temp = m_particles.find(particle.Material->id);
+		unsigned int id = particle->Material->id;
+		auto temp = m_particles.find(id);
 		if (temp != m_particles.end())
 		{
 			temp->second.push_back(particle);
 		}
 		else
 		{
-			m_particles[particle.Material->id] = std::vector<Particle>();
-			m_particles[particle.Material->id].push_back(particle);
+			m_particles[id] = std::vector<Particle*>();
+			m_particles[id].push_back(particle);
 		}
 	}
 
-	void ParticleRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
+	void ParticleRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		if (m_particles.size() == 0) { return; }
 		m_shader->Start();
@@ -44,16 +48,15 @@ namespace Astra::Graphics
 		{
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, directory.first);
-			for (const Particle& particle : directory.second)
+			for (const Particle* particle : directory.second)
 			{
-				UpdateModelViewMatrix(particle.Position, particle.Rotation, particle.Scale);
-				m_shader->SetUniform2f(ParticleShader::TexOffset1Tag, particle.GetTexOffset1());
-				m_shader->SetUniform2f(ParticleShader::TexOffset2Tag, particle.GetTexOffset2());
-				m_shader->SetUniform2f(ParticleShader::TexCoordInfoTag, particle.Material->GetRowCount(), particle.GetBlendFactor());
+				UpdateModelViewMatrix(particle->Position, particle->Rotation, particle->Scale);
+				m_shader->SetUniform2f(TEX_OFFSET_1_TAG, particle->GetTexOffset1());
+				m_shader->SetUniform2f(TEX_OFFSET_2_TAG, particle->GetTexOffset2());
+				m_shader->SetUniform2f(TEX_COORD_INFO_TAG, particle->Material->GetRowCount(), particle->GetBlendFactor());
 				glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
 			}
 		}
-
 		glDepthMask(GL_TRUE);
 		glDisable(GL_BLEND);
 		glDisableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
@@ -63,20 +66,20 @@ namespace Astra::Graphics
 
 	void ParticleRenderer::UpdateModelViewMatrix(const Math::Vec3& position, float rotation, float scale)
 	{
-		Math::Mat4 modelMatrix = Math::Mat4(1);
-		modelMatrix = modelMatrix.Translate(position);
-		modelMatrix.columns[0][0] = m_viewMatrix.columns[0][0];
-		modelMatrix.columns[0][1] = m_viewMatrix.columns[1][0];
-		modelMatrix.columns[0][2] = m_viewMatrix.columns[2][0];
-		modelMatrix.columns[1][0] = m_viewMatrix.columns[0][1];
-		modelMatrix.columns[1][1] = m_viewMatrix.columns[1][1];
-		modelMatrix.columns[1][2] = m_viewMatrix.columns[2][1];
-		modelMatrix.columns[2][0] = m_viewMatrix.columns[0][2];
-		modelMatrix.columns[2][1] = m_viewMatrix.columns[1][2];
-		modelMatrix.columns[2][2] = m_viewMatrix.columns[2][2];
-		modelMatrix = modelMatrix.Rotate(rotation, Math::Vec3(0, 0, 1));
-		modelMatrix = modelMatrix.Scale(Math::Vec3(scale));
-		Math::Mat4 modelViewMatrix = m_viewMatrix * modelMatrix;
-		m_shader->SetUniformMat4(ParticleShader::ModelViewMatrixTag, modelViewMatrix);
+		m_modelViewMatrix->SetIdentity();
+		m_modelViewMatrix->Translate(position);
+		m_modelViewMatrix->columns[0][0] = m_viewMatrix->columns[0].x;
+		m_modelViewMatrix->columns[0][1] = m_viewMatrix->columns[1].x;
+		m_modelViewMatrix->columns[0][2] = m_viewMatrix->columns[2].x;
+		m_modelViewMatrix->columns[1][0] = m_viewMatrix->columns[0].y;
+		m_modelViewMatrix->columns[1][1] = m_viewMatrix->columns[1].y;
+		m_modelViewMatrix->columns[1][2] = m_viewMatrix->columns[2].y;
+		m_modelViewMatrix->columns[2][0] = m_viewMatrix->columns[0].z;
+		m_modelViewMatrix->columns[2][1] = m_viewMatrix->columns[1].z;
+		m_modelViewMatrix->columns[2][2] = m_viewMatrix->columns[2].z;
+		m_modelViewMatrix->Rotate(rotation, Math::Vec3::Z_Axis);
+		m_modelViewMatrix->Scale(scale);
+		*m_modelViewMatrix = (*m_viewMatrix) * (*m_modelViewMatrix);
+		m_shader->SetUniformMat4(MODEL_VIEW_MATRIX_TAG, m_modelViewMatrix);
 	}
 }

@@ -18,7 +18,7 @@ namespace Astra::Graphics
 		ShadowMapRenderer* m_renderer;
 		ShadowBox* m_box;
 
-		Light* m_light;
+		const Light* m_light;
 
 		Math::Mat4 m_projectionMatrix;
 		Math::Mat4 m_lightViewMatrix;
@@ -29,7 +29,8 @@ namespace Astra::Graphics
 		~ShadowMapController();
 		
 		void Render();
-		void SetDirectionalLight(Light* light);
+		void SetDirectionalLight(const Light* light);
+		inline void Clear() { m_renderer->Clear(); }
 
 		inline void SetCamera(Camera* camera) { m_box->SetCamera(camera); }
 		inline void AddEntity(const Entity* entity) { m_renderer->AddEntity(entity); }

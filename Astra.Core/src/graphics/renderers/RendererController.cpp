@@ -1,46 +1,39 @@
 #include "RendererController.h"
 
+#include "../Window.h"
+
 #include <functional>
 
 namespace Astra::Graphics
 {
-	RendererController::RendererController(const Math::Vec3& fogColor)
-		: fogColor(fogColor), m_reflectionClipPlane(Math::Vec4(0, 1, 0, 0)),
-			m_refractionClipPlane(Math::Vec4(0, -1, 0, 0))
+	RendererController::RendererController()
+		: m_reflectionClipPlane(Math::Vec4(0, 1, 0, 0)),
+			m_refractionClipPlane(Math::Vec4(0, -1, 0, 0)),
+			modelViewMatrix(1), m_block(false)
 	{
+		m_fogColor = new Math::Vec3(0);
+
 		Init();
 		m_shadowMapController = new ShadowMapController(FieldOfView, NearPlane, FarPlane);
 		
-		m_guiShader = new GuiShader();
-		m_guiRenderer = new GuiRenderer(m_guiShader);
-
-		m_lightingShader = new LightingShader();
-		m_entityRenderer = new Entity3dRenderer(m_lightingShader, &fogColor);
-
-		m_terrainShader = new TerrainShader();
-		m_terrainRenderer = new TerrainRenderer(m_terrainShader, &fogColor);
-
-		m_skyboxShader = new SkyboxShader();
-		m_skyboxRenderer = new SkyboxRenderer(m_skyboxShader, &fogColor);
-
-		m_waterShader = new WaterShader();
-		m_waterRenderer = new WaterRenderer(m_waterShader, m_mainCamera, NearPlane, FarPlane);
-
-		m_normalEntityShader = new NormalEntityShader();
-		m_normalEntityRenderer = new NormalEntity3dRenderer(m_normalEntityShader, &fogColor);
-
+		m_guiRenderer = new GuiRenderer(new GuiShader());
+		m_skyboxRenderer = new SkyboxRenderer(new SkyboxShader(), m_fogColor);
+		m_entityRenderer = new Entity3dRenderer(m_fogColor);
+		m_terrainRenderer = new TerrainRenderer(m_fogColor);
+		m_waterRenderer = new WaterRenderer(m_fogColor, NearPlane, FarPlane);
+		m_normalEntityRenderer = new NormalEntity3dRenderer(m_fogColor);
+		
 		m_waterBuffer = Loader::LoadWaterFrameBuffer(DefaultReflectionWidth, DefaultReflectionHeight,
 													 DefaultRefractionWidth, DefaultRefractionHeight);
 		m_waterRenderer->SetFrameBuffer(m_waterBuffer);
-
-		modelViewMatrix = Math::Mat4::Identity();
 	}
 
 	void RendererController::Init() const
 	{
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
-		glClearColor(fogColor.x, fogColor.y, fogColor.z, 1);
+
+		glClearColor(m_fogColor->x, m_fogColor->y, m_fogColor->z, 1);
 
 		glEnable(GL_CLIP_DISTANCE0); 
 	}
@@ -56,8 +49,124 @@ namespace Astra::Graphics
 		delete m_shadowMapController;
 	}
 
-	void RendererController::UpdateScreen(float width, float height)
+	bool RendererController::SetCurrentSceneImpl(const Scene* scene)
 	{
+		m_block = true;
+		m_currentScene = scene;
+
+		// Create Shaders
+		auto& pointLights = scene->GetPointLights();
+		size_t numOfLights = pointLights.size();
+		m_entityRenderer->SetShader(new EntityShader(numOfLights));
+		m_terrainRenderer->SetShader(new TerrainShader(numOfLights));
+		m_normalEntityRenderer->SetShader(new NormalEntityShader(numOfLights));
+		m_waterRenderer->SetShader(new WaterShader(numOfLights));
+
+		// Clear Renderers
+		Clear();
+
+		// Pass new Scene information
+		m_mainCamera = scene->GetCamera();
+		m_shadowMapController->SetCamera(m_mainCamera);
+		viewMatrix = m_mainCamera->GetViewMatrix();
+
+		m_skyboxRenderer->SetSkyBox(scene->GetSkyBox());
+
+		auto* dirLight = scene->GetDirectionalLight();
+		m_shadowMapController->SetDirectionalLight(dirLight);
+		m_entityRenderer->AddLight(dirLight);
+		m_terrainRenderer->AddLight(dirLight);
+		m_normalEntityRenderer->AddLight(dirLight);
+		m_waterRenderer->AddLight(dirLight);
+	#if _DEBUG
+		GizmoController::AddGizmo(dirLight->GetGizmo());
+	#endif
+
+		Math::Vec3 fogColor = scene->GetFogColor();
+		m_fogColor->x = fogColor.x;
+		m_fogColor->y = fogColor.y;
+		m_fogColor->z = fogColor.z;
+
+		for (auto* entity : scene->GetEntities())
+		{
+			if (entity->IsNormalMapped() || entity->IsParallaxMapped())
+			{
+				m_normalEntityRenderer->AddEntity(entity);
+			}
+			else
+			{
+				m_entityRenderer->AddEntity(entity);
+			}
+			m_shadowMapController->AddEntity(entity);
+		}
+		for (auto* light : scene->GetPointLights())
+		{
+			m_entityRenderer->AddLight(light);
+			m_normalEntityRenderer->AddLight(light);
+			m_terrainRenderer->AddLight(light);
+			m_waterRenderer->AddLight(light);
+		#if _DEBUG
+			GizmoController::AddGizmo(light->GetGizmo());
+		#endif
+		}
+		for (auto* terrain : scene->GetTerrains())
+		{
+			m_terrainRenderer->AddTerrain(terrain);
+		}
+		for (auto* gui : scene->GetGuis())
+		{
+			m_guiRenderer->AddGui(gui);
+		}
+		for (auto* text : scene->GetTexts())
+		{
+			FontController::LoadText(text);
+		}
+		for (auto* tile : scene->GetWaterTiles())
+		{
+			// Determine better method of offseting clipping planes.
+			m_reflectionClipPlane.w = -tile->GetTranslation().y + 0.5f;
+			m_refractionClipPlane.w = tile->GetTranslation().y + 0.5f;
+
+			m_waterRenderer->AddTile(tile);
+		}
+		for (auto* system : scene->GetParticles())
+		{
+			m_systems.emplace_back(system);
+		#if _DEBUG
+			GizmoController::AddGizmo(system->GetGizmo());
+		#endif
+		}
+	
+		m_block = false;
+
+		// Update Projection Matrix
+		UpdateScreenImpl(Window::width, Window::height);
+
+		return true;
+	}
+
+	void RendererController::Clear()
+	{
+		m_shadowMapController->Clear();
+
+		m_skyboxRenderer->Clear();
+		m_guiRenderer->Clear();
+		m_entityRenderer->Clear();
+		m_terrainRenderer->Clear();
+		m_normalEntityRenderer->Clear();
+		m_waterRenderer->Clear();
+		FontController::Clear();
+		ParticleController::Clear();
+		m_systems.clear();
+	#if _DEBUG
+		GizmoController::Clear();
+	#endif
+	}
+
+	void RendererController::UpdateScreenImpl(float width, float height)
+	{
+		if (m_currentScene == NULL || m_block) { return; }
+
 		projectionMatrix = Math::Mat4::Perspective(width, height, FieldOfView, NearPlane, FarPlane);
 		m_terrainRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_entityRenderer->UpdateProjectionMatrix(projectionMatrix);
@@ -65,82 +174,93 @@ namespace Astra::Graphics
 		m_skyboxRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_waterRenderer->UpdateProjectionMatrix(projectionMatrix);
 		ParticleController::UpdateProjectionMatrix(projectionMatrix);
+	#if _DEBUG
+		GizmoController::UpdateProjectionMatrix(projectionMatrix);
+	#endif
 	}
 
-	void RendererController::Render()
+	void RendererController::RenderImpl()
 	{
+		if (m_currentScene == NULL || m_block) { return; }
+
 		m_shadowMapController->Render();
+
+		for (auto* system : m_systems)
+		{
+			system->GenerateParticles();
+		}
 
 		if (m_waterBuffer && m_mainCamera)
 		{
 			float distance = 2 * (m_mainCamera->GetTranslation().y - m_refractionClipPlane.w);
 
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetReflectionBuffer().GetId(), 320, 180);
-			m_mainCamera->Translation().y -= distance;
-			m_mainCamera->InvertPitch();
-			viewMatrix = Math::Mat4Utils::ViewMatrix(*m_mainCamera);
-			PreRender(m_reflectionClipPlane);
+			m_mainCamera->Translation()->y -= distance;
+			m_mainCamera->InvertPitch(); // Updates the view matrix
+			PreRender(viewMatrix->Inverse() * Math::Vec4::Back, m_reflectionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 
-			m_mainCamera->Translation().y += distance;
-			m_mainCamera->InvertPitch();
-			viewMatrix = Math::Mat4Utils::ViewMatrix(*m_mainCamera);
+			m_mainCamera->Translation()->y += distance;
+			m_mainCamera->InvertPitch(); // Updates the view matrix
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetRefractionBuffer().GetId(), 1280, 720);
-			PreRender(m_refractionClipPlane);
+			PreRender(viewMatrix->Inverse() * Math::Vec4::Back, m_refractionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 		}
 
-		UpdateCameraView();
-		PrepareRender();
-		PreRender();
-		PostRender();
-		GuiRender();
+		if (m_mainCamera)
+		{
+			Math::Vec4 inverseView = viewMatrix->Inverse() * Math::Vec4::Back;
+			PrepareRender();
+			PreRender(inverseView);
+			PostRender(inverseView);
+			GuiRender();
+		}
 	}
 
 	void RendererController::PrepareRender()
 	{
+		if (m_currentScene == NULL || m_block) { return; }
+
 		ParticleController::Update(m_mainCamera->GetTranslation());
 
-		glActiveTexture(GL_TEXTURE5);
+		glActiveTexture(GL_TEXTURE6);
 		glBindTexture(GL_TEXTURE_2D, m_shadowMapController->GetShadowMap());
+
 		const Math::Mat4& toShadowMap = m_shadowMapController->GetToShadowMapSpaceMatrix();
 		m_terrainRenderer->SetShadowMatrix(toShadowMap);
 		m_entityRenderer->SetShadowMatrix(toShadowMap);
 		m_normalEntityRenderer->SetShadowMatrix(toShadowMap);
+		m_waterRenderer->SetShadowMatrix(toShadowMap);
 	}
 
-	void RendererController::PreRender(const Math::Vec4& clipPlane)
+	void RendererController::PreRender(const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
+		if (m_currentScene == NULL || m_block) { return; }
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		m_terrainRenderer->Draw(viewMatrix, clipPlane);
-		m_entityRenderer->Draw(viewMatrix, clipPlane);
-		m_normalEntityRenderer->Draw(viewMatrix, clipPlane);
+		m_terrainRenderer->Draw(viewMatrix, inverseViewVector, clipPlane);
+		m_entityRenderer->Draw(viewMatrix, inverseViewVector, clipPlane);
+		m_normalEntityRenderer->Draw(viewMatrix, inverseViewVector, clipPlane);
 		m_skyboxRenderer->Draw(viewMatrix, NULL);
 	}
 
-	void RendererController::PostRender()
+	void RendererController::PostRender(const Math::Vec4& inverseViewVector)
 	{
-		m_waterRenderer->Draw(viewMatrix);
+		if (m_currentScene == NULL || m_block) { return; }
+
+		m_waterRenderer->Draw(viewMatrix, inverseViewVector);
 	}
 
 	void RendererController::GuiRender()
 	{
+		if (m_currentScene == NULL || m_block) { return; }
+
 		ParticleController::Render(viewMatrix);
+	#if _DEBUG
+		GizmoController::Render(viewMatrix);
+	#endif
 		m_guiRenderer->Draw(NULL);
 		FontController::Render();
-	}
-
-	void RendererController::UpdateCameraView()
-	{
-		if (m_mainCamera != nullptr)
-		{
-			m_mainCamera->UpdatePosition();
-			viewMatrix = Math::Mat4Utils::ViewMatrix(*m_mainCamera);
-		}
-		else
-		{
-			Logger::LogWarning("No Main Camera detected.");
-		}
 	}
 }

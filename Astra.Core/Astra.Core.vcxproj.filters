@@ -156,6 +156,18 @@
     <ClCompile Include="src\graphics\shadows\ShadowBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\entities\Spatial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\gizmos\Gizmo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\renderers\GizmoRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\gizmos\GizmoController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat4.h">
@@ -227,9 +239,6 @@
     <ClInclude Include="src\graphics\renderers\Entity3dRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\shaders\BasicShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\graphics\entities\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -237,9 +246,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\entities\Spatial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\shaders\LightingShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\entities\Light.h">
@@ -371,11 +377,39 @@
     <ClInclude Include="src\graphics\shadows\ShadowBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\shaders\EntityShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\entities\DirectionalLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\entities\PointLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\entities\SpotLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\scenes\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\Properties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\shaders\GizmoShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\gizmos\Gizmo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\gizmos\GizmoController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\renderers\GizmoRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\resources\shaders\Gui.shader" />
-    <None Include="src\resources\shaders\Basic.shader" />
-    <None Include="src\resources\shaders\Lighting.shader" />
     <None Include="src\resources\shaders\Terrain.shader" />
     <None Include="src\resources\shaders\Skybox.shader" />
     <None Include="src\resources\shaders\Water.shader" />
@@ -383,6 +417,8 @@
     <None Include="src\resources\shaders\Font.shader" />
     <None Include="src\resources\shaders\Particle.shader" />
     <None Include="src\resources\shaders\Shadow.shader" />
+    <None Include="src\resources\shaders\Entity.shader" />
+    <None Include="src\resources\shaders\Gizmo.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\textures\Default.jpg">

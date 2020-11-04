@@ -26,9 +26,9 @@ namespace Astra::Graphics
 		if (m_camera == NULL) { return false; }
 
 		m_cameraRotation.SetIdentity();
-		m_cameraRotation.Rotate(-m_camera->GetYaw(), Math::YAxis);
-		m_cameraRotation.Rotate(-m_camera->GetPitch(), Math::XAxis);
-		Math::Vec3 forwardVector = m_cameraRotation * Math::Forward;
+		m_cameraRotation.Rotate(-m_camera->GetYaw(), Math::Vec3::Y_Axis);
+		m_cameraRotation.Rotate(-m_camera->GetPitch(), Math::Vec3::X_Axis);
+		Math::Vec3 forwardVector = m_cameraRotation * Math::Vec3::Forward;
 
 		CalculateFrustumVertices(forwardVector,
 								(forwardVector * m_nearPlane) + m_camera->GetTranslation(),  // Center Near
@@ -82,7 +82,7 @@ namespace Astra::Graphics
 
 	void ShadowBox::CalculateFrustumVertices(const Math::Vec3& forward, const Math::Vec3& centerNear, const Math::Vec3& centerFar)
 	{
-		Math::Vec3 upVector = m_cameraRotation * Math::YAxis;
+		Math::Vec3 upVector = m_cameraRotation * Math::Vec3::Y_Axis;
 		Math::Vec3 rightVector = forward.Cross(upVector);
 		Math::Vec3 downVector = upVector * -1;
 		Math::Vec3 leftVector = rightVector * -1;

@@ -18,7 +18,7 @@ namespace Astra::Graphics
 		//delete m_loader;
 	}
 
-	const TextMeshData* FontType::LoadText(GuiText& text) 
+	const TextMeshData* FontType::LoadText(const GuiText* text) 
 	{ 
 		return m_loader->CreateTextMesh(text); 
 	}
@@ -33,20 +33,20 @@ namespace Astra::Graphics
 	{
 	}
 
-	const TextMeshData* TextMeshCreator::CreateTextMesh(GuiText& text)
+	const TextMeshData* TextMeshCreator::CreateTextMesh(const GuiText* text)
 	{
 		std::vector<Line> lines = CreateStructure(text);
 		const TextMeshData* data = CreateQuadVertices(text, lines);
 		return data;
 	}
 
-	std::vector<Line> TextMeshCreator::CreateStructure(GuiText& text)
+	std::vector<Line> TextMeshCreator::CreateStructure(const GuiText* text)
 	{
 		std::vector<Line> lines;
-		Line currentLine(metaData.GetSpaceWidth(), text.GetFontSize(), text.GetMaxLineSize());
-		Word currentWord(text.GetFontSize());
+		Line currentLine(metaData.GetSpaceWidth(), text->GetFontSize(), text->GetMaxLineSize());
+		Word currentWord(text->GetFontSize());
 
-		for (auto c : text.GetTextString())
+		for (auto c : text->GetTextString())
 		{
 			int ascii = static_cast<int>(c);
 			if (ascii == SPACE_ASCII)
@@ -54,10 +54,10 @@ namespace Astra::Graphics
 				if (!currentLine.AddWord(currentWord))
 				{
 					lines.push_back(currentLine);
-					currentLine = Line(metaData.GetSpaceWidth(), text.GetFontSize(), text.GetMaxLineSize());
+					currentLine = Line(metaData.GetSpaceWidth(), text->GetFontSize(), text->GetMaxLineSize());
 					currentLine.AddWord(currentWord);
 				}
-				currentWord = Word(text.GetFontSize());
+				currentWord = Word(text->GetFontSize());
 				continue;
 			}
 			const Character* character = metaData.GetCharacter(ascii);
@@ -67,27 +67,27 @@ namespace Astra::Graphics
 		return lines;
 	}
 
-	void TextMeshCreator::CompleteStructure(std::vector<Line>& lines, Line& currentLine, const Word& currentWord, const GuiText& text)
+	void TextMeshCreator::CompleteStructure(std::vector<Line>& lines, Line& currentLine, const Word& currentWord, const GuiText* text)
 	{
 		if (!currentLine.AddWord(currentWord))
 		{
 			lines.push_back(currentLine);
-			currentLine = Line(metaData.GetSpaceWidth(), text.GetFontSize(), text.GetMaxLineSize());
+			currentLine = Line(metaData.GetSpaceWidth(), text->GetFontSize(), text->GetMaxLineSize());
 			currentLine.AddWord(currentWord);
 		}
 		lines.push_back(currentLine);
 	}
 
-	const TextMeshData* TextMeshCreator::CreateQuadVertices(GuiText& text, const std::vector<Line>& lines)
+	const TextMeshData* TextMeshCreator::CreateQuadVertices(const GuiText* text, const std::vector<Line>& lines)
 	{
-		text.SetNumberOfLines(lines.size());
+		//text->SetNumberOfLines(lines.size());
 		double xCursor = 0;
 		double yCursor = 0;
 		std::vector<float> vertices;
 		std::vector<float> textureCoords;
 		for (auto line : lines)
 		{
-			if (text.IsCentered())
+			if (text->IsCentered())
 			{
 				xCursor = (line.GetMaxLength() - line.GetLineLength()) / 2;
 			}
@@ -95,15 +95,15 @@ namespace Astra::Graphics
 			{
 				for (auto character : word.GetCharacters())
 				{
-					AddVerticesForCharacter(xCursor, yCursor, character, text.GetFontSize(), vertices);
+					AddVerticesForCharacter(xCursor, yCursor, character, text->GetFontSize(), vertices);
 					AddTexCoords(textureCoords, character->GetXTextureCoord(), character->GetYTextureCoord(), 
 													character->GetXMaxTextureCoord(), character->GetYMaxTextureCoord());
-					xCursor += character->GetXAdvance() * text.GetFontSize();
+					xCursor += character->GetXAdvance() * text->GetFontSize();
 				}
-				xCursor += metaData.GetSpaceWidth() * text.GetFontSize();
+				xCursor += metaData.GetSpaceWidth() * text->GetFontSize();
 			}
 			xCursor = 0;
-			yCursor += LINE_HEIGHT * text.GetFontSize();
+			yCursor += LINE_HEIGHT * text->GetFontSize();
 		}
 		return new TextMeshData(vertices, textureCoords);
 	}

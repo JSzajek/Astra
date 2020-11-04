@@ -10,6 +10,15 @@ namespace Astra::Math
 	struct Vec2
 	{
 	public:
+		static const Vec2 X_Axis;
+		static const Vec2 Y_Axis;
+		static const Vec2 Zero;
+		static const Vec2 One;
+		static const Vec2 Left;
+		static const Vec2 Right;
+		static const Vec2 Up;
+		static const Vec2 Down;
+	public:
 		float x, y;
 	public:
 

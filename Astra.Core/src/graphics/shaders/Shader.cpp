@@ -3,8 +3,8 @@
 
 namespace Astra::Graphics
 {
-	Shader::Shader(const char* filpath, ShaderType type)
-		: m_filepath(filpath), m_type(type)
+	Shader::Shader(const char* filpath, ShaderType type, std::tuple<const char*, int>* replace)
+		: m_filepath(filpath), m_type(type), m_replace(replace)
 	{
 		ShaderProgramSource source = ParseShader(m_filepath);
 		m_id = CreateShader(source.VertextSource, source.FragmentSource);
@@ -49,9 +49,19 @@ namespace Astra::Graphics
 		glUniform4f(GetUniformLocation(name), vector.x, vector.y, vector.z, vector.w);
 	}
 
+	void Shader::SetUniform4f(const GLchar* name, const Math::Vec3& vector, float w)
+	{
+		glUniform4f(GetUniformLocation(name), vector.x, vector.y, vector.z, w);
+	}
+
 	void Shader::SetUniformMat4(const GLchar* name, const Math::Mat4& matrix)
 	{
 		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.data);
+	}
+
+	void Shader::SetUniformMat4(const GLchar* name, const Math::Mat4* const matrix)
+	{
+		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix->data);
 	}
 
 	void Shader::Start() const
@@ -91,6 +101,14 @@ namespace Astra::Graphics
 		ShaderType type = ShaderType::NONE;
 		while (getline(stream, line))
 		{
+			if (m_replace != NULL && line.find(std::get<0>(*m_replace)) != std::string::npos)
+			{
+				auto* replacementString = std::get<0>(*m_replace);
+				char buffer[64];
+				sprintf(buffer, line.c_str(), std::get<1>(*m_replace));
+				line = std::string(buffer);
+			}
+
 			if (line.find("#shader") != std::string::npos)
 			{
 				if (line.find("vertex") != std::string::npos)

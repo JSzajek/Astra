@@ -3,41 +3,113 @@
 #include "../loaders/Loader.h"
 #include "../Window.h"
 
+#include "../entities/PointLight.h"
+#include "../entities/SpotLight.h"
+#include "../shadows/ShadowMapController.h"
+
 namespace Astra::Graphics
 {
-	WaterRenderer::WaterRenderer(Shader* shader, Camera* camera, float near, float far)
-		: Renderer(shader), m_camera(camera), m_buffer(NULL), m_light(NULL)
+	WaterRenderer::WaterRenderer(const Math::Vec3* fogColor, float near, float far)
+		: Renderer(), m_fogColor(fogColor), m_buffer(NULL), m_near(near), m_far(far), m_toShadowSpaceMatrix(1)
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLES, { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 }, 2);
+	}
+
+	void WaterRenderer::SetShader(Shader* shader)
+	{
+		Renderer::SetShader(shader);
 
 		m_shader->Start();
-		m_shader->SetUniform1f(WaterShader::NearPlaneTag, near);
-		m_shader->SetUniform1f(WaterShader::FarPlaneTag, far);
+		m_shader->SetUniform1f(NEAR_PLANE,				m_near);
+		m_shader->SetUniform1f(FAR_PLANE,				m_far);
 
-		m_shader->SetUniform1i(WaterShader::ReflectionTextureTag, 0);
-		m_shader->SetUniform1i(WaterShader::RefractionTextureTag, 1);
-		m_shader->SetUniform1i(WaterShader::DuDvMapTextureTag, 2);
-		m_shader->SetUniform1i(WaterShader::NormalMapTextureTag, 3);
-		m_shader->SetUniform1i(WaterShader::DepthMapTextureTag, 4);
+		m_shader->SetUniform1i(REFLECTION_TEXTURE,		0);
+		m_shader->SetUniform1i(REFRACTION_TEXTURE,		1);
+		m_shader->SetUniform1i(DUDVMAP_TEXTURE,			2);
+		m_shader->SetUniform1i(NORMALMAP_TEXTURE,		3);
+		m_shader->SetUniform1i(DEPTHMAP_TEXTURE,		4);
+		m_shader->SetUniform1i(SPECULAR_MAP,			5);
+
+		m_shader->SetUniform1i(SHADOW_MAP_TAG,			6);
+		m_shader->SetUniform1f(SHADOW_DISTANCE_TAG,		SHADOW_DISTANCE);
+		m_shader->SetUniform1f(TRANSITION_DISTANCE_TAG, TRANSITION_DISTANCE);
+		m_shader->SetUniform1f(SHADOW_MAP_SIZE_TAG,		SHADOW_MAP_SIZE);
+		m_shader->SetUniform1i(PCF_COUNT_TAG,			PCF_COUNT);
 		m_shader->Stop();
 	}
 
-	void WaterRenderer::Draw(const Math::Mat4& viewMatrix, const Math::Vec4& clipPlane)
+	void WaterRenderer::Clear()
+	{
+		m_lights.clear();
+		m_waterTiles.clear();
+	}
+
+	void WaterRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
-		m_shader->SetUniformMat4(Shader::ViewMatrixTag, viewMatrix);
-		
-		m_shader->SetUniform3f(WaterShader::CameraPositionTag, m_camera->GetTranslation());
+		m_shader->SetUniform3f(FOG_COLOR, *m_fogColor);
+
+		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
+		m_shader->SetUniform4f(INVERSE_VIEW_VECTOR_TAG, inverseViewVector);
+		m_shader->SetUniformMat4(TO_SHADOW_SPACE_MATRIX_TAG, m_toShadowSpaceMatrix);
 
 		PrepareRender();
-		for (const WaterTile& tile: m_waterTiles)
+		for (const WaterTile* tile: m_waterTiles)
 		{
 			PrepareTile(tile);
-			m_shader->SetUniform1f(WaterShader::MoveFactorTag, tile.material->Increase());
-			m_shader->SetUniformMat4(Shader::TransformMatrixTag, Math::Mat4Utils::Transformation(tile));
+			m_shader->SetUniform1f(MOVE_FACTOR, tile->material->Increase());
+			m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, tile->GetModelMatrix());
 			glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
 		}
 		UnbindVertexArray();
+		m_shader->Stop();
+	}
+
+	void WaterRenderer::AddLight(Light* light)
+	{
+		switch (light->GetType())
+		{
+		case LightType::Directional:
+			m_directionalLight = light;
+			break;
+		case LightType::Point:
+			m_lights.emplace_back(light);
+			break;
+		case LightType::Spotlight:
+			break;
+		}
+		light->SetCallback(std::bind(&WaterRenderer::UpdateLight, this, light));
+		UpdateLight(light);
+	}
+
+	void WaterRenderer::UpdateLight(const Light* light)
+	{
+		m_shader->Start();
+		if (light->GetType() == LightType::Directional)
+		{
+			m_shader->SetUniform3f(DIR_LIGHT_DIRECTION, m_directionalLight->GetRotation());
+			m_shader->SetUniform3f(DIR_LIGHT_AMBIENT, m_directionalLight->GetAmbient());
+			m_shader->SetUniform3f(DIR_LIGHT_DIFFUSE, m_directionalLight->GetDiffuse());
+			m_shader->SetUniform3f(DIR_LIGHT_SPECULAR, m_directionalLight->GetSpecular());
+		}
+
+		if (light->GetType() == LightType::Point)
+		{
+			int i = 0;
+			for (; i < m_lights.size(); i++)
+			{
+				if (m_lights[i] == light)
+				{
+					break;
+				}
+			}
+
+			m_shader->SetUniform3f(Shader::GetPointLightPositionTag(i), m_lights[i]->GetTranslation());
+			m_shader->SetUniform3f(Shader::GetPointLightAmbientTag(i), m_lights[i]->GetAmbient());
+			m_shader->SetUniform3f(Shader::GetPointLightDiffuseTag(i), m_lights[i]->GetDiffuse());
+			m_shader->SetUniform3f(Shader::GetPointLightSpecularTag(i), m_lights[i]->GetSpecular());
+			m_shader->SetUniform3f(Shader::GetPointLightAttenuationTag(i), (static_cast<const PointLight*>(m_lights[i]))->GetAttenuation());
+		}
 		m_shader->Stop();
 	}
 
@@ -45,11 +117,6 @@ namespace Astra::Graphics
 	{
 		glBindVertexArray(m_defaultQuad->vaoId);
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
-		if (m_light)
-		{
-			m_shader->SetUniform3f(WaterShader::LightPositionTag, m_light->GetTranslation());
-			m_shader->SetUniform3f(WaterShader::LightColorTag, m_light->GetColor());
-		}
 		if (m_buffer)
 		{
 			glActiveTexture(GL_TEXTURE0);
@@ -63,17 +130,18 @@ namespace Astra::Graphics
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	void WaterRenderer::PrepareTile(const WaterTile& tile)
+	void WaterRenderer::PrepareTile(const WaterTile* tile)
 	{
-		m_shader->SetUniform1f(WaterShader::WaveStrengthTag, tile.material->waveStrength);
-		m_shader->SetUniform1f(WaterShader::ShineDampenerTag, tile.material->shineDampener);
-		m_shader->SetUniform1f(WaterShader::ReflectivityTag, tile.material->reflectivity);
-		m_shader->SetUniform4f(WaterShader::BaseWaterColorTag, tile.material->baseColor);
+		m_shader->SetUniform1f(WAVE_STRENGTH, tile->material->waveStrength);
+		m_shader->SetUniform4f(BASE_WATER_COLOR, tile->material->baseColor);
+		m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, tile->material->reflectivity);
 
 		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, tile.material->dudvTexture.id);
+		glBindTexture(GL_TEXTURE_2D, tile->material->dudvTexture.id);
 		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, tile.material->normalTexture.id);
+		glBindTexture(GL_TEXTURE_2D, tile->material->normalTexture.id);
+		glActiveTexture(GL_TEXTURE5);
+		glBindTexture(GL_TEXTURE_2D, tile->material->GetSpecularId());
 	}
 
 	void WaterRenderer::UnbindVertexArray()

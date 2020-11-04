@@ -16,14 +16,17 @@ namespace Astra::Graphics
 		void UpdateProjectionMatrix(const Math::Mat4& projectionMatrix);
 		void BindFrameBuffer(GLuint bufferId, unsigned int width, unsigned int height);
 		void UnbindFrameBuffer();
+
+		inline virtual void Clear() { }
 	protected:
-		Renderer(Shader* shader);
+		Renderer();
 		~Renderer();
 
+		virtual void SetShader(Shader* shader);
 		virtual void UnbindVertexArray();
 		void UpdateDynamicVbo();
 		void UpdateTexture();
 		
-		virtual void Draw(const Math::Mat4& viewMatrix = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) = 0;
+		virtual void Draw(const Math::Mat4* viewMatrix = NULL, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) = 0;
 	};
 }

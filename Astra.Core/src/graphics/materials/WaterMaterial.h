@@ -18,6 +18,7 @@ namespace Astra::Graphics
 		static constexpr const char* DefaultNormalMap = "../Astra.Core/src/resources/textures/DefaultNormalMap.png";
 	private:
 		float m_currentWaveSpeed;
+		Texture m_specular;
 	public:
 		float waveStrength, waveSpeed;
 		float shineDampener, reflectivity;
@@ -27,6 +28,8 @@ namespace Astra::Graphics
 	public:
 		WaterMaterial();
 		WaterMaterial(const char* const dudvMapFilePath, const char* const normalMapFilePath);
+		
+		inline unsigned int GetSpecularId() const { return m_specular.id; }
 
 		float Increase();
 	};

@@ -3,31 +3,34 @@
 namespace Astra::Graphics
 {
 	Terrain::Terrain(int xGrid, int zGrid, const char* const heightmap, const TerrainMaterialPack* pack, const TerrainMaterial* map)
-		: texturePack(pack), blendMap(map)
+		: Spatial(), texturePack(pack), blendMap(map)
 	{
-		Translation().x = xGrid * Size;
-		Translation().z = zGrid * Size;
+		Translation()->x = xGrid * Size;
+		Translation()->z = zGrid * Size;
 		vertexArray = GeneratePlaneTerrain(heightmap);
+		UpdateMatrices();
 	}
 
 	Terrain::Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, const TerrainMaterialPack* pack, const TerrainMaterial* map)
-		: texturePack(pack), blendMap(map)
+		: Spatial(), texturePack(pack), blendMap(map)
 	{
-		Translation().x = xGrid * Size;
-		Translation().z = zGrid * Size;
+		Translation()->x = xGrid * Size;
+		Translation()->z = zGrid * Size;
 		HeightGenerator* generator = new HeightGenerator(amplitude, octaves, roughness);
 		vertexArray = GeneratePlaneTerrain(generator);
 		delete generator;
+		UpdateMatrices();
 	}
 
 	Terrain::Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, int seed, const TerrainMaterialPack* pack, const TerrainMaterial* map)
-		: texturePack(pack), blendMap(map)
+		: Spatial(), texturePack(pack), blendMap(map)
 	{
-		Translation().x = xGrid * Size;
-		Translation().z = zGrid * Size;
+		Translation()->x = xGrid * Size;
+		Translation()->z = zGrid * Size;
 		HeightGenerator* generator = new HeightGenerator(amplitude, octaves, roughness, seed);
 		vertexArray = GeneratePlaneTerrain(generator);
 		delete generator;
+		UpdateMatrices();
 	}
 
 	Terrain::~Terrain()
@@ -144,8 +147,8 @@ namespace Astra::Graphics
 
 	float Terrain::GetHeightOfTerrain(int xWorldCoord, int zWorldCoord)
 	{
-		int xTerrain = xWorldCoord - Translation().x;
-		int zTerrain = zWorldCoord - Translation().z;
+		int xTerrain = xWorldCoord - GetTranslation().x;
+		int zTerrain = zWorldCoord - GetTranslation().z;
 
 		float gridSquareSize = Size / (float)(m_vertexCount - 1);
 		int xGrid = floorf(xTerrain / gridSquareSize);

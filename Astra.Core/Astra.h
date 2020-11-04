@@ -16,11 +16,17 @@
 #include "src/graphics/buffers/Texture.h"
 #include "src/graphics/buffers/WaterFrameBuffer.h"
 
+#include "src/graphics/fonts/TextMesh.h"
+
 #include "src/graphics/renderers/RendererController.h"
+
+#include "src/graphics/scenes/Scene.h"
 
 #include "src/graphics/entities/Entity.h"
 #include "src/graphics/entities/Camera.h"
-#include "src/graphics/entities/Light.h"
+#include "src/graphics/entities/DirectionalLight.h"
+#include "src/graphics/entities/PointLight.h"
+#include "src/graphics/entities/SpotLight.h"
 
 #include "src/graphics/entities/terrains/Terrain.h"
 #include "src/graphics/entities/terrains/WaterTile.h"

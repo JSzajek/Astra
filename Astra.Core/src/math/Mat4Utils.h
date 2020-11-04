@@ -2,7 +2,7 @@
 
 #include "Mat4.h"
 #include "../graphics/textures/GuiTexture.h"
-#include "../graphics/entities/Entity.h"
+#include "../graphics/entities/Spatial.h"
 #include "../graphics/entities/Camera.h"
 
 namespace Astra::Math
@@ -24,12 +24,12 @@ namespace Astra::Math
 			return Get().TransformationImpl(texture.GetPosition(), texture.GetScale());
 		}
 
-		static Mat4 Transformation(const Graphics::Spatial& entity)
+		static Mat4 Transformation(const Graphics::Spatial* entity)
 		{
-			return Get().TransformationImpl(entity.GetTranslation(), entity.rows[1].x, entity.rows[1].y, entity.rows[1].z, entity.rows[2].x);
+			return Get().TransformationImpl(entity->GetTranslation(), entity->GetRotation(), entity->GetScale());
 		}
 
-		static Mat4 ViewMatrix(const Graphics::Camera& camera)
+		static Mat4 ViewMatrix(const Graphics::Camera* camera)
 		{
 			return Get().ViewMatrixImpl(camera);
 		}
@@ -37,14 +37,14 @@ namespace Astra::Math
 	private:
 		Mat4Utils() { }
 
-		Mat4 TransformationImpl(const Vec3& translation, float rx, float ry, float rz, float scale)
+		Mat4 TransformationImpl(const Vec3& translation, const Vec3& rotation, const Vec3& scale)
 		{
 			Mat4 result(1);
 			result = result.Translate(translation);
-			result = result.Rotate(rx, XAxis);
-			result = result.Rotate(ry, YAxis);
-			result = result.Rotate(rz, ZAxis);
-			result = result.Scale(Vec3(scale));
+			result = result.Rotate(rotation.x, Vec3::X_Axis);
+			result = result.Rotate(rotation.y, Vec3::Y_Axis);
+			result = result.Rotate(rotation.z, Vec3::Z_Axis);
+			result = result.Scale(scale);
 			return result;
 		}
 		
@@ -56,12 +56,12 @@ namespace Astra::Math
 			return result;
 		}
 
-		Mat4 ViewMatrixImpl(const Graphics::Camera& camera)
+		Mat4 ViewMatrixImpl(const Graphics::Camera* camera)
 		{
 			Mat4 result(1);
-			result = result.Rotate(camera.GetPitch(), XAxis);
-			result = result.Rotate(camera.GetYaw(), YAxis);
-			result = result.Translate(*camera.GetInvertedPosition());
+			result.Rotate(camera->GetPitch(), Vec3::X_Axis);
+			result.Rotate(camera->GetYaw(), Vec3::Y_Axis);
+			result.Translate(*camera->GetInvertedPosition());
 			return result;
 		}
 	};

@@ -4,23 +4,26 @@
 
 namespace Astra::Graphics
 {
-	ImageMaterial::ImageMaterial()
-		: Texture(Loader::LoadTexture(Texture::DefaultTexture)), m_rowCount(1), reflectivity(0), shineDampener(1), transparent(false), fakeLight(false)
+	ImageMaterial::ImageMaterial(const char* const filepath, int rowCount, float reflectivity, 
+								 bool transparent, bool fakeLight)
+		: m_diffuse(Loader::LoadTexture(filepath)), m_rowCount(rowCount), Reflectivity(reflectivity),
+			Transparent(transparent), FakeLight(fakeLight)
 	{
+		m_specular = Loader::LoadTexture(Texture::DefaultSpecular);
 	}
 
-	ImageMaterial::ImageMaterial(const char* const filepath)
-		: Texture(Loader::LoadTexture(filepath)), m_rowCount(1), reflectivity(0), shineDampener(1), transparent(false), fakeLight(false)
+	ImageMaterial::ImageMaterial(const char* const diffusepath, const char* const specularpath,
+								 int rowCount, float reflectivity, bool transparent)
+		: m_diffuse(Loader::LoadTexture(diffusepath)), m_rowCount(rowCount), Reflectivity(reflectivity), Transparent(transparent), FakeLight(false)
 	{
+		m_specular = specularpath != NULL ? Loader::LoadTexture(specularpath) : Loader::LoadTexture(Texture::DefaultSpecular);
 	}
 
-	ImageMaterial::ImageMaterial(const char* const filepath, int rowCount)
-		: Texture(Loader::LoadTexture(filepath)), m_rowCount(rowCount), reflectivity(0), shineDampener(1), transparent(false), fakeLight(false)
-	{
-	}
-
-	ImageMaterial::ImageMaterial(const char* const filepath, int rowCount, float shineDampener, float reflectivity, bool transparent, bool fakeLight)
-		: Texture(Loader::LoadTexture(filepath)), m_rowCount(rowCount), shineDampener(shineDampener), reflectivity(reflectivity), transparent(transparent), fakeLight(fakeLight)
-	{
-	}
+	//ImageMaterial::ImageMaterial(const char* const diffusepath, const char* const specularpath, 
+	//							 const char* const heightmappath, int rowCount, float reflectivity, bool transparent)
+	//	: m_diffuse(Loader::LoadTexture(diffusepath)), m_rowCount(rowCount), Reflectivity(reflectivity), Transparent(transparent), FakeLight(false)
+	//{
+	//	m_specular = Loader::LoadTexture(specularpath != NULL ? specularpath : Texture::DefaultSpecular);
+	//	m_heightmap = Loader::LoadTexture(heightmappath != NULL ? heightmappath : Texture::DefaultSpecular);
+	//}
 }

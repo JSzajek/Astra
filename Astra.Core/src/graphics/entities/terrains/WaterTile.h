@@ -17,6 +17,6 @@ namespace Astra::Graphics
 		WaterTile(float xCenter, float zCenter, float height, WaterMaterial* const material = new WaterMaterial());
 		WaterTile(float xCenter, float zCenter, float height, float size, WaterMaterial* const material = new WaterMaterial());
 		WaterTile(const WaterTile& other);
-		inline Math::Vec3& Rotation() override;
+		inline Math::Vec3* Rotation() override;
 	};
 }

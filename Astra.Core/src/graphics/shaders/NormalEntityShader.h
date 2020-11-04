@@ -4,59 +4,25 @@
 
 namespace Astra::Graphics
 {
+	#define FAKE_LIGHT					"useFakeLighting"
+	#define NUMBER_OF_ROWS				"numberOfRows"
+	#define OFFSET_TAG					"offset"
+	
+	#define NORMAL_MAP					"material.normalMap"
+	#define PARALLAX_MAP				"material.parallaxMap"
+
+	#define NORMAL_MAPPED_FLAG_TAG		"flags[0]"
+	#define PARALLAX_MAPPED_FLAG_TAG	"flags[1]"
+	
+	#define HEIGHT_SCALE				"heightScale"
+
 	class NormalEntityShader : public Shader
 	{
-#define MAX_LIGHTS 4
-
 	public:
-		static constexpr const char* LightPositionTag = "lightPosition";
-		static constexpr const char* LightColorTag = "lightColor";
-		static constexpr const char* ShineDampenerTag = "shineDampener";
-		static constexpr const char* ReflectivityTag = "reflectivity";
-
-		static constexpr const char* SkyColorTag = "fogColor";
-
-		static constexpr const char* UseFakeLightingTag = "useFakeLighting";
-
-		static constexpr const char* NumberOfRowsTag = "numberOfRows";
-		static constexpr const char* OffsetTag = "offset";
-
-		static constexpr const char* ClipPaneTag = "clipPlane";
-
-		static constexpr const char* ModelTextureTag = "u_Texture";
-		static constexpr const char* NormalMapTag = "u_NormalMap";
-
-
-	public:
-		NormalEntityShader(const char* filepath =
+		NormalEntityShader(int numOfLights, const char* filepath =
 			"../Astra.Core/src/resources/shaders/NormalEntity.shader")
-			: Shader(filepath, ShaderType::NormalMapped)
+			: Shader(filepath, ShaderType::NormalMapped, &std::make_tuple("NR_POINT_LIGHTS %i", numOfLights))
 		{
-		}
-
-		static const char* GetLightPositionTag(int index)
-		{
-			static std::string base("lightPosition[x]");
-			return base.replace(base.end() - 2, base.end() - 1, std::to_string(index)).c_str();
-		}
-
-		static const char* GetLightColorTag(int index)
-		{
-			static std::string base("lightColor[x]");
-			return base.replace(base.end() - 2, base.end() - 1, std::to_string(index)).c_str();
-		}
-
-		static const char* GetAttenuationTag(int index)
-		{
-			static std::string base("attenuation[x]");
-			return base.replace(base.end() - 2, base.end() - 1, std::to_string(index)).c_str();
-		}
-
-		static const Math::Vec3& ConvertToEyeSpacePosition(const Math::Vec3& position, const Math::Mat4& viewMatrix)
-		{
-			Math::Vec4 eyeSpacePos = Math::Vec4(position.x, position.y, position.z, 1.0f);
-			Math::Vec4 result = viewMatrix * eyeSpacePos;
-			return Math::Vec3(result.x, result.y, result.z);
 		}
 	};
 }
