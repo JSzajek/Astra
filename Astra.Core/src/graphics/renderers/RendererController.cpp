@@ -197,19 +197,19 @@ namespace Astra::Graphics
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetReflectionBuffer().GetId(), 320, 180);
 			m_mainCamera->Translation()->y -= distance;
 			m_mainCamera->InvertPitch(); // Updates the view matrix
-			PreRender(viewMatrix->Inverse() * Math::Vec4::Back, m_reflectionClipPlane);
+			PreRender(viewMatrix->Inverse() * Math::Vec4::W_Axis, m_reflectionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 
 			m_mainCamera->Translation()->y += distance;
 			m_mainCamera->InvertPitch(); // Updates the view matrix
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetRefractionBuffer().GetId(), 1280, 720);
-			PreRender(viewMatrix->Inverse() * Math::Vec4::Back, m_refractionClipPlane);
+			PreRender(viewMatrix->Inverse() * Math::Vec4::W_Axis, m_refractionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 		}
 
 		if (m_mainCamera)
 		{
-			Math::Vec4 inverseView = viewMatrix->Inverse() * Math::Vec4::Back;
+			Math::Vec4 inverseView = viewMatrix->Inverse() * Math::Vec4::W_Axis;
 			PrepareRender();
 			PreRender(inverseView);
 			PostRender(inverseView);
