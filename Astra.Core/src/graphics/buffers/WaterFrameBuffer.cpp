@@ -2,7 +2,7 @@
 
 namespace Astra::Graphics
 {
-	WaterFrameBuffer::WaterFrameBuffer(const FrameBuffer& reflection, const FrameBuffer& refraction,
+	WaterFrameBuffer::WaterFrameBuffer(FrameBuffer* reflection, FrameBuffer* refraction,
 										unsigned int reflectionWidth, unsigned int reflectionHeight,
 										unsigned int refractionWidth, unsigned int refractionHeight)
 		: m_reflectionBuffer(reflection), m_refractionBuffer(refraction),

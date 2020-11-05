@@ -9,15 +9,15 @@ namespace Astra::Graphics
 	private:
 		float m_width, m_height;
 		unsigned int m_mapId;
+		FrameBuffer* m_buffer;
 	public:
-		FrameBuffer m_buffer;
-	public:
-		ShadowFrameBuffer(const FrameBuffer& buffer, unsigned int mapId, unsigned int width, unsigned int height);
+		ShadowFrameBuffer(FrameBuffer* buffer, unsigned int mapId, unsigned int width, unsigned int height);
 		ShadowFrameBuffer(const ShadowFrameBuffer& other);
+		~ShadowFrameBuffer();
 
 		inline const float GetWidth() const { return m_width; }
 		inline const float GetHeight() const { return m_height; }
-		inline const FrameBuffer& GetBuffer() const { return m_buffer; }
+		inline const FrameBuffer* GetBuffer() const { return m_buffer; }
 		inline const unsigned int GetShadowMap() const { return m_mapId; }
 	};
 }

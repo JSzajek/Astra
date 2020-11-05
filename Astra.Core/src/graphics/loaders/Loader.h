@@ -79,6 +79,11 @@ namespace Astra::Graphics
 			return Get().LoadShadowFrameBufferImpl(width, height);
 		}
 
+		static FrameBuffer* LoadFrameBuffer(unsigned int width, unsigned int height, DepthBufferType depthType = DepthBufferType::Render)
+		{
+			return Get().LoadFrameBufferImpl(width, height, depthType);
+		}
+
 	private:
 		Loader();
 		~Loader();
@@ -102,8 +107,9 @@ namespace Astra::Graphics
 		WaterFrameBuffer* LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
 												   unsigned int refractionWidth, unsigned int refractionHeight);
 		ShadowFrameBuffer* LoadShadowFrameBufferImpl(unsigned int width, unsigned int height);
+		FrameBuffer* LoadFrameBufferImpl(unsigned int width, unsigned int height, DepthBufferType depthType);
 
-		const FrameBuffer& CreateFrameBuffer(int drawAttachment = GL_NONE, int readAttachment = GL_NONE);
+		FrameBuffer* CreateFrameBuffer(int drawAttachment = GL_NONE, int readAttachment = GL_NONE);
 		void CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height);
 		GLuint CreateDepthTextureAttachment(GLuint& id, unsigned int width, unsigned int height, int component = GL_DEPTH_COMPONENT32, int filter = GL_LINEAR, int wrap = GL_REPEAT);
 		void CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height);

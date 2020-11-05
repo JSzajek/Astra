@@ -120,11 +120,11 @@ namespace Astra::Graphics
 		if (m_buffer)
 		{
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, m_buffer->GetReflectionBuffer().GetColorAttachment());
+			glBindTexture(GL_TEXTURE_2D, m_buffer->GetReflectionBuffer()->GetColorAttachment());
 			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, m_buffer->GetRefractionBuffer().GetColorAttachment());
+			glBindTexture(GL_TEXTURE_2D, m_buffer->GetRefractionBuffer()->GetColorAttachment());
 			glActiveTexture(GL_TEXTURE4);
-			glBindTexture(GL_TEXTURE_2D, m_buffer->GetRefractionBuffer().GetDepthAttachment());
+			glBindTexture(GL_TEXTURE_2D, m_buffer->GetRefractionBuffer()->GetDepthAttachment());
 		}
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

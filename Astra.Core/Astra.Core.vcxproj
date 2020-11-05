@@ -204,6 +204,7 @@
     <ClCompile Include="src\graphics\renderers\ParticleRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\Renderer.cpp" />
     <ClCompile Include="src\graphics\renderers\RendererController.cpp" />
+    <ClCompile Include="src\graphics\renderers\ScreenRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\ShadowMapRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\SkyboxRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\TerrainRenderer.cpp" />
@@ -267,11 +268,13 @@
     <ClInclude Include="src\graphics\renderers\ParticleRenderer.h" />
     <ClInclude Include="src\graphics\renderers\RendererController.h" />
     <ClInclude Include="src\graphics\renderers\Renderer.h" />
+    <ClInclude Include="src\graphics\renderers\ScreenRenderer.h" />
     <ClInclude Include="src\graphics\renderers\ShadowMapRenderer.h" />
     <ClInclude Include="src\graphics\renderers\SkyboxRenderer.h" />
     <ClInclude Include="src\graphics\renderers\TerrainRenderer.h" />
     <ClInclude Include="src\graphics\renderers\WaterRenderer.h" />
     <ClInclude Include="src\graphics\scenes\Scene.h" />
+    <ClInclude Include="src\graphics\shaders\ContrastShader.h" />
     <ClInclude Include="src\graphics\shaders\EntityShader.h" />
     <ClInclude Include="src\graphics\shaders\FontShader.h" />
     <ClInclude Include="src\graphics\shaders\GizmoShader.h" />
@@ -302,6 +305,7 @@
     <ClInclude Include="src\utils\vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\resources\shaders\Contrast.shader" />
     <None Include="src\resources\shaders\Entity.shader" />
     <None Include="src\resources\shaders\Font.shader" />
     <None Include="src\resources\shaders\Gizmo.shader" />

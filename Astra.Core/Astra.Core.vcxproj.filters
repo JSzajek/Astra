@@ -168,6 +168,9 @@
     <ClCompile Include="src\graphics\gizmos\GizmoController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\renderers\ScreenRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat4.h">
@@ -407,6 +410,12 @@
     <ClInclude Include="src\graphics\renderers\GizmoRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\renderers\ScreenRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\shaders\ContrastShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\resources\shaders\Gui.shader" />
@@ -419,6 +428,7 @@
     <None Include="src\resources\shaders\Shadow.shader" />
     <None Include="src\resources\shaders\Entity.shader" />
     <None Include="src\resources\shaders\Gizmo.shader" />
+    <None Include="src\resources\shaders\Contrast.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\textures\Default.jpg">

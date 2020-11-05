@@ -5,6 +5,12 @@
 
 namespace Astra::Graphics
 {
+	enum class DepthBufferType
+	{
+		Render,
+		Texture
+	};
+
 	struct FrameBuffer
 	{
 	private:
@@ -12,13 +18,8 @@ namespace Astra::Graphics
 	public:
 		FrameBuffer()
 		{
-			memset(m_data, 0, 3 * sizeof(float));
+			memset(m_data, 0, 3 * sizeof(GLuint));
 		}
-
-		/*FrameBuffer(const FrameBuffer& other)
-		{
-			memcpy(m_data, other.m_data, 3 * sizeof(float));
-		}*/
 
 		const GLuint& GetId() const { return m_data[0]; }
 		const GLuint& GetColorAttachment() const { return m_data[1]; }

@@ -217,18 +217,18 @@ namespace Astra::Graphics
 	WaterFrameBuffer* Loader::LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
 															  unsigned int refractionWidth, unsigned int refractionHeight)
 	{
-		FrameBuffer reflection = CreateFrameBuffer(GL_COLOR_ATTACHMENT0);
-		CreateTextureAttachment(reflection.ColorAttachment(), reflectionWidth, reflectionHeight);
-		CreateDepthBufferAttachment(reflection.DepthAttachment(), reflectionWidth, reflectionHeight);
+		FrameBuffer* reflection = CreateFrameBuffer(GL_COLOR_ATTACHMENT0);
+		CreateTextureAttachment(reflection->ColorAttachment(), reflectionWidth, reflectionHeight);
+		CreateDepthBufferAttachment(reflection->DepthAttachment(), reflectionWidth, reflectionHeight);
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
 			Logger::LogError("Error Incomplete Reflection FBO.");
 		}
 		UnbindFrameBuffer();
 
-		FrameBuffer refraction = CreateFrameBuffer(GL_COLOR_ATTACHMENT0);
-		CreateTextureAttachment(refraction.ColorAttachment(), refractionWidth, refractionHeight);
-		static_cast<void>(CreateDepthTextureAttachment(refraction.DepthAttachment(), refractionWidth, refractionHeight));
+		FrameBuffer* refraction = CreateFrameBuffer(GL_COLOR_ATTACHMENT0);
+		CreateTextureAttachment(refraction->ColorAttachment(), refractionWidth, refractionHeight);
+		static_cast<void>(CreateDepthTextureAttachment(refraction->DepthAttachment(), refractionWidth, refractionHeight));
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
 			Logger::LogError("Error Incomplete Refraction FBO.");
@@ -243,8 +243,8 @@ namespace Astra::Graphics
 
 	ShadowFrameBuffer* Loader::LoadShadowFrameBufferImpl(unsigned int width, unsigned int height)
 	{
-		FrameBuffer buffer = CreateFrameBuffer();
-		GLuint id = CreateDepthTextureAttachment(buffer.DepthAttachment(), width, height, GL_DEPTH_COMPONENT16, GL_NEAREST, GL_CLAMP_TO_EDGE);
+		FrameBuffer* buffer = CreateFrameBuffer();
+		GLuint id = CreateDepthTextureAttachment(buffer->DepthAttachment(), width, height, GL_DEPTH_COMPONENT16, GL_NEAREST, GL_CLAMP_TO_EDGE);
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
 			Logger::LogError("Error Incomplete Shadow FBO.");
@@ -255,11 +255,32 @@ namespace Astra::Graphics
 		return shadowFrameBuffer;
 	}
 
-	const FrameBuffer& Loader::CreateFrameBuffer(int drawAttachment, int readAttachment)
+	FrameBuffer* Loader::LoadFrameBufferImpl(unsigned int width, unsigned int height, DepthBufferType depthType)
 	{
-		FrameBuffer buffer;
-		glGenFramebuffers(1, &buffer.Id());
-		glBindFramebuffer(GL_FRAMEBUFFER, buffer.Id());
+		FrameBuffer* buffer = CreateFrameBuffer(GL_COLOR_ATTACHMENT0);
+		CreateTextureAttachment(buffer->ColorAttachment(), width, height);
+		if (depthType == DepthBufferType::Render)
+		{
+			CreateDepthBufferAttachment(buffer->DepthAttachment(), width, height);
+		}
+		else
+		{
+			CreateDepthTextureAttachment(buffer->DepthAttachment(), width, height);
+		}
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			Logger::LogError("Error Incomplete FBO.");
+		}
+		UnbindFrameBuffer();
+
+		return buffer;
+	}
+
+	FrameBuffer* Loader::CreateFrameBuffer(int drawAttachment, int readAttachment)
+	{
+		FrameBuffer* buffer = new FrameBuffer();
+		glGenFramebuffers(1, &buffer->Id());
+		glBindFramebuffer(GL_FRAMEBUFFER, buffer->Id());
 		glDrawBuffer(drawAttachment);
 		glReadBuffer(readAttachment);
 		return buffer;
