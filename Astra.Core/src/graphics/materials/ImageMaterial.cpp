@@ -16,7 +16,7 @@ namespace Astra::Graphics
 								 int rowCount, float reflectivity, bool transparent)
 		: m_diffuse(Loader::LoadTexture(diffusepath)), m_rowCount(rowCount), Reflectivity(reflectivity), Transparent(transparent), FakeLight(false)
 	{
-		m_specular = specularpath != NULL ? Loader::LoadTexture(specularpath) : Loader::LoadTexture(Texture::DefaultSpecular);
+		m_specular = specularpath != NULL ? Loader::LoadTexture(specularpath, false) : Loader::LoadTexture(Texture::DefaultSpecular, false);
 	}
 
 	//ImageMaterial::ImageMaterial(const char* const diffusepath, const char* const specularpath, 

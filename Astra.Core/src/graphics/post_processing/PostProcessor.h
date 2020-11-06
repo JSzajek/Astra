@@ -6,6 +6,7 @@
 #include "ImageEffect.h"
 
 #include "ContrastEffect.h"
+#include "HDREffect.h"
 #include "HorizontalBlurEffect.h"
 #include "VerticalBlurEffect.h"
 

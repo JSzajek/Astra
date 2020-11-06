@@ -262,6 +262,7 @@
     <ClInclude Include="src\graphics\particles\ParticleSystem.h" />
     <ClInclude Include="src\graphics\particles\ConeParticleSystem.h" />
     <ClInclude Include="src\graphics\post_processing\ContrastEffect.h" />
+    <ClInclude Include="src\graphics\post_processing\HDREffect.h" />
     <ClInclude Include="src\graphics\post_processing\HorizontalBlurEffect.h" />
     <ClInclude Include="src\graphics\post_processing\ImageEffect.h" />
     <ClInclude Include="src\graphics\post_processing\PostProcessor.h" />
@@ -284,6 +285,7 @@
     <ClInclude Include="src\graphics\shaders\FontShader.h" />
     <ClInclude Include="src\graphics\shaders\GizmoShader.h" />
     <ClInclude Include="src\graphics\shaders\GuiShader.h" />
+    <ClInclude Include="src\graphics\shaders\HDRShader.h" />
     <ClInclude Include="src\graphics\shaders\HorizontalBlurShader.h" />
     <ClInclude Include="src\graphics\shaders\NormalEntityShader.h" />
     <ClInclude Include="src\graphics\shaders\ParticleShader.h" />
@@ -317,6 +319,7 @@
     <None Include="src\resources\shaders\Font.shader" />
     <None Include="src\resources\shaders\Gizmo.shader" />
     <None Include="src\resources\shaders\Gui.shader" />
+    <None Include="src\resources\shaders\HDR.shader" />
     <None Include="src\resources\shaders\HorizontalBlur.shader" />
     <None Include="src\resources\shaders\NormalEntity.shader" />
     <None Include="src\resources\shaders\Particle.shader" />

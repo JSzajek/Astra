@@ -14,8 +14,8 @@ namespace Astra::Graphics
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLE_STRIP, { -1, 1, -1, -1, 1, 1, 1, -1 }, 2);
 	#if MULTI_SAMPLE
-		m_multisampledBuffer = Loader::LoadFrameBuffer(Window::width, Window::height, true, DepthBufferType::Render);
-		m_screenBuffer = Loader::LoadFrameBuffer(Window::width, Window::height, false, DepthBufferType::Texture);
+		m_multisampledBuffer = Loader::LoadFrameBuffer(Window::width, Window::height, true, DepthBufferType::Render, true);
+		m_screenBuffer = Loader::LoadFrameBuffer(Window::width, Window::height, false, DepthBufferType::Texture, true);
 	#else
 		m_multisampledBuffer = NULL;
 		m_screenBuffer = Loader::LoadFrameBuffer(Window::width, Window::height, false, DepthBufferType::Render);
@@ -30,7 +30,8 @@ namespace Astra::Graphics
 			effects.push_back(new VerticalBlurEffect(blurWidth, blurHeight));
 		}
 	#endif
-		effects.push_back(new ContrastEffect());
+		effects.push_back(new HDREffect(true, 1));
+		//effects.push_back(new ContrastEffect());
 	}
 
 	PostProcessor::~PostProcessor()
@@ -74,14 +75,22 @@ namespace Astra::Graphics
 	#else
 		unsigned int attachment = m_screenBuffer->GetColorAttachment();
 	#endif
-		for (auto* effect : effects)
+		if (effects.size() == 0)
 		{
-			effect->Start(&attachment);
-
 			glClear(GL_COLOR_BUFFER_BIT);
 			glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
+		}
+		else
+		{
+			for (auto* effect : effects)
+			{
+				effect->Start(&attachment);
 
-			effect->Stop();
+				glClear(GL_COLOR_BUFFER_BIT);
+				glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
+
+				effect->Stop();
+			}
 		}
 
 		glEnable(GL_DEPTH_TEST);

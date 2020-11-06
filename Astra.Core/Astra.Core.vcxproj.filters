@@ -437,6 +437,12 @@
     <ClInclude Include="src\graphics\post_processing\VerticalBlurEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\post_processing\HDREffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\shaders\HDRShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\resources\shaders\Gui.shader" />
@@ -452,6 +458,7 @@
     <None Include="src\resources\shaders\Contrast.shader" />
     <None Include="src\resources\shaders\HorizontalBlur.shader" />
     <None Include="src\resources\shaders\VerticalBlur.shader" />
+    <None Include="src\resources\shaders\HDR.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\textures\Default.jpg">

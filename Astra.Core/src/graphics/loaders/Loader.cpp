@@ -128,7 +128,7 @@ namespace Astra::Graphics
 		}
 	}
 
-	const Texture& Loader::LoadTextureImpl(const char* const filepath, GLint clippingOption, bool flip, bool invert)
+	const Texture& Loader::LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert)
 	{
 		static int m_bpp;
 		static unsigned char* buffer;
@@ -149,7 +149,7 @@ namespace Astra::Graphics
 			glGenTextures(1, &texture.id);
 			glBindTexture(GL_TEXTURE_2D, texture.id);
 		
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+			glTexImage2D(GL_TEXTURE_2D, 0, diffuse ? GL_SRGB8_ALPHA8 : GL_RGBA8, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 			glGenerateMipmap(GL_TEXTURE_2D);
 			
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clippingOption);
@@ -255,21 +255,21 @@ namespace Astra::Graphics
 		return shadowFrameBuffer;
 	}
 
-	FrameBuffer* Loader::LoadFrameBufferImpl(unsigned int width, unsigned int height, bool multisampled, DepthBufferType depthType)
+	FrameBuffer* Loader::LoadFrameBufferImpl(unsigned int width, unsigned int height, bool multisampled, DepthBufferType depthType, bool floating)
 	{
 		FrameBuffer* buffer = CreateFrameBuffer(GL_COLOR_ATTACHMENT0, multisampled ? GL_COLOR_ATTACHMENT0 : GL_NONE);
 		if (!multisampled)
 		{
-			CreateTextureAttachment(buffer->ColorAttachment(), width, height);
+			CreateTextureAttachment(buffer->ColorAttachment(), width, height, floating);
 		}
 		else
 		{
-			CreateColorBufferAttachment(buffer->ColorAttachment(), width, height, multisampled);
+			CreateColorBufferAttachment(buffer->ColorAttachment(), width, height, multisampled, floating);
 		}
 
 		if (depthType == DepthBufferType::Render)
 		{
-			CreateDepthBufferAttachment(buffer->DepthAttachment(), width, height, multisampled);
+			CreateDepthBufferAttachment(buffer->DepthAttachment(), width, height, multisampled, floating);
 		}
 		else if (depthType == DepthBufferType::Texture)
 		{
@@ -295,11 +295,11 @@ namespace Astra::Graphics
 		return buffer;
 	}
 
-	void Loader::CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height)
+	void Loader::CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height, bool floating)
 	{
 		glGenTextures(1, &id);
 		glBindTexture(GL_TEXTURE_2D, id);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, floating ? GL_RGBA16F : GL_RGBA, width, height, 0, GL_RGBA, floating ? GL_FLOAT : GL_UNSIGNED_BYTE, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -322,7 +322,7 @@ namespace Astra::Graphics
 		return id;
 	}
 
-	void Loader::CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height, bool multisampled)
+	void Loader::CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height, bool multisampled, bool floating)
 	{
 		glGenRenderbuffers(1, &id);
 		glBindRenderbuffer(GL_RENDERBUFFER, id);
@@ -338,11 +338,11 @@ namespace Astra::Graphics
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, id);
 	}
 
-	void Loader::CreateColorBufferAttachment(GLuint& id, unsigned int width, unsigned int height, bool multisampled)
+	void Loader::CreateColorBufferAttachment(GLuint& id, unsigned int width, unsigned int height, bool multisampled, bool floating)
 	{
 		glGenTextures(1, &id);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, id);
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, MULTI_SAMPLE_SIZE, GL_RGB, width, height, GL_TRUE);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, MULTI_SAMPLE_SIZE, floating ? GL_RGBA16F : GL_RGBA, width, height, GL_TRUE);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, id, 0);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 		m_textureIds.push_back(id);

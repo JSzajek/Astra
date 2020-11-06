@@ -60,7 +60,7 @@ int main()
     mainScene->AddText(text);
     mainScene->AddText(outlineText);
 
-    Texture texture = Loader::LoadTexture("res/textures/grassTexture.png");
+    Texture texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
     GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
     mainScene->AddGui(&gui);
 
@@ -94,9 +94,9 @@ int main()
     Vec3 light_pos = Math::Vec3(-55, terrain.GetHeightOfTerrain(-55, 55) + 7, 55);
     const VertexArray* cubeVertArray = ObjLoader::LoadObjectModel("res/cube.obj");
     Entity light_indicator = Entity(cubeVertArray, light_pos, Vec3(0), Vec3(0.5f));
-    DirectionalLight* dir_light = new DirectionalLight(Vec3(0), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0.6f));
+    DirectionalLight* dir_light = new DirectionalLight(Vec3(0), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0));
     //Light* light4 = new DirectionalLight(light_pos, Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.4f), Vec3(0.5f), Vec3(1.0f));
-    PointLight* light4 = new PointLight(light_pos, Vec3(1), Vec3(1), Vec3(1.0f));
+    PointLight* light4 = new PointLight(light_pos, Vec3(1), Vec3(1), Vec3(50));
 
     //light_pos.y += 18;
     //Light* light4 = new SpotLight(light_pos, Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.4f), Vec3(0.5f), Vec3(0.7f), cosf(Math::ToRadians(12.5)), cosf(Math::ToRadians(17.5)));

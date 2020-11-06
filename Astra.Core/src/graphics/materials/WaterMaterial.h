@@ -8,12 +8,12 @@ namespace Astra::Graphics
 	class WaterMaterial
 	{
 	private:
-		const Math::Vec4 DefaultBaseColor = Math::Vec4(0, 0.3f, 0.8f, 1);
 		static const constexpr float DefaultWaveStrength = 0.02f;
 		static const constexpr float DefaultWaveSpeed = 0.03f;
 		static const constexpr float DefaultShineDampener = 20.0f;
 		static const constexpr float DefaultReflectivity = 0.6f;
 
+		static constexpr const char* DefaultDiffuseMap = "../Astra.Core/src/resources/textures/DefaultWaterBase.jpg";
 		static constexpr const char* DefaultDuDvMap = "../Astra.Core/src/resources/textures/DefaultDuDvMap.png";
 		static constexpr const char* DefaultNormalMap = "../Astra.Core/src/resources/textures/DefaultNormalMap.png";
 	private:
@@ -22,7 +22,7 @@ namespace Astra::Graphics
 	public:
 		float waveStrength, waveSpeed;
 		float shineDampener, reflectivity;
-		Math::Vec4 baseColor;
+		Texture diffuseTexture;
 		Texture dudvTexture;
 		Texture normalTexture;
 	public:

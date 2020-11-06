@@ -5,7 +5,7 @@
 namespace Astra::Graphics
 {
 	ParticleMaterial::ParticleMaterial(const char* const filepath, int rowCount)
-		: Texture(Loader::LoadTexture(filepath, GL_REPEAT, false)), m_rowCount(rowCount)
+		: Texture(Loader::LoadTexture(filepath, true, GL_REPEAT, false)), m_rowCount(rowCount)
 	{
 	}
 }

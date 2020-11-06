@@ -48,7 +48,7 @@ namespace Astra::Graphics
 
 	Entity::Entity(const char* const filepath, const char* const normalMapTexture, const ImageMaterial* material, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale)
 		: vertexArray(ObjLoader::LoadNormalMappedObjectModel(filepath)), 
-			normalMap(Loader::LoadTexture(normalMapTexture)),  material(material), 
+			normalMap(Loader::LoadTexture(normalMapTexture, false)),  material(material), 
 			m_textureIndex(0), Spatial(position, rotation, scale), m_normalMapped(true), m_parallaxMapped(false), m_height(0)
 	{
 	}
@@ -61,8 +61,8 @@ namespace Astra::Graphics
 
 	Entity::Entity(const char* const filepath, const char* const normalMapTexture, const char* const heightMapTexture,
 			float height, const ImageMaterial* material, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale)
-		: vertexArray(ObjLoader::LoadNormalMappedObjectModel(filepath)), normalMap(Loader::LoadTexture(normalMapTexture)),
-			parallaxMap(Loader::LoadTexture(heightMapTexture)), material(material), m_textureIndex(0),
+		: vertexArray(ObjLoader::LoadNormalMappedObjectModel(filepath)), normalMap(Loader::LoadTexture(normalMapTexture, false)),
+			parallaxMap(Loader::LoadTexture(heightMapTexture, false)), material(material), m_textureIndex(0),
 				Spatial(position, rotation, scale), m_normalMapped(true), m_parallaxMapped(true), m_height(height)
 	{
 
