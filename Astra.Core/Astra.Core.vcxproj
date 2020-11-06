@@ -196,6 +196,8 @@
     <ClCompile Include="src\graphics\particles\Particle.cpp" />
     <ClCompile Include="src\graphics\particles\ParticleController.cpp" />
     <ClCompile Include="src\graphics\particles\ParticleSystem.cpp" />
+    <ClCompile Include="src\graphics\post_processing\ImageEffect.cpp" />
+    <ClCompile Include="src\graphics\post_processing\PostProcessor.cpp" />
     <ClCompile Include="src\graphics\renderers\Entity3dRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\FontRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\GizmoRenderer.cpp" />
@@ -204,7 +206,6 @@
     <ClCompile Include="src\graphics\renderers\ParticleRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\Renderer.cpp" />
     <ClCompile Include="src\graphics\renderers\RendererController.cpp" />
-    <ClCompile Include="src\graphics\renderers\ScreenRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\ShadowMapRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\SkyboxRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\TerrainRenderer.cpp" />
@@ -260,6 +261,11 @@
     <ClInclude Include="src\graphics\particles\ParticleController.h" />
     <ClInclude Include="src\graphics\particles\ParticleSystem.h" />
     <ClInclude Include="src\graphics\particles\ConeParticleSystem.h" />
+    <ClInclude Include="src\graphics\post_processing\ContrastEffect.h" />
+    <ClInclude Include="src\graphics\post_processing\HorizontalBlurEffect.h" />
+    <ClInclude Include="src\graphics\post_processing\ImageEffect.h" />
+    <ClInclude Include="src\graphics\post_processing\PostProcessor.h" />
+    <ClInclude Include="src\graphics\post_processing\VerticalBlurEffect.h" />
     <ClInclude Include="src\graphics\renderers\Entity3dRenderer.h" />
     <ClInclude Include="src\graphics\renderers\FontRenderer.h" />
     <ClInclude Include="src\graphics\renderers\GizmoRenderer.h" />
@@ -268,7 +274,6 @@
     <ClInclude Include="src\graphics\renderers\ParticleRenderer.h" />
     <ClInclude Include="src\graphics\renderers\RendererController.h" />
     <ClInclude Include="src\graphics\renderers\Renderer.h" />
-    <ClInclude Include="src\graphics\renderers\ScreenRenderer.h" />
     <ClInclude Include="src\graphics\renderers\ShadowMapRenderer.h" />
     <ClInclude Include="src\graphics\renderers\SkyboxRenderer.h" />
     <ClInclude Include="src\graphics\renderers\TerrainRenderer.h" />
@@ -279,12 +284,14 @@
     <ClInclude Include="src\graphics\shaders\FontShader.h" />
     <ClInclude Include="src\graphics\shaders\GizmoShader.h" />
     <ClInclude Include="src\graphics\shaders\GuiShader.h" />
+    <ClInclude Include="src\graphics\shaders\HorizontalBlurShader.h" />
     <ClInclude Include="src\graphics\shaders\NormalEntityShader.h" />
     <ClInclude Include="src\graphics\shaders\ParticleShader.h" />
     <ClInclude Include="src\graphics\shaders\Shader.h" />
     <ClInclude Include="src\graphics\shaders\ShadowShader.h" />
     <ClInclude Include="src\graphics\shaders\SkyboxShader.h" />
     <ClInclude Include="src\graphics\shaders\TerrainShader.h" />
+    <ClInclude Include="src\graphics\shaders\VerticalBlurShader.h" />
     <ClInclude Include="src\graphics\shaders\WaterShader.h" />
     <ClInclude Include="src\graphics\shadows\ShadowBox.h" />
     <ClInclude Include="src\graphics\shadows\ShadowMapController.h" />
@@ -310,11 +317,13 @@
     <None Include="src\resources\shaders\Font.shader" />
     <None Include="src\resources\shaders\Gizmo.shader" />
     <None Include="src\resources\shaders\Gui.shader" />
+    <None Include="src\resources\shaders\HorizontalBlur.shader" />
     <None Include="src\resources\shaders\NormalEntity.shader" />
     <None Include="src\resources\shaders\Particle.shader" />
     <None Include="src\resources\shaders\Shadow.shader" />
     <None Include="src\resources\shaders\Skybox.shader" />
     <None Include="src\resources\shaders\Terrain.shader" />
+    <None Include="src\resources\shaders\VerticalBlur.shader" />
     <None Include="src\resources\shaders\Water.shader" />
   </ItemGroup>
   <ItemGroup>

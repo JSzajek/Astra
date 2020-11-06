@@ -14,6 +14,7 @@ namespace Astra::Graphics
 		m_fogColor = new Math::Vec3(0);
 
 		Init();
+		m_postProcessor = new PostProcessor();
 		m_shadowMapController = new ShadowMapController(FieldOfView, NearPlane, FarPlane);
 		
 		m_guiRenderer = new GuiRenderer(new GuiShader());
@@ -22,7 +23,6 @@ namespace Astra::Graphics
 		m_terrainRenderer = new TerrainRenderer(m_fogColor);
 		m_waterRenderer = new WaterRenderer(m_fogColor, NearPlane, FarPlane);
 		m_normalEntityRenderer = new NormalEntity3dRenderer(m_fogColor);
-		m_screenRenderer = new ScreenRenderer(new ContrastShader());
 
 		m_waterBuffer = Loader::LoadWaterFrameBuffer(DefaultReflectionWidth, DefaultReflectionHeight,
 													 DefaultRefractionWidth, DefaultRefractionHeight);
@@ -221,7 +221,7 @@ namespace Astra::Graphics
 
 		ParticleController::Update(m_mainCamera->GetTranslation());
 		
-		m_screenRenderer->Attach();
+		m_postProcessor->Attach();
 
 		glActiveTexture(GL_TEXTURE6);
 		glBindTexture(GL_TEXTURE_2D, m_shadowMapController->GetShadowMap());
@@ -257,13 +257,14 @@ namespace Astra::Graphics
 		if (m_currentScene == NULL || m_block) { return; }
 
 		ParticleController::Render(viewMatrix);
+
+		// Perform Post Processing Effects
+		m_postProcessor->Detach();
+		m_postProcessor->Draw();
+		
 	#if _DEBUG
 		GizmoController::Render(viewMatrix);
 	#endif
-
-		m_screenRenderer->Unattach();
-		m_screenRenderer->Draw(NULL, NULL, NULL);
-		
 		m_guiRenderer->Draw(NULL);
 		FontController::Render();
 	}

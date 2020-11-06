@@ -168,7 +168,10 @@
     <ClCompile Include="src\graphics\gizmos\GizmoController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\renderers\ScreenRenderer.cpp">
+    <ClCompile Include="src\graphics\post_processing\PostProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\post_processing\ImageEffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -410,10 +413,28 @@
     <ClInclude Include="src\graphics\renderers\GizmoRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\renderers\ScreenRenderer.h">
+    <ClInclude Include="src\graphics\shaders\ContrastShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\shaders\ContrastShader.h">
+    <ClInclude Include="src\graphics\post_processing\ImageEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\post_processing\PostProcessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\post_processing\ContrastEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\post_processing\HorizontalBlurEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\shaders\HorizontalBlurShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\shaders\VerticalBlurShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\post_processing\VerticalBlurEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -429,6 +450,8 @@
     <None Include="src\resources\shaders\Entity.shader" />
     <None Include="src\resources\shaders\Gizmo.shader" />
     <None Include="src\resources\shaders\Contrast.shader" />
+    <None Include="src\resources\shaders\HorizontalBlur.shader" />
+    <None Include="src\resources\shaders\VerticalBlur.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\textures\Default.jpg">
