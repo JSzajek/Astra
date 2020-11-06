@@ -8,7 +8,8 @@ namespace Astra::Graphics
 	enum class DepthBufferType
 	{
 		Render,
-		Texture
+		Texture,
+		None
 	};
 
 	struct FrameBuffer

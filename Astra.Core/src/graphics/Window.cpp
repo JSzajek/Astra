@@ -61,7 +61,7 @@ namespace Astra::Graphics
 		glfwSetWindowUserPointer(m_window, this);
 	
 	#if MULTI_SAMPLE
-		glfwWindowHint(GLFW_SAMPLES, 4);
+		//glfwWindowHint(GLFW_SAMPLES, MULTI_SAMPLE_SIZE);
 		glEnable(GL_MULTISAMPLE);
 	#endif
 

@@ -79,9 +79,9 @@ namespace Astra::Graphics
 			return Get().LoadShadowFrameBufferImpl(width, height);
 		}
 
-		static FrameBuffer* LoadFrameBuffer(unsigned int width, unsigned int height, DepthBufferType depthType = DepthBufferType::Render)
+		static FrameBuffer* LoadFrameBuffer(unsigned int width, unsigned int height, bool multisampled = false, DepthBufferType depthType = DepthBufferType::None)
 		{
-			return Get().LoadFrameBufferImpl(width, height, depthType);
+			return Get().LoadFrameBufferImpl(width, height, multisampled, depthType);
 		}
 
 	private:
@@ -107,13 +107,13 @@ namespace Astra::Graphics
 		WaterFrameBuffer* LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
 												   unsigned int refractionWidth, unsigned int refractionHeight);
 		ShadowFrameBuffer* LoadShadowFrameBufferImpl(unsigned int width, unsigned int height);
-		FrameBuffer* LoadFrameBufferImpl(unsigned int width, unsigned int height, DepthBufferType depthType);
+		FrameBuffer* LoadFrameBufferImpl(unsigned int width, unsigned int height, bool multisampled, DepthBufferType depthType);
 
 		FrameBuffer* CreateFrameBuffer(int drawAttachment = GL_NONE, int readAttachment = GL_NONE);
 		void CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height);
 		GLuint CreateDepthTextureAttachment(GLuint& id, unsigned int width, unsigned int height, int component = GL_DEPTH_COMPONENT32, int filter = GL_LINEAR, int wrap = GL_REPEAT);
-		void CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height);
-
+		void CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height, bool multisampled = false);
+		void CreateColorBufferAttachment(GLuint& id, unsigned int width, unsigned int height, bool multisampled = false);
 		GLuint BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage = GL_STATIC_DRAW, GLboolean normalized = GL_FALSE);
 		GLuint BindIndicesBuffer(const std::vector<int>& data, GLenum usage = GL_STATIC_DRAW);
 

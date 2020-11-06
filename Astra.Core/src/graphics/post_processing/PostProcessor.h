@@ -16,6 +16,7 @@ namespace Astra::Graphics
 	private:
 		const VertexArray* m_defaultQuad;
 		const FrameBuffer* m_screenBuffer;
+		const FrameBuffer* m_multisampledBuffer;
 
 		std::vector<ImageEffect*> effects;
 	public:
@@ -26,5 +27,9 @@ namespace Astra::Graphics
 		void Detach();
 
 		void Draw();
+	private:
+		void ResolveFrameBuffer(GLuint bufferIn, GLuint bufferOut, unsigned int inputWidth, unsigned int inputHeight,
+			unsigned int outputWidth, unsigned int outputHeight);
+		void ResolveFrameBufferToScreen(GLuint bufferIn, unsigned int inputWidth, unsigned int inputHeight);
 	};
 }
