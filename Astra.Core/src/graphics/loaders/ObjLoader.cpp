@@ -42,6 +42,12 @@ namespace Astra::Graphics
 
 	const VertexArray* ObjLoader::LoadObjectModelImpl(const std::string& filepath)
 	{
+		auto temp = m_loaded.find(filepath);
+		if (temp != m_loaded.end())
+		{
+			return temp->second;
+		}
+
 		std::vector<float> verticesArray;
 		std::vector<float> texturesArray;
 		std::vector<float> normalsArray;
@@ -82,6 +88,7 @@ namespace Astra::Graphics
 		Convert(verticesArray, texturesArray, normalsArray);
 
 		const VertexArray* result = Loader::Load(GL_TRIANGLES, verticesArray, indices, texturesArray, normalsArray);
+		m_loaded[filepath] = result;
 
 		for (Vertex* vertex : vertices)
 		{
@@ -97,6 +104,12 @@ namespace Astra::Graphics
 
 	const VertexArray* ObjLoader::LoadNormalMappedObjectModelImpl(const std::string& filepath)
 	{
+		auto temp = m_loaded.find(filepath);
+		if (temp != m_loaded.end())
+		{
+			return temp->second;
+		}
+
 		std::vector<float> verticesArray;
 		std::vector<float> texturesArray;
 		std::vector<float> normalsArray;
@@ -140,6 +153,7 @@ namespace Astra::Graphics
 		Convert(verticesArray, texturesArray, normalsArray, tangentsArray);
 
 		const VertexArray* result = Loader::Load(GL_TRIANGLES, verticesArray, indices, texturesArray, normalsArray, tangentsArray);
+		m_loaded[filepath] = result;
 
 		for (NormalVertex* vertex : normVertices)
 		{

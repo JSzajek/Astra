@@ -87,34 +87,18 @@ int main()
     SkyboxMaterial skybox(m_textureFiles, m_nightTextureFiles);
     mainScene->SetSkyBox(&skybox);
     
-    //Light* light1 = new Light(Math::Vec3(20000, 20000, 20000), Math::Vec3(0.75f));  // Sun 
-    //Light* light2 = new Light(Math::Vec3(-20, 50, 20), Math::Vec3(0, 1, 1), Math::Vec3(1, 0.01f, 0.002f));
-    //Light* light3 = new Light(Math::Vec3(20, 50, -20), Math::Vec3(1, 0, 0), Math::Vec3(1, 0.01f, 0.002f));
-
     Vec3 light_pos = Math::Vec3(-55, terrain.GetHeightOfTerrain(-55, 55) + 7, 55);
-    const VertexArray* cubeVertArray = ObjLoader::LoadObjectModel("res/cube.obj");
-    Entity light_indicator = Entity(cubeVertArray, light_pos, Vec3(0), Vec3(0.5f));
     DirectionalLight* dir_light = new DirectionalLight(Vec3(0), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0));
-    //Light* light4 = new DirectionalLight(light_pos, Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.4f), Vec3(0.5f), Vec3(1.0f));
-    PointLight* light4 = new PointLight(light_pos, Vec3(1), Vec3(1), Vec3(50));
+    PointLight* light4 = new PointLight(light_pos, Vec3(3), Vec3(1), Vec3(50));
 
-    //light_pos.y += 18;
-    //Light* light4 = new SpotLight(light_pos, Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.4f), Vec3(0.5f), Vec3(0.7f), cosf(Math::ToRadians(12.5)), cosf(Math::ToRadians(17.5)));
-
-    //renderer.AddDirectionalLight(light1);
-    //renderer.AddLight(light2);
-    //renderer.AddLight(light3);
-    //renderer.AddEntity(&light_indicator);
-    //renderer.AddLight(light4);
-    //mainScene->AddEntity(&light_indicator);
     mainScene->AddPointLight(light4);
     mainScene->SetDirectionalLight(dir_light);
 
     ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 0.25f, true, true);
     const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");
 
-    ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.png", 1, 32);
-    Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-35, terrain.GetHeightOfTerrain(-35, 45) + 5, 45), Vec3(0), Vec3(1));
+    ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.jpg", 1, 32);
+    Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-40, terrain.GetHeightOfTerrain(-40, 55) + 5, 55), Vec3(0), Vec3(1));
     mainScene->AddEntity(&barrelModel2);
 
     ImageMaterial* brickMat = new ImageMaterial("res/textures/bricks.jpg", "res/textures/bricks_specular.jpg", 1, 16);
@@ -127,7 +111,7 @@ int main()
         float x = (rand() % 256) - 128;
         float z = (rand() % 256) - 128;
         float y = terrain.GetHeightOfTerrain(x, z);
-        Entity *entity = new Entity(fernVertArray, fernMat, rand() % 4, Vec3(x, y, z), Vec3(0), Vec3(1));
+        Entity* entity = new Entity("res/fern.obj", fernMat, rand() % 4, Vec3(x, y, z), Vec3::Zero, Vec3::One);
         entities.emplace_back(entity);
         mainScene->AddEntity(entity);
     }

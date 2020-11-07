@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GL/glew.h>
+#include <unordered_map>
 #include <vector>
 #include <fstream>
 #include <algorithm>
@@ -70,6 +71,7 @@ namespace Astra::Graphics
 	class ObjLoader
 	{
 	private:
+		std::unordered_map<std::string, const VertexArray*> m_loaded;
 		std::vector<Vertex*> vertices;
 		std::vector<NormalVertex*> normVertices;
 		std::vector<Math::Vec2> textures;

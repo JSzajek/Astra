@@ -148,8 +148,11 @@ namespace Astra::Graphics
 		{
 			glGenTextures(1, &texture.id);
 			glBindTexture(GL_TEXTURE_2D, texture.id);
-		
+		#if HDR
 			glTexImage2D(GL_TEXTURE_2D, 0, diffuse ? GL_SRGB8_ALPHA8 : GL_RGBA8, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		#else
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		#endif
 			glGenerateMipmap(GL_TEXTURE_2D);
 			
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clippingOption);
@@ -299,7 +302,11 @@ namespace Astra::Graphics
 	{
 		glGenTextures(1, &id);
 		glBindTexture(GL_TEXTURE_2D, id);
+	#if HDR
 		glTexImage2D(GL_TEXTURE_2D, 0, floating ? GL_RGBA16F : GL_RGBA, width, height, 0, GL_RGBA, floating ? GL_FLOAT : GL_UNSIGNED_BYTE, NULL);
+	#else
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, floating ? GL_FLOAT : GL_UNSIGNED_BYTE, NULL);
+	#endif
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -342,7 +349,11 @@ namespace Astra::Graphics
 	{
 		glGenTextures(1, &id);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, id);
+	#if HDR
 		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, MULTI_SAMPLE_SIZE, floating ? GL_RGBA16F : GL_RGBA, width, height, GL_TRUE);
+	#else
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, MULTI_SAMPLE_SIZE, GL_RGBA, width, height, GL_TRUE);
+	#endif
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, id, 0);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 		m_textureIds.push_back(id);
@@ -352,7 +363,6 @@ namespace Astra::Graphics
 	{
 		GLuint id = GenerateVboId();
 		glBindBuffer(GL_ARRAY_BUFFER, id);
-
 		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], usage);
 		glVertexAttribPointer(index, strideSize, GL_FLOAT, normalized, 0, NULL);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -363,7 +373,6 @@ namespace Astra::Graphics
 	{
 		GLuint id = GenerateVboId();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
-
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.size() * sizeof(int), data.data(), usage);
 		return id;
 	}

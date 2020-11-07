@@ -7,9 +7,8 @@ Player::Player(const Vec3& position, Window* window, Terrain* terrain)
            m_rotating(false), m_oldPosition(Vec2(0,0)), m_terrain(terrain)
 {
     //ImageMaterial* grassMat = new ImageMaterial("res/textures/container.png", (char*)NULL, 1, 32, false, false);
-    ImageMaterial* grassMat = new ImageMaterial("res/textures/container.png", "res/textures/container_specular.png", 1, 32, false);
-	const VertexArray* bodyModel = ObjLoader::LoadObjectModel("res/cube.obj");
-	m_body = new Entity(bodyModel, grassMat, position, Vec3(0), Vec3(2));
+    ImageMaterial* containerMat = new ImageMaterial("res/textures/container.png", "res/textures/container_specular.png", "res/textures/container_emission.jpg", 1, 32, false);
+	m_body = new Entity("res/cube.obj", containerMat, 0, position, Vec3(0), Vec3(2));
 }
 
 void Player::Update()

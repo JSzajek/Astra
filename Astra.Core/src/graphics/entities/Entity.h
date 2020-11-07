@@ -22,14 +22,17 @@ namespace Astra::Graphics
 		Entity();
 		~Entity();
 		Entity(const Math::Vec3& position);
-		Entity(const VertexArray* vertArray, const Math::Vec3& position);
+		/*Entity(const VertexArray* vertArray, const Math::Vec3& position);
 		Entity(const VertexArray* vertArray, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale);
 		Entity(const VertexArray* vertArray, const ImageMaterial* material = new ImageMaterial(), 
 				const Math::Vec3& position = Math::Vec3(0), const Math::Vec3& rotation = Math::Vec3(0), const Math::Vec3& scale = Math::Vec3(1));
 
 		Entity(const VertexArray* vertArray, const ImageMaterial* material = new ImageMaterial(), int textureIndex = 0, 
-				const Math::Vec3& position = Math::Vec3(0), const Math::Vec3& rotation = Math::Vec3(0), const Math::Vec3& scale = Math::Vec3(1));
+				const Math::Vec3& position = Math::Vec3(0), const Math::Vec3& rotation = Math::Vec3(0), const Math::Vec3& scale = Math::Vec3(1));*/
 		
+		Entity(const char* const objpath, const ImageMaterial* material = new ImageMaterial(), int textureIndex = 0,
+				const Math::Vec3& position = Math::Vec3::Zero, const Math::Vec3& rotation = Math::Vec3::Zero, const Math::Vec3& scale = Math::Vec3::One);
+
 		Entity(const char* const filepath, const char* const normalMapTexture, const ImageMaterial* material = new ImageMaterial(),
 				const Math::Vec3& position = Math::Vec3(0), const Math::Vec3& rotation = Math::Vec3(0), const Math::Vec3& scale = Math::Vec3(1));
 

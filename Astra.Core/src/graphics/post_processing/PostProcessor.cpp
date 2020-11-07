@@ -14,8 +14,8 @@ namespace Astra::Graphics
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLE_STRIP, { -1, 1, -1, -1, 1, 1, 1, -1 }, 2);
 	#if MULTI_SAMPLE
-		m_multisampledBuffer = Loader::LoadFrameBuffer(Window::width, Window::height, true, DepthBufferType::Render, true);
-		m_screenBuffer = Loader::LoadFrameBuffer(Window::width, Window::height, false, DepthBufferType::Texture, true);
+		m_multisampledBuffer = Loader::LoadFrameBuffer(Window::width, Window::height, true, DepthBufferType::Render, HDR);
+		m_screenBuffer = Loader::LoadFrameBuffer(Window::width, Window::height, false, DepthBufferType::Texture, HDR);
 	#else
 		m_multisampledBuffer = NULL;
 		m_screenBuffer = Loader::LoadFrameBuffer(Window::width, Window::height, false, DepthBufferType::Render);
@@ -30,8 +30,11 @@ namespace Astra::Graphics
 			effects.push_back(new VerticalBlurEffect(blurWidth, blurHeight));
 		}
 	#endif
+	#if HDR
 		effects.push_back(new HDREffect(true, 1));
-		//effects.push_back(new ContrastEffect());
+	#else	
+		effects.push_back(new ContrastEffect());
+	#endif
 	}
 
 	PostProcessor::~PostProcessor()
