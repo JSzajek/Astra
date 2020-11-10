@@ -14,7 +14,7 @@ namespace Astra::Graphics
 		Shader* m_shader;
 	public:
 		ImageEffect(Shader* shader);
-		ImageEffect(Shader* shader, int width, int height);
+		ImageEffect(Shader* shader, int width, int height, bool floating = false, unsigned int clamping = GL_LINEAR);
 		~ImageEffect();
 		void Start(unsigned int* attachment) const;
 		void Stop() const;

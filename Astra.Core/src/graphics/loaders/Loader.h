@@ -79,9 +79,9 @@ namespace Astra::Graphics
 			return Get().LoadShadowFrameBufferImpl(width, height);
 		}
 
-		static FrameBuffer* LoadFrameBuffer(unsigned int width, unsigned int height, bool multisampled = false, DepthBufferType depthType = DepthBufferType::None, bool floating = false)
+		static FrameBuffer* LoadFrameBuffer(unsigned int width, unsigned int height, bool multisampled = false, DepthBufferType depthType = DepthBufferType::None, bool floating = false, unsigned int wrapping = GL_REPEAT)
 		{
-			return Get().LoadFrameBufferImpl(width, height, multisampled, depthType, floating);
+			return Get().LoadFrameBufferImpl(width, height, multisampled, depthType, floating, wrapping);
 		}
 
 	private:
@@ -107,10 +107,10 @@ namespace Astra::Graphics
 		WaterFrameBuffer* LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
 												   unsigned int refractionWidth, unsigned int refractionHeight);
 		ShadowFrameBuffer* LoadShadowFrameBufferImpl(unsigned int width, unsigned int height);
-		FrameBuffer* LoadFrameBufferImpl(unsigned int width, unsigned int height, bool multisampled, DepthBufferType depthType, bool floating);
+		FrameBuffer* LoadFrameBufferImpl(unsigned int width, unsigned int height, bool multisampled, DepthBufferType depthType, bool floating, unsigned int component);
 
 		FrameBuffer* CreateFrameBuffer(int drawAttachment = GL_NONE, int readAttachment = GL_NONE);
-		void CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height, bool floating = false);
+		void CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height, bool floating, unsigned int wrapping = GL_REPEAT);
 		GLuint CreateDepthTextureAttachment(GLuint& id, unsigned int width, unsigned int height, int component = GL_DEPTH_COMPONENT32, int filter = GL_LINEAR, int wrap = GL_REPEAT);
 		void CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height, bool multisampled = false, bool floating = false);
 		void CreateColorBufferAttachment(GLuint& id, unsigned int width, unsigned int height, bool multisampled = false, bool floating = false);

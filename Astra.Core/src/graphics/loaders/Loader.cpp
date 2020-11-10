@@ -221,7 +221,7 @@ namespace Astra::Graphics
 															  unsigned int refractionWidth, unsigned int refractionHeight)
 	{
 		FrameBuffer* reflection = CreateFrameBuffer(GL_COLOR_ATTACHMENT0);
-		CreateTextureAttachment(reflection->ColorAttachment(), reflectionWidth, reflectionHeight);
+		CreateTextureAttachment(reflection->ColorAttachment(), reflectionWidth, reflectionHeight, HDR);
 		CreateDepthBufferAttachment(reflection->DepthAttachment(), reflectionWidth, reflectionHeight);
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
@@ -230,7 +230,7 @@ namespace Astra::Graphics
 		UnbindFrameBuffer();
 
 		FrameBuffer* refraction = CreateFrameBuffer(GL_COLOR_ATTACHMENT0);
-		CreateTextureAttachment(refraction->ColorAttachment(), refractionWidth, refractionHeight);
+		CreateTextureAttachment(refraction->ColorAttachment(), refractionWidth, refractionHeight, HDR);
 		static_cast<void>(CreateDepthTextureAttachment(refraction->DepthAttachment(), refractionWidth, refractionHeight));
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
@@ -258,12 +258,12 @@ namespace Astra::Graphics
 		return shadowFrameBuffer;
 	}
 
-	FrameBuffer* Loader::LoadFrameBufferImpl(unsigned int width, unsigned int height, bool multisampled, DepthBufferType depthType, bool floating)
+	FrameBuffer* Loader::LoadFrameBufferImpl(unsigned int width, unsigned int height, bool multisampled, DepthBufferType depthType, bool floating, unsigned int wrapping)
 	{
 		FrameBuffer* buffer = CreateFrameBuffer(GL_COLOR_ATTACHMENT0, multisampled ? GL_COLOR_ATTACHMENT0 : GL_NONE);
 		if (!multisampled)
 		{
-			CreateTextureAttachment(buffer->ColorAttachment(), width, height, floating);
+			CreateTextureAttachment(buffer->ColorAttachment(), width, height, floating, wrapping);
 		}
 		else
 		{
@@ -298,7 +298,7 @@ namespace Astra::Graphics
 		return buffer;
 	}
 
-	void Loader::CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height, bool floating)
+	void Loader::CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height, bool floating, unsigned int wrapping)
 	{
 		glGenTextures(1, &id);
 		glBindTexture(GL_TEXTURE_2D, id);
@@ -309,6 +309,8 @@ namespace Astra::Graphics
 	#endif
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapping);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapping);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, id, 0);
 		m_textureIds.push_back(id);

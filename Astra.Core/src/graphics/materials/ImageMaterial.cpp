@@ -25,7 +25,7 @@ namespace Astra::Graphics
 	{
 		m_specular = specularpath != NULL ? Loader::LoadTexture(specularpath, false) : Loader::LoadTexture(Texture::DefaultSpecular, false);
 		m_glowing = emissionpath != NULL;
-		m_emission = Loader::LoadTexture(m_glowing ? emissionpath : Texture::DefaultSpecular, false, GL_CLAMP);
+		m_emission = Loader::LoadTexture(m_glowing ? emissionpath : Texture::DefaultSpecular);
 	}
 
 	//ImageMaterial::ImageMaterial(const char* const diffusepath, const char* const specularpath, 

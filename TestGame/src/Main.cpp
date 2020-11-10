@@ -89,7 +89,7 @@ int main()
     
     Vec3 light_pos = Math::Vec3(-55, terrain.GetHeightOfTerrain(-55, 55) + 7, 55);
     DirectionalLight* dir_light = new DirectionalLight(Vec3(0), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0));
-    PointLight* light4 = new PointLight(light_pos, Vec3(3), Vec3(1), Vec3(50));
+    PointLight* light4 = new PointLight(light_pos, Vec3(3), Vec3(1), Vec3(25));
 
     mainScene->AddPointLight(light4);
     mainScene->SetDirectionalLight(dir_light);
@@ -104,6 +104,10 @@ int main()
     ImageMaterial* brickMat = new ImageMaterial("res/textures/bricks.jpg", "res/textures/bricks_specular.jpg", 1, 16);
     Entity brick = Entity("res/plane.obj", "res/textures/bricks_normal.jpg", "res/textures/bricks_heightmap.jpg", 0.1f, brickMat, Vec3(-50, terrain.GetHeightOfTerrain(-50, 50) + 5, 50), Vec3(90, 0, 0), Vec3(5, 1, 5));
     mainScene->AddEntity(&brick);
+
+    ImageMaterial* runestoneMat = new ImageMaterial("res/textures/rock1_basecolor.png", "res/textures/rock1_roughness.png", "res/textures/rock1_emissive.png", 1, 32);
+    Entity runestone = Entity("res/runestone_1.obj", "res/textures/rock1_normal.png", runestoneMat, Vec3(-60, terrain.GetHeightOfTerrain(-60, 60) + 2, 60), Vec3::Zero, Vec3(2));
+    mainScene->AddEntity(&runestone);
 
     std::vector<const Entity*> entities;
     for (int i = 0; i < 20; i++)

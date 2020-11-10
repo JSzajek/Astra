@@ -161,9 +161,9 @@ void main()
 		result += CalcPointLight(pointLights[0], norm, specColor, viewDir, lightFactor);
 	}
 	result += CalcSpotLight(spotLight, norm, specColor, viewDir, lightFactor);
-	result *= color + glowingColor;
+	result *= color;
 
-	out_Color = vec4(result, textureColor.a);
+	out_Color = vec4(result + glowingColor * 2, textureColor.a);
 	out_Color = mix(vec4(fogColor, 1), out_Color, v_Visibility);
 }
 

@@ -11,8 +11,8 @@ namespace Astra::Graphics
 	{
 	}
 
-	ImageEffect::ImageEffect(Shader* shader, int width, int height)
-		: m_shader(shader), m_buffer(Loader::LoadFrameBuffer(width, height)), m_width(width), m_height(height)
+	ImageEffect::ImageEffect(Shader* shader, int width, int height, bool floating, unsigned int component)
+		: m_shader(shader), m_buffer(Loader::LoadFrameBuffer(width, height, false, DepthBufferType::None, floating, component)), m_width(width), m_height(height)
 	{
 	}
 	

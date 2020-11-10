@@ -114,7 +114,6 @@ uniform SpotLight spotLight;
 
 const float kPi = 3.14159265;
 
-uniform vec3 fogColor;
 uniform float mapSize;
 uniform int pcfCount;
 
@@ -187,9 +186,9 @@ void main()
 	totalReflective *= color;
 
 	out_Color = mix(vec4(totalReflective, reflectColor.a), refractColor, refractiveFactor);
-	out_Color = mix(out_Color, texture(material.diffuseMap, vec2(0)), 0.5);
+	out_Color = mix(out_Color, texture(material.diffuseMap, vec2(0)), 0.25);
 	out_Color.a = clamp(waterDepth / 5.0, 0, 1);
-	out_Color = mix(vec4(fogColor, 1), out_Color, v_Visibility);
+	out_Color.a = min(out_Color.a, v_Visibility);
 }
 
 vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor)

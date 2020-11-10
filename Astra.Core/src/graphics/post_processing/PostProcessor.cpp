@@ -88,14 +88,11 @@ namespace Astra::Graphics
 			for (auto* effect : effects)
 			{
 				effect->Start(&attachment);
-
 				glClear(GL_COLOR_BUFFER_BIT);
 				glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
-
 				effect->Stop();
 			}
 		}
-
 		glEnable(GL_DEPTH_TEST);
 		glDisableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glBindVertexArray(0);
@@ -121,5 +118,4 @@ namespace Astra::Graphics
 			GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 		Detach();
 	}
-
 }
