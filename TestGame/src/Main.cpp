@@ -60,9 +60,12 @@ int main()
     mainScene->AddText(text);
     mainScene->AddText(outlineText);
 
-    Texture texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
-    GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
-    mainScene->AddGui(&gui);
+    //Texture texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
+    //GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
+    //mainScene->AddGui(&gui);
+
+    /*GuiTexture gui = GuiTexture(RendererController::GetBrightTex(), Vec2(0.75, 0.75), Vec2(0.4, 0.4));
+    mainScene->AddGui(&gui);*/
 
     std::vector<const char*> m_textureFiles =
     {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GL/glew.h>
+#include <vector>
 #include <cstring>
 
 namespace Astra::Graphics
@@ -15,19 +15,22 @@ namespace Astra::Graphics
 	struct FrameBuffer
 	{
 	private:
-		GLuint m_data[3];
+		std::vector<unsigned int> m_data;
+		size_t m_colorAttachmentOffset;
+		//unsigned int m_data[3];
 	public:
-		FrameBuffer()
+		FrameBuffer(size_t numOfColorAttachments = 1, size_t numOfDepthAttachments = 1)
 		{
-			memset(m_data, 0, 3 * sizeof(GLuint));
+			m_colorAttachmentOffset = numOfColorAttachments;
+			m_data.resize(1 + numOfColorAttachments + numOfDepthAttachments);
 		}
 
-		const GLuint& GetId() const { return m_data[0]; }
-		const GLuint& GetColorAttachment() const { return m_data[1]; }
-		const GLuint& GetDepthAttachment() const { return m_data[2]; }
+		const unsigned int& GetId() const { return m_data[0]; }
+		const unsigned int& GetColorAttachment(size_t index = 0) const { return m_data[1 + index]; }
+		const unsigned int& GetDepthAttachment(size_t index = 0) const { return m_data[1 + m_colorAttachmentOffset + index]; }
 
-		GLuint& Id() { return m_data[0]; }
-		GLuint& ColorAttachment() { return m_data[1]; }
-		GLuint& DepthAttachment() { return m_data[2]; }
+		unsigned int& Id() { return m_data[0]; }
+		unsigned int& ColorAttachment(size_t index = 0) { return m_data[1 + index]; }
+		unsigned int& DepthAttachment(size_t index = 0) { return m_data[1 + m_colorAttachmentOffset + index]; }
 	};
 }

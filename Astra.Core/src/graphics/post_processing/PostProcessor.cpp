@@ -6,10 +6,8 @@
 
 namespace Astra::Graphics
 {
-	#define GAUSS_BLUR				0
-	#define BASE_BLUR_DOWNSCALE		4
-	#define BLUR_STEPS				2
-
+	#define BLOOM				1
+	
 	PostProcessor::PostProcessor()
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLE_STRIP, { -1, 1, -1, -1, 1, 1, 1, -1 }, 2);
@@ -20,15 +18,8 @@ namespace Astra::Graphics
 		m_multisampledBuffer = NULL;
 		m_screenBuffer = Loader::LoadFrameBuffer(Window::width, Window::height, false, DepthBufferType::Render);
 	#endif
-
-	#if GAUSS_BLUR
-		for (int i = 1; i <= BLUR_STEPS; i++)
-		{
-			size_t blurWidth = Window::width / (BASE_BLUR_DOWNSCALE * i);
-			size_t blurHeight = Window::height / (BASE_BLUR_DOWNSCALE * i);
-			effects.push_back(new HorizontalBlurEffect(blurWidth, blurHeight));
-			effects.push_back(new VerticalBlurEffect(blurWidth, blurHeight));
-		}
+	#if BLOOM
+		effects.push_back(new BloomEffect(Window::width, Window::height));
 	#endif
 	#if HDR
 		effects.push_back(new HDREffect(true, 1));
@@ -85,12 +76,17 @@ namespace Astra::Graphics
 		}
 		else
 		{
-			for (auto* effect : effects)
+			for (auto iter = effects.begin(); iter != effects.end();) 
 			{
-				effect->Start(&attachment);
+				(*iter)->Start(&attachment);
 				glClear(GL_COLOR_BUFFER_BIT);
 				glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
-				effect->Stop();
+				(*iter)->Stop();
+				if ((*iter)->Finished())
+				{
+					(*iter)->Reset();
+					iter++;
+				}
 			}
 		}
 		glEnable(GL_DEPTH_TEST);
@@ -104,8 +100,7 @@ namespace Astra::Graphics
 	{
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, bufferIn);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, bufferOut);
-		glBlitFramebuffer(0, 0, inputWidth, inputHeight, 0, 0, outputWidth, outputHeight,
-							GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		glBlitFramebuffer(0, 0, inputWidth, inputHeight, 0, 0, outputWidth, outputHeight, GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT, GL_NEAREST);
 		Detach();
 	}
 
@@ -114,8 +109,7 @@ namespace Astra::Graphics
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, bufferIn);
 		glDrawBuffer(GL_BACK);
-		glBlitFramebuffer(0, 0, inputWidth, inputHeight, 0, 0, Window::width, Window::height,
-			GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+		glBlitFramebuffer(0, 0, inputWidth, inputHeight, 0, 0, Window::width, Window::height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 		Detach();
 	}
 }

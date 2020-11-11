@@ -9,6 +9,7 @@
 #include "HDREffect.h"
 #include "HorizontalBlurEffect.h"
 #include "VerticalBlurEffect.h"
+#include "BloomEffect.h"
 
 namespace Astra::Graphics
 {

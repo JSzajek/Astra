@@ -84,6 +84,11 @@ namespace Astra::Graphics
 			return Get().LoadFrameBufferImpl(width, height, multisampled, depthType, floating, wrapping);
 		}
 
+		static FrameBuffer* LoadMultiTargetFrameBuffer(unsigned int width, unsigned int height, size_t colorAttachments, size_t depthAttachments = 1, bool floating = false)
+		{
+			return Get().LoadMultiTargetFrameBufferImpl(width, height, colorAttachments, depthAttachments, floating);
+		}
+
 	private:
 		Loader();
 		~Loader();
@@ -108,9 +113,11 @@ namespace Astra::Graphics
 												   unsigned int refractionWidth, unsigned int refractionHeight);
 		ShadowFrameBuffer* LoadShadowFrameBufferImpl(unsigned int width, unsigned int height);
 		FrameBuffer* LoadFrameBufferImpl(unsigned int width, unsigned int height, bool multisampled, DepthBufferType depthType, bool floating, unsigned int component);
+		FrameBuffer* LoadMultiTargetFrameBufferImpl(unsigned int width, unsigned int height, size_t colorAttachments, size_t depthAttachments, bool floating);
+
 
 		FrameBuffer* CreateFrameBuffer(int drawAttachment = GL_NONE, int readAttachment = GL_NONE);
-		void CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height, bool floating, unsigned int wrapping = GL_REPEAT);
+		void CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height, bool floating, unsigned int wrapping = GL_REPEAT, size_t offset = 0);
 		GLuint CreateDepthTextureAttachment(GLuint& id, unsigned int width, unsigned int height, int component = GL_DEPTH_COMPONENT32, int filter = GL_LINEAR, int wrap = GL_REPEAT);
 		void CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height, bool multisampled = false, bool floating = false);
 		void CreateColorBufferAttachment(GLuint& id, unsigned int width, unsigned int height, bool multisampled = false, bool floating = false);

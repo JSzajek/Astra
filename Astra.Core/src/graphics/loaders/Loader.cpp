@@ -288,6 +288,29 @@ namespace Astra::Graphics
 		return buffer;
 	}
 
+	FrameBuffer* Loader::LoadMultiTargetFrameBufferImpl(unsigned int width, unsigned int height, size_t colorAttachments, size_t depthAttachments, bool floating)
+	{
+		FrameBuffer* buffer = new FrameBuffer(colorAttachments, depthAttachments);
+		glGenFramebuffers(1, &buffer->Id());
+		glBindFramebuffer(GL_FRAMEBUFFER, buffer->Id());
+		
+		std::vector<unsigned int> attachments;
+		for (int i = 0; i < colorAttachments; i++)
+		{
+			CreateTextureAttachment(buffer->ColorAttachment(i), width, height, floating, GL_CLAMP_TO_EDGE, i);
+			attachments.push_back(GL_COLOR_ATTACHMENT0 + i);
+		}
+		glDrawBuffers(colorAttachments, &attachments[0]);
+		
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			Logger::LogError("Error Incomplete FBO.");
+		}
+		UnbindFrameBuffer();
+
+		return buffer;
+	}
+
 	FrameBuffer* Loader::CreateFrameBuffer(int drawAttachment, int readAttachment)
 	{
 		FrameBuffer* buffer = new FrameBuffer();
@@ -298,7 +321,7 @@ namespace Astra::Graphics
 		return buffer;
 	}
 
-	void Loader::CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height, bool floating, unsigned int wrapping)
+	void Loader::CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height, bool floating, unsigned int wrapping, size_t offset)
 	{
 		glGenTextures(1, &id);
 		glBindTexture(GL_TEXTURE_2D, id);
@@ -312,7 +335,7 @@ namespace Astra::Graphics
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapping);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapping);
 		glBindTexture(GL_TEXTURE_2D, 0);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, id, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + offset, GL_TEXTURE_2D, id, 0);
 		m_textureIds.push_back(id);
 	}
 
