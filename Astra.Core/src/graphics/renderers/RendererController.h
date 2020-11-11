@@ -9,11 +9,13 @@
 #include "SkyboxRenderer.h"
 #include "WaterRenderer.h"
 #include "NormalEntity3dRenderer.h"
+#include "../post_processing/PostProcessor.h"
 #include "../fonts/FontController.h"
 #include "../particles/ParticleController.h"
 #include "../gizmos/GizmoController.h"
 #include "../shadows/ShadowMapController.h"
 #include "../shaders/GuiShader.h"
+#include "../shaders/ContrastShader.h"
 #include "../shaders/EntityShader.h"
 #include "../shaders/TerrainShader.h"
 #include "../shaders/SkyboxShader.h"
@@ -51,6 +53,8 @@ namespace Astra::Graphics
 		NormalEntity3dRenderer* m_normalEntityRenderer;
 		GuiRenderer* m_guiRenderer;
 		ShadowMapController* m_shadowMapController;
+
+		PostProcessor* m_postProcessor;
 
 		Camera* m_mainCamera;
 		const Math::Mat4* viewMatrix;
@@ -99,7 +103,6 @@ namespace Astra::Graphics
 		void RenderImpl();
 		
 		void Init() const;
-		//void UpdateCameraView();
 		bool SetCurrentSceneImpl(const Scene* scene);
 		void Clear();
 

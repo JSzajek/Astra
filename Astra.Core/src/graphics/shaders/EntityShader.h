@@ -8,6 +8,9 @@ namespace Astra::Graphics
 	#define NUMBER_OF_ROWS				"numberOfRows"
 	#define OFFSET_TAG					"offset"
 
+	#define GLOWING						"glowing"
+	#define EMISSION_MAP				"material.emissionMap"
+
 	class EntityShader : public Shader
 	{
 	public:

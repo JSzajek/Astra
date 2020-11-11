@@ -2,7 +2,7 @@
 
 namespace Astra::Graphics
 {
-	ShadowFrameBuffer::ShadowFrameBuffer(const FrameBuffer& buffer, unsigned int mapId, unsigned int width, unsigned int height)
+	ShadowFrameBuffer::ShadowFrameBuffer(FrameBuffer* buffer, unsigned int mapId, unsigned int width, unsigned int height)
 		: m_buffer(buffer), m_mapId(mapId), m_width(width), m_height(height)
 	{
 	}
@@ -10,5 +10,10 @@ namespace Astra::Graphics
 	ShadowFrameBuffer::ShadowFrameBuffer(const ShadowFrameBuffer& other)
 		: m_buffer(other.m_buffer), m_mapId(other.m_mapId), m_width(other.m_width), m_height(other.m_height)
 	{
+	}
+
+	ShadowFrameBuffer::~ShadowFrameBuffer()
+	{
+		delete m_buffer;
 	}
 }

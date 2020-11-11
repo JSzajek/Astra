@@ -90,6 +90,7 @@ struct Material
 	sampler2D normalMap; 
 	sampler2D specularMap;
 	sampler2D parallaxMap;
+	sampler2D emissionMap;
 	sampler2D shadowMap;
 	float reflectivity;
 };
@@ -137,6 +138,7 @@ const float kPi = 3.14159265;
 // flag[0] -> 0/1 normal mapped
 // flag[1] -> 0/1 parallax mapped
 uniform int flags[2];
+uniform int glowing;
 
 uniform vec3 fogColor;
 
@@ -168,6 +170,7 @@ void main()
 	
 	vec3 color = textureColor.rgb;
 	vec3 specColor = texture(material.specularMap, texCoords).rgb;
+	vec3 glowingColor = !(glowing > 0) ? vec3(0) : texture(material.emissionMap, texCoords).rgb;
 
 	float texelSize = 1.0 / mapSize;
 	float total = 0.0;
@@ -193,7 +196,7 @@ void main()
 	result += CalcSpotLight(spotLight, norm, specColor, viewDir, lightFactor);
 	result *= color;
 
-	out_Color = vec4(result, 1.0);
+	out_Color = vec4(result + (glowingColor * 2), textureColor.a);
 	out_Color = mix(vec4(fogColor, 1), out_Color, v_Visibility);
 }
 
@@ -253,7 +256,8 @@ vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 specColor, vec3 view
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 specColor, vec3 viewDir, float lightFactor)
 {
-	vec3 lightDir = normalize((v_ToTangentSpace * light.position) - v_FragPosition);
+	vec3 lightPos = (v_ToTangentSpace * light.position);
+	vec3 lightDir = normalize(lightPos - v_FragPosition);
 
 	// diffuse shading
 	float diff = max(dot(normal, lightDir), 0.0) * lightFactor;
@@ -270,7 +274,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 specColor, vec3 viewDir,
 #endif
 
 	// attenuation
-	float distance = length(light.position - v_FragPosition);
+	float distance = length(lightPos - v_FragPosition);
 	float attenuation = 1.0 / (light.attenuation.x + light.attenuation.y * distance + light.attenuation.z * (distance * distance));
 
 	// combine results

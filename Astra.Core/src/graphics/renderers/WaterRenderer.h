@@ -18,11 +18,10 @@ namespace Astra::Graphics
 		std::vector<const WaterTile*> m_waterTiles;
 		std::vector<const Light*> m_lights;
 		const Light* m_directionalLight;
-		const Math::Vec3* m_fogColor;
 		Math::Mat4 m_toShadowSpaceMatrix;
 		float m_near, m_far;
 	public:
-		WaterRenderer(const Math::Vec3* fogColor, float near, float far);
+		WaterRenderer(float near, float far);
 		
 		void SetShader(Shader* shader) override;
 		void Clear() override;

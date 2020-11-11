@@ -21,6 +21,7 @@ namespace Astra::Graphics
 		m_shader->Start();
 		m_shader->SetUniform1i(DIFFUSE_MAP,				0);
 		m_shader->SetUniform1i(SPECULAR_MAP,			1);
+		m_shader->SetUniform1i(EMISSION_MAP,			2);
 		m_shader->SetUniform1i(SHADOW_MAP_TAG,			6);
 		m_shader->SetUniform1f(SHADOW_DISTANCE_TAG,		SHADOW_DISTANCE);
 		m_shader->SetUniform1f(TRANSITION_DISTANCE_TAG,	TRANSITION_DISTANCE);
@@ -136,11 +137,17 @@ namespace Astra::Graphics
 		{
 			m_shader->SetUniform1i(FAKE_LIGHT, entity->material->FakeLight);
 			m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, entity->material->Reflectivity);
+			m_shader->SetUniform1i(GLOWING , entity->material->HasGlow());
 
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, entity->material->GetId());
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, entity->material->GetSpecularId());
+			if (entity->material->HasGlow())
+			{
+				glActiveTexture(GL_TEXTURE2);
+				glBindTexture(GL_TEXTURE_2D, entity->material->GetEmissionId());
+			}
 		}
 	}
 }

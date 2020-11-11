@@ -9,8 +9,8 @@
 
 namespace Astra::Graphics
 {
-	WaterRenderer::WaterRenderer(const Math::Vec3* fogColor, float near, float far)
-		: Renderer(), m_fogColor(fogColor), m_buffer(NULL), m_near(near), m_far(far), m_toShadowSpaceMatrix(1)
+	WaterRenderer::WaterRenderer(float near, float far)
+		: Renderer(), m_buffer(NULL), m_directionalLight(NULL), m_near(near), m_far(far), m_toShadowSpaceMatrix(1)
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLES, { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 }, 2);
 	}
@@ -23,12 +23,13 @@ namespace Astra::Graphics
 		m_shader->SetUniform1f(NEAR_PLANE,				m_near);
 		m_shader->SetUniform1f(FAR_PLANE,				m_far);
 
-		m_shader->SetUniform1i(REFLECTION_TEXTURE,		0);
-		m_shader->SetUniform1i(REFRACTION_TEXTURE,		1);
-		m_shader->SetUniform1i(DUDVMAP_TEXTURE,			2);
-		m_shader->SetUniform1i(NORMALMAP_TEXTURE,		3);
-		m_shader->SetUniform1i(DEPTHMAP_TEXTURE,		4);
+		m_shader->SetUniform1i(DIFFUSE_MAP,				0);
+		m_shader->SetUniform1i(REFLECTION_TEXTURE,		1);
+		m_shader->SetUniform1i(REFRACTION_TEXTURE,		2);
+		m_shader->SetUniform1i(DUDVMAP_TEXTURE,			3);
+		m_shader->SetUniform1i(NORMALMAP_TEXTURE,		4);
 		m_shader->SetUniform1i(SPECULAR_MAP,			5);
+		m_shader->SetUniform1i(DEPTHMAP_TEXTURE,		7);
 
 		m_shader->SetUniform1i(SHADOW_MAP_TAG,			6);
 		m_shader->SetUniform1f(SHADOW_DISTANCE_TAG,		SHADOW_DISTANCE);
@@ -47,8 +48,6 @@ namespace Astra::Graphics
 	void WaterRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
-		m_shader->SetUniform3f(FOG_COLOR, *m_fogColor);
-
 		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
 		m_shader->SetUniform4f(INVERSE_VIEW_VECTOR_TAG, inverseViewVector);
 		m_shader->SetUniformMat4(TO_SHADOW_SPACE_MATRIX_TAG, m_toShadowSpaceMatrix);
@@ -119,12 +118,12 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		if (m_buffer)
 		{
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, m_buffer->GetReflectionBuffer().GetColorAttachment());
 			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, m_buffer->GetRefractionBuffer().GetColorAttachment());
-			glActiveTexture(GL_TEXTURE4);
-			glBindTexture(GL_TEXTURE_2D, m_buffer->GetRefractionBuffer().GetDepthAttachment());
+			glBindTexture(GL_TEXTURE_2D, m_buffer->GetReflectionBuffer()->GetColorAttachment());
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, m_buffer->GetRefractionBuffer()->GetColorAttachment());
+			glActiveTexture(GL_TEXTURE7);
+			glBindTexture(GL_TEXTURE_2D, m_buffer->GetRefractionBuffer()->GetDepthAttachment());
 		}
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -133,12 +132,13 @@ namespace Astra::Graphics
 	void WaterRenderer::PrepareTile(const WaterTile* tile)
 	{
 		m_shader->SetUniform1f(WAVE_STRENGTH, tile->material->waveStrength);
-		m_shader->SetUniform4f(BASE_WATER_COLOR, tile->material->baseColor);
 		m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, tile->material->reflectivity);
 
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, tile->material->dudvTexture.id);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, tile->material->diffuseTexture.id);
 		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, tile->material->dudvTexture.id);
+		glActiveTexture(GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_2D, tile->material->normalTexture.id);
 		glActiveTexture(GL_TEXTURE5);
 		glBindTexture(GL_TEXTURE_2D, tile->material->GetSpecularId());

@@ -17,6 +17,7 @@ namespace Astra::Graphics
 		void BindFrameBuffer(GLuint bufferId, unsigned int width, unsigned int height);
 		void UnbindFrameBuffer();
 
+		
 		inline virtual void Clear() { }
 	protected:
 		Renderer();

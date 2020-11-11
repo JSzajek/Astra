@@ -73,6 +73,7 @@ struct Material
 {
 	sampler2D diffuseMap;
 	sampler2D specularMap;
+	sampler2D emissionMap;
 	sampler2D shadowMap;
 	float reflectivity;
 };
@@ -115,6 +116,8 @@ struct SpotLight
 };
 uniform SpotLight spotLight;
 
+uniform int glowing;
+
 const float kPi = 3.14159265;
 
 uniform vec3 fogColor;
@@ -134,6 +137,7 @@ void main()
 	if (textureColor.a < 0.5) { discard; }
 	vec3 color = textureColor.rgb;
 	vec3 specColor = texture(material.specularMap, v_TexCoordinates).rgb;
+	vec3 glowingColor = !(glowing > 0) ? vec3(0) : texture(material.emissionMap, v_TexCoordinates).rgb;
 	
 	float texelSize = 1.0 / mapSize;
 	float total = 0.0;
@@ -159,7 +163,7 @@ void main()
 	result += CalcSpotLight(spotLight, norm, specColor, viewDir, lightFactor);
 	result *= color;
 
-	out_Color = vec4(result, textureColor.a);
+	out_Color = vec4(result + glowingColor * 2, textureColor.a);
 	out_Color = mix(vec4(fogColor, 1), out_Color, v_Visibility);
 }
 

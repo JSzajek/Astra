@@ -14,15 +14,16 @@ namespace Astra::Graphics
 		m_fogColor = new Math::Vec3(0);
 
 		Init();
+		m_postProcessor = new PostProcessor();
 		m_shadowMapController = new ShadowMapController(FieldOfView, NearPlane, FarPlane);
 		
 		m_guiRenderer = new GuiRenderer(new GuiShader());
 		m_skyboxRenderer = new SkyboxRenderer(new SkyboxShader(), m_fogColor);
 		m_entityRenderer = new Entity3dRenderer(m_fogColor);
 		m_terrainRenderer = new TerrainRenderer(m_fogColor);
-		m_waterRenderer = new WaterRenderer(m_fogColor, NearPlane, FarPlane);
 		m_normalEntityRenderer = new NormalEntity3dRenderer(m_fogColor);
-		
+		m_waterRenderer = new WaterRenderer(NearPlane, FarPlane);
+
 		m_waterBuffer = Loader::LoadWaterFrameBuffer(DefaultReflectionWidth, DefaultReflectionHeight,
 													 DefaultRefractionWidth, DefaultRefractionHeight);
 		m_waterRenderer->SetFrameBuffer(m_waterBuffer);
@@ -182,7 +183,7 @@ namespace Astra::Graphics
 	void RendererController::RenderImpl()
 	{
 		if (m_currentScene == NULL || m_block) { return; }
-
+		
 		m_shadowMapController->Render();
 
 		for (auto* system : m_systems)
@@ -194,27 +195,24 @@ namespace Astra::Graphics
 		{
 			float distance = 2 * (m_mainCamera->GetTranslation().y - m_refractionClipPlane.w);
 
-			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetReflectionBuffer().GetId(), 320, 180);
+			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetReflectionBuffer()->GetId(), 320, 180);
 			m_mainCamera->Translation()->y -= distance;
 			m_mainCamera->InvertPitch(); // Updates the view matrix
-			PreRender(viewMatrix->Inverse() * Math::Vec4::Back, m_reflectionClipPlane);
+			PreRender(viewMatrix->Inverse() * Math::Vec4::W_Axis, m_reflectionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 
 			m_mainCamera->Translation()->y += distance;
 			m_mainCamera->InvertPitch(); // Updates the view matrix
-			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetRefractionBuffer().GetId(), 1280, 720);
-			PreRender(viewMatrix->Inverse() * Math::Vec4::Back, m_refractionClipPlane);
+			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetRefractionBuffer()->GetId(), 1280, 720);
+			PreRender(viewMatrix->Inverse() * Math::Vec4::W_Axis, m_refractionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 		}
 
-		if (m_mainCamera)
-		{
-			Math::Vec4 inverseView = viewMatrix->Inverse() * Math::Vec4::Back;
-			PrepareRender();
-			PreRender(inverseView);
-			PostRender(inverseView);
-			GuiRender();
-		}
+		Math::Vec4 inverseView = viewMatrix->Inverse() * Math::Vec4::W_Axis;
+		PrepareRender();
+		PreRender(inverseView);
+		PostRender(inverseView);
+		GuiRender();
 	}
 
 	void RendererController::PrepareRender()
@@ -222,6 +220,8 @@ namespace Astra::Graphics
 		if (m_currentScene == NULL || m_block) { return; }
 
 		ParticleController::Update(m_mainCamera->GetTranslation());
+		
+		m_postProcessor->Attach();
 
 		glActiveTexture(GL_TEXTURE6);
 		glBindTexture(GL_TEXTURE_2D, m_shadowMapController->GetShadowMap());
@@ -257,6 +257,11 @@ namespace Astra::Graphics
 		if (m_currentScene == NULL || m_block) { return; }
 
 		ParticleController::Render(viewMatrix);
+
+		// Perform Post Processing Effects
+		m_postProcessor->Detach();
+		m_postProcessor->Draw();
+		
 	#if _DEBUG
 		GizmoController::Render(viewMatrix);
 	#endif

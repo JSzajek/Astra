@@ -63,13 +63,14 @@ out vec4 out_Color;
 
 struct Material
 {
+	sampler2D diffuseMap;
 	sampler2D reflectionTexture;
 	sampler2D refractionTexture;
 	sampler2D dudvMap;
 	sampler2D normalMap;
-	sampler2D depthMap;
 	sampler2D specularMap;
 	sampler2D shadowMap;
+	sampler2D depthMap;
 	float reflectivity;
 };
 uniform Material material;
@@ -113,7 +114,6 @@ uniform SpotLight spotLight;
 
 const float kPi = 3.14159265;
 
-uniform vec3 fogColor;
 uniform float mapSize;
 uniform int pcfCount;
 
@@ -122,8 +122,6 @@ uniform float farPlane;
 
 uniform float moveFactor;
 uniform float waveStrength;
-
-uniform vec4 baseWaterColor;
 
 vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor);
@@ -178,7 +176,7 @@ void main()
 
 	total /= (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);;
 	float lightFactor = 1.0 - (total * v_ShadowCoords.w);
-
+	
 	vec3 totalReflective = CalcDirLight(directionalLight, normal, specColor, viewDir, waterDepth, lightFactor);
 	for (int i = 0; i < NR_POINT_LIGHTS; i++)
 	{
@@ -188,9 +186,9 @@ void main()
 	totalReflective *= color;
 
 	out_Color = mix(vec4(totalReflective, reflectColor.a), refractColor, refractiveFactor);
-	out_Color = mix(out_Color, baseWaterColor, 0.2);
+	out_Color = mix(out_Color, texture(material.diffuseMap, vec2(0)), 0.25);
 	out_Color.a = clamp(waterDepth / 5.0, 0, 1);
-	out_Color = mix(vec4(fogColor, 1), out_Color, v_Visibility);
+	out_Color.a = min(out_Color.a, v_Visibility);
 }
 
 vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor)

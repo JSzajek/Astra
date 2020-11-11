@@ -196,6 +196,9 @@
     <ClCompile Include="src\graphics\particles\Particle.cpp" />
     <ClCompile Include="src\graphics\particles\ParticleController.cpp" />
     <ClCompile Include="src\graphics\particles\ParticleSystem.cpp" />
+    <ClCompile Include="src\graphics\post_processing\BloomEffect.cpp" />
+    <ClCompile Include="src\graphics\post_processing\ImageEffect.cpp" />
+    <ClCompile Include="src\graphics\post_processing\PostProcessor.cpp" />
     <ClCompile Include="src\graphics\renderers\Entity3dRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\FontRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\GizmoRenderer.cpp" />
@@ -259,6 +262,13 @@
     <ClInclude Include="src\graphics\particles\ParticleController.h" />
     <ClInclude Include="src\graphics\particles\ParticleSystem.h" />
     <ClInclude Include="src\graphics\particles\ConeParticleSystem.h" />
+    <ClInclude Include="src\graphics\post_processing\BloomEffect.h" />
+    <ClInclude Include="src\graphics\post_processing\ContrastEffect.h" />
+    <ClInclude Include="src\graphics\post_processing\HDREffect.h" />
+    <ClInclude Include="src\graphics\post_processing\HorizontalBlurEffect.h" />
+    <ClInclude Include="src\graphics\post_processing\ImageEffect.h" />
+    <ClInclude Include="src\graphics\post_processing\PostProcessor.h" />
+    <ClInclude Include="src\graphics\post_processing\VerticalBlurEffect.h" />
     <ClInclude Include="src\graphics\renderers\Entity3dRenderer.h" />
     <ClInclude Include="src\graphics\renderers\FontRenderer.h" />
     <ClInclude Include="src\graphics\renderers\GizmoRenderer.h" />
@@ -272,16 +282,21 @@
     <ClInclude Include="src\graphics\renderers\TerrainRenderer.h" />
     <ClInclude Include="src\graphics\renderers\WaterRenderer.h" />
     <ClInclude Include="src\graphics\scenes\Scene.h" />
+    <ClInclude Include="src\graphics\shaders\BloomShader.h" />
+    <ClInclude Include="src\graphics\shaders\ContrastShader.h" />
     <ClInclude Include="src\graphics\shaders\EntityShader.h" />
     <ClInclude Include="src\graphics\shaders\FontShader.h" />
     <ClInclude Include="src\graphics\shaders\GizmoShader.h" />
     <ClInclude Include="src\graphics\shaders\GuiShader.h" />
+    <ClInclude Include="src\graphics\shaders\HDRShader.h" />
+    <ClInclude Include="src\graphics\shaders\HorizontalBlurShader.h" />
     <ClInclude Include="src\graphics\shaders\NormalEntityShader.h" />
     <ClInclude Include="src\graphics\shaders\ParticleShader.h" />
     <ClInclude Include="src\graphics\shaders\Shader.h" />
     <ClInclude Include="src\graphics\shaders\ShadowShader.h" />
     <ClInclude Include="src\graphics\shaders\SkyboxShader.h" />
     <ClInclude Include="src\graphics\shaders\TerrainShader.h" />
+    <ClInclude Include="src\graphics\shaders\VerticalBlurShader.h" />
     <ClInclude Include="src\graphics\shaders\WaterShader.h" />
     <ClInclude Include="src\graphics\shadows\ShadowBox.h" />
     <ClInclude Include="src\graphics\shadows\ShadowMapController.h" />
@@ -302,15 +317,21 @@
     <ClInclude Include="src\utils\vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\resources\shaders\Bloom.shader" />
+    <None Include="src\resources\shaders\Contrast.shader" />
     <None Include="src\resources\shaders\Entity.shader" />
+    <None Include="src\resources\shaders\FinalBloom.shader" />
     <None Include="src\resources\shaders\Font.shader" />
     <None Include="src\resources\shaders\Gizmo.shader" />
     <None Include="src\resources\shaders\Gui.shader" />
+    <None Include="src\resources\shaders\HDR.shader" />
+    <None Include="src\resources\shaders\HorizontalBlur.shader" />
     <None Include="src\resources\shaders\NormalEntity.shader" />
     <None Include="src\resources\shaders\Particle.shader" />
     <None Include="src\resources\shaders\Shadow.shader" />
     <None Include="src\resources\shaders\Skybox.shader" />
     <None Include="src\resources\shaders\Terrain.shader" />
+    <None Include="src\resources\shaders\VerticalBlur.shader" />
     <None Include="src\resources\shaders\Water.shader" />
   </ItemGroup>
   <ItemGroup>
