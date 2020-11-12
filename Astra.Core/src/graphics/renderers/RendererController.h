@@ -66,8 +66,7 @@ namespace Astra::Graphics
 		std::vector<const ParticleSystem*> m_systems;
 
 		Math::Vec3* m_fogColor;
-		Math::Mat4 projectionMatrix;
-		Math::Mat4 modelViewMatrix;
+		Math::Mat4* projectionMatrix;
 
 		const Scene* m_currentScene;
 		bool m_block;

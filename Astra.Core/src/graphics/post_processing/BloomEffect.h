@@ -14,7 +14,7 @@ namespace Astra::Graphics
 	class BloomEffect : public ImageEffect
 	{
 	private:
-		const FrameBuffer* m_secondBuffer;
+		FrameBuffer* m_secondBuffer;
 		Shader* m_secondShader;
 		std::vector<ImageEffect*> m_blurs;
 		unsigned int m_brightTexture;
@@ -22,5 +22,6 @@ namespace Astra::Graphics
 		BloomEffect(int width, int height);
 		void Start(unsigned int* attachment) override;
 		void Stop() override;
+		void UpdateAspectRatio(unsigned int width, unsigned int height) override;
 	};
 }

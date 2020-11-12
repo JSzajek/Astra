@@ -13,7 +13,7 @@ namespace Astra::Graphics
 		delete m_gizmoRenderer;
 	}
 
-	void GizmoController::UpdateProjectionMatrixImpl(const Math::Mat4& projectionMatrix)
+	void GizmoController::UpdateProjectionMatrixImpl(const Math::Mat4* projectionMatrix)
 	{
 		m_gizmoRenderer->UpdateProjectionMatrix(projectionMatrix);
 	}

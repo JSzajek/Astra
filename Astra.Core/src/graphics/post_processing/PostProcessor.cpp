@@ -37,6 +37,18 @@ namespace Astra::Graphics
 	#endif
 	}
 
+	void PostProcessor::UpdateScreenRatio(unsigned int width, unsigned int height)
+	{
+	#if MULTI_SAMPLE
+		Loader::UpdateFrameBuffer(m_multisampledBuffer, width, height, HDR, true);
+	#endif
+		Loader::UpdateFrameBuffer(m_screenBuffer, width, height, HDR, false);
+		for (auto* effect : effects)
+		{
+			effect->UpdateAspectRatio(width, height);
+		}
+	}
+
 	void PostProcessor::Attach()
 	{
 	#if MULTI_SAMPLE
