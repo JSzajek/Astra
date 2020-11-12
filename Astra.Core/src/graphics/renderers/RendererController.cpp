@@ -8,8 +8,8 @@ namespace Astra::Graphics
 {
 	RendererController::RendererController()
 		: m_reflectionClipPlane(Math::Vec4(0, 1, 0, 0)),
-			m_refractionClipPlane(Math::Vec4(0, -1, 0, 0)),
-			modelViewMatrix(1), m_block(false)
+			m_refractionClipPlane(Math::Vec4(0, -1, 0, 0)), 
+			projectionMatrix(new Math::Mat4(1)), m_block(false)
 	{
 		m_fogColor = new Math::Vec3(0);
 
@@ -168,12 +168,13 @@ namespace Astra::Graphics
 	{
 		if (m_currentScene == NULL || m_block) { return; }
 
-		projectionMatrix = Math::Mat4::Perspective(width, height, FieldOfView, NearPlane, FarPlane);
+		*projectionMatrix = Math::Mat4::Perspective(width, height, FieldOfView, NearPlane, FarPlane);
 		m_terrainRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_entityRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_normalEntityRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_skyboxRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_waterRenderer->UpdateProjectionMatrix(projectionMatrix);
+		m_postProcessor->UpdateScreenRatio(width, height);
 		ParticleController::UpdateProjectionMatrix(projectionMatrix);
 	#if _DEBUG
 		GizmoController::UpdateProjectionMatrix(projectionMatrix);

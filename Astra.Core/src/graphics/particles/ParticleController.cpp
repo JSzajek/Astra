@@ -14,7 +14,7 @@ namespace Astra::Graphics
 		delete m_particleRenderer;
 	}
 
-	void ParticleController::UpdateProjectionMatrixImpl(const Math::Mat4& projectionMatrix)
+	void ParticleController::UpdateProjectionMatrixImpl(const Math::Mat4* projectionMatrix)
 	{
 		m_particleRenderer->UpdateProjectionMatrix(projectionMatrix);
 	}

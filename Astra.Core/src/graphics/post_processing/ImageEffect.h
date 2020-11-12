@@ -9,10 +9,11 @@ namespace Astra::Graphics
 	{
 	private:
 		size_t m_totalSteps;
+		bool m_floating;
 	protected:
 		size_t m_step;
 		int m_width, m_height;
-		const FrameBuffer* m_buffer;
+		FrameBuffer* m_buffer;
 		Shader* m_shader;
 	public:
 		ImageEffect(Shader* shader, size_t totalSteps = 1);
@@ -20,6 +21,8 @@ namespace Astra::Graphics
 		~ImageEffect();
 		virtual void Start(unsigned int* attachment);
 		virtual void Stop();
+		virtual void UpdateAspectRatio(unsigned int width, unsigned int height);
+		
 		inline bool Finished() { return m_totalSteps == m_step; }
 		inline void Reset() { m_step = 0; }
 	protected:

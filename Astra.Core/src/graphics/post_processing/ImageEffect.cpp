@@ -7,13 +7,13 @@
 namespace Astra::Graphics
 {
 	ImageEffect::ImageEffect(Shader* shader, size_t totalSteps)
-		: m_shader(shader), m_buffer(NULL), m_width(0), m_height(0), m_totalSteps(totalSteps), m_step(0)
+		: m_shader(shader), m_buffer(NULL), m_width(0), m_height(0), m_totalSteps(totalSteps), m_step(0), m_floating(false)
 	{
 	}
 
 	ImageEffect::ImageEffect(Shader* shader, int width, int height, size_t totalSteps, bool floating, unsigned int component)
 		: m_shader(shader), m_buffer(Loader::LoadFrameBuffer(width, height, false, DepthBufferType::None, floating, component)), 
-			m_width(width), m_height(height), m_totalSteps(totalSteps), m_step(0)
+			m_width(width), m_height(height), m_totalSteps(totalSteps), m_step(0), m_floating(floating)
 	{
 	}
 	
@@ -47,6 +47,16 @@ namespace Astra::Graphics
 		}
 		m_shader->Stop();
 		m_step++;
+	}
+
+	void ImageEffect::UpdateAspectRatio(unsigned int width, unsigned int height)
+	{
+		if (m_buffer)
+		{
+			m_width = width;
+			m_height = height;
+			Loader::UpdateFrameBuffer(m_buffer, width, height, HDR, false);
+		}
 	}
 
 	void ImageEffect::BindBuffer(unsigned int id) const

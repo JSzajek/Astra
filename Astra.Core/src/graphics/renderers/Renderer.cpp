@@ -22,7 +22,7 @@ namespace Astra::Graphics
 		m_shader = shader;
 	}
 
-	void Renderer::UpdateProjectionMatrix(const Math::Mat4& projectionMatrix)
+	void Renderer::UpdateProjectionMatrix(const Math::Mat4* projectionMatrix)
 	{
 		m_shader->Start();
 		m_shader->SetUniformMat4(PROJECTION_MATRIX_TAG, projectionMatrix);

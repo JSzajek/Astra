@@ -24,7 +24,7 @@ namespace Astra::Graphics
 			Get().AddGizmoImpl(gizmo);
 		}
 
-		static void UpdateProjectionMatrix(const Math::Mat4& projectionMatrix)
+		static void UpdateProjectionMatrix(const Math::Mat4* projectionMatrix)
 		{
 			Get().UpdateProjectionMatrixImpl(projectionMatrix);
 		}
@@ -43,7 +43,7 @@ namespace Astra::Graphics
 		GizmoController();
 		~GizmoController();
 
-		void UpdateProjectionMatrixImpl(const Math::Mat4& projectionMatrix);
+		void UpdateProjectionMatrixImpl(const Math::Mat4* projectionMatrix);
 		void RenderImpl(const Math::Mat4* viewMatrix);
 		void AddGizmoImpl(const Gizmo* gizmo);
 		void ClearImpl();

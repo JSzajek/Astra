@@ -13,7 +13,7 @@ namespace Astra::Graphics
 	protected:
 		Shader* m_shader;
 	public:
-		void UpdateProjectionMatrix(const Math::Mat4& projectionMatrix);
+		void UpdateProjectionMatrix(const Math::Mat4* projectionMatrix);
 		void BindFrameBuffer(GLuint bufferId, unsigned int width, unsigned int height);
 		void UnbindFrameBuffer();
 

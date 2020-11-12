@@ -14,10 +14,11 @@ namespace Astra::Graphics
 
 		for (int i = 1; i <= BLUR_STEPS; i++)
 		{
-			size_t blurWidth = Window::width / (BASE_BLUR_DOWNSCALE * i);
-			size_t blurHeight = Window::height / (BASE_BLUR_DOWNSCALE * i);
-			m_blurs.push_back(new HorizontalBlurEffect(blurWidth, blurHeight));
-			m_blurs.push_back(new VerticalBlurEffect(blurWidth, blurHeight));
+			unsigned int squeezRatio = (BASE_BLUR_DOWNSCALE * i);
+			size_t blurWidth = Window::width / squeezRatio;
+			size_t blurHeight = Window::height / squeezRatio;
+			m_blurs.push_back(new HorizontalBlurEffect(blurWidth, blurHeight, squeezRatio));
+			m_blurs.push_back(new VerticalBlurEffect(blurWidth, blurHeight, squeezRatio));
 		}
 
 		m_secondBuffer = Loader::LoadFrameBuffer(width, height, false, DepthBufferType::None, true, GL_CLAMP_TO_EDGE);
@@ -79,5 +80,16 @@ namespace Astra::Graphics
 			m_shader->Stop();
 		}
 		m_step++;
+	}
+
+	void BloomEffect::UpdateAspectRatio(unsigned int width, unsigned int height)
+	{
+		ImageEffect::UpdateAspectRatio(width, height);
+		Loader::UpdateFrameBuffer(m_secondBuffer, width, height, HDR, false);
+
+		for (auto* blur : m_blurs)
+		{
+			blur->UpdateAspectRatio(width, height);
+		}
 	}
 }
