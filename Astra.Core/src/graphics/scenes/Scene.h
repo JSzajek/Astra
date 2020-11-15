@@ -73,17 +73,17 @@ namespace Astra::Graphics
 		inline void AddWaterTile(const WaterTile* tile) { m_tiles.push_back(tile); }
 		
 		inline DirectionalLight* const GetDirectionalLight() const { return m_mainLight; }
-		inline const Math::Vec3& const GetFogColor() const { return m_fogColor; }
+		inline const Math::Vec3& GetFogColor() const { return m_fogColor; }
 		inline const SkyboxMaterial* const GetSkyBox() const { return m_skybox; }
 
 		inline Camera* const GetCamera() const { return m_mainCamera; }
-		inline const std::vector<const Entity*>& const GetEntities() const { return m_entities; }
-		inline const std::vector<PointLight*>& const GetPointLights() const { return m_pointlights; }
-		inline const std::vector<const Terrain*>& const GetTerrains() const { return m_terrains; }
-		inline const std::vector<const GuiTexture*>& const GetGuis() const { return m_guis; }
-		inline const std::vector<GuiText*>& const GetTexts() const { return m_texts; }
-		inline const std::vector<const WaterTile*>& const GetWaterTiles() const { return m_tiles; }
-		inline const std::vector<const ParticleSystem*>& const GetParticles() const { return m_particles; }
+		inline const std::vector<const Entity*>& GetEntities() const { return m_entities; }
+		inline const std::vector<PointLight*>& GetPointLights() const { return m_pointlights; }
+		inline const std::vector<const Terrain*>& GetTerrains() const { return m_terrains; }
+		inline const std::vector<const GuiTexture*>& GetGuis() const { return m_guis; }
+		inline const std::vector<GuiText*>& GetTexts() const { return m_texts; }
+		inline const std::vector<const WaterTile*>& GetWaterTiles() const { return m_tiles; }
+		inline const std::vector<const ParticleSystem*>& GetParticles() const { return m_particles; }
 		
 		inline void AddPointLight(PointLight* light) { m_pointlights.push_back(light); }
 		inline void AddSpotLight(const SpotLight* light) { m_spotLight = light; }

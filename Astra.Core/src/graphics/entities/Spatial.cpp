@@ -7,9 +7,9 @@ namespace Astra::Graphics
 	Spatial::Spatial()
 		: modelMatrix(new Math::Mat4(0)), normalMatrix(new Math::Mat4(0))
 	{
-		for (int i = 0; i < 3 * 3; i++)
+		for (size_t i = 0; i < 3 * 3; i++)
 		{
-			data[i] = i < 6 ? 0 : 1;
+			data[i] = i < 6 ? 0.0f : 1.0f;
 		}
 		UpdateMatrices();
 	}

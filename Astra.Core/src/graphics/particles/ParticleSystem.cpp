@@ -24,7 +24,7 @@ namespace Astra::Graphics
 		float delta = Window::delta;
 		float particlesToCreate = m_particlePerSecond * (delta * 10);
 		int count = static_cast<int>(floorf(particlesToCreate));
-		float partialParticle = static_cast<int>(particlesToCreate) % 1;
+		int partialParticle = static_cast<int>(particlesToCreate) % 1; // Revisit this
 		for (int i = 0; i < count; i++)
 		{
 			EmitParticle();

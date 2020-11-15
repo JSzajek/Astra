@@ -26,6 +26,6 @@ namespace Astra::Graphics
 		~VertexArray();
 		void AddBuffer(const BufferType& type, const GLuint& id);
 
-		GLuint& const operator()(const BufferType& type);
+		GLuint& operator()(const BufferType& type);
 	};
 }

@@ -14,7 +14,7 @@ namespace Astra::Graphics
 			: ImageEffect(new HorizontalBlurShader(), width, height, 1, true, GL_CLAMP_TO_EDGE), m_squeezeRatio(squeezeRatio)
 		{
 			m_shader->Start();
-			m_shader->SetUniform1f(TARGET_WIDTH_TAG, width);
+			m_shader->SetUniform1f(TARGET_WIDTH_TAG, static_cast<float>(width));
 			m_shader->Stop();
 		}
 		

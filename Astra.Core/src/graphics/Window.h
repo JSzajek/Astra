@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <functional>
+#include <time.h>
 
 #include "../math/Vec2.h"
 #include "../math/Vec3.h"
@@ -22,7 +23,7 @@ namespace Astra::Graphics
 		int m_width, m_height;
 		const char* m_title;
 		GLFWwindow* m_window;
-		std::function<void(float, float)> m_windowResizeCallback;
+		std::function<void(int, int)> m_windowResizeCallback;
 		bool m_closed;
 
 		bool m_keys[MAX_KEYS];
@@ -30,9 +31,9 @@ namespace Astra::Graphics
 		Math::Vec2 m_mousePosition;
 		float m_mouseScroll;
 
-		double m_lastFrameTime;
+		clock_t m_lastFrameTime;
 	public:
-		static double delta;
+		static float delta;
 		static int width, height;
 	public:
 		Window(const char* title, int width, int height);
@@ -44,7 +45,7 @@ namespace Astra::Graphics
 		inline int GetWidth() { return m_width; }
 		inline int GetHeight() { return m_height; }
 
-		void SetWindowResizeCallback(std::function<void(float, float)> callback);
+		void SetWindowResizeCallback(std::function<void(int, int)> callback);
 
 		bool isKeyPressed(unsigned int keycode) const;
 		bool isMouseButtonPressed(unsigned int button) const;

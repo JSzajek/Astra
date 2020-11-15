@@ -94,7 +94,7 @@ namespace Astra::Graphics
 
 		if (light->GetType() == LightType::Point)
 		{
-			int i = 0;
+			size_t i = 0;
 			for (; i < m_lights.size(); i++)
 			{
 				if (m_lights[i] == light)

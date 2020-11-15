@@ -35,7 +35,7 @@ namespace Astra::Graphics
 		void EmitParticle(const Math::Vec3& center);
 		float GenerateValue(float average, float errorMargin);
 		float GenerateRotation();
-		const Math::Vec3& GenerateRandomUnitVectorInCone(const Math::Vec3& coneDir, float angle);
-		const Math::Vec3& GenerateRandomUnitVector();
+		const Math::Vec3 GenerateRandomUnitVectorInCone(const Math::Vec3& coneDir, float angle);
+		const Math::Vec3 GenerateRandomUnitVector();
 	};
 }

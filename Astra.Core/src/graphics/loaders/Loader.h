@@ -53,12 +53,12 @@ namespace Astra::Graphics
 			return Get().LoadImpl(drawType, vertices, textureCoords);
 		}
 
-		static const Texture& LoadTexture(const char* const filepath, bool diffuse = true, GLint clippingOption = GL_REPEAT, bool flip = true, bool invert = false)
+		static Texture LoadTexture(const char* const filepath, bool diffuse = true, GLint clippingOption = GL_REPEAT, bool flip = true, bool invert = false)
 		{
 			return Get().LoadTextureImpl(filepath, diffuse, clippingOption, flip, invert);
 		}
 
-		static const Texture& LoadAtlasTexture(const char* const filepath)
+		static Texture LoadAtlasTexture(const char* const filepath)
 		{
 			return Get().LoadAtlasTextureImpl(filepath);
 		}
@@ -109,8 +109,8 @@ namespace Astra::Graphics
 		const VertexArray* LoadImpl(unsigned int drawType, const std::vector<float>& vertices, unsigned int dimensions);
 		const GLuint LoadImpl(unsigned int drawType, const std::vector<float>& vertices, const std::vector<float>& textureCoords);
 		
-		const Texture& LoadAtlasTextureImpl(const char* const filepath);
-		const Texture& LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert);
+		Texture LoadAtlasTextureImpl(const char* const filepath);
+		Texture LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert);
 		
 		const CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);
 
@@ -131,8 +131,8 @@ namespace Astra::Graphics
 		GLuint BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage = GL_STATIC_DRAW, GLboolean normalized = GL_FALSE);
 		GLuint BindIndicesBuffer(const std::vector<int>& data, GLenum usage = GL_STATIC_DRAW);
 
-		const GLuint& GenerateVaoId();
-		const GLuint& GenerateVboId();
+		GLuint GenerateVaoId();
+		GLuint GenerateVboId();
 		
 		void UnbindFrameBuffer();
 		inline void UnbindVertexArray() { glBindVertexArray(0); }

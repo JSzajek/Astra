@@ -36,11 +36,11 @@ namespace Astra::Graphics
 	class RendererController
 	{
 	private:
-		static const constexpr float DefaultReflectionWidth = 320;
-		static const constexpr float DefaultReflectionHeight = 180;
+		static const constexpr unsigned int DefaultReflectionWidth = 320;
+		static const constexpr unsigned int DefaultReflectionHeight = 180;
 
-		static const constexpr float DefaultRefractionWidth = 1280;
-		static const constexpr float DefaultRefractionHeight = 720;
+		static const constexpr unsigned int DefaultRefractionWidth = 1280;
+		static const constexpr unsigned int DefaultRefractionHeight = 720;
 
 		static const constexpr unsigned int FieldOfView = 70;
 		static const constexpr float NearPlane = 0.1f;
@@ -85,7 +85,7 @@ namespace Astra::Graphics
 			Get().RenderImpl();
 		}
 
-		static void UpdateScreen(float width, float height)
+		static void UpdateScreen(int width, int height)
 		{
 			Get().UpdateScreenImpl(width, height);
 		}
@@ -98,7 +98,7 @@ namespace Astra::Graphics
 	private:
 		RendererController();
 		~RendererController();
-		void UpdateScreenImpl(float width, float height);
+		void UpdateScreenImpl(int width, int height);
 		void RenderImpl();
 		
 		void Init() const;

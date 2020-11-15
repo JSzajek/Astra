@@ -14,7 +14,7 @@ namespace Astra::Graphics
 			: ImageEffect(new VerticalBlurShader(), width, height, 1, true, GL_CLAMP_TO_EDGE), m_squeezeRatio(squeezeRatio)
 		{
 			m_shader->Start();
-			m_shader->SetUniform1f(TARGET_HEIGHT_TAG, height);
+			m_shader->SetUniform1f(TARGET_HEIGHT_TAG, static_cast<float>(height));
 			m_shader->Stop();
 		}
 		

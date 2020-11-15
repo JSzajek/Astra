@@ -19,7 +19,7 @@ namespace Astra::Graphics
 		vboIds[static_cast<unsigned short>(type)] = id;
 	}
 
-	GLuint& const VertexArray::operator()(const BufferType& type)
+	GLuint& VertexArray::operator()(const BufferType& type)
 	{
 		return vboIds[static_cast<unsigned short>(type)];
 	}

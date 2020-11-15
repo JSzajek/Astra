@@ -126,7 +126,7 @@ namespace Astra::Math
 		return *this;
 	}
 
-	const Mat4& Mat4::Inverse() const
+	const Mat4 Mat4::Inverse() const
 	{
 		Mat4 inverse(0);
 

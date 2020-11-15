@@ -42,6 +42,6 @@ namespace Astra::Graphics
 		void Prepare();
 		void UpdateLightViewMatrix(Math::Vec3 direction);
 		void UpdateOrthoProjectionMatrix(float width, float height, float length);
-		const Math::Mat4& CreateOffset();
+		const Math::Mat4 CreateOffset();
 	};
 }

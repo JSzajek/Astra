@@ -105,7 +105,7 @@ namespace Astra::Graphics
 
 		if (light->GetType() == LightType::Point)
 		{
-			int i = 0;
+			size_t i = 0;
 			for (; i < m_lights.size(); i++)
 			{
 				if (m_lights[i] == light)
@@ -130,8 +130,8 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Tangents));
-
-		m_shader->SetUniform1f(NUMBER_OF_ROWS, entity->material->GetRowCount());
+		
+		m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(entity->material->GetRowCount()));
 		if (entity->material->Transparent)
 		{
 			glDisable(GL_CULL_FACE);

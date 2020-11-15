@@ -10,7 +10,7 @@
 namespace Astra::Graphics
 {
 	#define SPACE_ASCII		32
-	#define LINE_HEIGHT		0.03
+	#define LINE_HEIGHT		0.03f
 
 	struct TextMeshData
 	{
@@ -33,9 +33,9 @@ namespace Astra::Graphics
 		std::vector<Line> CreateStructure(const GuiText* text);
 		void CompleteStructure(std::vector<Line>& lines, Line& currentLine, const Word& currentWord, const GuiText* text);
 		const TextMeshData* CreateQuadVertices(const GuiText* text, const std::vector<Line>& lines);
-		void AddVerticesForCharacter(double xCursor, double yCursor, const Character* character, double fontSize, std::vector<float>& vertices);
-		void AddVertices(std::vector<float>& vertices, double x, double y, double maxX, double maxY);
-		void AddTexCoords(std::vector<float>& texCoords, double x, double y, double maxX, double maxY);
+		void AddVerticesForCharacter(float xCursor, float yCursor, const Character* character, float fontSize, std::vector<float>& vertices);
+		void AddVertices(std::vector<float>& vertices, float x, float y, float maxX, float maxY);
+		void AddTexCoords(std::vector<float>& texCoords, float x, float y, float maxX, float maxY);
 	};
 
 	struct FontType

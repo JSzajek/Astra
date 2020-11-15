@@ -51,7 +51,7 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
 
-		m_shader->SetUniform1f(NUMBER_OF_ROWS_TAG, entity->material->GetRowCount());
+		m_shader->SetUniform1f(NUMBER_OF_ROWS_TAG, static_cast<float>(entity->material->GetRowCount()));
 		if (entity->material->Transparent)
 		{
 			glDisable(GL_CULL_FACE);

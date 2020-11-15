@@ -8,14 +8,16 @@
 
 namespace Astra::Math
 {
+	#define PI	3.141592653589793238460f
+
 	inline float ToRadians(float degrees)
 	{
-		return degrees * (float)M_PI / 180.0f;
+		return degrees * PI / 180.0f;
 	}
 
 	inline float ToDegrees(float radians)
 	{
-		return radians * 180.0f / (float)M_PI;
+		return radians * 180.0f / PI;
 	}
 
 	template <typename T> void Clamp(T& value, const T& low, const T& high)

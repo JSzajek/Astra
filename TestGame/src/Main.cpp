@@ -19,7 +19,7 @@ int main()
 
     Window window("Astra", 960, 540);
 
-    window.SetWindowResizeCallback([&](float width, float height) { RendererController::UpdateScreen(width, height); });
+    window.SetWindowResizeCallback([&](int width, int height) { RendererController::UpdateScreen(width, height); });
 
     Scene* const mainScene = new Scene(NULL);
 
