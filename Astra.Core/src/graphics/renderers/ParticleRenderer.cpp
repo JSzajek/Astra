@@ -53,7 +53,7 @@ namespace Astra::Graphics
 				UpdateModelViewMatrix(particle->Position, particle->Rotation, particle->Scale);
 				m_shader->SetUniform2f(TEX_OFFSET_1_TAG, particle->GetTexOffset1());
 				m_shader->SetUniform2f(TEX_OFFSET_2_TAG, particle->GetTexOffset2());
-				m_shader->SetUniform2f(TEX_COORD_INFO_TAG, particle->Material->GetRowCount(), particle->GetBlendFactor());
+				m_shader->SetUniform2f(TEX_COORD_INFO_TAG, static_cast<float>(particle->Material->GetRowCount()), particle->GetBlendFactor());
 				glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
 			}
 		}

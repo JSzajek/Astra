@@ -29,6 +29,7 @@ namespace Astra::Graphics
 				values.insert(std::make_pair(std::string(valuePairs[0]), std::string(valuePairs[1])));
 			}
 		}
+		return true;
 	}
 
 	std::vector<int> MetaFile::GetValuesOfVariable(const std::string& variable)
@@ -37,7 +38,7 @@ namespace Astra::Graphics
 		std::vector<int> actualValues;
 		actualValues.reserve(numbers.size());
 
-		for (int i = 0; i < numbers.size(); i++)
+		for (size_t i = 0; i < numbers.size(); i++)
 		{
 			actualValues.push_back(std::stoi(numbers[i]));
 		}
@@ -56,7 +57,7 @@ namespace Astra::Graphics
 	{
 		ProcessNextLine();
 		int lineHeightPixels = GetValueOfVariable("lineHeight") - paddingHeight;
-		verticalPerPixelSize = LINE_HEIGHT / (double)lineHeightPixels;
+		verticalPerPixelSize = LINE_HEIGHT / (float)lineHeightPixels;
 		horizontalPerPixelSize = verticalPerPixelSize / aspectRatio;
 	}
 
@@ -80,24 +81,24 @@ namespace Astra::Graphics
 		int id = GetValueOfVariable("id");
 		if (id == SPACE_ASCII)
 		{
-			spaceWidth = (GetValueOfVariable("xadvance") - (double)paddingWidth) * horizontalPerPixelSize;
+			spaceWidth = (GetValueOfVariable("xadvance") - (float)paddingWidth) * horizontalPerPixelSize;
 			return NULL;
 		}
-		double xTex = ((double)GetValueOfVariable("x") + (padding[PAD_LEFT] - (double)DESIRED_PADDING)) / imageSize;
-		double yTex = ((double)GetValueOfVariable("y") + (padding[PAD_TOP] - (double)DESIRED_PADDING)) / imageSize;
+		float xTex = ((float)GetValueOfVariable("x") + (padding[PAD_LEFT] - (float)DESIRED_PADDING)) / imageSize;
+		float yTex = ((float)GetValueOfVariable("y") + (padding[PAD_TOP] - (float)DESIRED_PADDING)) / imageSize;
 		
 		int width = GetValueOfVariable("width") - (paddingWidth - (2 * DESIRED_PADDING));
 		int height = GetValueOfVariable("height") - (paddingHeight - (2 * DESIRED_PADDING));
 
-		double quadWidth = width * horizontalPerPixelSize;
-		double quadHeight = height * verticalPerPixelSize;
+		float quadWidth = width * horizontalPerPixelSize;
+		float quadHeight = height * verticalPerPixelSize;
 
-		double xTexSize = (double)width / (double)imageSize;
-		double yTexSize = (double)height / (double)imageSize;
+		float xTexSize = (float)width / (float)imageSize;
+		float yTexSize = (float)height / (float)imageSize;
 		
-		double xOffset = (GetValueOfVariable("xoffset") + (double)padding[PAD_LEFT] - (double)DESIRED_PADDING) * horizontalPerPixelSize;
-		double yOffset = (GetValueOfVariable("yoffset") + ((double)padding[PAD_TOP] - (double)DESIRED_PADDING)) * verticalPerPixelSize;
-		double xAdvance = (GetValueOfVariable("xadvance") - (double)paddingWidth) * horizontalPerPixelSize;
+		float xOffset = (GetValueOfVariable("xoffset") + (float)padding[PAD_LEFT] - (float)DESIRED_PADDING) * horizontalPerPixelSize;
+		float yOffset = (GetValueOfVariable("yoffset") + ((float)padding[PAD_TOP] - (float)DESIRED_PADDING)) * verticalPerPixelSize;
+		float xAdvance = (GetValueOfVariable("xadvance") - (float)paddingWidth) * horizontalPerPixelSize;
 		return new Character(id, xTex, yTex, xTexSize, yTexSize, xOffset, yOffset, quadWidth, quadHeight, xAdvance);
 	}
 }

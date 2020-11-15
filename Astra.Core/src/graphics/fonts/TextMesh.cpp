@@ -80,9 +80,8 @@ namespace Astra::Graphics
 
 	const TextMeshData* TextMeshCreator::CreateQuadVertices(const GuiText* text, const std::vector<Line>& lines)
 	{
-		//text->SetNumberOfLines(lines.size());
-		double xCursor = 0;
-		double yCursor = 0;
+		float xCursor = 0;
+		float yCursor = 0;
 		std::vector<float> vertices;
 		std::vector<float> textureCoords;
 		for (auto line : lines)
@@ -108,20 +107,20 @@ namespace Astra::Graphics
 		return new TextMeshData(vertices, textureCoords);
 	}
 
-	void TextMeshCreator::AddVerticesForCharacter(double xCursor, double yCursor, const Character* character, double fontSize, std::vector<float>& vertices)
+	void TextMeshCreator::AddVerticesForCharacter(float xCursor, float yCursor, const Character* character, float fontSize, std::vector<float>& vertices)
 	{
-		double x = xCursor + (character->GetXOffset() * fontSize);
-		double y = yCursor + (character->GetYOffset() * fontSize);
-		double xMax = x + (character->GetXSize() * fontSize);
-		double yMax = y + (character->GetYSize() * fontSize);
-		double xProper = (2 * x) - 1;
-		double yProper = (-2 * y) + 1;
-		double xMaxProper = (2 * xMax) - 1;
-		double yMaxProper = (-2 * yMax) + 1;
+		float x = xCursor + (character->GetXOffset() * fontSize);
+		float y = yCursor + (character->GetYOffset() * fontSize);
+		float xMax = x + (character->GetXSize() * fontSize);
+		float yMax = y + (character->GetYSize() * fontSize);
+		float xProper = (2 * x) - 1;
+		float yProper = (-2 * y) + 1;
+		float xMaxProper = (2 * xMax) - 1;
+		float yMaxProper = (-2 * yMax) + 1;
 		AddVertices(vertices, xProper, yProper, xMaxProper, yMaxProper);
 	}
 
-	void TextMeshCreator::AddVertices(std::vector<float>& vertices, double x, double y, double maxX, double maxY)
+	void TextMeshCreator::AddVertices(std::vector<float>& vertices, float x, float y, float maxX, float maxY)
 	{
 		vertices.push_back(x);
 		vertices.push_back(y);
@@ -137,7 +136,7 @@ namespace Astra::Graphics
 		vertices.push_back(y);
 	}
 
-	void TextMeshCreator::AddTexCoords(std::vector<float>& texCoords, double x, double y, double maxX, double maxY)
+	void TextMeshCreator::AddTexCoords(std::vector<float>& texCoords, float x, float y, float maxX, float maxY)
 	{
 		texCoords.push_back(x);
 		texCoords.push_back(y);

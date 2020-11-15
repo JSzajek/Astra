@@ -7,8 +7,8 @@ namespace Astra::Graphics
 	class WaterFrameBuffer
 	{
 	private:
-		float m_reflectionWidth, m_reflectionHeight;
-		float m_refractionWidth, m_refractionHeight;
+		unsigned int m_reflectionWidth, m_reflectionHeight;
+		unsigned int m_refractionWidth, m_refractionHeight;
 	public:
 		FrameBuffer* m_reflectionBuffer;
 		FrameBuffer* m_refractionBuffer;

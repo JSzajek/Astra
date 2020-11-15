@@ -13,7 +13,7 @@ namespace Astra::Graphics
 	void ConeParticleSystem::SetDirection(const Math::Vec3& direction, float deviation)
 	{
 		m_direction = direction;
-		m_directionDeviation = deviation * M_PI;
+		m_directionDeviation = deviation * PI;
 	}
 
 	void ConeParticleSystem::GenerateParticles(const Math::Vec3& center)
@@ -21,7 +21,7 @@ namespace Astra::Graphics
 		float delta = Window::delta;
 		float particlesToCreate = m_particlePerSecond * (delta * 10);
 		int count = static_cast<int>(floorf(particlesToCreate));
-		float partialParticle = static_cast<int>(particlesToCreate) % 1;
+		int partialParticle = static_cast<int>(particlesToCreate) % 1; // Revisit this
 		for (int i = 0; i < count; i++)
 		{
 			EmitParticle(center);
@@ -54,10 +54,10 @@ namespace Astra::Graphics
 		return m_randomRotation ? Math::Random() * 360.0f : 0;
 	}
 	
-	const Math::Vec3& ConeParticleSystem::GenerateRandomUnitVectorInCone(const Math::Vec3& coneDir, float angle)
+	const Math::Vec3 ConeParticleSystem::GenerateRandomUnitVectorInCone(const Math::Vec3& coneDir, float angle)
 	{
 		float cosAngle = cos(angle);
-		float theta = Math::Random() * 2.0f * M_PI;
+		float theta = Math::Random() * 2.0f * PI;
 		float z = cosAngle + (Math::Random() * (1 - cosAngle));
 		float rootOneMinusZSquared = sqrtf(1 - z * z);
 		float x = rootOneMinusZSquared * cos(theta);
@@ -79,9 +79,9 @@ namespace Astra::Graphics
 		return direction;
 	}
 	
-	const Math::Vec3& ConeParticleSystem::GenerateRandomUnitVector()
+	const Math::Vec3 ConeParticleSystem::GenerateRandomUnitVector()
 	{
-		float theta = Math::Random() * 2.0f * M_PI;
+		float theta = Math::Random() * 2.0f * PI;
 		float z = (Math::Random() * 2) - 1;
 		float rootOneMinusZSquared = sqrtf(1 - (z * z));
 		float x = rootOneMinusZSquared * cos(theta);

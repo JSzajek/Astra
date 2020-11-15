@@ -61,7 +61,7 @@ namespace Astra::Graphics
 		m_projectionMatrix.columns[2][2] = -2.0f / length;
 	}
 
-	const Math::Mat4& ShadowMapController::CreateOffset()
+	const Math::Mat4 ShadowMapController::CreateOffset()
 	{
 		Math::Mat4 offset(1);
 		offset = offset.Translate(0.5f);

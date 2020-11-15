@@ -10,19 +10,19 @@ namespace Astra::Graphics
 	{
 	private:
 		std::vector<Word> words;
-		double maxLength;
-		double spaceSize;
-		double currentLength;
+		float maxLength;
+		float spaceSize;
+		float currentLength;
 
 	public:
-		Line(double spaceWidth, double fontSize, double maxLength)
+		Line(float spaceWidth, float fontSize, float maxLength)
 			: maxLength(maxLength), spaceSize(spaceWidth * fontSize), currentLength(0)
 		{
 		}
 		
 		bool AddWord(const Word& word)
 		{
-			double addedLength = word.GetWidth();
+			float addedLength = word.GetWidth();
 			addedLength += words.size() != 0 ? spaceSize : 0;
 			if (currentLength + addedLength <= maxLength)
 			{
@@ -34,7 +34,7 @@ namespace Astra::Graphics
 		}
 
 		inline const std::vector<Word>& GetWords() const { return words; }
-		inline const double GetLineLength() const { return currentLength; }
-		inline const double GetMaxLength() const { return maxLength; }
+		inline const float GetLineLength() const { return currentLength; }
+		inline const float GetMaxLength() const { return maxLength; }
 	};
 }

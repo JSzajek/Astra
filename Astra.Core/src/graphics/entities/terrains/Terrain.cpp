@@ -56,9 +56,9 @@ namespace Astra::Graphics
 		std::vector<int> indices(6 * (m_vertexCount - 1) * (m_vertexCount - 1));
 
 		unsigned int pointer = 0;
-		for (unsigned int i = 0; i < m_vertexCount; i++)
+		for (int i = 0; i < m_vertexCount; i++)
 		{
-			for (unsigned int j = 0; j < m_vertexCount; j++)
+			for (int j = 0; j < m_vertexCount; j++)
 			{
 				vertices[pointer * 3] = j / ((float)m_vertexCount - 1) * Size;
 				m_heights[j + i * m_vertexCount] = GetHeight(j, i, buffer, height);
@@ -74,9 +74,9 @@ namespace Astra::Graphics
 			}
 		}
 		pointer = 0;
-		for (unsigned int gz = 0; gz < m_vertexCount - 1; gz++)
+		for (int gz = 0; gz < m_vertexCount - 1; gz++)
 		{
-			for (unsigned int gx = 0; gx < m_vertexCount - 1; gx++)
+			for (int gx = 0; gx < m_vertexCount - 1; gx++)
 			{
 				int topLeft = (gz * m_vertexCount) + gx;
 				int topRight = topLeft + 1;
@@ -108,9 +108,9 @@ namespace Astra::Graphics
 		std::vector<int> indices(6 * (m_vertexCount - 1) * (m_vertexCount - 1));
 
 		unsigned int pointer = 0;
-		for (unsigned int i = 0; i < m_vertexCount; i++)
+		for (int i = 0; i < m_vertexCount; i++)
 		{
-			for (unsigned int j = 0; j < m_vertexCount; j++)
+			for (int j = 0; j < m_vertexCount; j++)
 			{
 				vertices[pointer * 3] = j / ((float)m_vertexCount - 1) * Size;
 				m_heights[j + i * m_vertexCount] = GetHeight(j, i, generator);
@@ -126,9 +126,9 @@ namespace Astra::Graphics
 			}
 		}
 		pointer = 0;
-		for (unsigned int gz = 0; gz < m_vertexCount - 1; gz++)
+		for (int gz = 0; gz < m_vertexCount - 1; gz++)
 		{
-			for (unsigned int gx = 0; gx < m_vertexCount - 1; gx++)
+			for (int gx = 0; gx < m_vertexCount - 1; gx++)
 			{
 				int topLeft = (gz * m_vertexCount) + gx;
 				int topRight = topLeft + 1;
@@ -147,12 +147,12 @@ namespace Astra::Graphics
 
 	float Terrain::GetHeightOfTerrain(int xWorldCoord, int zWorldCoord)
 	{
-		int xTerrain = xWorldCoord - GetTranslation().x;
-		int zTerrain = zWorldCoord - GetTranslation().z;
+		int xTerrain = xWorldCoord - static_cast<int>(GetTranslation().x);
+		int zTerrain = zWorldCoord - static_cast<int>(GetTranslation().z);
 
 		float gridSquareSize = Size / (float)(m_vertexCount - 1);
-		int xGrid = floorf(xTerrain / gridSquareSize);
-		int zGrid = floorf(zTerrain / gridSquareSize);
+		int xGrid = static_cast<int>(floorf(xTerrain / gridSquareSize));
+		int zGrid = static_cast<int>(floorf(zTerrain / gridSquareSize));
 		if (xGrid >= m_vertexCount - 1 || zGrid >= m_vertexCount - 1 || xGrid < 0 || zGrid < 0)
 		{
 			return 0;

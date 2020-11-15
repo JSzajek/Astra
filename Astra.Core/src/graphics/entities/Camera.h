@@ -31,7 +31,7 @@ namespace Astra::Graphics
 		inline const float GetYaw() const { return m_yaw; }
 		inline const float GetDistance() const { return m_distance; }
 		inline const Math::Vec3& GetPosition() const { return rows[0]; }
-		inline const Math::Vec3* GetInvertedPosition() const { return &(rows[0] * -1); }
+		inline Math::Vec3 GetInvertedPosition() const { return rows[0] * -1; }
 
 		inline float& Pitch() { return m_pitch; }
 		inline float& Yaw() { return m_yaw; }

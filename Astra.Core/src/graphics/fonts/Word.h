@@ -10,10 +10,10 @@ namespace Astra::Graphics
 	{
 	private:
 		std::vector<const Character*> characters;
-		double width;
-		double fontSize;
+		float width;
+		float fontSize;
 	public:
-		Word(double fontSize)
+		Word(float fontSize)
 			: fontSize(fontSize), width(0)
 		{
 		}
@@ -25,7 +25,7 @@ namespace Astra::Graphics
 		}
 
 		inline const std::vector<const Character*>& GetCharacters() const { return characters; }
-		inline const double GetWidth() const { return width; }
-		inline const double GetFontSize() const { return fontSize; }
+		inline const float GetWidth() const { return width; }
+		inline const float GetFontSize() const { return fontSize; }
 	};
 }

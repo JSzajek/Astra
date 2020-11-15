@@ -42,11 +42,11 @@ namespace Astra::Graphics
 	float HeightGenerator::GenerateHeight(int x, int z)
 	{
 		float total = 0;
-		float d = powf(2, m_octaves - 1);
+		float d = pow(2.0f, m_octaves - 1);
 		for (int i = 0; i < m_octaves; i++)
 		{
-			float freq = powf(2, i) / d;
-			float ampl = powf(m_persistence, i) * m_amplitude;
+			float freq = pow(2.0f, i) / d;
+			float ampl = pow(m_persistence, i) * m_amplitude;
 			total += GetInterpolatedNoise(x * freq, z * freq, (m_primeIndex + i) % MaxPrimals) * ampl;
 		}
 		return total;
@@ -57,7 +57,7 @@ namespace Astra::Graphics
 		int n = x + z * 42;
 		n = (n << 13) ^ n;
 		int t = (n * (n * n * m_primals[index * 3] + m_primals[(index * 3) + 1]) + m_primals[(index * 3) + 2]) & 0x7fffffff;
-		return 1.0 - (float)(t) / 1073741824.0f;
+		return 1.0f - (float)(t) / 1073741824.0f;
 	}
 
 	float HeightGenerator::GetSmoothNoise(int x, int z, int index) const
@@ -85,7 +85,7 @@ namespace Astra::Graphics
 
 	float HeightGenerator::CosineInterpolation(float a, float b, float blend) const
 	{
-		float theta = blend * M_PI;
+		float theta = blend * PI;
 		float f = (1.0f - cosf(theta)) * 0.5f;
 		return a * (1.0f - f) + b * f;
 	}

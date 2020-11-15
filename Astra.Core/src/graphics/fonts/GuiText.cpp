@@ -9,8 +9,8 @@ namespace Astra::Graphics
 			m_centerText(centered), Color(Math::Vec3::Zero), m_numberOfLines(0), m_vertexCount(0), m_textMeshVao(0), 
 				m_thickness(0), m_outlineSize(0), m_outlineWidth(0), m_outlineEdge(0)
 	{
-		m_fontWidth = (0.0176 * log(fontSize) + 0.4677) + m_thickness;
-		m_fontEdge = -0.062 * log(fontSize) + 0.1818;
+		m_fontWidth = (0.0176f * logf(fontSize) + 0.4677f) + m_thickness;
+		m_fontEdge = -0.062f * logf(fontSize) + 0.1818f;
 
 		FontController::LoadText(this);
 	}
@@ -20,11 +20,11 @@ namespace Astra::Graphics
 		: m_textString(text), Color(color), m_fontSize(fontSize), m_thickness(thickness), OutlineColor(outlineColor), m_outlineSize(outlineSize),
 			Offset(offset), m_font(font), Position(position), m_lineMaxSize(maxLineLength), m_centerText(centered), m_numberOfLines(0), m_vertexCount(0), m_textMeshVao(0)
 	{
-		m_fontWidth = (0.0176 * log(fontSize) + 0.4677) + m_thickness;
-		m_fontEdge = -0.062 * log(fontSize) + 0.1818;
+		m_fontWidth = (0.0176f * logf(fontSize) + 0.4677f) + m_thickness;
+		m_fontEdge = -0.062f * logf(fontSize) + 0.1818f;
 
-		m_outlineWidth = (0.0176 * log(m_outlineSize) + m_fontWidth);
-		m_outlineEdge = -0.062 * log(m_outlineSize) + 0.4;
+		m_outlineWidth = (0.0176f * logf(m_outlineSize) + m_fontWidth);
+		m_outlineEdge = -0.062f * logf(m_outlineSize) + 0.4f;
 
 		FontController::LoadText(this);
 	}

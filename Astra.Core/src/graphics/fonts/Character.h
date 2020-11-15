@@ -6,13 +6,13 @@ namespace Astra::Graphics
 	{
 	private:
 		int id;
-		double xTextureCoord, yTextureCoord;
-		double xMaxTextureCoord, yMaxTextureCoord;
-		double xOffset, yOffset;
-		double xSize, ySize;
-		double xAdvance;
+		float xTextureCoord, yTextureCoord;
+		float xMaxTextureCoord, yMaxTextureCoord;
+		float xOffset, yOffset;
+		float xSize, ySize;
+		float xAdvance;
 	public:
-		Character(int id, double xTextureCoord, double yTextureCoord, double xMaxTextureCoord, double yMaxTextureCoord, double xOffset, double yOffset, double xSize, double ySize, double xAdvance)
+		Character(int id, float xTextureCoord, float yTextureCoord, float xMaxTextureCoord, float yMaxTextureCoord, float xOffset, float yOffset, float xSize, float ySize, float xAdvance)
 			: id(id), xTextureCoord(xTextureCoord), yTextureCoord(yTextureCoord), xMaxTextureCoord(xTextureCoord + xMaxTextureCoord), yMaxTextureCoord(yTextureCoord + yMaxTextureCoord),
 				xOffset(xOffset), yOffset(yOffset), xSize(xSize), ySize(ySize), xAdvance(xAdvance)
 		{
@@ -26,16 +26,16 @@ namespace Astra::Graphics
 
 		inline const int Id() const { return id; }
 
-		inline const double GetXTextureCoord() const { return xTextureCoord; }
-		inline const double GetYTextureCoord() const { return yTextureCoord; }
-		inline const double GetXMaxTextureCoord() const { return xMaxTextureCoord; }
-		inline const double GetYMaxTextureCoord() const { return yMaxTextureCoord; }
+		inline const float GetXTextureCoord() const { return xTextureCoord; }
+		inline const float GetYTextureCoord() const { return yTextureCoord; }
+		inline const float GetXMaxTextureCoord() const { return xMaxTextureCoord; }
+		inline const float GetYMaxTextureCoord() const { return yMaxTextureCoord; }
 
-		inline const double GetXOffset() const { return xOffset; }
-		inline const double GetYOffset() const { return yOffset; }
-		inline const double GetXSize() const { return xSize; }
-		inline const double GetYSize() const { return ySize; }
-		
-		inline const double GetXAdvance() const { return xAdvance; }
+		inline const float GetXOffset() const { return xOffset; }
+		inline const float GetYOffset() const { return yOffset; }
+		inline const float GetXSize() const { return xSize; }
+		inline const float GetYSize() const { return ySize; }
+
+		inline const float GetXAdvance() const { return xAdvance; }
 	};
 }

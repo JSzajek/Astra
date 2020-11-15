@@ -24,10 +24,10 @@ namespace Astra::Graphics
 	class MetaFile
 	{
 	private:
-		double aspectRatio;
-		double verticalPerPixelSize;
-		double horizontalPerPixelSize;
-		double spaceWidth;
+		float aspectRatio;
+		float verticalPerPixelSize;
+		float horizontalPerPixelSize;
+		float spaceWidth;
 
 		std::vector<int> padding;
 		int paddingWidth;
@@ -38,7 +38,7 @@ namespace Astra::Graphics
 		std::unordered_map<std::string, std::string> values;
 	public:
 		MetaFile(const char* filepath);
-		inline const double GetSpaceWidth() const { return spaceWidth; }
+		inline const float GetSpaceWidth() const { return spaceWidth; }
 		inline const Character* GetCharacter(int ascii) const { return (*metaData.find(ascii)).second; }
 	private:
 		inline int GetValueOfVariable(const std::string& variable) { return std::stoi((*values.find(variable)).second); }

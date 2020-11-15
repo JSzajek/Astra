@@ -24,7 +24,7 @@ namespace Astra::Graphics
 		delete m_secondaryTexture;
 	}
 
-	const unsigned int& SkyboxMaterial::GetFirstTextureId() const
+	const unsigned int SkyboxMaterial::GetFirstTextureId() const
 	{
 		if (m_primaryTexture != NULL)
 		{
@@ -34,7 +34,7 @@ namespace Astra::Graphics
 		return 0;
 	}
 
-	const unsigned int& SkyboxMaterial::GetSecondTextureId() const
+	const unsigned int SkyboxMaterial::GetSecondTextureId() const
 	{
 		if (m_secondaryTexture != NULL)
 		{

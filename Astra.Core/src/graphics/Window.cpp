@@ -1,9 +1,10 @@
 #include "Window.h"
 #include "../logger/Logger.h"
 
+#include <time.h>
 namespace Astra::Graphics
 {
-	double Window::delta;
+	float Window::delta;
 	int Window::width;
 	int Window::height;
 	
@@ -113,7 +114,7 @@ namespace Astra::Graphics
 			return false;
 		}
 
-		m_lastFrameTime = glfwGetTime();
+		m_lastFrameTime = clock();
 
 		Logger::Log(std::string("OpenGL ") + std::string((const char*)glGetString(GL_VERSION)));
 		return true;
@@ -133,16 +134,17 @@ namespace Astra::Graphics
 			Logger::LogError((const char*)(glewGetErrorString(error)));
 		}
 
-		const double& currentFrameTime = glfwGetTime();
-		delta = (currentFrameTime - m_lastFrameTime);
-		m_lastFrameTime = currentFrameTime;
+		auto currentTick = clock();
+		delta = ((float)(currentTick - m_lastFrameTime)) / CLOCKS_PER_SEC;
+		m_lastFrameTime = currentTick;
+
 		m_mouseScroll = 0;
 
 		glfwPollEvents();
 		glfwSwapBuffers(m_window);
 	}
 
-	void Window::SetWindowResizeCallback(std::function<void(float, float)> callback)
+	void Window::SetWindowResizeCallback(std::function<void(int, int)> callback)
 	{
 		m_windowResizeCallback = callback;
 		m_windowResizeCallback(m_width, m_height);

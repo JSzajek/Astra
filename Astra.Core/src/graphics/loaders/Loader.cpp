@@ -92,7 +92,7 @@ namespace Astra::Graphics
 		return id;
 	}
 
-	const Texture& Loader::LoadAtlasTextureImpl(const char* const filepath)
+	Texture Loader::LoadAtlasTextureImpl(const char* const filepath)
 	{
 		static int m_bpp;
 		static unsigned char* buffer;
@@ -126,9 +126,11 @@ namespace Astra::Graphics
 			m_textureDirectory[filepath] = texture;
 			return texture;
 		}
+		Logger::LogWarning(std::string("Texture ") + std::string(filepath) + std::string(" did not load correctly."));
+		return NULL;
 	}
 
-	const Texture& Loader::LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert)
+	Texture Loader::LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert)
 	{
 		static int m_bpp;
 		static unsigned char* buffer;
@@ -197,7 +199,7 @@ namespace Astra::Graphics
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture.id);
 		stbi_set_flip_vertically_on_load(0); // Don't flip?
 
-		for (int i = 0; i < filepaths.size(); i++)
+		for (size_t i = 0; i < filepaths.size(); i++)
 		{
 			Texture& texture = cubemapTexture[i];
 			buffer = stbi_load(std::string(texture.m_filePath).c_str(), &texture.width, &texture.height, &m_bpp, 4);
@@ -295,7 +297,7 @@ namespace Astra::Graphics
 		glBindFramebuffer(GL_FRAMEBUFFER, buffer->Id());
 		
 		std::vector<unsigned int> attachments;
-		for (int i = 0; i < colorAttachments; i++)
+		for (size_t i = 0; i < colorAttachments; i++)
 		{
 			CreateTextureAttachment(buffer->ColorAttachment(i), width, height, floating, GL_CLAMP_TO_EDGE, i);
 			attachments.push_back(GL_COLOR_ATTACHMENT0 + i);
@@ -450,7 +452,7 @@ namespace Astra::Graphics
 		return id;
 	}
 
-	const GLuint& Loader::GenerateVaoId()
+	GLuint Loader::GenerateVaoId()
 	{
 		GLuint vaoId;
 		glGenVertexArrays(1, &vaoId);
@@ -459,7 +461,7 @@ namespace Astra::Graphics
 		return vaoId;
 	}
 
-	const GLuint& Loader::GenerateVboId()
+	GLuint Loader::GenerateVboId()
 	{
 		GLuint vboId;
 		glGenBuffers(1, &vboId);

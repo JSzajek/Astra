@@ -52,8 +52,6 @@ namespace Astra::Graphics
 		std::vector<float> texturesArray;
 		std::vector<float> normalsArray;
 
-		unsigned int vertexCount, textureCount, normalsCount;
-
 		std::ifstream stream(filepath);
 		std::string line;
 
@@ -115,8 +113,6 @@ namespace Astra::Graphics
 		std::vector<float> normalsArray;
 		std::vector<float> tangentsArray;
 
-		unsigned int vertexCount, textureCount, normalsCount;
-
 		std::ifstream stream(filepath);
 		std::string line;
 
@@ -170,7 +166,7 @@ namespace Astra::Graphics
 	float ObjLoader::Convert(std::vector<float>& verticesArray, std::vector<float>& texturesArray, std::vector<float>& normalsArray)
 	{
 		float furthest = 0;
-		for (int i = 0; i < vertices.size(); i++)
+		for (size_t i = 0; i < vertices.size(); i++)
 		{
 			Vertex* current = vertices[i];
 			if (current == NULL) { continue; }
@@ -197,7 +193,7 @@ namespace Astra::Graphics
 	float ObjLoader::Convert(std::vector<float>& verticesArray, std::vector<float>& texturesArray, std::vector<float>& normalsArray, std::vector<float>& tangentsArray)
 	{
 		float furthest = 0;
-		for (int i = 0; i < normVertices.size(); i++)
+		for (size_t i = 0; i < normVertices.size(); i++)
 		{
 			NormalVertex* current = normVertices[i];
 			if (current == NULL) { continue; }

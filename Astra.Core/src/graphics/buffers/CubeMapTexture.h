@@ -27,7 +27,7 @@ namespace Astra::Graphics
 		CubeMapTexture(const std::vector<const char*>& filepaths)
 			: m_filepaths(filepaths), id(0)
 		{
-			for (int i = 0; i < filepaths.size(); i++)
+			for (size_t i = 0; i < filepaths.size(); i++)
 			{
 				m_faces[i].m_filePath = filepaths[i];
 			}

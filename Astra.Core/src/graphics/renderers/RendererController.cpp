@@ -164,11 +164,11 @@ namespace Astra::Graphics
 	#endif
 	}
 
-	void RendererController::UpdateScreenImpl(float width, float height)
+	void RendererController::UpdateScreenImpl(int width, int height)
 	{
 		if (m_currentScene == NULL || m_block) { return; }
 
-		*projectionMatrix = Math::Mat4::Perspective(width, height, FieldOfView, NearPlane, FarPlane);
+		*projectionMatrix = Math::Mat4::Perspective(static_cast<float>(width), static_cast<float>(height), FieldOfView, NearPlane, FarPlane);
 		m_terrainRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_entityRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_normalEntityRenderer->UpdateProjectionMatrix(projectionMatrix);

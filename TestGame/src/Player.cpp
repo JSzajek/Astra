@@ -54,7 +54,7 @@ void Player::Update()
 
     m_camera->LookAt(m_body->GetTranslation());
     
-    float terrainHeight = m_terrain->GetHeightOfTerrain(m_body->GetTranslation().x, m_body->GetTranslation().z);
+    float terrainHeight = m_terrain->GetHeightOfTerrain(static_cast<int>(m_body->GetTranslation().x), static_cast<int>(m_body->GetTranslation().z));
     if (m_body->GetTranslation().y < terrainHeight)
     {
         upwardsSpeed = 0;
