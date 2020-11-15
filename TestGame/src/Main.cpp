@@ -60,12 +60,9 @@ int main()
     mainScene->AddText(text);
     mainScene->AddText(outlineText);
 
-    //Texture texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
-    //GuiTexture gui = GuiTexture(texture.id, Vec2(0.75, 0.75), Vec2(0.1, 0.1));
-    //mainScene->AddGui(&gui);
-
-    /*GuiTexture gui = GuiTexture(RendererController::GetBrightTex(), Vec2(0.75, 0.75), Vec2(0.4, 0.4));
-    mainScene->AddGui(&gui);*/
+    Texture texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
+    GuiTexture gui = GuiTexture(texture.id, Vec2(0.75f, 0.75f), Vec2(0.1f, 0.1f));
+    mainScene->AddGui(&gui);
 
     std::vector<const char*> m_textureFiles =
     {
@@ -115,10 +112,10 @@ int main()
     std::vector<const Entity*> entities;
     for (int i = 0; i < 20; i++)
     {
-        float x = (rand() % 256) - 128;
-        float z = (rand() % 256) - 128;
+        int x = (rand() % 256) - 128;
+        int z = (rand() % 256) - 128;
         float y = terrain.GetHeightOfTerrain(x, z);
-        Entity* entity = new Entity("res/fern.obj", fernMat, rand() % 4, Vec3(x, y, z), Vec3::Zero, Vec3::One);
+        Entity* entity = new Entity("res/fern.obj", fernMat, rand() % 4, Vec3(static_cast<float>(x), y, static_cast<float>(z)), Vec3::Zero, Vec3::One);
         entities.emplace_back(entity);
         mainScene->AddEntity(entity);
     }
