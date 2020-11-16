@@ -44,6 +44,11 @@ namespace Astra::Math
 		return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	}
 
+	static inline int RandomRange(int min, int max)
+	{
+		return rand() % (max - min + 1) + min;
+	}
+
 	static inline int DecimalNumbers(float number, unsigned int precision) {
 		float trunc = number - static_cast<int>(number);
 		return static_cast<int>(trunc * pow(10, precision));

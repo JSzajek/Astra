@@ -8,7 +8,7 @@ Player::Player(const Vec3& position, Window* window, Terrain* terrain)
 {
     //ImageMaterial* grassMat = new ImageMaterial("res/textures/container.png", (char*)NULL, 1, 32, false, false);
     ImageMaterial* containerMat = new ImageMaterial("res/textures/container.png", "res/textures/container_specular.png", 1, 32, false);
-	m_body = new Entity("res/cube.obj", containerMat, 0, position, Vec3(0), Vec3(2));
+	m_body = new Entity("res/cube.obj", containerMat, 0, position, Vec3(0), Vec3(0.5f));
 }
 
 void Player::Update()
