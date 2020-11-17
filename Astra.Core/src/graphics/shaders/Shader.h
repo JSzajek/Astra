@@ -131,6 +131,5 @@ namespace Astra::Graphics
 			static char m_buffer[64];
 			return m_buffer;
 		}
-	
 	};
 }

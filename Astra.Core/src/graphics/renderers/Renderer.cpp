@@ -42,6 +42,8 @@ namespace Astra::Graphics
 
 	void Renderer::UnbindVertexArray()
 	{
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 

@@ -53,7 +53,7 @@ int main()
 
     // TODO: Store Fonts in a directory and handle deletion before game closure or when no references
 
-    /*Texture fontTexture = Loader::LoadAtlasTexture("res/fonts/candara.png");
+    Texture fontTexture = Loader::LoadAtlasTexture("res/fonts/candara.png");
     FontType* font = new FontType(fontTexture.id, "res/fonts/candara.fnt");
     GuiText* text = new GuiText("This is a test text!", font, 3, Vec2(0, 0), 1, true);
     GuiText* outlineText = new GuiText("Outlines", font, 3, Vec2(0), Vec3(0), 0, 1, Vec3(0, 0, 1));
@@ -62,8 +62,8 @@ int main()
     mainScene->AddText(outlineText);
 
     Texture texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
-    GuiTexture gui = GuiTexture(texture.id, Vec2(0.75f, 0.75f), Vec2(0.1f, 0.1f));
-    mainScene->AddGui(&gui);*/
+    GuiTexture gui = GuiTexture("grass_sprite", texture.id, Vec2(0.75f, 0.75f), Vec2(0.1f, 0.1f));
+    mainScene->AddGui(&gui);
 
     std::vector<const char*> m_textureFiles =
     {
@@ -91,7 +91,9 @@ int main()
     Vec3 light_pos = Math::Vec3(-55, terrain.GetHeightOfTerrain(-55, 55) + 7, 55);
     DirectionalLight* dir_light = new DirectionalLight(Vec3(0), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0));
     PointLight* light4 = new PointLight(Vec3(-28.75f, 0, -65.5f), Vec3(3, 1.5f, 0), Vec3(1), Vec3(5), 1, 0.22f, 0.20f);
+    PointLight* light3 = new PointLight(light_pos, Vec3(3, 1.5f, 0), Vec3(1), Vec3(25));
 
+    mainScene->AddPointLight(light3);
     mainScene->AddPointLight(light4);
     mainScene->SetDirectionalLight(dir_light);
 
@@ -144,8 +146,24 @@ int main()
     //partSystem.SetScaleError(0.8f);
     //partSystem.SetRandomRotation(true);
 
-    mainScene->End();
+    // Example of Gui Texture Instancing
+    #define EXAMPLE_GUI_INSTANCING  0
+    
+    #if EXAMPLE_GUI_INSTANCING
+    float offset = 0.1f;
+    for (int y = -10; y < 10; y += 2)
+    {
+        for (int x = -10; x < 10; x += 2)
+        {
+            Vec2 temp((float)x / 10.0f + offset, (float)y / 10.0f + offset);
+            std::string t = std::to_string(x) + std::string(" ") + std::to_string(y) + std::string("temp");
+            GuiTexture* gui = new GuiTexture(t.c_str(), texture.id, temp, Vec2(0.05f));
+            mainScene->AddGui(gui);
+        }
+    }
+    #endif
 
+    mainScene->End();
     RendererController::SetCurrentScene(mainScene);
 
     const float InGameTimeSpeed = 0.00005f;
@@ -178,8 +196,8 @@ int main()
             timeDir = 1;
         }
 
-        //renderer.Render();
         RendererController::Render();
+
         window.Update();
 
         frames++;

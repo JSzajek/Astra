@@ -32,7 +32,7 @@ namespace Astra::Graphics
 
 		std::vector<const Entity*> m_entities;
 		std::vector<const ParticleSystem*> m_particles;
-		std::vector<const GuiTexture*> m_guis;
+		std::vector<GuiTexture*> m_guis;
 		std::vector<GuiText*> m_texts;
 		std::vector<PointLight*> m_pointlights;
 		//std::vector<const SpotLight*> m_spotlights;
@@ -67,7 +67,7 @@ namespace Astra::Graphics
 
 		inline void AddEntity(const Entity* entity) { m_entities.push_back(entity); }
 		inline void AddParticleSystem(const ParticleSystem* system) { m_particles.push_back(system); }
-		inline void AddGui(const GuiTexture* gui) { m_guis.push_back(gui); }
+		inline void AddGui(GuiTexture* gui) { m_guis.push_back(gui); }
 		inline void AddText(GuiText* text) { m_texts.push_back(text); }
 		inline void AddTerrain(const Terrain* terrain) { m_terrains.push_back(terrain); }
 		inline void AddWaterTile(const WaterTile* tile) { m_tiles.push_back(tile); }
@@ -80,7 +80,7 @@ namespace Astra::Graphics
 		inline const std::vector<const Entity*>& GetEntities() const { return m_entities; }
 		inline const std::vector<PointLight*>& GetPointLights() const { return m_pointlights; }
 		inline const std::vector<const Terrain*>& GetTerrains() const { return m_terrains; }
-		inline const std::vector<const GuiTexture*>& GetGuis() const { return m_guis; }
+		inline const std::vector<GuiTexture*>& GetGuis() const { return m_guis; }
 		inline const std::vector<GuiText*>& GetTexts() const { return m_texts; }
 		inline const std::vector<const WaterTile*>& GetWaterTiles() const { return m_tiles; }
 		inline const std::vector<const ParticleSystem*>& GetParticles() const { return m_particles; }
