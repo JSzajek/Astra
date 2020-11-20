@@ -13,6 +13,14 @@ namespace Astra::Graphics
 	ParticleRenderer::~ParticleRenderer()
 	{
 		delete m_modelViewMatrix;
+
+		for (const auto& directory : m_particles)
+		{
+			for (auto* particle : directory.second)
+			{
+				delete particle;
+			}
+		}
 	}
 
 	void ParticleRenderer::AddParticle(Particle* particle)
@@ -42,19 +50,20 @@ namespace Astra::Graphics
 		m_shader->Start();
 		m_viewMatrix = viewMatrix;
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDepthMask(GL_FALSE);
 
 		UpdateParticleData();
 
 		for (const auto& directory : m_buffers)
 		{
+			const auto& particles = m_particles[directory.first];
+			glBlendFunc(GL_SRC_ALPHA, particles.front()->GetAdditive() ? GL_ONE : GL_ONE_MINUS_SRC_ALPHA);
 			auto buff = directory.second;
 			glBindVertexArray(buff.VAO);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, directory.first);
 
-			glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, m_particles[directory.first].size());
+			glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particles.size());
 		}
 
 		glDepthMask(GL_TRUE);

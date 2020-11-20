@@ -136,7 +136,7 @@ int main()
     ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);
 
     Vec3 particleCenter(-80, terrain.GetHeightOfTerrain(-80, 80) + 5, 80);
-    ParticleSystem partSystem(partMaterial, &particleCenter, 15, 5, -0.1f, 3);
+    ParticleSystem partSystem(partMaterial, &particleCenter, 15, 5, -0.1f, 3, true);
     mainScene->AddParticleSystem(&partSystem);
     
     //ConeParticleSystem partSystem(partMaterial, 15, 25, 0.5f, 1.5f, 3);

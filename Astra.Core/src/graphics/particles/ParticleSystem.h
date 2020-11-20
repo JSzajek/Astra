@@ -16,10 +16,11 @@ namespace Astra::Graphics
 		float m_speed;
 		float m_gravityComplient;
 		float m_lifeSpan;
+		bool m_additive;
 		const ParticleMaterial* const m_material;
 		const Math::Vec3* m_center;
 	public:
-		ParticleSystem(const ParticleMaterial* const material, const Math::Vec3* center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan);
+		ParticleSystem(const ParticleMaterial* const material, const Math::Vec3* center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, bool additive = false);
 	#if _DEBUG
 		~ParticleSystem();
 		inline const Gizmo* const GetGizmo() const { return m_gizmo; }

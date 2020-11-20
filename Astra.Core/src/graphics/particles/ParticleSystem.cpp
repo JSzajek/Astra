@@ -6,8 +6,8 @@
 
 namespace Astra::Graphics
 {
-	ParticleSystem::ParticleSystem(const ParticleMaterial* const material, const Math::Vec3* center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan)
-		: m_material(material), m_center(center), m_particlePerSecond(particlesPerSecond), m_speed(speed), m_gravityComplient(gravityComplient), m_lifeSpan(lifeSpan)
+	ParticleSystem::ParticleSystem(const ParticleMaterial* const material, const Math::Vec3* center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, bool additive)
+		: m_material(material), m_center(center), m_particlePerSecond(particlesPerSecond), m_speed(speed), m_gravityComplient(gravityComplient), m_lifeSpan(lifeSpan), m_additive(additive)
 	{
 	#if _DEBUG
 		m_gizmo = new Gizmo("../Astra.Core/src/resources/textures/Emitter.png", *center, 3);
@@ -48,11 +48,11 @@ namespace Astra::Graphics
 		auto* particle = ParticleController::GetParticle();
 		if (particle == NULL)
 		{
-			particle = new Particle(m_material, *m_center, velocity, m_gravityComplient, m_lifeSpan, 0, 1);
+			particle = new Particle(m_material, *m_center, velocity, m_gravityComplient, m_lifeSpan, 0, 1, m_additive);
 		}
 		else
 		{
-			(*particle)(m_material, *m_center, velocity, m_gravityComplient, m_lifeSpan, 0, 1);
+			(*particle)(m_material, *m_center, velocity, m_gravityComplient, m_lifeSpan, 0, 1, m_additive);
 		}
 		ParticleController::AddParticle(particle);
 	}
