@@ -123,10 +123,10 @@ int main()
     std::vector<const Entity*> entities;
     for (int i = 0; i < 12; i++)
     {
-        //int x = (rand() % 256) - 128;
-        //int z = (rand() % 256) - 128;
-        int x = RandomRange(-45, -5);
-        int z = RandomRange(-100, -52);
+        int x = (rand() % 256) - 128;
+        int z = (rand() % 256) - 128;
+        //int x = RandomRange(-45, -5);
+        //int z = RandomRange(-100, -52);
         float y = terrain.GetHeightOfTerrain(x, z);
         Entity* entity = new Entity("res/fern.obj", fernMat, rand() % 4, Vec3(static_cast<float>(x), y, static_cast<float>(z)), Vec3::Zero, Vec3::One);
         entities.emplace_back(entity);

@@ -42,6 +42,7 @@ namespace Astra::Graphics
 			// Create Default Quad Vao and Instanced Buffer
 			unsigned int quadVao = CreateDefaultQuadVao();
 			unsigned int instanceVbo = CreateInstancedBuffer(NUM_INSTANCES * sizeof(Math::Mat4));
+			glBindVertexArray(0);
 			m_buffers[gui->GetId()] = GuiBuffer(quadVao, instanceVbo, NUM_INSTANCES);
 			m_guis[gui->GetId()].emplace_back(gui);
 		}
@@ -69,7 +70,6 @@ namespace Astra::Graphics
 		for (const auto& directory : m_buffers)
 		{
 			auto buff = directory.second;
-			auto gs = m_guis[directory.first];
 			glBindVertexArray(buff.VAO);
 			glEnableVertexAttribArray(0);
 			glEnableVertexAttribArray(1);
@@ -80,7 +80,7 @@ namespace Astra::Graphics
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, directory.first);
 
-			glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, gs.size());
+			glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, m_guis[directory.first].size());
 		}
 		
 		UnbindVertexArray();
