@@ -9,7 +9,6 @@ namespace Astra::Graphics
 		: Material(material), Position(position), m_velocity(velocity), m_gravity(gravity), m_lifeSpan(lifeSpan), m_elapsedTime(0), Rotation(rotation), Scale(scale),
 			m_texOffset1(0), m_texOffset2(0), m_blendFactor(0), m_distance(0)
 	{
-		ParticleController::AddParticle(this);
 	}
 
 	Particle::Particle(const Particle& other)
@@ -17,6 +16,19 @@ namespace Astra::Graphics
 			m_lifeSpan(other.m_lifeSpan), m_elapsedTime(other.m_elapsedTime), Rotation(other.Rotation), Scale(other.Scale),
 				m_texOffset1(other.m_texOffset1), m_texOffset2(other.m_texOffset2), m_blendFactor(other.m_blendFactor), m_distance(other.m_distance)
 	{
+	}
+
+	void Particle::operator()(const ParticleMaterial* material, const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale)
+	{
+		Material = material;
+		Position = position;
+		m_velocity = velocity;
+		m_gravity = gravity; 
+		m_lifeSpan = lifeSpan; 
+		Rotation = rotation;
+		Scale = scale;
+		m_elapsedTime = m_blendFactor = m_distance = 0;
+		m_texOffset1 = m_texOffset2 = Math::Vec2::Zero;
 	}
 
 	bool Particle::Update(const Math::Vec3& cameraPosition)

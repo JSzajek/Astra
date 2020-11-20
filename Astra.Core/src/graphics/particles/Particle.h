@@ -28,6 +28,8 @@ namespace Astra::Graphics
 		Particle(const ParticleMaterial* material, const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale);
 		Particle(const Particle& other);
 
+		void operator()(const ParticleMaterial* material, const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale);
+
 		inline const Math::Vec2& GetTexOffset1() const { return m_texOffset1; }
 		inline const Math::Vec2& GetTexOffset2() const { return m_texOffset2; }
 		inline const float GetBlendFactor() const { return m_blendFactor; }

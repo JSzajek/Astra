@@ -32,7 +32,7 @@ namespace Astra::Graphics
 				{
 					auto* temp = (*particlesIter);
 					particlesIter = (*iter).second.erase(particlesIter);
-					delete temp;
+					m_leftovers.emplace(temp);
 				}
 				else
 				{

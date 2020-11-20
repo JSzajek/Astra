@@ -1,5 +1,7 @@
 #include "ParticleSystem.h"
 
+#include "ParticleController.h"
+
 #include "../Window.h"
 
 namespace Astra::Graphics
@@ -43,6 +45,15 @@ namespace Astra::Graphics
 		velocity.Normalize();
 		velocity *= m_speed;
 
-		auto* particle = new Particle(m_material, *m_center, velocity, m_gravityComplient, m_lifeSpan, 0, 1);
+		auto* particle = ParticleController::GetParticle();
+		if (particle == NULL)
+		{
+			particle = new Particle(m_material, *m_center, velocity, m_gravityComplient, m_lifeSpan, 0, 1);
+		}
+		else
+		{
+			(*particle)(m_material, *m_center, velocity, m_gravityComplient, m_lifeSpan, 0, 1);
+		}
+		ParticleController::AddParticle(particle);
 	}
 }
