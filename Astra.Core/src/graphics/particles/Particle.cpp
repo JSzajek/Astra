@@ -22,12 +22,12 @@ namespace Astra::Graphics
 	{
 		Material = material;
 		Position = position;
+		Rotation = rotation;
+		Scale = scale;
 		m_velocity = velocity;
 		m_gravity = gravity; 
 		m_additive = additive;
 		m_lifeSpan = lifeSpan; 
-		Rotation = rotation;
-		Scale = scale;
 		m_elapsedTime = m_blendFactor = m_distance = 0;
 		m_texOffset1 = m_texOffset2 = Math::Vec2::Zero;
 	}

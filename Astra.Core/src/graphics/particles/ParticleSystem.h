@@ -12,6 +12,7 @@ namespace Astra::Graphics
 	#if _DEBUG
 		const Gizmo* m_gizmo;
 	#endif
+	protected:
 		float m_particlePerSecond;
 		float m_speed;
 		float m_gravityComplient;
@@ -25,9 +26,8 @@ namespace Astra::Graphics
 		~ParticleSystem();
 		inline const Gizmo* const GetGizmo() const { return m_gizmo; }
 	#endif
-		
 		void GenerateParticles() const;
 	private:
-		void EmitParticle() const;
+		virtual void EmitParticle() const = 0;
 	};
 }

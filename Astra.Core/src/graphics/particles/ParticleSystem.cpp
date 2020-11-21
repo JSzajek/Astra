@@ -1,6 +1,6 @@
 #include "ParticleSystem.h"
 
-#include "ParticleController.h"
+//#include "ParticleController.h"
 
 #include "../Window.h"
 
@@ -35,25 +35,5 @@ namespace Astra::Graphics
 		{
 			EmitParticle();
 		}
-	}
-	
-	void ParticleSystem::EmitParticle() const
-	{
-		float xDir = Math::Random() * 2.0f - 1.0f;
-		float zDir = Math::Random() * 2.0f - 1.0f;
-		Math::Vec3 velocity(xDir, 1, zDir);
-		velocity.Normalize();
-		velocity *= m_speed;
-
-		auto* particle = ParticleController::GetParticle();
-		if (particle == NULL)
-		{
-			particle = new Particle(m_material, *m_center, velocity, m_gravityComplient, m_lifeSpan, 0, 1, m_additive);
-		}
-		else
-		{
-			(*particle)(m_material, *m_center, velocity, m_gravityComplient, m_lifeSpan, 0, 1, m_additive);
-		}
-		ParticleController::AddParticle(particle);
 	}
 }

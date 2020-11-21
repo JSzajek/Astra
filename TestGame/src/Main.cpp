@@ -136,15 +136,14 @@ int main()
     ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);
 
     Vec3 particleCenter(-80, terrain.GetHeightOfTerrain(-80, 80) + 5, 80);
-    ParticleSystem partSystem(partMaterial, &particleCenter, 15, 5, -0.1f, 3, true);
-    mainScene->AddParticleSystem(&partSystem);
     
-    //ConeParticleSystem partSystem(partMaterial, 15, 25, 0.5f, 1.5f, 3);
-    //partSystem.SetDirection(Vec3(0, 1, 0), 0.1f);
-    //partSystem.SetLifeError(0.1f);
-    //partSystem.SetSpeedError(0.4f);
-    //partSystem.SetScaleError(0.8f);
-    //partSystem.SetRandomRotation(true);
+    ConeParticleSystem partSystem(partMaterial, &particleCenter, 15, 5, -0.1f, 1.5f, 2, true);
+    partSystem.SetDirection(Vec3(0, 1, 0), 0.5f);
+    partSystem.SetLifeError(0.1f);
+    partSystem.SetSpeedError(0.4f);
+    partSystem.SetScaleError(0.8f);
+    partSystem.SetRandomRotation(true);
+    mainScene->AddParticleSystem(&partSystem);
 
     // Example of Gui Texture Instancing
     #define EXAMPLE_GUI_INSTANCING  0
