@@ -24,14 +24,18 @@ namespace Astra::Graphics
 		Math::Vec2 m_texOffset2;
 		float m_blendFactor;
 		float m_distance;
+		bool m_additive;
 	public:
-		Particle(const ParticleMaterial* material, const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale);
+		Particle(const ParticleMaterial* material, const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale, bool additive = false);
 		Particle(const Particle& other);
+
+		void operator()(const ParticleMaterial* material, const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale, bool additive = false);
 
 		inline const Math::Vec2& GetTexOffset1() const { return m_texOffset1; }
 		inline const Math::Vec2& GetTexOffset2() const { return m_texOffset2; }
 		inline const float GetBlendFactor() const { return m_blendFactor; }
 		inline const float GetDistance() const { return m_distance; }
+		inline bool GetAdditive() const { return m_additive; }
 		bool Update(const Math::Vec3& cameraPosition);
 	private:
 		void UpdateTextureCoordInfo();

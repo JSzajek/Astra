@@ -5,16 +5,37 @@
 
 namespace Astra::Graphics
 {
+	struct GuiBuffer
+	{
+		unsigned int VAO;
+		unsigned int VBO;
+		size_t MaxSize;
+
+		GuiBuffer() 
+			: VAO(0), VBO(0), MaxSize(0)
+		{
+		}
+
+		GuiBuffer(unsigned int vao, unsigned int vbo, size_t size)
+			: VAO(vao), VBO(vbo), MaxSize(size)
+		{
+		}
+	};
+
+	#define NUM_INSTANCES	10
+
 	class GuiRenderer : public Renderer
 	{
 	private:
-		const VertexArray* m_defaultQuad;
-		std::vector<const GuiTexture*> m_guis;
+		std::unordered_map<unsigned int, std::vector<GuiTexture*>> m_guis;
+		std::unordered_map<unsigned int, GuiBuffer> m_buffers;
 	public:
 		GuiRenderer(Shader* shader);
-		~GuiRenderer();
-		inline void AddGui(const GuiTexture* gui) { m_guis.emplace_back(gui); }
-		inline void Clear() override { m_guis.clear(); }
+		void AddGui(GuiTexture* gui);
+		inline void Clear() override { m_guis.clear(); m_buffers.clear(); }
 		void Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
+	private:
+		unsigned int CreateInstancedBuffer(size_t size);
+		unsigned int CreateDefaultQuadVao();
 	};
 }

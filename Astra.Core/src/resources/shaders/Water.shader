@@ -180,7 +180,7 @@ void main()
 	vec3 totalReflective = CalcDirLight(directionalLight, normal, specColor, viewDir, waterDepth, lightFactor);
 	for (int i = 0; i < NR_POINT_LIGHTS; i++)
 	{
-		totalReflective += CalcPointLight(pointLights[0], normal, specColor, viewDir, waterDepth, lightFactor);
+		totalReflective += CalcPointLight(pointLights[i], normal, specColor, viewDir, waterDepth, lightFactor);
 	}
 	totalReflective += CalcSpotLight(spotLight, normal, specColor, viewDir, waterDepth, lightFactor);
 	totalReflective *= color;

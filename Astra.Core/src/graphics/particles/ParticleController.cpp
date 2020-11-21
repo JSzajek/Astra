@@ -12,6 +12,12 @@ namespace Astra::Graphics
 	ParticleController::~ParticleController()
 	{
 		delete m_particleRenderer;
+		while (m_leftovers.size() > 0) 
+		{
+			auto* leftover = m_leftovers.top();
+			delete leftover;
+			m_leftovers.pop();
+		}
 	}
 
 	void ParticleController::UpdateProjectionMatrixImpl(const Math::Mat4* projectionMatrix)
@@ -24,6 +30,8 @@ namespace Astra::Graphics
 		auto iter = m_particleRenderer->GetParticles().begin();
 		while (iter != m_particleRenderer->GetParticles().end())
 		{
+			bool additive = (*(*iter).second.begin())->GetAdditive();
+
 			auto particlesIter = (*iter).second.begin();
 			while (particlesIter != (*iter).second.end())
 			{
@@ -32,7 +40,7 @@ namespace Astra::Graphics
 				{
 					auto* temp = (*particlesIter);
 					particlesIter = (*iter).second.erase(particlesIter);
-					delete temp;
+					m_leftovers.emplace(temp);
 				}
 				else
 				{
@@ -43,12 +51,13 @@ namespace Astra::Graphics
 			if ((*iter).second.empty())
 			{
 				iter = m_particleRenderer->GetParticles().erase(iter);
+				return;
 			}
-			else
+			else if (!additive)
 			{
 				InsertionSort((*iter).second);
-				++iter;
 			}
+			++iter;
 		}
 	}
 

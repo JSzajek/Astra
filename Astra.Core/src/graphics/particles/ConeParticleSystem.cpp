@@ -1,11 +1,12 @@
 #include "ConeParticleSystem.h"
 
 #include "../Window.h"
+#include "ParticleController.h"
 
 namespace Astra::Graphics
 {
-	ConeParticleSystem::ConeParticleSystem(const ParticleMaterial* const material, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, float scale)
-		: m_material(material), m_particlePerSecond(particlesPerSecond), m_speed(speed), m_gravityComplient(gravityComplient), m_lifeSpan(lifeSpan), m_scale(scale),
+	ConeParticleSystem::ConeParticleSystem(const ParticleMaterial* const material, const Math::Vec3* center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, float scale, bool additive)
+		: ParticleSystem(material, center, particlesPerSecond, speed, gravityComplient, lifeSpan, additive), m_scale(scale),
 			m_speedError(0), m_lifeError(0), m_scaleError(0), m_randomRotation(false), m_direction(Math::Vec3::Zero), m_directionDeviation(0)
 	{
 	}
@@ -16,45 +17,37 @@ namespace Astra::Graphics
 		m_directionDeviation = deviation * PI;
 	}
 
-	void ConeParticleSystem::GenerateParticles(const Math::Vec3& center)
-	{
-		float delta = Window::delta;
-		float particlesToCreate = m_particlePerSecond * (delta * 10);
-		int count = static_cast<int>(floorf(particlesToCreate));
-		int partialParticle = static_cast<int>(particlesToCreate) % 1; // Revisit this
-		for (int i = 0; i < count; i++)
-		{
-			EmitParticle(center);
-		}
-		if (Math::Random() < partialParticle)
-		{
-			EmitParticle(center);
-		}
-	}
-
-	void ConeParticleSystem::EmitParticle(const Math::Vec3& center)
+	void ConeParticleSystem::EmitParticle() const
 	{
 		Math::Vec3 velocity = m_direction.Magnitude() != 0 ? GenerateRandomUnitVectorInCone(m_direction, m_directionDeviation) 
 															: GenerateRandomUnitVector();
 		velocity.Normalize();
-		velocity *= GenerateValue(m_speed, m_speedError);
-		float scale = GenerateValue(m_scale, m_scaleError);
-		float lifeSpan = GenerateValue(m_lifeSpan, m_lifeError);
-
-		Particle particle(m_material, center, velocity, m_gravityComplient, lifeSpan, GenerateRotation(), scale);
+		
+		auto* particle = ParticleController::GetParticle();
+		if (particle == NULL)
+		{
+			particle = new Particle(m_material, *m_center, velocity * GenerateValue(m_speed, m_speedError), m_gravityComplient, 
+										GenerateValue(m_lifeSpan, m_lifeError), GenerateRotation(), GenerateValue(m_scale, m_scaleError), m_additive);
+		}
+		else
+		{
+			(*particle)(m_material, *m_center, velocity * GenerateValue(m_speed, m_speedError), m_gravityComplient, 
+							GenerateValue(m_lifeSpan, m_lifeError), GenerateRotation(), GenerateValue(m_scale, m_scaleError), m_additive);
+		}
+		ParticleController::AddParticle(particle);
 	}
 	
-	float ConeParticleSystem::GenerateValue(float average, float errorMargin)
+	float ConeParticleSystem::GenerateValue(float average, float errorMargin) const
 	{
 		return average + ((Math::Random() - 0.5f) * 2.0f * errorMargin);
 	}
 	
-	float ConeParticleSystem::GenerateRotation()
+	float ConeParticleSystem::GenerateRotation() const
 	{
 		return m_randomRotation ? Math::Random() * 360.0f : 0;
 	}
 	
-	const Math::Vec3 ConeParticleSystem::GenerateRandomUnitVectorInCone(const Math::Vec3& coneDir, float angle)
+	const Math::Vec3 ConeParticleSystem::GenerateRandomUnitVectorInCone(const Math::Vec3& coneDir, float angle) const
 	{
 		float cosAngle = cos(angle);
 		float theta = Math::Random() * 2.0f * PI;
@@ -79,7 +72,7 @@ namespace Astra::Graphics
 		return direction;
 	}
 	
-	const Math::Vec3 ConeParticleSystem::GenerateRandomUnitVector()
+	const Math::Vec3 ConeParticleSystem::GenerateRandomUnitVector() const
 	{
 		float theta = Math::Random() * 2.0f * PI;
 		float z = (Math::Random() * 2) - 1;

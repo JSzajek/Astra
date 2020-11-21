@@ -76,10 +76,10 @@ namespace Astra::Graphics
 
 	void Shader::BindAttributes() const
 	{
-		BindAttribute(0, "position");
+	/*	BindAttribute(0, "position");
 		BindAttribute(1, "textureCoords");
 		BindAttribute(2, "normal");
-		BindAttribute(3, "tangent");
+		BindAttribute(3, "tangent");*/
 	}
 
 	ShaderProgramSource Shader::ParseShader(const std::string& filepath)

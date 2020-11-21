@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stack>
 #include "../renderers/ParticleRenderer.h"
 
 namespace Astra::Graphics
@@ -9,6 +10,7 @@ namespace Astra::Graphics
 	private:
 		ParticleShader* m_particleShader;
 		ParticleRenderer* m_particleRenderer;
+		std::stack<Particle*> m_leftovers;
 	public:
 		ParticleController(const ParticleController&) = delete;
 		void operator=(const ParticleController&) = delete;
@@ -22,6 +24,11 @@ namespace Astra::Graphics
 		static void AddParticle(Particle* particle)
 		{
 			Get().AddParticleImpl(particle);
+		}
+
+		static Particle* GetParticle()
+		{
+			return Get().GetParticleImpl();
 		}
 
 		static void UpdateProjectionMatrix(const Math::Mat4* projectionMatrix)
@@ -52,6 +59,13 @@ namespace Astra::Graphics
 		void UpdateImpl(const Math::Vec3& cameraPosition);
 		void RenderImpl(const Math::Mat4* viewMatrix);
 		void AddParticleImpl(Particle* particle);
+		inline Particle* GetParticleImpl() 
+		{
+			if (m_leftovers.size() == 0) { return NULL; }
+			auto* left = m_leftovers.top();
+			m_leftovers.pop();
+			return left; 
+		}
 		void ClearImpl();
 	private:
 		void InsertionSort(std::vector<Particle*>& particles);

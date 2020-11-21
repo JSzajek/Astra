@@ -2,8 +2,7 @@
 #version 460
 
 layout(location = 0) in vec2 position;
-
-uniform mat4 transformMatrix = mat4(1.0);
+layout(location = 1) in mat4 transformMatrix;
 
 out vec2 v_TexCoordinates;
 

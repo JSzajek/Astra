@@ -191,7 +191,7 @@ void main()
 	vec3 result = CalcDirLight(directionalLight, norm, specColor, viewDir, lightFactor);
 	for (int i = 0; i < NR_POINT_LIGHTS; i++)
 	{
-		result += CalcPointLight(pointLights[0], norm, specColor, viewDir, lightFactor);
+		result += CalcPointLight(pointLights[i], norm, specColor, viewDir, lightFactor);
 	}
 	result += CalcSpotLight(spotLight, norm, specColor, viewDir, lightFactor);
 	result *= color;

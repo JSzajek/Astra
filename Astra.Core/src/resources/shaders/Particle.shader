@@ -2,13 +2,11 @@
 #version 460
 
 layout(location = 0) in vec2 position;
+layout(location = 1) in mat4 modelViewMatrix;
+layout(location = 5) in vec4 texOffsets;
+layout(location = 6) in vec2 texCoordInfo;
 
 uniform mat4 projectionMatrix = mat4(1.0);
-uniform mat4 modelViewMatrix = mat4(1.0);
-
-uniform vec2 texOffset1;
-uniform vec2 texOffset2;
-uniform vec2 texCoordInfo;
 
 out vec2 v_TexCoordinates1;
 out vec2 v_TexCoordinates2;
@@ -19,8 +17,8 @@ void main()
 	vec2 textureCoords = position + vec2(0.5, 0.5);
 	textureCoords.y = 1.0 - textureCoords.y;
 	textureCoords /= texCoordInfo.x;
-	v_TexCoordinates1 = textureCoords + texOffset1;
-	v_TexCoordinates2 = textureCoords + texOffset2;
+	v_TexCoordinates1 = textureCoords + texOffsets.xy;
+	v_TexCoordinates2 = textureCoords + texOffsets.zw;
 	v_Blend = texCoordInfo.y;
 
 	gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 0.0, 1.0);
