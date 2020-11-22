@@ -103,6 +103,7 @@ int main()
     ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.jpg", 1, 32);
     Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-40, terrain.GetHeightOfTerrain(-40, 55) + 5, 55), Vec3(0), Vec3(1));
     mainScene->AddEntity(&barrelModel2);
+    barrelModel2.SetSelected(true);
 
     ImageMaterial* brickMat = new ImageMaterial("res/textures/bricks.jpg", "res/textures/bricks_specular.jpg", 1, 16);
     Entity brick = Entity("res/plane.obj", "res/textures/bricks_normal.jpg", "res/textures/bricks_heightmap.jpg", 0.1f, brickMat, Vec3(-50, terrain.GetHeightOfTerrain(-50, 50) + 5, 50), Vec3(90, 0, 0), Vec3(5, 1, 5));
@@ -111,11 +112,6 @@ int main()
     ImageMaterial* runestoneMat = new ImageMaterial("res/textures/rock1_basecolor.png", "res/textures/rock1_roughness.png", "res/textures/rock1_emissive.png", 1, 32);
     Entity runestone = Entity("res/runestone_1.obj", "res/textures/rock1_normal.png", runestoneMat, Vec3(-60, terrain.GetHeightOfTerrain(-60, 60) + 2, 60), Vec3::Zero, Vec3(2));
     mainScene->AddEntity(&runestone);
-
-    /*ImageMaterial* containerMat = new ImageMaterial("res/textures/container.png", "res/textures/container_specular.png", 1, 32, false);
-    Entity container = Entity("res/cube.obj", containerMat, 0, Vec3(-60, terrain.GetHeightOfTerrain(-60, 65) + 2, 65), Vec3::Zero, Vec3(2));
-    container.SetSelected(true);
-    mainScene->AddEntity(&container);*/
 
     ImageMaterial* lampMat = new ImageMaterial("res/textures/Lamp_UV_Layout.png", "res/textures/Lamp_Specular.png", "res/textures/Lamp_Emission.png", 1, 32);
     Entity lamp = Entity("res/Lamp.obj", lampMat, 1, Vec3(-28.75f, -1.25f, -65.5f), Vec3::Zero, Vec3(1.5f));
@@ -171,7 +167,8 @@ int main()
     mainScene->End();
     RendererController::SetCurrentScene(mainScene);
 
-    RendererController::SetSelectionColor(Vec3(0.04f, 0.28f, 0.26f));
+    //RendererController::SetSelectionColor(Vec3(0.04f, 0.28f, 0.26f));
+    RendererController::SetSelectionColor(Vec3(0.5f, 0.25f, 0));
 
     const float InGameTimeSpeed = 0.00005f;
     short timeDir = 1;
