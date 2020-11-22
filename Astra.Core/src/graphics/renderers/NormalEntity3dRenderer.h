@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stack>
 #include <vector>
 
 #include "Renderer.h"
@@ -17,13 +18,17 @@ namespace Astra::Graphics
 	private:
 		std::unordered_map<GLuint, std::vector<const Entity*>> m_entities;
 		std::vector<const Light*> m_lights;
+		std::stack<std::pair<GLuint, std::vector<const Entity*>>> m_selected;
 		const Math::Vec3* m_fogColor;
 		const Light* m_directionalLight;
 		Math::Mat4 m_toShadowSpaceMatrix;
+		Shader* m_selectionShader;
 	public:
 		NormalEntity3dRenderer(const Math::Vec3* fogColor);
 		
 		void SetShader(Shader* shader) override;
+		void SetSelectionColor(const Math::Vec3& color);
+		void UpdateProjectionMatrix(const Math::Mat4* projectionMatrix) override;
 
 		void Clear() override;
 		inline void SetShadowMatrix(const Math::Mat4& shadowMatrix) { m_toShadowSpaceMatrix = shadowMatrix; }
@@ -34,5 +39,6 @@ namespace Astra::Graphics
 		void UpdateLight(const Light* light);
 	private:
 		void PrepareEntity(const Entity* entity);
+		void DrawSelected(const Math::Mat4* viewMatrix);
 	};
 }

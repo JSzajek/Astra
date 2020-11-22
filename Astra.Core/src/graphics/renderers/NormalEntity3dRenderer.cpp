@@ -1,5 +1,6 @@
 #include "NormalEntity3dRenderer.h"
 #include "../../math/Mat4Utils.h"
+#include "../shaders/SelectionShader.h"
 
 #include "../entities/PointLight.h"
 #include "../entities/SpotLight.h"
@@ -9,7 +10,7 @@
 namespace Astra::Graphics
 {
 	NormalEntity3dRenderer::NormalEntity3dRenderer(const Math::Vec3* fogColor)
-		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL)
+		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), m_selectionShader(new SelectionShader())
 	{
 	}
 
@@ -31,6 +32,24 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
+	void NormalEntity3dRenderer::SetSelectionColor(const Math::Vec3& color)
+	{
+		m_selectionShader->Start();
+		m_selectionShader->SetUniform3f(SELECTION_COLOR_TAG, color);
+		m_selectionShader->Stop();
+	}
+
+	void NormalEntity3dRenderer::UpdateProjectionMatrix(const Math::Mat4* projectionMatrix)
+	{
+		m_shader->Start();
+		m_shader->SetUniformMat4(PROJECTION_MATRIX_TAG, projectionMatrix);
+		m_shader->Stop();
+
+		m_selectionShader->Start();
+		m_selectionShader->SetUniformMat4(PROJECTION_MATRIX_TAG, projectionMatrix);
+		m_selectionShader->Stop();
+	}
+
 	void NormalEntity3dRenderer::Clear()
 	{
 		m_entities.clear();
@@ -39,6 +58,8 @@ namespace Astra::Graphics
 
 	void NormalEntity3dRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
+		glClear(GL_STENCIL_BUFFER_BIT);
+
 		m_shader->Start();
 		m_shader->SetUniform3f(FOG_COLOR, *m_fogColor);
 		m_shader->SetUniform4f(CLIP_PLANE, clipPlane);
@@ -48,17 +69,31 @@ namespace Astra::Graphics
 		m_shader->SetUniformMat4(TO_SHADOW_SPACE_MATRIX_TAG, m_toShadowSpaceMatrix);
 		for (const auto& directory : m_entities)
 		{
+			bool selected = false;
 			PrepareEntity(directory.second.front());
 			for (const Entity* entity : directory.second)
 			{
+				if (entity->IsSelected())
+				{
+					glStencilFunc(GL_ALWAYS, 1, 0xFF);
+					glStencilMask(0xFF);
+					selected = true;
+				}
+				else
+				{
+					glStencilMask(0x00);
+				}
+
 				m_shader->SetUniform2f(OFFSET_TAG, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
 				m_shader->SetUniformMat4(NORMAL_MATRIX_TAG, entity->GetNormalMatrix());
 				m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, entity->GetModelMatrix());
 				glDrawElements(entity->vertexArray->drawType, entity->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
 			}
+			if (selected) { m_selected.emplace(directory); }
+			UnbindVertexArray();
 		}
-		UnbindVertexArray();
 		m_shader->Stop();
+		DrawSelected(viewMatrix);
 	}
 
 	void NormalEntity3dRenderer::AddEntity(const Entity* entity)
@@ -160,5 +195,52 @@ namespace Astra::Graphics
 				glBindTexture(GL_TEXTURE_2D, entity->material->GetEmissionId());
 			}
 		}
+	}
+
+	void NormalEntity3dRenderer::DrawSelected(const Math::Mat4* viewMatrix)
+	{
+		m_selectionShader->Start();
+		m_selectionShader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
+		while (m_selected.size() > 0)
+		{
+			glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+			glStencilMask(0x00);
+			glDisable(GL_DEPTH_TEST);
+
+			const auto& directory = m_selected.top();
+			const Entity* first = directory.second.front();
+			const auto* material = first->material;
+
+			glBindVertexArray(first->vertexArray->vaoId);
+			glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
+			glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
+			
+			if (material != NULL)
+			{
+				if (material->Transparent) 
+				{
+					glDisable(GL_CULL_FACE);
+				}
+				m_selectionShader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(material->GetRowCount()));
+
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, material->GetId());
+			}
+
+			for (const Entity* entity : directory.second)
+			{
+				if (entity->IsSelected())
+				{
+					m_selectionShader->SetUniform2f(OFFSET_TAG, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
+					m_selectionShader->SetUniformMat4(TRANSFORM_MATRIX_TAG, entity->GetSelectedModelMatrix());
+					glDrawElements(entity->vertexArray->drawType, entity->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
+				}
+			}
+			glStencilMask(0xFF);
+			glStencilFunc(GL_ALWAYS, 0, 0xFF);
+			UnbindVertexArray();
+			m_selected.pop();
+		}
+		m_selectionShader->Stop();
 	}
 }

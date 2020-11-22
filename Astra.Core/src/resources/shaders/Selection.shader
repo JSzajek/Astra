@@ -3,7 +3,6 @@
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 textureCoords;
-layout(location = 2) in vec3 normal;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
@@ -16,12 +15,8 @@ out vec2 v_TexCoordinates;
 
 void main()
 {
-	vec4 worldPosition = transformMatrix * vec4(position, 1);
-	vec4 positionRelativeToCam = viewMatrix * worldPosition;
-
 	v_TexCoordinates = (textureCoords / numberOfRows) + offset;
-
-	gl_Position = projectionMatrix * positionRelativeToCam;
+	gl_Position = projectionMatrix * viewMatrix * transformMatrix * vec4(position, 1);
 }
 
 #shader fragment
@@ -36,8 +31,10 @@ struct Material
 };
 uniform Material material;
 
+uniform vec3 selectionColor;
+
 void main()
 {
 	if (texture(material.diffuseMap, v_TexCoordinates).a < 0.5) { discard; }
-	out_Color = vec4(0.04, 0.28, 0.26, 1.0);
+	out_Color = vec4(selectionColor, 1.0);
 }

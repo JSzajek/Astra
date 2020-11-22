@@ -15,9 +15,9 @@ namespace Astra::Graphics
 	class Entity3dRenderer : public Renderer
 	{
 	private:
-		std::unordered_map<GLuint, std::vector<const Entity*>> m_entities;
+		std::unordered_map<unsigned int, std::vector<const Entity*>> m_entities;
 		std::vector<const Light*> m_lights;
-		std::stack<std::pair<GLuint, std::vector<const Entity*>>> m_selected;
+		std::stack<std::pair<unsigned int, std::vector<const Entity*>>> m_selected;
 		const Light* m_directionalLight;
 		const Math::Vec3* m_fogColor;
 		Math::Mat4 m_toShadowSpaceMatrix;
@@ -26,6 +26,7 @@ namespace Astra::Graphics
 		Entity3dRenderer(const Math::Vec3* fogColor);
 
 		void SetShader(Shader* shader) override;
+		void SetSelectionColor(const Math::Vec3& color);
 		void UpdateProjectionMatrix(const Math::Mat4* projectionMatrix) override;
 
 		void Clear() override;
@@ -36,7 +37,7 @@ namespace Astra::Graphics
 		void AddLight(Light* light);
 		void UpdateLight(const Light* light);
 	private:
-		void AddSelected(const Entity* entity);
 		void PrepareEntity(const Entity* entity);
+		void DrawSelected(const Math::Mat4* viewMatrix);
 	};
 }

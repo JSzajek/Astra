@@ -4,6 +4,8 @@
 
 namespace Astra::Graphics
 {
+#define SELECTION_COLOR_TAG		"selectionColor"
+
 	class SelectionShader : public Shader
 	{
 	public:

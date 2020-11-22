@@ -171,6 +171,8 @@ int main()
     mainScene->End();
     RendererController::SetCurrentScene(mainScene);
 
+    RendererController::SetSelectionColor(Vec3(0.04f, 0.28f, 0.26f));
+
     const float InGameTimeSpeed = 0.00005f;
     short timeDir = 1;
 
