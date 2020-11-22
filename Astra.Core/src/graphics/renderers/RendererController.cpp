@@ -8,15 +8,15 @@ namespace Astra::Graphics
 {
 	RendererController::RendererController()
 		: m_reflectionClipPlane(Math::Vec4(0, 1, 0, 0)),
-			m_refractionClipPlane(Math::Vec4(0, -1, 0, 0)), 
-			projectionMatrix(new Math::Mat4(1)), m_block(false)
+		m_refractionClipPlane(Math::Vec4(0, -1, 0, 0)),
+		projectionMatrix(new Math::Mat4(1)), m_block(false)
 	{
 		m_fogColor = new Math::Vec3(0);
 
 		Init();
 		m_postProcessor = new PostProcessor();
 		m_shadowMapController = new ShadowMapController(FieldOfView, NearPlane, FarPlane);
-		
+
 		m_guiRenderer = new GuiRenderer(new GuiShader());
 		m_skyboxRenderer = new SkyboxRenderer(new SkyboxShader(), m_fogColor);
 		m_entityRenderer = new Entity3dRenderer(m_fogColor);
@@ -25,18 +25,27 @@ namespace Astra::Graphics
 		m_waterRenderer = new WaterRenderer(NearPlane, FarPlane);
 
 		m_waterBuffer = Loader::LoadWaterFrameBuffer(DefaultReflectionWidth, DefaultReflectionHeight,
-													 DefaultRefractionWidth, DefaultRefractionHeight);
+			DefaultRefractionWidth, DefaultRefractionHeight);
 		m_waterRenderer->SetFrameBuffer(m_waterBuffer);
 	}
 
 	void RendererController::Init() const
 	{
 		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+		glEnable(GL_STENCIL_TEST);
 		glDisable(GL_BLEND);
 
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+
+#if FULL_SELECTION
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+#else
+		glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
+#endif
 		glClearColor(m_fogColor->x, m_fogColor->y, m_fogColor->z, 1);
 
-		glEnable(GL_CLIP_DISTANCE0); 
+		glEnable(GL_CLIP_DISTANCE0);
 	}
 
 	RendererController::~RendererController()
@@ -79,9 +88,9 @@ namespace Astra::Graphics
 		m_terrainRenderer->AddLight(dirLight);
 		m_normalEntityRenderer->AddLight(dirLight);
 		m_waterRenderer->AddLight(dirLight);
-	#if _DEBUG
+#if _DEBUG
 		GizmoController::AddGizmo(dirLight->GetGizmo());
-	#endif
+#endif
 
 		Math::Vec3 fogColor = scene->GetFogColor();
 		m_fogColor->x = fogColor.x;
@@ -106,9 +115,9 @@ namespace Astra::Graphics
 			m_normalEntityRenderer->AddLight(light);
 			m_terrainRenderer->AddLight(light);
 			m_waterRenderer->AddLight(light);
-		#if _DEBUG
+#if _DEBUG
 			GizmoController::AddGizmo(light->GetGizmo());
-		#endif
+#endif
 		}
 		for (auto* terrain : scene->GetTerrains())
 		{
@@ -133,17 +142,23 @@ namespace Astra::Graphics
 		for (auto* system : scene->GetParticles())
 		{
 			m_systems.emplace_back(system);
-		#if _DEBUG
+#if _DEBUG
 			GizmoController::AddGizmo(system->GetGizmo());
-		#endif
+#endif
 		}
-	
+
 		m_block = false;
 
 		// Update Projection Matrix
 		UpdateScreenImpl(Window::width, Window::height);
 
 		return true;
+	}
+
+	void RendererController::SetSelectionColorImpl(const Math::Vec3& color)
+	{
+		m_entityRenderer->SetSelectionColor(color);
+		m_normalEntityRenderer->SetSelectionColor(color);
 	}
 
 	void RendererController::Clear()
@@ -159,9 +174,9 @@ namespace Astra::Graphics
 		FontController::Clear();
 		ParticleController::Clear();
 		m_systems.clear();
-	#if _DEBUG
+#if _DEBUG
 		GizmoController::Clear();
-	#endif
+#endif
 	}
 
 	void RendererController::UpdateScreenImpl(int width, int height)
@@ -176,15 +191,15 @@ namespace Astra::Graphics
 		m_waterRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_postProcessor->UpdateScreenRatio(width, height);
 		ParticleController::UpdateProjectionMatrix(projectionMatrix);
-	#if _DEBUG
+#if _DEBUG
 		GizmoController::UpdateProjectionMatrix(projectionMatrix);
-	#endif
+#endif
 	}
 
 	void RendererController::RenderImpl()
 	{
 		if (m_currentScene == NULL || m_block) { return; }
-		
+
 		m_shadowMapController->Render();
 
 		for (auto* system : m_systems)
@@ -221,7 +236,7 @@ namespace Astra::Graphics
 		if (m_currentScene == NULL || m_block) { return; }
 
 		ParticleController::Update(m_mainCamera->GetTranslation());
-		
+
 		m_postProcessor->Attach();
 
 		glActiveTexture(GL_TEXTURE6);
@@ -238,8 +253,8 @@ namespace Astra::Graphics
 	{
 		if (m_currentScene == NULL || m_block) { return; }
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
 		m_terrainRenderer->Draw(viewMatrix, inverseViewVector, clipPlane);
 		m_entityRenderer->Draw(viewMatrix, inverseViewVector, clipPlane);
 		m_normalEntityRenderer->Draw(viewMatrix, inverseViewVector, clipPlane);
@@ -262,10 +277,10 @@ namespace Astra::Graphics
 		// Perform Post Processing Effects
 		m_postProcessor->Detach();
 		m_postProcessor->Draw();
-		
-	#if _DEBUG
+
+#if _DEBUG
 		GizmoController::Render(viewMatrix);
-	#endif
+#endif
 		m_guiRenderer->Draw(NULL);
 		FontController::Render();
 	}

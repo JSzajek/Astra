@@ -351,11 +351,11 @@ namespace Astra::Graphics
 			glBindRenderbuffer(GL_RENDERBUFFER, buffer->GetDepthAttachment());
 			if (!multisampled)
 			{
-				glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
+				glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
 			}
 			else
 			{
-				glRenderbufferStorageMultisample(GL_RENDERBUFFER, MULTI_SAMPLE_SIZE, GL_DEPTH_COMPONENT24, width, height);
+				glRenderbufferStorageMultisample(GL_RENDERBUFFER, MULTI_SAMPLE_SIZE, GL_DEPTH24_STENCIL8, width, height);
 			}
 			glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		}
@@ -410,14 +410,14 @@ namespace Astra::Graphics
 		glBindRenderbuffer(GL_RENDERBUFFER, id);
 		if (!multisampled)
 		{
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
 		}
 		else 
 		{
-			glRenderbufferStorageMultisample(GL_RENDERBUFFER, MULTI_SAMPLE_SIZE, GL_DEPTH_COMPONENT24, width, height);
+			glRenderbufferStorageMultisample(GL_RENDERBUFFER, MULTI_SAMPLE_SIZE, GL_DEPTH24_STENCIL8, width, height);
 		}
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, id);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, id);
 	}
 
 	void Loader::CreateColorBufferAttachment(GLuint& id, unsigned int width, unsigned int height, bool multisampled, bool floating)

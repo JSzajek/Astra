@@ -33,6 +33,8 @@
 
 namespace Astra::Graphics
 {
+#define FULL_SELECTION 0
+
 	class RendererController
 	{
 	private:
@@ -95,14 +97,20 @@ namespace Astra::Graphics
 			return Get().SetCurrentSceneImpl(scene);
 		}
 
+		static void SetSelectionColor(const Math::Vec3& color)
+		{
+			Get().SetSelectionColorImpl(color);
+		}
+
 	private:
 		RendererController();
 		~RendererController();
 		void UpdateScreenImpl(int width, int height);
 		void RenderImpl();
-		
+
 		void Init() const;
 		bool SetCurrentSceneImpl(const Scene* scene);
+		void SetSelectionColorImpl(const Math::Vec3& color);
 		void Clear();
 
 		void PrepareRender();

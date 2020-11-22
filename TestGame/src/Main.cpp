@@ -103,6 +103,7 @@ int main()
     ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.jpg", 1, 32);
     Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-40, terrain.GetHeightOfTerrain(-40, 55) + 5, 55), Vec3(0), Vec3(1));
     mainScene->AddEntity(&barrelModel2);
+    barrelModel2.SetSelected(true);
 
     ImageMaterial* brickMat = new ImageMaterial("res/textures/bricks.jpg", "res/textures/bricks_specular.jpg", 1, 16);
     Entity brick = Entity("res/plane.obj", "res/textures/bricks_normal.jpg", "res/textures/bricks_heightmap.jpg", 0.1f, brickMat, Vec3(-50, terrain.GetHeightOfTerrain(-50, 50) + 5, 50), Vec3(90, 0, 0), Vec3(5, 1, 5));
@@ -131,6 +132,7 @@ int main()
         Entity* entity = new Entity("res/fern.obj", fernMat, rand() % 4, Vec3(static_cast<float>(x), y, static_cast<float>(z)), Vec3::Zero, Vec3::One);
         entities.emplace_back(entity);
         mainScene->AddEntity(entity);
+        entity->SetSelected(Math::RandomRange(0, 10) > 5);
     }
     
     ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);
@@ -164,6 +166,9 @@ int main()
 
     mainScene->End();
     RendererController::SetCurrentScene(mainScene);
+
+    //RendererController::SetSelectionColor(Vec3(0.04f, 0.28f, 0.26f));
+    RendererController::SetSelectionColor(Vec3(0.5f, 0.25f, 0));
 
     const float InGameTimeSpeed = 0.00005f;
     short timeDir = 1;

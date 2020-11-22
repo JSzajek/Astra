@@ -112,7 +112,7 @@ namespace Astra::Graphics
 	{
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, bufferIn);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, bufferOut);
-		glBlitFramebuffer(0, 0, inputWidth, inputHeight, 0, 0, outputWidth, outputHeight, GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		glBlitFramebuffer(0, 0, inputWidth, inputHeight, 0, 0, outputWidth, outputHeight, GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, GL_NEAREST);
 		Detach();
 	}
 
