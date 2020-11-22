@@ -1,6 +1,5 @@
 #pragma once
 
-#include <GL/glew.h>
 #include <cstring>
 
 namespace Astra::Graphics
@@ -19,13 +18,14 @@ namespace Astra::Graphics
 	{
 	public:
 		unsigned int vertexCount, drawType;
-		GLuint vaoId;
-		GLuint* vboIds;
+		unsigned int vaoId;
+		unsigned int* vboIds;
 	public:
-		VertexArray(const GLuint& vaoId, const unsigned int& vertexCount, const unsigned int& drawType);
+		VertexArray(unsigned int vaoId, unsigned int vertexCount, unsigned int drawType);
+		VertexArray(const VertexArray& other);
 		~VertexArray();
-		void AddBuffer(const BufferType& type, const GLuint& id);
+		void AddBuffer(const BufferType& type, unsigned int id);
 
-		GLuint& operator()(const BufferType& type);
+		unsigned int& operator()(const BufferType& type);
 	};
 }

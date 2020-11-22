@@ -37,7 +37,6 @@ namespace Astra::Graphics
 
 		Entity(const Entity& other);
 
-
 		inline void SetSelected(bool selected) { m_selected = selected; UpdateMatrices();  }
 		inline bool IsSelected() const { return m_selected; }
 

@@ -14,8 +14,10 @@ namespace Astra::Graphics
 	
 	Entity::~Entity()
 	{
-		delete vertexArray;
-		delete material;
+		ObjLoader::UnloadVertexArray(vertexArray);
+		vertexArray = NULL;
+		ObjLoader::UnloadImageMaterial(material);
+		material = NULL;
 		delete selectedModelMatrix;
 	}
 
@@ -28,7 +30,7 @@ namespace Astra::Graphics
 
 	Entity::Entity(const char* const objpath, const ImageMaterial* material, int textureIndex,
 		const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale)
-		: vertexArray(ObjLoader::LoadObjectModel(objpath)), material(material), m_textureIndex(textureIndex), 
+		: vertexArray(ObjLoader::LoadObjectModel(objpath)), material(ObjLoader::TrackImageMaterial(material)), m_textureIndex(textureIndex), 
 			Spatial(position, rotation, scale), m_normalMapped(false), m_parallaxMapped(false), m_height(0),
 			selectedModelMatrix(new Math::Mat4()), m_selected(false)
 	{
@@ -36,7 +38,7 @@ namespace Astra::Graphics
 
 	Entity::Entity(const char* const filepath, const char* const normalMapTexture, const ImageMaterial* material, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale)
 		: vertexArray(ObjLoader::LoadNormalMappedObjectModel(filepath)), 
-			normalMap(Loader::LoadTexture(normalMapTexture, false)),  material(material), 
+			normalMap(Loader::LoadTexture(normalMapTexture, false)), material(ObjLoader::TrackImageMaterial(material)),
 			m_textureIndex(0), Spatial(position, rotation, scale), m_normalMapped(true), m_parallaxMapped(false), m_height(0),
 			selectedModelMatrix(new Math::Mat4()), m_selected(false)
 	{
@@ -52,7 +54,7 @@ namespace Astra::Graphics
 	Entity::Entity(const char* const filepath, const char* const normalMapTexture, const char* const heightMapTexture,
 			float height, const ImageMaterial* material, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale)
 		: vertexArray(ObjLoader::LoadNormalMappedObjectModel(filepath)), normalMap(Loader::LoadTexture(normalMapTexture, false)),
-			parallaxMap(Loader::LoadTexture(heightMapTexture, false)), material(material), m_textureIndex(0),
+			parallaxMap(Loader::LoadTexture(heightMapTexture, false)), material(ObjLoader::TrackImageMaterial(material)), m_textureIndex(0),
 				Spatial(position, rotation, scale), m_normalMapped(true), m_parallaxMapped(true), m_height(height),
 					selectedModelMatrix(new Math::Mat4()), m_selected(false)
 	{

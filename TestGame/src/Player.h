@@ -3,15 +3,17 @@
 #include "Astra.h"
 #include "Synchronous.h"
 
-#define		MAX_DISTANCE	 120
-#define		MIN_DISTANCE	 5
-#define		MAX_PITCH		 90
-#define		MIN_PITCH		 -90
+#define		MAX_DISTANCE		120
+#define		MIN_DISTANCE		5
+#define		MAX_PITCH			90
+#define		MIN_PITCH		   -90
 
-#define		GRAVITY			-50
-#define		TERRAIN_HEIGHT	 0
+#define		GRAVITY			   -50
+#define		TERRAIN_HEIGHT		0
 
-#define		LOCKED_CAMERA	 0
+#define		LOCKED_CAMERA		0
+
+#define		GROUND_OFFSET		2
 
 using namespace Astra::Graphics;
 using namespace Astra::Math;
