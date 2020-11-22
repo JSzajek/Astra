@@ -125,7 +125,6 @@ int main()
     container.SetSelected(true);
 
     ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 0.25f, true, true);
-
     std::vector<const Entity*> entities;
     for (int i = 0; i < 12; i++)
     {
@@ -218,9 +217,25 @@ int main()
         }
     }
 
+    // Clean up fern entities
     for (const auto* entity : entities)
     {
         delete entity;
     }
+
+    delete font;
+    delete text;
+    delete outlineText;
+
+    delete grassTerrainMat;
+    delete flowerTerrainMat;
+    delete mudTerrainMat;
+    delete pathTerrainMat;
+    delete blendMap;
+
+    delete dir_light;
+    delete light3;
+    delete light4;
+
     return 0;
 }

@@ -89,7 +89,7 @@ namespace Astra::Graphics
 
 		const VertexArray* result = Loader::Load(GL_TRIANGLES, verticesArray, indices, texturesArray, normalsArray);
 		m_loaded[filepath] = result;
-		m_pointers[result] = 0;
+		m_pointers[result] = 1;
 
 		for (Vertex* vertex : vertices)
 		{
@@ -155,7 +155,7 @@ namespace Astra::Graphics
 
 		const VertexArray* result = Loader::Load(GL_TRIANGLES, verticesArray, indices, texturesArray, normalsArray, tangentsArray);
 		m_loaded[filepath] = result;
-		m_pointers[result] = 0;
+		m_pointers[result] = 1;
 
 		for (NormalVertex* vertex : normVertices)
 		{
@@ -169,6 +169,20 @@ namespace Astra::Graphics
 		return result;
 	}
 
+	const ImageMaterial* ObjLoader::TrackImageMaterialImpl(const ImageMaterial* material)
+	{
+		auto temp = m_pointerMaterials.find(material);
+		if (temp != m_pointerMaterials.end())
+		{
+			m_pointerMaterials[material]++;
+		}
+		else
+		{
+			m_pointerMaterials[material] = 1;
+		}
+		return material;
+	}
+	
 	void ObjLoader::UnloadVertexArrayImpl(const VertexArray* vertexArray)
 	{
 		auto temp = m_pointers.find(vertexArray);
@@ -178,6 +192,19 @@ namespace Astra::Graphics
 			if (m_pointers[vertexArray] == 0)
 			{
 				delete vertexArray;
+			}
+		}
+	}
+
+	void ObjLoader::UnloadImageMaterialImpl(const ImageMaterial* material)
+	{
+		auto temp = m_pointerMaterials.find(material);
+		if (temp != m_pointerMaterials.end())
+		{
+			m_pointerMaterials[material]--;
+			if (m_pointerMaterials[material] == 0)
+			{
+				delete material;
 			}
 		}
 	}
