@@ -45,7 +45,9 @@ namespace Astra::Graphics
 		auto temp = m_loaded.find(filepath);
 		if (temp != m_loaded.end())
 		{
-			return temp->second;
+			const auto* ptr = temp->second;
+			m_pointers[ptr]++;
+			return ptr;
 		}
 
 		std::vector<float> verticesArray;
@@ -87,6 +89,7 @@ namespace Astra::Graphics
 
 		const VertexArray* result = Loader::Load(GL_TRIANGLES, verticesArray, indices, texturesArray, normalsArray);
 		m_loaded[filepath] = result;
+		m_pointers[result] = 0;
 
 		for (Vertex* vertex : vertices)
 		{
@@ -105,7 +108,9 @@ namespace Astra::Graphics
 		auto temp = m_loaded.find(filepath);
 		if (temp != m_loaded.end())
 		{
-			return temp->second;
+			const auto* ptr = temp->second;
+			m_pointers[ptr]++;
+			return ptr;
 		}
 
 		std::vector<float> verticesArray;
@@ -150,6 +155,7 @@ namespace Astra::Graphics
 
 		const VertexArray* result = Loader::Load(GL_TRIANGLES, verticesArray, indices, texturesArray, normalsArray, tangentsArray);
 		m_loaded[filepath] = result;
+		m_pointers[result] = 0;
 
 		for (NormalVertex* vertex : normVertices)
 		{
@@ -161,6 +167,19 @@ namespace Astra::Graphics
 		indices.clear();
 
 		return result;
+	}
+
+	void ObjLoader::UnloadVertexArrayImpl(const VertexArray* vertexArray)
+	{
+		auto temp = m_pointers.find(vertexArray);
+		if (temp != m_pointers.end())
+		{
+			m_pointers[vertexArray]--;
+			if (m_pointers[vertexArray] == 0)
+			{
+				delete vertexArray;
+			}
+		}
 	}
 
 	float ObjLoader::Convert(std::vector<float>& verticesArray, std::vector<float>& texturesArray, std::vector<float>& normalsArray)

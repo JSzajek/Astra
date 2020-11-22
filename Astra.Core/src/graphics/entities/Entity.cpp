@@ -14,7 +14,8 @@ namespace Astra::Graphics
 	
 	Entity::~Entity()
 	{
-		delete vertexArray;
+		ObjLoader::UnloadVertexArray(vertexArray);
+		vertexArray = NULL;
 		delete material;
 		delete selectedModelMatrix;
 	}

@@ -6,9 +6,8 @@ Player::Player(const Vec3& position, Window* window, Terrain* terrain)
 	: m_camera(new Camera(20, 45, 0)), _window(window), m_movement(Vec3(0)),
            m_rotating(false), m_oldPosition(Vec2(0,0)), m_terrain(terrain)
 {
-    //ImageMaterial* grassMat = new ImageMaterial("res/textures/container.png", (char*)NULL, 1, 32, false, false);
     ImageMaterial* containerMat = new ImageMaterial("res/textures/container.png", "res/textures/container_specular.png", 1, 32, false);
-	m_body = new Entity("res/cube.obj", containerMat, 0, position, Vec3(0), Vec3(0.5f));
+	m_body = new Entity("res/cube.obj", containerMat, 0, position, Vec3(0), Vec3(1));
 }
 
 void Player::Update()
@@ -55,11 +54,11 @@ void Player::Update()
     m_camera->LookAt(m_body->GetTranslation());
     
     float terrainHeight = m_terrain->GetHeightOfTerrain(static_cast<int>(m_body->GetTranslation().x), static_cast<int>(m_body->GetTranslation().z));
-    if (m_body->GetTranslation().y < terrainHeight)
+    if (m_body->GetTranslation().y < terrainHeight + GROUND_OFFSET)
     {
         upwardsSpeed = 0;
         isGrounded = true;
-        (*m_body)(TRANSLATION, EQ, Y, terrainHeight);
+        (*m_body)(TRANSLATION, EQ, Y, terrainHeight + GROUND_OFFSET);
     }
 
     float mouseWheel = _window->getMouseWheel();

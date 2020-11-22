@@ -97,9 +97,6 @@ int main()
     mainScene->AddPointLight(light4);
     mainScene->SetDirectionalLight(dir_light);
 
-    ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 0.25f, true, true);
-    const VertexArray* fernVertArray = ObjLoader::LoadObjectModel("res/fern.obj");
-
     ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.jpg", 1, 32);
     Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-40, terrain.GetHeightOfTerrain(-40, 55) + 5, 55), Vec3(0), Vec3(1));
     mainScene->AddEntity(&barrelModel2);
@@ -120,6 +117,14 @@ int main()
     ImageMaterial* mushroomMat = new ImageMaterial("res/textures/Boxing_Shroom_UV_Layout.png", "res/textures/Boxing_Shroom_Specular.png", 1, 8);
     Entity mushroom = Entity("res/Boxing_Shroom.obj", mushroomMat, 1, Vec3(-25, terrain.GetHeightOfTerrain(-25, -65), -65), Vec3(0, 180, 0), Vec3(2));
     mainScene->AddEntity(&mushroom);
+
+    // Example of duplicate usage of vertex array object (duplicate of player)
+    ImageMaterial* containerMat = new ImageMaterial("res/textures/container.png", "res/textures/container_specular.png", 1, 32, false);
+    Entity container = Entity("res/cube.obj", containerMat, 0, Vec3(-30, terrain.GetHeightOfTerrain(-30, -65) + 2, -65), Vec3(0), Vec3(2));
+    mainScene->AddEntity(&container);
+    container.SetSelected(true);
+
+    ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 0.25f, true, true);
 
     std::vector<const Entity*> entities;
     for (int i = 0; i < 12; i++)
@@ -211,6 +216,11 @@ int main()
             printf("%dfps\n", frames);
             frames = 0;
         }
+    }
+
+    for (const auto* entity : entities)
+    {
+        delete entity;
     }
     return 0;
 }

@@ -27,12 +27,4 @@ namespace Astra::Graphics
 		m_glowing = emissionpath != NULL;
 		m_emission = Loader::LoadTexture(m_glowing ? emissionpath : Texture::DefaultSpecular);
 	}
-
-	//ImageMaterial::ImageMaterial(const char* const diffusepath, const char* const specularpath, 
-	//							 const char* const heightmappath, int rowCount, float reflectivity, bool transparent)
-	//	: m_diffuse(Loader::LoadTexture(diffusepath)), m_rowCount(rowCount), Reflectivity(reflectivity), Transparent(transparent), FakeLight(false)
-	//{
-	//	m_specular = Loader::LoadTexture(specularpath != NULL ? specularpath : Texture::DefaultSpecular);
-	//	m_heightmap = Loader::LoadTexture(heightmappath != NULL ? heightmappath : Texture::DefaultSpecular);
-	//}
 }
