@@ -1,6 +1,7 @@
 #include "Entity3dRenderer.h"
 #include "../../math/Mat4Utils.h"
 #include "../shaders/EntityShader.h"
+#include "../shaders/SelectionShader.h"
 
 #include "../entities/PointLight.h"
 #include "../entities/SpotLight.h"
@@ -10,7 +11,7 @@
 namespace Astra::Graphics
 {
 	Entity3dRenderer::Entity3dRenderer(const Math::Vec3* fogColor)
-		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL)
+		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), m_selectionShader(new SelectionShader())
 	{
 	}
 
@@ -30,6 +31,17 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
+	void Entity3dRenderer::UpdateProjectionMatrix(const Math::Mat4* projectionMatrix)
+	{
+		m_shader->Start();
+		m_shader->SetUniformMat4(PROJECTION_MATRIX_TAG, projectionMatrix);
+		m_shader->Stop();
+		
+		m_selectionShader->Start();
+		m_selectionShader->SetUniformMat4(PROJECTION_MATRIX_TAG, projectionMatrix);
+		m_selectionShader->Stop();
+	}
+
 	void Entity3dRenderer::Clear()
 	{
 		m_lights.clear();
@@ -47,17 +59,73 @@ namespace Astra::Graphics
 		m_shader->SetUniformMat4(TO_SHADOW_SPACE_MATRIX_TAG, m_toShadowSpaceMatrix);
 		for (const auto& directory : m_entities)
 		{
+			bool selected = false;
 			PrepareEntity(directory.second.front());
 			for (const Entity* entity : directory.second)
 			{
+				if (entity->IsSelected())
+				{
+					glStencilFunc(GL_ALWAYS, 1, 0xFF);
+					glStencilMask(0xFF);
+					selected = true;
+				}
+				else
+				{
+					glStencilMask(0x00);
+				}
 				m_shader->SetUniform2f(OFFSET_TAG, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
 				m_shader->SetUniformMat4(NORMAL_MATRIX_TAG, entity->GetNormalMatrix());
 				m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, entity->GetModelMatrix());
 				glDrawElements(entity->vertexArray->drawType, entity->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
 			}
+			if (selected) { m_selected.emplace(directory); }
+			UnbindVertexArray();
 		}
-		UnbindVertexArray();
 		m_shader->Stop();
+
+		m_selectionShader->Start();
+		m_selectionShader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
+		while (m_selected.size() > 0)
+		{
+			glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+			glStencilMask(0x00);
+			glDisable(GL_DEPTH_TEST);
+
+			const auto& directory = m_selected.top();
+			const Entity* first = directory.second.front();
+			glBindVertexArray(first->vertexArray->vaoId);
+			glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
+			glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
+			glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
+
+			if (first->material->Transparent)
+			{
+				glDisable(GL_CULL_FACE);
+			}
+
+			if (first->material != NULL)
+			{
+				m_selectionShader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(first->material->GetRowCount()));
+
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, first->material->GetId());
+			}
+
+			for (const Entity* entity : directory.second)
+			{
+				if (entity->IsSelected())
+				{
+					m_selectionShader->SetUniform2f(OFFSET_TAG, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
+					m_selectionShader->SetUniformMat4(TRANSFORM_MATRIX_TAG, entity->GetSelectedModelMatrix());
+					glDrawElements(entity->vertexArray->drawType, entity->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
+				}
+			}
+			glStencilMask(0xFF);
+			glStencilFunc(GL_ALWAYS, 0, 0xFF);
+			UnbindVertexArray();
+			m_selected.pop();
+		}
+		m_selectionShader->Stop();
  	}
 
 	void Entity3dRenderer::AddEntity(const Entity* entity)

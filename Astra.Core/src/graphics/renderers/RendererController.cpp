@@ -32,8 +32,17 @@ namespace Astra::Graphics
 	void RendererController::Init() const
 	{
 		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+		glEnable(GL_STENCIL_TEST);
 		glDisable(GL_BLEND);
 
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+
+	#if FULL_SELECTION
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	#else
+		glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
+	#endif
 		glClearColor(m_fogColor->x, m_fogColor->y, m_fogColor->z, 1);
 
 		glEnable(GL_CLIP_DISTANCE0); 
@@ -238,7 +247,7 @@ namespace Astra::Graphics
 	{
 		if (m_currentScene == NULL || m_block) { return; }
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		
 		m_terrainRenderer->Draw(viewMatrix, inverseViewVector, clipPlane);
 		m_entityRenderer->Draw(viewMatrix, inverseViewVector, clipPlane);

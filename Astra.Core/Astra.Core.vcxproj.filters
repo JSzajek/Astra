@@ -452,6 +452,9 @@
     <ClInclude Include="src\graphics\shaders\BloomShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\shaders\SelectionShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\resources\shaders\Gui.shader" />
@@ -470,6 +473,7 @@
     <None Include="src\resources\shaders\HDR.shader" />
     <None Include="src\resources\shaders\Bloom.shader" />
     <None Include="src\resources\shaders\FinalBloom.shader" />
+    <None Include="src\resources\shaders\Selection.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\textures\Default.jpg">

@@ -112,6 +112,11 @@ int main()
     Entity runestone = Entity("res/runestone_1.obj", "res/textures/rock1_normal.png", runestoneMat, Vec3(-60, terrain.GetHeightOfTerrain(-60, 60) + 2, 60), Vec3::Zero, Vec3(2));
     mainScene->AddEntity(&runestone);
 
+    /*ImageMaterial* containerMat = new ImageMaterial("res/textures/container.png", "res/textures/container_specular.png", 1, 32, false);
+    Entity container = Entity("res/cube.obj", containerMat, 0, Vec3(-60, terrain.GetHeightOfTerrain(-60, 65) + 2, 65), Vec3::Zero, Vec3(2));
+    container.SetSelected(true);
+    mainScene->AddEntity(&container);*/
+
     ImageMaterial* lampMat = new ImageMaterial("res/textures/Lamp_UV_Layout.png", "res/textures/Lamp_Specular.png", "res/textures/Lamp_Emission.png", 1, 32);
     Entity lamp = Entity("res/Lamp.obj", lampMat, 1, Vec3(-28.75f, -1.25f, -65.5f), Vec3::Zero, Vec3(1.5f));
     mainScene->AddEntity(&lamp);
@@ -131,6 +136,7 @@ int main()
         Entity* entity = new Entity("res/fern.obj", fernMat, rand() % 4, Vec3(static_cast<float>(x), y, static_cast<float>(z)), Vec3::Zero, Vec3::One);
         entities.emplace_back(entity);
         mainScene->AddEntity(entity);
+        entity->SetSelected(Math::RandomRange(0, 10) > 5);
     }
     
     ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);

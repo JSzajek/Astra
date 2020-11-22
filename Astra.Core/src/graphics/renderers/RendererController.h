@@ -33,6 +33,8 @@
 
 namespace Astra::Graphics
 {
+	#define FULL_SELECTION 0
+
 	class RendererController
 	{
 	private:

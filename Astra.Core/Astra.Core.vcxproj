@@ -292,6 +292,7 @@
     <ClInclude Include="src\graphics\shaders\HorizontalBlurShader.h" />
     <ClInclude Include="src\graphics\shaders\NormalEntityShader.h" />
     <ClInclude Include="src\graphics\shaders\ParticleShader.h" />
+    <ClInclude Include="src\graphics\shaders\SelectionShader.h" />
     <ClInclude Include="src\graphics\shaders\Shader.h" />
     <ClInclude Include="src\graphics\shaders\ShadowShader.h" />
     <ClInclude Include="src\graphics\shaders\SkyboxShader.h" />
@@ -328,6 +329,7 @@
     <None Include="src\resources\shaders\HorizontalBlur.shader" />
     <None Include="src\resources\shaders\NormalEntity.shader" />
     <None Include="src\resources\shaders\Particle.shader" />
+    <None Include="src\resources\shaders\Selection.shader" />
     <None Include="src\resources\shaders\Shadow.shader" />
     <None Include="src\resources\shaders\Skybox.shader" />
     <None Include="src\resources\shaders\Terrain.shader" />
