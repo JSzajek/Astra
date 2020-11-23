@@ -13,7 +13,14 @@ namespace Astra::Audio
 			Logger::LogError("OpenAL: could not open device");
 			return;
 		}
+
 		m_context = alcCreateContext(m_device, NULL);
+		if (!m_context)
+		{
+			alcCloseDevice(m_device);
+			Logger::LogError("OpenAL: could not create context");
+			return;
+		}
 		if (!alcMakeContextCurrent(m_context))
 		{
 			alcCloseDevice(m_device);
@@ -30,7 +37,7 @@ namespace Astra::Audio
 		{
 			name = alcGetString(m_device, ALC_DEVICE_SPECIFIER);
 		}
-		Logger::Log("OpenAL: opened device " + std::string(name));
+		Logger::Log("OpenAL: Opened " + std::string(name));
 
 		InitializeListener();
 	}
@@ -42,9 +49,22 @@ namespace Astra::Audio
 			alDeleteBuffers(1, &buffer);
 		}
 
-		alcMakeContextCurrent(NULL);
+		if (!alcMakeContextCurrent(NULL))
+		{
+			Logger::LogError("OpenAL: failed to set context to nullptr");
+		}
+
 		alcDestroyContext(m_context);
+		if (m_context)
+		{
+			Logger::LogError("OpenAL: failed to unset context");
+		}
+
 		alcCloseDevice(m_device);
+		if (m_device)
+		{
+			Logger::LogError("OpenAL: failed to close device");
+		}
 	}
 
 	void AudioController::SetListenerPositionImpl(const Math::Vec3& position)
@@ -54,8 +74,7 @@ namespace Astra::Audio
 
 	void AudioController::InitializeListener()
 	{
-		alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
-
+		SetDistanceModelImpl(DistanceModel::LinearClamped);
 		alListener3f(AL_POSITION, 0, 0, 0);
 		alListener3f(AL_VELOCITY, 0, 0, 0);
 		ALfloat forwardAndUpVectors[] = 
@@ -64,6 +83,11 @@ namespace Astra::Audio
 			0.f, 1.f, 0.f
 		};
 		alListenerfv(AL_ORIENTATION, forwardAndUpVectors);
+	}
+
+	void AudioController::SetDistanceModelImpl(DistanceModel model)
+	{
+		alDistanceModel(static_cast<ALenum>(model));
 	}
 
 	ALuint AudioController::LoadSoundImpl(const char* filepath)

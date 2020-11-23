@@ -12,6 +12,16 @@
 
 namespace Astra::Audio
 {
+	enum class DistanceModel : ALenum
+	{
+		Exponent		= AL_EXPONENT_DISTANCE,
+		ExponentClamped = AL_EXPONENT_DISTANCE_CLAMPED,
+		Inverse			= AL_INVERSE_DISTANCE,
+		InverseClamped	= AL_INVERSE_DISTANCE_CLAMPED,
+		Linear			= AL_LINEAR_DISTANCE,
+		LinearClamped	= AL_LINEAR_DISTANCE_CLAMPED
+	};
+
 	struct WavData
 	{
 		unsigned int channels;
@@ -51,6 +61,11 @@ namespace Astra::Audio
 			Get().SetListenerPositionImpl(position);
 		}
 
+		static void SetDistanceModel(DistanceModel model)
+		{
+			Get().SetDistanceModelImpl(model);
+		}
+
 		static ALuint LoadSound(const char* filepath)
 		{
 			return Get().LoadSoundImpl(filepath);
@@ -64,6 +79,7 @@ namespace Astra::Audio
 		AudioController();
 		~AudioController();
 		void SetListenerPositionImpl(const Math::Vec3& position);
+		void SetDistanceModelImpl(DistanceModel model);
 		ALuint LoadSoundImpl(const char* filepath);
 	private:
 		void InitializeListener();
