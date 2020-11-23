@@ -54,6 +54,8 @@ namespace Astra::Audio
 
 	void AudioController::InitializeListener()
 	{
+		alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
+
 		alListener3f(AL_POSITION, 0, 0, 0);
 		alListener3f(AL_VELOCITY, 0, 0, 0);
 		ALfloat forwardAndUpVectors[] = 

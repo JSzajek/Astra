@@ -176,7 +176,7 @@ int main()
     RendererController::SetSelectionColor(Vec3(0.5f, 0.25f, 0));
 
     unsigned int tempSound = AudioController::LoadSound("res/bounce.wav");
-    AudioSource source;
+    AudioSource source(1, 12, 15);
     source.SetPosition(Vec3(-25, terrain.GetHeightOfTerrain(-25, -65), -65));
     source.SetLooping(true);
     source.Play(tempSound);

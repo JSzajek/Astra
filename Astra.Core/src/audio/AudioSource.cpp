@@ -4,9 +4,33 @@
 
 namespace Astra::Audio
 {
-	AudioSource::AudioSource()
+	AudioSource::AudioSource(float rollOffFactor, float refDist, float maxDist)
 	{
 		alGenSources(1, &m_id);
+		SetRollOffFactor(rollOffFactor);
+		SetReferenceDistance(refDist);
+		SetMaxDistance(maxDist);
+	}
+
+	AudioSource::~AudioSource()
+	{
+		Stop();
+		alDeleteSources(1, &m_id);
+	}
+
+	void AudioSource::SetRollOffFactor(float factor)
+	{
+		alSourcef(m_id, AL_ROLLOFF_FACTOR, factor);
+	}
+
+	void AudioSource::SetReferenceDistance(float distance)
+	{
+		alSourcef(m_id, AL_REFERENCE_DISTANCE, distance);
+	}
+	
+	void AudioSource::SetMaxDistance(float distance)
+	{
+		alSourcef(m_id, AL_MAX_DISTANCE, distance);
 	}
 
 	void AudioSource::Play(unsigned int buffer)
@@ -14,12 +38,6 @@ namespace Astra::Audio
 		Stop();
 		alSourcei(m_id, AL_BUFFER, buffer);
 		Continue();
-	}
-
-	void AudioSource::Delete()
-	{
-		Stop();
-		alDeleteSources(1, &m_id);
 	}
 
 	void AudioSource::Pause()
