@@ -17,10 +17,9 @@ int main()
     srand((unsigned)time(0));
 
     std::vector<Synchronous*> worldItems;
-
-    Window window("Astra", 960, 540);
-
-    window.SetWindowResizeCallback([&](int width, int height) { RendererController::UpdateScreen(width, height); });
+    Window::SetWindowTitle("Astra");
+    Window::SetWindowSize(960, 540);
+    Window::SetWindowResizeCallback([&](int width, int height) { RendererController::UpdateScreen(width, height); });
 
     Scene* const mainScene = new Scene(NULL, Vec3(0.1f));
 
@@ -37,12 +36,12 @@ int main()
 
     //Terrain terrain = Terrain(0, 0, "res/textures/meteorcrater_heightmap.png", &pack, blendMap);
     Terrain terrain = Terrain(0, 0, 40, 4, 0.01f, 4862, &pack, blendMap);
-    terrain(TRANSLATION, SUB_EQ, X, 128);
-    terrain(TRANSLATION, SUB_EQ, Z, 128);
+    terrain(TRANSLATION, SUB_EQ, X_POS, 128);
+    terrain(TRANSLATION, SUB_EQ, Z_POS, 128);
     
     mainScene->AddTerrain(&terrain);
 
-    Player player(Vec3(-25,50,-100), &window, &terrain);
+    Player player(Vec3(-25,50,-100), &terrain);
     
     mainScene->SetMainCamera(player.GetCamera());
     mainScene->AddEntity(player.GetRendering());
@@ -188,16 +187,17 @@ int main()
     float timer = 0;
     unsigned int frames = 0;
 
-    while (!window.Closed())
+    while (!Window::Closed())
     {
-        window.Clear();
+        Window::Clear();
+        float delta = Window::GetDelta();
         
         for (Synchronous* item : worldItems)
         {
-            item->Update();
+            item->Update(delta);
         }
 
-        barrelModel2(ROTATION, SUM_EQ, Y, 0.5f);
+        barrelModel2(ROTATION, SUM_EQ, Y_POS, 0.5f);
 
         skybox.BlendFactor() += InGameTimeSpeed * timeDir;
         if (skybox.BlendFactor() >= 1)
@@ -212,8 +212,7 @@ int main()
         }
 
         RendererController::Render();
-
-        window.Update();
+        Window::Update();
 
         frames++;
         if (time.Elapsed() - timer > 1.0f)

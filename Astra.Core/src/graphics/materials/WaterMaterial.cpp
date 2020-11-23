@@ -23,7 +23,7 @@ namespace Astra::Graphics
 
 	float WaterMaterial::Increase()
 	{
-		m_currentWaveSpeed = fmodf(m_currentWaveSpeed + waveSpeed * Window::delta, 1);
+		m_currentWaveSpeed = fmodf(m_currentWaveSpeed + waveSpeed * Window::GetDelta(), 1);
 		return m_currentWaveSpeed;
 	}
 }

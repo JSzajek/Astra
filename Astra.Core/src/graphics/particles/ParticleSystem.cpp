@@ -23,7 +23,7 @@ namespace Astra::Graphics
 
 	void ParticleSystem::GenerateParticles() const
 	{
-		float delta = Window::delta;
+		float delta = Window::GetDelta();
 		float particlesToCreate = m_particlePerSecond * (delta * 10);
 		int count = static_cast<int>(floorf(particlesToCreate));
 		int partialParticle = static_cast<int>(particlesToCreate) % 1; // Revisit this

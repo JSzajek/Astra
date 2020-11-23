@@ -4,7 +4,7 @@
 namespace Astra::Graphics
 {
 	MetaFile::MetaFile(const char* filepath)
-		: m_file(filepath), aspectRatio(Window::width / (float)Window::height)
+		: m_file(filepath), aspectRatio(Window::GetAspectRatio())
 	{
 		LoadPaddingData();
 		LoadLineSizes();

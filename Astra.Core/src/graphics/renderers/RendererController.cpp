@@ -150,7 +150,7 @@ namespace Astra::Graphics
 		m_block = false;
 
 		// Update Projection Matrix
-		UpdateScreenImpl(Window::width, Window::height);
+		UpdateScreenImpl(Window::GetWidth(), Window::GetHeight());
 
 		return true;
 	}

@@ -12,9 +12,9 @@ namespace Astra::Graphics
 	#define EQ 1
 	#define SUB_EQ 2
 
-	#define X 0
-	#define Y 1
-	#define Z 2
+	#define X_POS 0
+	#define Y_POS 1
+	#define Z_POS 2
 
 	struct Spatial
 	{

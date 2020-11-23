@@ -34,7 +34,7 @@ namespace Astra::Graphics
 
 	bool Particle::Update(const Math::Vec3& cameraPosition)
 	{
-		float delta = Window::delta;
+		float delta = Window::GetDelta();
 		m_velocity.y += GRAVITY * (float)m_gravity * delta;
 		Math::Vec3 change(m_velocity);
 		change *= delta;

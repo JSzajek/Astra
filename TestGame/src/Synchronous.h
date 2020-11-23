@@ -3,5 +3,5 @@
 class Synchronous
 {
 public:
-	virtual void Update() { }
+	virtual void Update(float delta) = 0;
 };
