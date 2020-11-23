@@ -75,15 +75,15 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Dependencies\$(TargetName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)$(ProjectName)\intermediates\</IntDir>
-    <IncludePath>$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Dependencies\GLEW\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\OpenALSoft\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Dependencies\GLEW\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\OpenALSoft\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Dependencies\$(TargetName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)$(ProjectName)\intermediates\</IntDir>
-    <IncludePath>$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Dependencies\GLEW\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\OpenALSoft\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Dependencies\GLEW\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\OpenALSoft\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -168,6 +168,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\audio\AudioController.cpp" />
+    <ClCompile Include="src\audio\AudioSource.cpp" />
     <ClCompile Include="src\graphics\buffers\ShadowFrameBuffer.cpp" />
     <ClCompile Include="src\graphics\buffers\Texture.cpp" />
     <ClCompile Include="src\graphics\buffers\VertexArray.cpp" />
@@ -221,10 +223,13 @@
     <ClCompile Include="src\math\Vec2.cpp" />
     <ClCompile Include="src\math\Vec3.cpp" />
     <ClCompile Include="src\math\Vec4.cpp" />
+    <ClCompile Include="src\utils\vendor\dr_lib\dr_lib_impl.cpp" />
     <ClCompile Include="src\utils\vendor\stb_image\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Astra.h" />
+    <ClInclude Include="src\audio\AudioController.h" />
+    <ClInclude Include="src\audio\AudioSource.h" />
     <ClInclude Include="src\graphics\buffers\CubeMapTexture.h" />
     <ClInclude Include="src\graphics\buffers\FrameBuffer.h" />
     <ClInclude Include="src\graphics\buffers\ShadowFrameBuffer.h" />
@@ -315,6 +320,9 @@
     <ClInclude Include="src\utils\Properties.h" />
     <ClInclude Include="src\utils\StringUtils.h" />
     <ClInclude Include="src\utils\Timer.h" />
+    <ClInclude Include="src\utils\vendor\dr_lib\dr_flac.h" />
+    <ClInclude Include="src\utils\vendor\dr_lib\dr_mp3.h" />
+    <ClInclude Include="src\utils\vendor\dr_lib\dr_wav.h" />
     <ClInclude Include="src\utils\vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
@@ -335,6 +343,7 @@
     <None Include="src\resources\shaders\Terrain.shader" />
     <None Include="src\resources\shaders\VerticalBlur.shader" />
     <None Include="src\resources\shaders\Water.shader" />
+    <None Include="src\utils\vendor\dr_lib\README.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\textures\Default.jpg" />

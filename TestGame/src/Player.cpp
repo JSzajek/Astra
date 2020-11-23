@@ -66,6 +66,8 @@ void Player::Update()
     {
         m_camera->operator()(DISTANCE, EQ, NULL, Clamp(m_camera->GetDistance() + (mouseWheel * -1 * ZoomPower * 0.1f), (float)MIN_DISTANCE, (float)MAX_DISTANCE));
     }
+
+    Astra::Audio::AudioController::SetListenerPosition(m_body->GetTranslation());
 }
 
 void Player::CheckInput()

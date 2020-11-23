@@ -177,6 +177,15 @@
     <ClCompile Include="src\graphics\post_processing\BloomEffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\audio\AudioController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\vendor\dr_lib\dr_lib_impl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AudioSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat4.h">
@@ -455,6 +464,21 @@
     <ClInclude Include="src\graphics\shaders\SelectionShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\audio\AudioController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\vendor\dr_lib\dr_flac.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\vendor\dr_lib\dr_mp3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\vendor\dr_lib\dr_wav.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\audio\AudioSource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\resources\shaders\Gui.shader" />
@@ -474,6 +498,7 @@
     <None Include="src\resources\shaders\Bloom.shader" />
     <None Include="src\resources\shaders\FinalBloom.shader" />
     <None Include="src\resources\shaders\Selection.shader" />
+    <None Include="src\utils\vendor\dr_lib\README.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\resources\textures\Default.jpg">
