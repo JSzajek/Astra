@@ -96,7 +96,7 @@ namespace Astra::Audio
 
 		ALuint buffer;
 		alGenBuffers(1, &buffer);
-		alBufferData(buffer, data->channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, data->pcmData.data(), data->getTotalSamples() * sizeof(uint16_t), data->sampleRate);
+		alBufferData(buffer, data->channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, data->pcmData, data->getTotalSamples() * sizeof(uint16_t), data->sampleRate);
 		m_buffers.push_back(buffer);
 		
 		delete data;
@@ -119,8 +119,8 @@ namespace Astra::Audio
 				Logger::LogError("Loaded audio file is too large for 32-bit address");
 			}
 
-			data->pcmData.resize(data->getTotalSamples());
-			std::memcpy(data->pcmData.data(), sampleData, data->getTotalSamples() * sizeof(uint16_t));
+			data->pcmData = new uint16_t[data->getTotalSamples()];
+			std::memcpy(data->pcmData, sampleData, data->getTotalSamples() * sizeof(uint16_t));
 			drwav_free(sampleData, NULL);
 		}
 		return data;

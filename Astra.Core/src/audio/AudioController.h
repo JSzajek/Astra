@@ -27,21 +27,26 @@ namespace Astra::Audio
 		unsigned int channels;
 		unsigned int sampleRate;
 		drwav_uint64 totalPCMFrameCount;
-		std::vector<uint16_t> pcmData;
+		uint16_t* pcmData;
 		
 		WavData()
-			: channels(0), sampleRate(0), totalPCMFrameCount(0)
+			: channels(0), sampleRate(0), totalPCMFrameCount(0), pcmData(NULL)
 		{
 		}
 
 		WavData(const WavData& other)
 			: channels (other.channels), sampleRate(other.sampleRate), totalPCMFrameCount(other.totalPCMFrameCount)
 		{
-			pcmData.resize(getTotalSamples());
-			std::memcpy(pcmData.data(), other.pcmData.data(), getTotalSamples() * sizeof(uint16_t));
+			pcmData = new uint16_t[getTotalSamples()];
+			std::memcpy(pcmData, other.pcmData, getTotalSamples() * sizeof(uint16_t));
 		}
 
-		inline drwav_uint64 getTotalSamples() const { return totalPCMFrameCount * channels; }
+		~WavData()
+		{
+			delete[] pcmData;
+		}
+
+		inline size_t getTotalSamples() const { return static_cast<size_t>(totalPCMFrameCount * channels); }
 	};
 
 	class AudioController
