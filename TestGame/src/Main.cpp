@@ -12,6 +12,7 @@ int main()
     using namespace Astra;
     using namespace Astra::Graphics;
     using namespace Astra::Math;
+    using namespace Astra::Audio;
 
     srand((unsigned)time(0));
 
@@ -173,6 +174,12 @@ int main()
 
     //RendererController::SetSelectionColor(Vec3(0.04f, 0.28f, 0.26f));
     RendererController::SetSelectionColor(Vec3(0.5f, 0.25f, 0));
+
+    unsigned int tempSound = AudioController::LoadSound("res/bounce.wav");
+    AudioSource source;
+    source.SetPosition(Vec3(-25, terrain.GetHeightOfTerrain(-25, -65), -65));
+    source.SetLooping(true);
+    source.Play(tempSound);
 
     const float InGameTimeSpeed = 0.00005f;
     short timeDir = 1;

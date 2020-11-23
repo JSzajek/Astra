@@ -33,3 +33,6 @@
 
 #include "src/graphics/particles/ParticleSystem.h"
 #include "src/graphics/particles/ConeParticleSystem.h"
+
+#include "src/audio/AudioController.h"
+#include "src/audio/AudioSource.h"
