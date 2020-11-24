@@ -38,8 +38,9 @@ namespace Astra::Graphics
 
 			unsigned int vao, vbo;
 			vao = CreateDefaultQuadVao();
-			CreateInstancedBuffer(&vbo, 0);
+			CreateInstancedBuffer(&vbo, MAX_PARTICLES * 22 * sizeof(float), true);
 			m_buffers[id] = ParticleBuffer(vao, vbo, MAX_PARTICLES);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
 		}
 	}
@@ -60,6 +61,7 @@ namespace Astra::Graphics
 			glBlendFunc(GL_SRC_ALPHA, particles.front()->GetAdditive() ? GL_ONE : GL_ONE_MINUS_SRC_ALPHA);
 			auto buff = directory.second;
 			glBindVertexArray(buff.VAO);
+
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, directory.first);
 
@@ -77,12 +79,12 @@ namespace Astra::Graphics
 		for (const auto& directory : m_particles)
 		{
 			auto& buff = m_buffers[directory.first];
-			CreateInstancedBuffer(&buff.VBO, directory.second.size() * 22 * sizeof(float));
-			void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+			glBindVertexArray(buff.VAO);
+			glBindBuffer(GL_ARRAY_BUFFER, buff.VBO);
 			size_t offset = 0;
 
-			// Fill data buffer
-			for (auto* particle : directory.second)
+			// TODO: Add capping for max particle rendering
+			for (auto* particle : directory.second) // Fill data buffer
 			{
 				m_modelViewMatrix->SetIdentity();
 				m_modelViewMatrix->Translate(particle->Position);
@@ -99,7 +101,7 @@ namespace Astra::Graphics
 				m_modelViewMatrix->Scale(particle->Scale);
 				*m_modelViewMatrix = (*m_viewMatrix) * (*m_modelViewMatrix);
 				
-				memcpy(static_cast<void*>(static_cast<char*>(ptr) + (offset * 22 * sizeof(float))), m_modelViewMatrix->data, 16 * sizeof(float));
+				glBufferSubData(GL_ARRAY_BUFFER, offset * 22 * sizeof(float), 16 * sizeof(float), m_modelViewMatrix->data);
 				float dat[6] = 
 				{
 					particle->GetTexOffset1().x,
@@ -109,11 +111,11 @@ namespace Astra::Graphics
 					static_cast<float>(particle->Material->GetRowCount()),
 					particle->GetBlendFactor()
 				};
-				memcpy(static_cast<void*>(static_cast<char*>(ptr) + (offset * 22 * sizeof(float)) + (16 * sizeof(float))), dat, 6 * sizeof(float));
+				glBufferSubData(GL_ARRAY_BUFFER, (offset * 22 * sizeof(float)) + (16 * sizeof(float)), 6 * sizeof(float), dat);
 				offset++;
 			}
-			glUnmapBuffer(GL_ARRAY_BUFFER);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindVertexArray(0);
 		}
 	}
 
@@ -129,38 +131,36 @@ namespace Astra::Graphics
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_defaultVertices.size(), &m_defaultVertices[0], GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		return quadVao;
 	}
 
-	void ParticleRenderer::CreateInstancedBuffer(unsigned int* id, size_t size)
+	void ParticleRenderer::CreateInstancedBuffer(unsigned int* id, size_t size, bool gen)
 	{
-		if (id == NULL)
+		if (gen)
 		{
 			glGenBuffers(1, id);
 		}
-		else
-		{
-			glBindBuffer(GL_ARRAY_BUFFER, *id);
-			glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_STREAM_DRAW);
-			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 22 * sizeof(float), (void*)0);
-			glEnableVertexAttribArray(2);
-			glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 22 * sizeof(float), (void*)(1 * 4 * sizeof(float)));
-			glEnableVertexAttribArray(3);
-			glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 22 * sizeof(float), (void*)(2 * 4 * sizeof(float)));
-			glEnableVertexAttribArray(4);
-			glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 22 * sizeof(float), (void*)(3 * 4 * sizeof(float)));
-			glEnableVertexAttribArray(5);
-			glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 22 * sizeof(float), (void*)(4 * 4 * sizeof(float)));
-			glEnableVertexAttribArray(6);
-			glVertexAttribPointer(6, 2, GL_FLOAT, GL_FALSE, 22 * sizeof(float), (void*)(5 * 4 * sizeof(float)));
+		glBindBuffer(GL_ARRAY_BUFFER, *id);
+		glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_STREAM_DRAW);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 22 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 22 * sizeof(float), (void*)(1 * 4 * sizeof(float)));
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 22 * sizeof(float), (void*)(2 * 4 * sizeof(float)));
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 22 * sizeof(float), (void*)(3 * 4 * sizeof(float)));
+		glEnableVertexAttribArray(5);
+		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 22 * sizeof(float), (void*)(4 * 4 * sizeof(float)));
+		glEnableVertexAttribArray(6);
+		glVertexAttribPointer(6, 2, GL_FLOAT, GL_FALSE, 22 * sizeof(float), (void*)(5 * 4 * sizeof(float)));
 
-			glVertexAttribDivisor(1, 1);
-			glVertexAttribDivisor(2, 1);
-			glVertexAttribDivisor(3, 1);
-			glVertexAttribDivisor(4, 1);
-			glVertexAttribDivisor(5, 1);
-			glVertexAttribDivisor(6, 1);
-		}
+		glVertexAttribDivisor(1, 1);
+		glVertexAttribDivisor(2, 1);
+		glVertexAttribDivisor(3, 1);
+		glVertexAttribDivisor(4, 1);
+		glVertexAttribDivisor(5, 1);
+		glVertexAttribDivisor(6, 1);
 	}
 }

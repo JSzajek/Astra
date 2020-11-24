@@ -19,19 +19,21 @@ namespace Astra::Graphics
 	void ConeParticleSystem::EmitParticle() const
 	{
 		Math::Vec3 velocity = m_direction.Magnitude() != 0 ? GenerateRandomUnitVectorInCone(m_direction, m_directionDeviation) 
-															: GenerateRandomUnitVector();
+																: GenerateRandomUnitVector();
 		velocity.Normalize();
+		velocity *= GenerateValue(m_speed, m_speedError);
+		float lifespan = GenerateValue(m_lifeSpan, m_lifeError);
+		float scale = GenerateValue(m_scale, m_scaleError);
+		float rotation = GenerateRotation();
 		
 		auto* particle = ParticleController::GetParticle();
 		if (particle == NULL)
 		{
-			particle = new Particle(m_material, *m_center, velocity * GenerateValue(m_speed, m_speedError), m_gravityComplient, 
-										GenerateValue(m_lifeSpan, m_lifeError), GenerateRotation(), GenerateValue(m_scale, m_scaleError), m_additive);
+			particle = new Particle(m_material, *m_center, velocity, m_gravityComplient, lifespan, rotation, scale, m_additive);
 		}
 		else
 		{
-			(*particle)(m_material, *m_center, velocity * GenerateValue(m_speed, m_speedError), m_gravityComplient, 
-							GenerateValue(m_lifeSpan, m_lifeError), GenerateRotation(), GenerateValue(m_scale, m_scaleError), m_additive);
+			(*particle)(m_material, *m_center, velocity, m_gravityComplient, lifespan, rotation, scale, m_additive);
 		}
 		ParticleController::AddParticle(particle);
 	}

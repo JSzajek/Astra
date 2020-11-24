@@ -65,12 +65,12 @@ namespace Astra::Graphics
 		inline void SetSkyBox(const SkyboxMaterial* material) { m_skybox = material; }
 		inline void SetFogColor(const Math::Vec3& color) { m_fogColor = color; }
 
-		inline void AddEntity(const Entity* entity) { m_entities.push_back(entity); }
-		inline void AddParticleSystem(const ParticleSystem* system) { m_particles.push_back(system); }
-		inline void AddGui(GuiTexture* gui) { m_guis.push_back(gui); }
-		inline void AddText(GuiText* text) { m_texts.push_back(text); }
-		inline void AddTerrain(const Terrain* terrain) { m_terrains.push_back(terrain); }
-		inline void AddWaterTile(const WaterTile* tile) { m_tiles.push_back(tile); }
+		inline void AddEntity(const Entity* entity) { m_entities.emplace_back(entity); }
+		inline void AddParticleSystem(const ParticleSystem* system) { m_particles.emplace_back(system); }
+		inline void AddGui(GuiTexture* gui) { m_guis.emplace_back(gui); }
+		inline void AddText(GuiText* text) { m_texts.emplace_back(text); }
+		inline void AddTerrain(const Terrain* terrain) { m_terrains.emplace_back(terrain); }
+		inline void AddWaterTile(const WaterTile* tile) { m_tiles.emplace_back(tile); }
 		
 		inline DirectionalLight* const GetDirectionalLight() const { return m_mainLight; }
 		inline const Math::Vec3& GetFogColor() const { return m_fogColor; }
@@ -85,7 +85,7 @@ namespace Astra::Graphics
 		inline const std::vector<const WaterTile*>& GetWaterTiles() const { return m_tiles; }
 		inline const std::vector<const ParticleSystem*>& GetParticles() const { return m_particles; }
 		
-		inline void AddPointLight(PointLight* light) { m_pointlights.push_back(light); }
+		inline void AddPointLight(PointLight* light) { m_pointlights.emplace_back(light); }
 		inline void AddSpotLight(const SpotLight* light) { m_spotLight = light; }
 	};
 }
