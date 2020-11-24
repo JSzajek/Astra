@@ -11,7 +11,11 @@
 namespace Astra::Graphics
 {
 	Entity3dRenderer::Entity3dRenderer(const Math::Vec3* fogColor)
-		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), m_selectionShader(new SelectionShader()), m_toShadowSpaceMatrix(NULL)
+		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), 
+			m_selectionShader(new SelectionShader()), m_toShadowSpaceMatrix(NULL)
+		#if _DEBUG
+			, m_wireframe(false)
+		#endif
 	{
 	}
 
@@ -66,6 +70,14 @@ namespace Astra::Graphics
 		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
 		m_shader->SetUniform4f(INVERSE_VIEW_VECTOR_TAG, inverseViewVector);
 		m_shader->SetUniformMat4(TO_SHADOW_SPACE_MATRIX_TAG, m_toShadowSpaceMatrix);
+
+	#if _DEBUG
+		if (m_wireframe) 
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+	#endif
+
 		for (const auto& directory : m_entities)
 		{
 			bool selected = false;
@@ -91,8 +103,18 @@ namespace Astra::Graphics
 			if (selected) { m_selected.emplace(directory); }
 			UnbindVertexArray();
 		}
+
+	#if _DEBUG
+		if (m_wireframe)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+	#endif
 		m_shader->Stop();
 		DrawSelected(viewMatrix);
+	#if _DEBUG
+		glCheckError();
+	#endif 
 	}
 
 	void Entity3dRenderer::AddEntity(const Entity* entity)

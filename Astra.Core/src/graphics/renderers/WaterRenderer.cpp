@@ -9,7 +9,11 @@
 namespace Astra::Graphics
 {
 	WaterRenderer::WaterRenderer(float near, float far)
-		: Renderer(), m_buffer(NULL), m_directionalLight(NULL), m_near(near), m_far(far), m_toShadowSpaceMatrix(NULL)
+		: Renderer(), m_buffer(NULL), m_directionalLight(NULL), 
+			m_near(near), m_far(far), m_toShadowSpaceMatrix(NULL)
+		#if _DEBUG
+			, m_wireframe(false)
+		#endif
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLES, { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 }, 2);
 	}
@@ -51,6 +55,13 @@ namespace Astra::Graphics
 		m_shader->SetUniform4f(INVERSE_VIEW_VECTOR_TAG, inverseViewVector);
 		m_shader->SetUniformMat4(TO_SHADOW_SPACE_MATRIX_TAG, m_toShadowSpaceMatrix);
 
+	#if _DEBUG
+		if (m_wireframe)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+	#endif
+
 		PrepareRender();
 		for (const WaterTile* tile: m_waterTiles)
 		{
@@ -59,8 +70,18 @@ namespace Astra::Graphics
 			m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, tile->GetModelMatrix());
 			glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
 		}
+
+	#if _DEBUG
+		if (m_wireframe)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+	#endif
 		UnbindVertexArray();
 		m_shader->Stop();
+	#if _DEBUG
+		glCheckError();
+	#endif
 	}
 
 	void WaterRenderer::AddLight(Light* light)

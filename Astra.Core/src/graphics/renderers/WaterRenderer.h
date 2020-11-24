@@ -20,9 +20,15 @@ namespace Astra::Graphics
 		const Light* m_directionalLight;
 		const Math::Mat4* m_toShadowSpaceMatrix;
 		float m_near, m_far;
+	#if _DEBUG
+		bool m_wireframe;
+	#endif
 	public:
 		WaterRenderer(float near, float far);
 		
+	#if _DEBUG
+		void SetWireframe(bool wireframe) { m_wireframe = wireframe; };
+	#endif
 		void SetShader(Shader* shader) override;
 		void Clear() override;
 		inline void SetShadowMatrix(const Math::Mat4* shadowMatrix) { m_toShadowSpaceMatrix = shadowMatrix; }

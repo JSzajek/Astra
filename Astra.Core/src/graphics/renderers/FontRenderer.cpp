@@ -29,6 +29,9 @@ namespace Astra::Graphics
 
 		UnbindVertexArray();
 		m_shader->Stop();
+	#if _DEBUG
+		glCheckError();
+	#endif 
 	}
 
 	void FontRenderer::RenderText(const GuiText* text)

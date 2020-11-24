@@ -20,9 +20,15 @@ namespace Astra::Graphics
 		const Math::Vec3* m_fogColor;
 		const Light* m_directionalLight;
 		const Math::Mat4* m_toShadowSpaceMatrix;
+	#if _DEBUG
+		bool m_wireframe;
+	#endif
 	public:
 		TerrainRenderer(const Math::Vec3* fogColor);
 		
+	#if _DEBUG
+		void SetWireframe(bool wireframe) { m_wireframe = wireframe; };
+	#endif
 		void SetShader(Shader* shader) override;
 
 		inline void Clear() override;

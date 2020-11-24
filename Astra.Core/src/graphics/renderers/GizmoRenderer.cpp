@@ -59,6 +59,7 @@ namespace Astra::Graphics
 		glDisableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glBindVertexArray(0);
 		m_shader->Stop();
+		glCheckError();
 	}
 
 	void GizmoRenderer::UpdateModelViewMatrix(const Math::Vec3& position, float scale)

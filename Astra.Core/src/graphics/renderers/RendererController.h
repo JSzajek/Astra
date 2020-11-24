@@ -33,7 +33,7 @@
 
 namespace Astra::Graphics
 {
-#define FULL_SELECTION 0
+	#define FULL_SELECTION		0
 
 	class RendererController
 	{
@@ -103,6 +103,15 @@ namespace Astra::Graphics
 			Get().SetSelectionColorImpl(color);
 		}
 
+	#if _DEBUG
+		static void ToggleWireframeMode()
+		{
+			static unsigned char wireframe = 0;
+			Get().ToggleWireframeModeImpl(wireframe);
+			wireframe = (wireframe + 1) % 3;
+		}
+	#endif
+
 	private:
 		RendererController();
 		~RendererController();
@@ -118,5 +127,8 @@ namespace Astra::Graphics
 		void PreRender(float delta, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane = Renderer::DefaultClipPlane);
 		void PostRender(const Math::Vec4& inverseViewVector);
 		void GuiRender();
+	#if _DEBUG
+		void ToggleWireframeModeImpl(unsigned char state);
+	#endif
 	};
 }

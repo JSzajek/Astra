@@ -23,9 +23,15 @@ namespace Astra::Graphics
 		const Light* m_directionalLight;
 		const Math::Mat4* m_toShadowSpaceMatrix;
 		Shader* m_selectionShader;
+	#if _DEBUG
+		bool m_wireframe;
+	#endif
 	public:
 		NormalEntity3dRenderer(const Math::Vec3* fogColor);
 		
+	#if _DEBUG
+		void SetWireframe(bool wireframe) { m_wireframe = wireframe; };
+	#endif
 		void SetShader(Shader* shader) override;
 		void SetSelectionColor(const Math::Vec3& color);
 		void UpdateProjectionMatrix(const Math::Mat4* projectionMatrix) override;
