@@ -69,6 +69,7 @@ namespace Astra::Graphics
 
 		Math::Vec3* m_fogColor;
 		Math::Mat4* projectionMatrix;
+		Math::Mat4* m_toShadowMapMatrix;
 
 		const Scene* m_currentScene;
 		bool m_block;
@@ -82,9 +83,9 @@ namespace Astra::Graphics
 			return instance;
 		}
 
-		static void Render()
+		static void Render(float delta)
 		{
-			Get().RenderImpl();
+			Get().RenderImpl(delta);
 		}
 
 		static void UpdateScreen(int width, int height)
@@ -106,15 +107,15 @@ namespace Astra::Graphics
 		RendererController();
 		~RendererController();
 		void UpdateScreenImpl(int width, int height);
-		void RenderImpl();
+		void RenderImpl(float delta);
 
 		void Init() const;
 		bool SetCurrentSceneImpl(const Scene* scene);
 		void SetSelectionColorImpl(const Math::Vec3& color);
 		void Clear();
 
-		void PrepareRender();
-		void PreRender(const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane = Renderer::DefaultClipPlane);
+		void PrepareRender(float delta);
+		void PreRender(float delta, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane = Renderer::DefaultClipPlane);
 		void PostRender(const Math::Vec4& inverseViewVector);
 		void GuiRender();
 	};

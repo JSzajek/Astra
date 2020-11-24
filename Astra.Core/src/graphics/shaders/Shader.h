@@ -80,9 +80,8 @@ namespace Astra::Graphics
 		void SetUniform3f(const GLchar* name, const Math::Vec3& value);
 		void SetUniform4f(const GLchar* name, const Math::Vec4& value);
 		void SetUniform4f(const GLchar* name, const Math::Vec3& vector, float w);
-		virtual void SetUniformMat4(const GLchar* name, const Math::Mat4& matrix);
+		void SetUniformMat4(const GLchar* name, const Math::Mat4& matrix);
 		void SetUniformMat4(const GLchar* name, const Math::Mat4* const matrix);
-
 		void Start() const;
 		void Stop() const;
 

@@ -472,6 +472,6 @@ namespace Astra::Graphics
 	void Loader::UnbindFrameBuffer()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glViewport(0, 0, Window::width, Window::height);
+		glViewport(0, 0, Window::GetWidth(), Window::GetHeight());
 	}
 }

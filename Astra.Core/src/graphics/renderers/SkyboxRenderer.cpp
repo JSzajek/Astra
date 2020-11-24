@@ -3,7 +3,7 @@
 namespace Astra::Graphics
 {
 	SkyboxRenderer::SkyboxRenderer(Shader* shader, const Math::Vec3* fogColor)
-		: Renderer(), m_fogColor(fogColor), m_blendFactor(0), m_material(NULL)
+		: Renderer(), m_fogColor(fogColor), m_blendFactor(0), m_material(NULL), m_rotation(0), m_fixedViewMatrix(new Math::Mat4())
 	{
 		Renderer::SetShader(shader);
 
@@ -15,11 +15,19 @@ namespace Astra::Graphics
 		m_cube = Loader::Load(GL_TRIANGLES, Vertices, 3);
 	}
 
-	void SkyboxRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void SkyboxRenderer::Draw(float delta, const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
 		m_shader->SetUniform3f(FOG_COLOR, *m_fogColor);
-		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, *viewMatrix);
+
+		// Set Custom View Matrix
+		*m_fixedViewMatrix = Math::Mat4(*viewMatrix); // Should look into better way besides copying
+		m_fixedViewMatrix->columns[3].x = 0;
+		m_fixedViewMatrix->columns[3].y = 0;
+		m_fixedViewMatrix->columns[3].z = 0;
+		m_rotation += RotationSpeed * delta;
+		m_fixedViewMatrix->Rotate(m_rotation, Math::Vec3::Y_Axis);
+		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, m_fixedViewMatrix);
 	
 		glBindVertexArray(m_cube->vaoId);
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content

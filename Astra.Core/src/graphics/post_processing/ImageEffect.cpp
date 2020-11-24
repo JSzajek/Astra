@@ -72,6 +72,6 @@ namespace Astra::Graphics
 	void ImageEffect::UnbindBuffer() const
 	{
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-		glViewport(0, 0, Window::width, Window::height);
+		glViewport(0, 0, Window::GetWidth(), Window::GetHeight());
 	}
 }

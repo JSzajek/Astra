@@ -12,14 +12,14 @@ namespace Astra::Graphics
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLE_STRIP, { -1, 1, -1, -1, 1, 1, 1, -1 }, 2);
 	#if MULTI_SAMPLE
-		m_multisampledBuffer = Loader::LoadFrameBuffer(Window::width, Window::height, true, DepthBufferType::Render, HDR);
-		m_screenBuffer = Loader::LoadFrameBuffer(Window::width, Window::height, false, DepthBufferType::Texture, HDR);
+		m_multisampledBuffer = Loader::LoadFrameBuffer(Window::GetWidth(), Window::GetHeight(), true, DepthBufferType::Render, HDR);
+		m_screenBuffer = Loader::LoadFrameBuffer(Window::GetWidth(), Window::GetHeight(), false, DepthBufferType::Texture, HDR);
 	#else
 		m_multisampledBuffer = NULL;
 		m_screenBuffer = Loader::LoadFrameBuffer(Window::width, Window::height, false, DepthBufferType::Render);
 	#endif
 	#if BLOOM
-		effects.push_back(new BloomEffect(Window::width, Window::height));
+		effects.push_back(new BloomEffect(Window::GetWidth(), Window::GetHeight()));
 	#endif
 	#if HDR
 		effects.push_back(new HDREffect(true, 1));
@@ -60,13 +60,13 @@ namespace Astra::Graphics
 		{
 			Logger::LogError("Frame Buffer Did Not Attach Correctly.");
 		}
-		glViewport(0, 0, Window::width, Window::height);
+		glViewport(0, 0, Window::GetWidth(), Window::GetHeight());
 	}
 
 	void PostProcessor::Detach()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glViewport(0, 0, Window::width, Window::height);
+		glViewport(0, 0, Window::GetWidth(), Window::GetHeight());
 	}
 
 	void PostProcessor::Draw()
@@ -76,7 +76,7 @@ namespace Astra::Graphics
 		glDisable(GL_DEPTH_TEST);
 
 	#if MULTI_SAMPLE
-		ResolveFrameBuffer(m_multisampledBuffer->GetId(), m_screenBuffer->GetId(), Window::width, Window::height, Window::width, Window::height);
+		ResolveFrameBuffer(m_multisampledBuffer->GetId(), m_screenBuffer->GetId(), Window::GetWidth(), Window::GetHeight(), Window::GetWidth(), Window::GetHeight());
 		unsigned int attachment = m_screenBuffer->GetColorAttachment();
 	#else
 		unsigned int attachment = m_screenBuffer->GetColorAttachment();
@@ -121,7 +121,7 @@ namespace Astra::Graphics
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, bufferIn);
 		glDrawBuffer(GL_BACK);
-		glBlitFramebuffer(0, 0, inputWidth, inputHeight, 0, 0, Window::width, Window::height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+		glBlitFramebuffer(0, 0, inputWidth, inputHeight, 0, 0, Window::GetWidth(), Window::GetHeight(), GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 		Detach();
 	}
 }

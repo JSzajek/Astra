@@ -4,30 +4,12 @@
 #include <time.h>
 namespace Astra::Graphics
 {
-	float Window::delta;
-	int Window::width;
-	int Window::height;
-	
-	Window::Window(const char* title, int width, int height)
-		: m_title(title), m_width(width), m_height(height), m_mousePosition(Math::Vec2()),
-			m_mouseScroll(0)
+	Window::Window()
+		: m_title(DEFAULT_TITLE), m_width(DEFAULT_WIDTH), m_height(DEFAULT_HEIGHT)
 	{
 		if (!Init())
 		{
 			glfwTerminate();
-		}
-	
-		this->width = m_width;
-		this->height = m_height;
-
-		for (int i = 0; i < MAX_KEYS; i++)
-		{
-			m_keys[i] = false;
-		}
-
-		for (int i = 0; i < MAX_BUTTONS; i++)
-		{
-			m_mouseButtons[i] = false;
 		}
 	}
 
@@ -36,9 +18,51 @@ namespace Astra::Graphics
 		glfwTerminate();
 	}
 
-	bool Window::Closed() const
+	bool Window::ClosedImpl() const
 	{
 		return glfwWindowShouldClose(m_window) == 1;
+	}
+
+	void Window::ClearImpl() const
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+
+	void Window::UpdateImpl()
+	{
+		GLenum error = glGetError();
+		if (error != GL_NO_ERROR)
+		{
+			Logger::LogError(std::string("OpenGL Error: ") + std::to_string(error));
+			Logger::LogError((const char*)(glewGetErrorString(error)));
+		}
+
+		auto currentTick = clock();
+		m_delta = ((float)(currentTick - m_lastFrameTime)) / CLOCKS_PER_SEC;
+		m_lastFrameTime = currentTick;
+
+		Input::Flush();
+		glfwSwapBuffers(m_window);
+		glfwPollEvents();
+	}
+	
+	void Window::SetWindowSizeImpl(int width, int height)
+	{
+		m_width = width;
+		m_height = height;
+		glfwSetWindowSize(m_window, m_width, m_height);
+	}
+
+	void Window::SetWindowTitleImpl(const char* title)
+	{
+		m_title = title;
+		glfwSetWindowTitle(m_window, m_title);
+	}
+
+	void Window::SetWindowResizeCallbackImpl(std::function<void(int, int)> callback)
+	{
+		m_windowResizeCallback = callback;
+		m_windowResizeCallback(m_width, m_height);
 	}
 
 	bool Window::Init()
@@ -58,11 +82,11 @@ namespace Astra::Graphics
 			return false;
 		}
 
+		Input::Init(m_window);
 		glfwMakeContextCurrent(m_window);
 		glfwSetWindowUserPointer(m_window, this);
 	
 	#if MULTI_SAMPLE
-		//glfwWindowHint(GLFW_SAMPLES, MULTI_SAMPLE_SIZE);
 		glEnable(GL_MULTISAMPLE);
 	#endif
 
@@ -73,40 +97,14 @@ namespace Astra::Graphics
 		glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height)
 		{
 			Window* win = (Window*)glfwGetWindowUserPointer(window);
-			win->width = win->m_width = width;
-			win->height = win->m_height = height;
+			win->m_width = width;
+			win->m_height = height;
 			if (win->m_windowResizeCallback != NULL)
 			{
 				win->m_windowResizeCallback(width, height);
 			}
 			glViewport(0, 0, width, height);
 		});
-
-		glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scanCode, int action, int mode)
-		{
-			Window* win = (Window*)glfwGetWindowUserPointer(window);
-			win->m_keys[key] = action != GLFW_RELEASE;
-		});
-		
-		glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mode)
-		{
-			Window* win = (Window*)glfwGetWindowUserPointer(window);
-			win->m_mouseButtons[button] = action != GLFW_RELEASE;
-		});
-		
-		glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xPos, double yPos)
-		{
-			Window* win = (Window*)glfwGetWindowUserPointer(window);
-			win->m_mousePosition.x = (float)xPos;
-			win->m_mousePosition.y = (float)yPos;
-		});
-
-		glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xOffset, double yOffset)
-		{
-			Window* win = (Window*)glfwGetWindowUserPointer(window);
-			win->m_mouseScroll = (float)yOffset;
-		});
-
 
 		if (glewInit() != GLEW_OK)
 		{
@@ -118,60 +116,5 @@ namespace Astra::Graphics
 
 		Logger::Log(std::string("OpenGL ") + std::string((const char*)glGetString(GL_VERSION)));
 		return true;
-	}
-
-	void Window::Clear() const
-	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
-
-	void Window::Update()
-	{
-		GLenum error = glGetError();
-		if (error != GL_NO_ERROR)
-		{
-			Logger::LogError(std::string("OpenGL Error: ") + std::to_string(error));
-			Logger::LogError((const char*)(glewGetErrorString(error)));
-		}
-
-		auto currentTick = clock();
-		delta = ((float)(currentTick - m_lastFrameTime)) / CLOCKS_PER_SEC;
-		m_lastFrameTime = currentTick;
-
-		m_mouseScroll = 0;
-
-		glfwPollEvents();
-		glfwSwapBuffers(m_window);
-	}
-
-	void Window::SetWindowResizeCallback(std::function<void(int, int)> callback)
-	{
-		m_windowResizeCallback = callback;
-		m_windowResizeCallback(m_width, m_height);
-	}
-
-	bool Window::isKeyPressed(unsigned int keycode) const
-	{
-		if (keycode >= MAX_KEYS)
-		{
-			Logger::LogWarning("Detected key input outside of MAX_KEYS bounds.");
-			return false;
-		}
-		return m_keys[keycode];
-	}
-
-	bool Window::isMouseButtonPressed(unsigned int button) const
-	{
-		if (button >= MAX_BUTTONS)
-		{
-			Logger::LogWarning("Detected mouse button input outside of MAX_BUTTONS bounds.");
-			return false;
-		}
-		return m_mouseButtons[button];
-	}
-
-	const Math::Vec2& Window::getMousePosition()
-	{
-		return m_mousePosition;
 	}
 }

@@ -15,8 +15,8 @@ namespace Astra::Graphics
 		for (int i = 1; i <= BLUR_STEPS; i++)
 		{
 			unsigned int squeezRatio = (BASE_BLUR_DOWNSCALE * i);
-			size_t blurWidth = Window::width / squeezRatio;
-			size_t blurHeight = Window::height / squeezRatio;
+			size_t blurWidth = Window::GetWidth() / squeezRatio;
+			size_t blurHeight = Window::GetHeight() / squeezRatio;
 			m_blurs.push_back(new HorizontalBlurEffect(blurWidth, blurHeight, squeezRatio));
 			m_blurs.push_back(new VerticalBlurEffect(blurWidth, blurHeight, squeezRatio));
 		}

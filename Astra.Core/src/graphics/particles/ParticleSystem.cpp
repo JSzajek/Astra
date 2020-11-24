@@ -1,9 +1,5 @@
 #include "ParticleSystem.h"
 
-//#include "ParticleController.h"
-
-#include "../Window.h"
-
 namespace Astra::Graphics
 {
 	ParticleSystem::ParticleSystem(const ParticleMaterial* const material, const Math::Vec3* center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, bool additive)
@@ -21,9 +17,8 @@ namespace Astra::Graphics
 	}
 #endif
 
-	void ParticleSystem::GenerateParticles() const
+	void ParticleSystem::GenerateParticles(float delta) const
 	{
-		float delta = Window::delta;
 		float particlesToCreate = m_particlePerSecond * (delta * 10);
 		int count = static_cast<int>(floorf(particlesToCreate));
 		int partialParticle = static_cast<int>(particlesToCreate) % 1; // Revisit this

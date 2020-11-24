@@ -15,6 +15,7 @@
 
 #define		GROUND_OFFSET		2
 
+using namespace Astra;
 using namespace Astra::Graphics;
 using namespace Astra::Math;
 
@@ -27,7 +28,6 @@ private:
 	float ZoomPower = 20;
 	float PanSpeed = 1;
 	
-	Window* _window;
 	Camera* m_camera;
 	Entity* m_body;
 	Terrain* m_terrain;
@@ -43,9 +43,9 @@ private:
 
 	Vec3 m_movement;
 public:
-	Player(const Vec3& position, Window* window, Terrain* terrain);
+	Player(const Vec3& position, Terrain* terrain);
 	~Player();
-	void Update() override;
+	void Update(float delta) override;
 	void CheckInput();
 	inline Camera* GetCamera() { return m_camera; }
 	inline Entity* GetRendering() { return m_body; }

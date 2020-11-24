@@ -187,6 +187,7 @@
     <ClCompile Include="src\graphics\fonts\TextMesh.cpp" />
     <ClCompile Include="src\graphics\gizmos\Gizmo.cpp" />
     <ClCompile Include="src\graphics\gizmos\GizmoController.cpp" />
+    <ClCompile Include="src\graphics\Input.cpp" />
     <ClCompile Include="src\graphics\loaders\Loader.cpp" />
     <ClCompile Include="src\graphics\loaders\ObjLoader.cpp" />
     <ClCompile Include="src\graphics\materials\ImageMaterial.cpp" />
@@ -248,6 +249,8 @@
     <ClInclude Include="src\graphics\fonts\Word.h" />
     <ClInclude Include="src\graphics\gizmos\Gizmo.h" />
     <ClInclude Include="src\graphics\gizmos\GizmoController.h" />
+    <ClInclude Include="src\graphics\Input.h" />
+    <ClInclude Include="src\graphics\Inputs.h" />
     <ClInclude Include="src\graphics\materials\ImageMaterial.h" />
     <ClInclude Include="src\graphics\materials\Materials.h" />
     <ClInclude Include="src\graphics\materials\ParticleMaterial.h" />

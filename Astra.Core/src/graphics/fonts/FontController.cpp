@@ -15,7 +15,7 @@ namespace Astra::Graphics
 
 	void FontController::RenderImpl()
 	{
-		m_fontRenderer->Draw(NULL, NULL);
+		m_fontRenderer->Draw();
 	}
 
 	void FontController::LoadTextImpl(GuiText* text)

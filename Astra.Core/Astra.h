@@ -6,6 +6,7 @@
 #include "src/utils/Timer.h"
 
 #include "src/graphics/Window.h"
+#include "src/graphics/Input.h"
 
 #include "src/graphics/loaders/Loader.h"
 #include "src/graphics/loaders/ObjLoader.h"

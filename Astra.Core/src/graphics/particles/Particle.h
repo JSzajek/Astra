@@ -36,7 +36,7 @@ namespace Astra::Graphics
 		inline const float GetBlendFactor() const { return m_blendFactor; }
 		inline const float GetDistance() const { return m_distance; }
 		inline bool GetAdditive() const { return m_additive; }
-		bool Update(const Math::Vec3& cameraPosition);
+		bool Update(float delta, const Math::Vec3& cameraPosition);
 	private:
 		void UpdateTextureCoordInfo();
 		void SetTextureOffset(Math::Vec2* offset, int index);

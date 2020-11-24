@@ -31,6 +31,6 @@ namespace Astra::Graphics
 		
 		inline unsigned int GetSpecularId() const { return m_specular.id; }
 
-		float Increase();
+		float Increase(float delta);
 	};
 }
