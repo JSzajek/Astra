@@ -45,11 +45,11 @@ namespace Astra::Graphics
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 
-#if FULL_SELECTION
+	#if FULL_SELECTION
 		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-#else
+	#else
 		glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
-#endif
+	#endif
 		glClearColor(m_fogColor->x, m_fogColor->y, m_fogColor->z, 1);
 
 		glEnable(GL_CLIP_DISTANCE0);
@@ -95,9 +95,9 @@ namespace Astra::Graphics
 		m_terrainRenderer->AddLight(dirLight);
 		m_normalEntityRenderer->AddLight(dirLight);
 		m_waterRenderer->AddLight(dirLight);
-#if _DEBUG
+	#if _DEBUG
 		GizmoController::AddGizmo(dirLight->GetGizmo());
-#endif
+	#endif
 
 		Math::Vec3 fogColor = scene->GetFogColor();
 		m_fogColor->x = fogColor.x;
@@ -122,9 +122,9 @@ namespace Astra::Graphics
 			m_normalEntityRenderer->AddLight(light);
 			m_terrainRenderer->AddLight(light);
 			m_waterRenderer->AddLight(light);
-#if _DEBUG
+		#if _DEBUG
 			GizmoController::AddGizmo(light->GetGizmo());
-#endif
+		#endif
 		}
 		for (auto* terrain : scene->GetTerrains())
 		{
@@ -149,9 +149,9 @@ namespace Astra::Graphics
 		for (auto* system : scene->GetParticles())
 		{
 			m_systems.emplace_back(system);
-#if _DEBUG
+		#if _DEBUG
 			GizmoController::AddGizmo(system->GetGizmo());
-#endif
+		#endif
 		}
 
 		m_block = false;
@@ -181,9 +181,9 @@ namespace Astra::Graphics
 		FontController::Clear();
 		ParticleController::Clear();
 		m_systems.clear();
-#if _DEBUG
+	#if _DEBUG
 		GizmoController::Clear();
-#endif
+	#endif
 	}
 
 	void RendererController::UpdateScreenImpl(int width, int height)
@@ -198,9 +198,9 @@ namespace Astra::Graphics
 		m_waterRenderer->UpdateProjectionMatrix(projectionMatrix);
 		m_postProcessor->UpdateScreenRatio(width, height);
 		ParticleController::UpdateProjectionMatrix(projectionMatrix);
-#if _DEBUG
+	#if _DEBUG
 		GizmoController::UpdateProjectionMatrix(projectionMatrix);
-#endif
+	#endif
 	}
 
 	void RendererController::RenderImpl(float delta)
@@ -281,10 +281,34 @@ namespace Astra::Graphics
 		m_postProcessor->Detach();
 		m_postProcessor->Draw();
 
-#if _DEBUG
+	#if _DEBUG
 		GizmoController::Render(viewMatrix);
-#endif
+	#endif
 		m_guiRenderer->Draw();
 		FontController::Render();
 	}
+
+#if _DEBUG
+	void RendererController::ToggleWireframeModeImpl(unsigned char state)
+	{
+		if (state == 0)
+		{
+			m_entityRenderer->SetWireframe(false);
+			m_normalEntityRenderer->SetWireframe(false);
+			m_waterRenderer->SetWireframe(false);
+			m_terrainRenderer->SetWireframe(false);
+		}
+		else if (state > 0)
+		{
+			m_entityRenderer->SetWireframe(true);
+			m_normalEntityRenderer->SetWireframe(true);
+			
+			if (state > 1)
+			{
+				m_waterRenderer->SetWireframe(true);
+				m_terrainRenderer->SetWireframe(true);
+			}
+		}
+	}
+#endif
 }

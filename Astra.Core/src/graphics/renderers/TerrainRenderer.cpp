@@ -46,6 +46,14 @@ namespace Astra::Graphics
 		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
 		m_shader->SetUniform4f(INVERSE_VIEW_VECTOR_TAG, inverseViewVector);
 		m_shader->SetUniformMat4(TO_SHADOW_SPACE_MATRIX_TAG, m_toShadowSpaceMatrix);
+
+	#if _DEBUG
+		if (m_wireframe)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+	#endif
+
 		for (const auto& directory : m_terrains)
 		{
 			PrepareTerrain(directory.second.front());
@@ -56,6 +64,12 @@ namespace Astra::Graphics
 				glDrawElements(terrain->vertexArray->drawType, terrain->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
 			}
 		}
+	#if _DEBUG
+		if (m_wireframe)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+	#endif
 		UnbindVertexArray();
 		m_shader->Stop();
 	}

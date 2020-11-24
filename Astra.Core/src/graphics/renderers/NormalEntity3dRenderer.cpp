@@ -67,6 +67,14 @@ namespace Astra::Graphics
 		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
 		m_shader->SetUniform4f(INVERSE_VIEW_VECTOR_TAG, inverseViewVector);
 		m_shader->SetUniformMat4(TO_SHADOW_SPACE_MATRIX_TAG, m_toShadowSpaceMatrix);
+
+	#if _DEBUG
+		if (m_wireframe)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+	#endif
+
 		for (const auto& directory : m_entities)
 		{
 			bool selected = false;
@@ -92,6 +100,13 @@ namespace Astra::Graphics
 			if (selected) { m_selected.emplace(directory); }
 			UnbindVertexArray();
 		}
+
+	#if _DEBUG
+		if (m_wireframe)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+	#endif
 		m_shader->Stop();
 		DrawSelected(viewMatrix);
 	}

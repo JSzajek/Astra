@@ -210,6 +210,13 @@ int main()
             timeDir = 1;
         }
 
+    #if _DEBUG
+        if (Input::IsKeyJustPressed(Key::F3))
+        {
+            RendererController::ToggleWireframeMode();
+        }
+    #endif
+
         RendererController::Render(delta);
         Window::Update();
 
