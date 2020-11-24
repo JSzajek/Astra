@@ -33,7 +33,7 @@ namespace Astra::Graphics
 		GuiRenderer(Shader* shader);
 		void AddGui(GuiTexture* gui);
 		inline void Clear() override { m_guis.clear(); m_buffers.clear(); }
-		void Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
+		void Draw(float delta = 0, const Math::Mat4* viewMatrix = NULL, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 	private:
 		unsigned int CreateInstancedBuffer(size_t size);
 		unsigned int CreateDefaultQuadVao();

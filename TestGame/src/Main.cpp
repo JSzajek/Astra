@@ -211,7 +211,7 @@ int main()
             timeDir = 1;
         }
 
-        RendererController::Render();
+        RendererController::Render(delta);
         Window::Update();
 
         frames++;

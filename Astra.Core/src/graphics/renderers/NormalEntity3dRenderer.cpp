@@ -10,7 +10,7 @@
 namespace Astra::Graphics
 {
 	NormalEntity3dRenderer::NormalEntity3dRenderer(const Math::Vec3* fogColor)
-		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), m_selectionShader(new SelectionShader())
+		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), m_selectionShader(new SelectionShader()), m_toShadowSpaceMatrix(NULL)
 	{
 	}
 
@@ -56,7 +56,7 @@ namespace Astra::Graphics
 		m_lights.clear();
 	}
 
-	void NormalEntity3dRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void NormalEntity3dRenderer::Draw(float delta, const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		glClear(GL_STENCIL_BUFFER_BIT);
 

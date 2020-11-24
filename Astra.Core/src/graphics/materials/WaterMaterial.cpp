@@ -1,7 +1,6 @@
 #include "WaterMaterial.h"
 
 #include "../loaders/Loader.h"
-#include "../Window.h"
 
 namespace Astra::Graphics
 {
@@ -21,9 +20,9 @@ namespace Astra::Graphics
 		m_specular = Loader::LoadTexture(Texture::DefaultSpecular, false);
 	}
 
-	float WaterMaterial::Increase()
+	float WaterMaterial::Increase(float delta)
 	{
-		m_currentWaveSpeed = fmodf(m_currentWaveSpeed + waveSpeed * Window::GetDelta(), 1);
+		m_currentWaveSpeed = fmodf(m_currentWaveSpeed + waveSpeed * delta, 1);
 		return m_currentWaveSpeed;
 	}
 }

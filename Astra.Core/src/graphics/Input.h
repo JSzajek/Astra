@@ -65,6 +65,4 @@ namespace Astra
 		inline void SetMousePositionImpl(float x, float y) { m_mousePosition.x = x; m_mousePosition.y = y; };
 		inline void SetMouseScrollImpl(float scroll) { m_mouseScroll = scroll; };
 	};
-
-
 }

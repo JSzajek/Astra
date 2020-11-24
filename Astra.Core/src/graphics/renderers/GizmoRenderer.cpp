@@ -32,7 +32,7 @@ namespace Astra::Graphics
 		}
 	}
 
-	void GizmoRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void GizmoRenderer::Draw(float delta, const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		if (m_gizmos.size() == 0) { return; }
 		m_shader->Start();

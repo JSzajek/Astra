@@ -31,7 +31,7 @@ namespace Astra::Graphics
 		if (m_box->Update() && m_light != NULL)
 		{
 			Prepare();
-			m_renderer->Draw(NULL, NULL);
+			m_renderer->Draw();
 		}
 	}
 

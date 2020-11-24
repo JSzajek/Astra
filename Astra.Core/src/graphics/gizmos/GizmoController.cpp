@@ -20,7 +20,7 @@ namespace Astra::Graphics
 
 	void GizmoController::RenderImpl(const Math::Mat4* viewMatrix)
 	{
-		m_gizmoRenderer->Draw(viewMatrix, NULL);
+		m_gizmoRenderer->Draw(0, viewMatrix, NULL);
 	}
 
 	void GizmoController::AddGizmoImpl(const Gizmo* gizmo)

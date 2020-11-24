@@ -1,7 +1,6 @@
 #include "Particle.h"
 
 #include "ParticleController.h"
-#include "../Window.h"
 
 namespace Astra::Graphics
 {
@@ -32,9 +31,8 @@ namespace Astra::Graphics
 		m_texOffset1 = m_texOffset2 = Math::Vec2::Zero;
 	}
 
-	bool Particle::Update(const Math::Vec3& cameraPosition)
+	bool Particle::Update(float delta, const Math::Vec3& cameraPosition)
 	{
-		float delta = Window::GetDelta();
 		m_velocity.y += GRAVITY * (float)m_gravity * delta;
 		Math::Vec3 change(m_velocity);
 		change *= delta;

@@ -54,14 +54,14 @@ namespace Astra::Graphics
 		glUniform4f(GetUniformLocation(name), vector.x, vector.y, vector.z, w);
 	}
 
-	void Shader::SetUniformMat4(const GLchar* name, const Math::Mat4& matrix)
-	{
-		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.data);
-	}
-
 	void Shader::SetUniformMat4(const GLchar* name, const Math::Mat4* const matrix)
 	{
 		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix->data);
+	}
+
+	void Shader::SetUniformMat4(const GLchar* name, const Math::Mat4& matrix)
+	{
+		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.data);
 	}
 
 	void Shader::Start() const
@@ -76,10 +76,10 @@ namespace Astra::Graphics
 
 	void Shader::BindAttributes() const
 	{
-	/*	BindAttribute(0, "position");
+		BindAttribute(0, "position");
 		BindAttribute(1, "textureCoords");
 		BindAttribute(2, "normal");
-		BindAttribute(3, "tangent");*/
+		BindAttribute(3, "tangent");
 	}
 
 	ShaderProgramSource Shader::ParseShader(const std::string& filepath)

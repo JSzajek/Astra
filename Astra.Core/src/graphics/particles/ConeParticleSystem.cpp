@@ -1,6 +1,5 @@
 #include "ConeParticleSystem.h"
 
-#include "../Window.h"
 #include "ParticleController.h"
 
 namespace Astra::Graphics

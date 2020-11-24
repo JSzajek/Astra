@@ -25,7 +25,7 @@ namespace Astra::Graphics
 		m_particleRenderer->UpdateProjectionMatrix(projectionMatrix);
 	}
 
-	void ParticleController::UpdateImpl(const Math::Vec3& cameraPosition)
+	void ParticleController::UpdateImpl(float delta, const Math::Vec3& cameraPosition)
 	{
 		auto iter = m_particleRenderer->GetParticles().begin();
 		while (iter != m_particleRenderer->GetParticles().end())
@@ -35,7 +35,7 @@ namespace Astra::Graphics
 			auto particlesIter = (*iter).second.begin();
 			while (particlesIter != (*iter).second.end())
 			{
-				bool stillAlive = (*particlesIter)->Update(cameraPosition);
+				bool stillAlive = (*particlesIter)->Update(delta, cameraPosition);
 				if (!stillAlive)
 				{
 					auto* temp = (*particlesIter);
@@ -68,7 +68,7 @@ namespace Astra::Graphics
 
 	void ParticleController::RenderImpl(const Math::Mat4* viewMatrix)
 	{
-		m_particleRenderer->Draw(viewMatrix, NULL);
+		m_particleRenderer->Draw(0, viewMatrix, NULL);
 	}
 
 	void ParticleController::InsertionSort(std::vector<Particle*>& particles)

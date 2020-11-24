@@ -13,7 +13,7 @@ namespace Astra::Graphics
 		std::unordered_map<const FontType*, std::vector<GuiText*>> m_texts;
 	public:
 		FontRenderer(FontShader* shader);
-		void Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
+		void Draw(float delta = 0, const Math::Mat4* viewMatrix = NULL, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 		
 		inline void Clear() override { m_texts.clear(); }
 		inline std::unordered_map<const FontType*, std::vector<GuiText*>>& GetTexts() { return m_texts; }

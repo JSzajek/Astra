@@ -1,7 +1,6 @@
 #include "WaterRenderer.h"
 #include "../../math/Mat4Utils.h"
 #include "../loaders/Loader.h"
-#include "../Window.h"
 
 #include "../entities/PointLight.h"
 #include "../entities/SpotLight.h"
@@ -10,7 +9,7 @@
 namespace Astra::Graphics
 {
 	WaterRenderer::WaterRenderer(float near, float far)
-		: Renderer(), m_buffer(NULL), m_directionalLight(NULL), m_near(near), m_far(far), m_toShadowSpaceMatrix(1)
+		: Renderer(), m_buffer(NULL), m_directionalLight(NULL), m_near(near), m_far(far), m_toShadowSpaceMatrix(NULL)
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLES, { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 }, 2);
 	}
@@ -45,7 +44,7 @@ namespace Astra::Graphics
 		m_waterTiles.clear();
 	}
 
-	void WaterRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void WaterRenderer::Draw(float delta, const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
 		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
@@ -56,7 +55,7 @@ namespace Astra::Graphics
 		for (const WaterTile* tile: m_waterTiles)
 		{
 			PrepareTile(tile);
-			m_shader->SetUniform1f(MOVE_FACTOR, tile->material->Increase());
+			m_shader->SetUniform1f(MOVE_FACTOR, tile->material->Increase(delta));
 			m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, tile->GetModelMatrix());
 			glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
 		}

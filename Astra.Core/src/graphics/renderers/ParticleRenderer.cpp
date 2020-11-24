@@ -44,7 +44,7 @@ namespace Astra::Graphics
 		}
 	}
 
-	void ParticleRenderer::Draw(const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void ParticleRenderer::Draw(float delta, const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		if (m_particles.size() == 0) { return; }
 		m_shader->Start();

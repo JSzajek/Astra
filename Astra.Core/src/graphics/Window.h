@@ -32,11 +32,7 @@ namespace Astra::Graphics
 		const char* m_title;
 		GLFWwindow* m_window;
 		bool m_closed;
-		//float m_mouseScroll;
-		//Math::Vec2 m_mousePosition;
-
 		std::function<void(int, int)> m_windowResizeCallback;
-	
 	public:
 		Window(const Window&) = delete;
 		void operator=(const Window&) = delete;
