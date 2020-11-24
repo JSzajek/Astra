@@ -10,7 +10,11 @@
 namespace Astra::Graphics
 {
 	NormalEntity3dRenderer::NormalEntity3dRenderer(const Math::Vec3* fogColor)
-		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), m_selectionShader(new SelectionShader()), m_toShadowSpaceMatrix(NULL)
+		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), 
+			m_selectionShader(new SelectionShader()), m_toShadowSpaceMatrix(NULL)
+		#if _DEBUG
+			, m_wireframe(false)
+		#endif
 	{
 	}
 
@@ -109,6 +113,9 @@ namespace Astra::Graphics
 	#endif
 		m_shader->Stop();
 		DrawSelected(viewMatrix);
+	#if _DEBUG
+		glCheckError();
+	#endif
 	}
 
 	void NormalEntity3dRenderer::AddEntity(const Entity* entity)

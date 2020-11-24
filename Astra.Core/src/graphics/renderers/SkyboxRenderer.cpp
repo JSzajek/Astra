@@ -38,6 +38,9 @@ namespace Astra::Graphics
 		glDisableVertexAttribArray(0);
 		glBindVertexArray(0);
 		m_shader->Stop();
+	#if _DEBUG
+		glCheckError();
+	#endif
 	}
 
 	void SkyboxRenderer::BindTextures()

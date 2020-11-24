@@ -29,6 +29,9 @@ namespace Astra::Graphics
 		UnbindVertexArray();
 		UnbindFrameBuffer();
 		m_shader->Stop();
+	#if _DEBUG
+		glCheckError();
+	#endif
 	}
 
 	void ShadowMapRenderer::AddEntity(const Entity* entity)

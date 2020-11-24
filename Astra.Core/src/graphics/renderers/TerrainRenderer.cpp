@@ -8,7 +8,10 @@
 namespace Astra::Graphics
 {
 	TerrainRenderer::TerrainRenderer(const Math::Vec3* fogColor)
-		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL)
+		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), m_toShadowSpaceMatrix(NULL)
+		#if _DEBUG
+			, m_wireframe(false)
+		#endif
 	{
 	}
 
@@ -72,6 +75,9 @@ namespace Astra::Graphics
 	#endif
 		UnbindVertexArray();
 		m_shader->Stop();
+	#if _DEBUG
+		glCheckError();
+	#endif
 	}
 
 	void TerrainRenderer::AddTerrain(const Terrain* terrain)

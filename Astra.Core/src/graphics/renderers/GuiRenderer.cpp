@@ -85,6 +85,9 @@ namespace Astra::Graphics
 		
 		UnbindVertexArray();
 		m_shader->Stop();
+	#if _DEBUG
+		glCheckError();
+	#endif
 	}
 
 	unsigned int GuiRenderer::CreateDefaultQuadVao()

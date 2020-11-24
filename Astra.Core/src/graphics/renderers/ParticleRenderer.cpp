@@ -72,6 +72,9 @@ namespace Astra::Graphics
 		glDisable(GL_BLEND);
 		glBindVertexArray(0);
 		m_shader->Stop();
+	#if _DEBUG
+		glCheckError();
+	#endif
 	}
 
 	void ParticleRenderer::UpdateParticleData()

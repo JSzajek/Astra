@@ -9,7 +9,11 @@
 namespace Astra::Graphics
 {
 	WaterRenderer::WaterRenderer(float near, float far)
-		: Renderer(), m_buffer(NULL), m_directionalLight(NULL), m_near(near), m_far(far), m_toShadowSpaceMatrix(NULL)
+		: Renderer(), m_buffer(NULL), m_directionalLight(NULL), 
+			m_near(near), m_far(far), m_toShadowSpaceMatrix(NULL)
+		#if _DEBUG
+			, m_wireframe(false)
+		#endif
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLES, { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 }, 2);
 	}
@@ -75,6 +79,9 @@ namespace Astra::Graphics
 	#endif
 		UnbindVertexArray();
 		m_shader->Stop();
+	#if _DEBUG
+		glCheckError();
+	#endif
 	}
 
 	void WaterRenderer::AddLight(Light* light)
