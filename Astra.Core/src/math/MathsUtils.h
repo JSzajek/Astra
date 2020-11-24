@@ -41,7 +41,7 @@ namespace Astra::Math
 
 	static inline float Random()
 	{
-		return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		return static_cast <float> (rand()) / RAND_MAX;
 	}
 
 	static inline int RandomRange(int min, int max)

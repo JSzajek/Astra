@@ -74,14 +74,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Dependencies\$(TargetName)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)$(ProjectName)\intermediates\</IntDir>
+    <IntDir>$(SolutionDir)$(ProjectName)\intermediates\$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\OpenALSoft\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Dependencies\GLEW\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\OpenALSoft\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Dependencies\$(TargetName)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)$(ProjectName)\intermediates\</IntDir>
+    <IntDir>$(SolutionDir)$(ProjectName)\intermediates\$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\OpenALSoft\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Dependencies\GLEW\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\OpenALSoft\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>

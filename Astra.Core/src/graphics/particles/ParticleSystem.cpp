@@ -1,5 +1,7 @@
 #include "ParticleSystem.h"
 
+#include "ParticleController.h"
+
 namespace Astra::Graphics
 {
 	ParticleSystem::ParticleSystem(const ParticleMaterial* const material, const Math::Vec3* center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, bool additive)

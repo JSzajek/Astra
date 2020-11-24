@@ -19,11 +19,11 @@ namespace Astra::Graphics
 	public:
 		ConeParticleSystem(const ParticleMaterial* const material, const Math::Vec3* center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, float scale, bool additive = false);
 		
+		void SetDirection(const Math::Vec3& direction, float deviation);
 		inline void SetRandomRotation(bool randomize) { m_randomRotation = randomize; }
 		inline void SetSpeedError(float error) { m_speedError = error; }
 		inline void SetLifeError(float error) { m_lifeError = error; }
 		inline void SetScaleError(float error) { m_scaleError = error; }
-		void SetDirection(const Math::Vec3& direction, float deviation);
 	private:
 		void EmitParticle() const override;
 		float GenerateValue(float average, float errorMargin) const;

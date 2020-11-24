@@ -2,6 +2,6 @@
 .git/
 bin/
 *.obj
-Dependencies/Astra.Core/Debug/
+Dependencies/Astra.Core/
 Astra.Core/intermediates/
 !Astra.Core/src/resources/*.obj
