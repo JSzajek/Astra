@@ -42,8 +42,8 @@ namespace Astra::Graphics
 		m_lastFrameTime = currentTick;
 
 		Input::Flush();
-		glfwPollEvents();
 		glfwSwapBuffers(m_window);
+		glfwPollEvents();
 	}
 	
 	void Window::SetWindowSizeImpl(int width, int height)

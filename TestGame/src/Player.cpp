@@ -71,7 +71,7 @@ void Player::Update(float delta)
 
 void Player::CheckInput()
 {
-    if (Input::IsKeyPressed(Key::W))
+    if (Input::IsKeyJustReleased(Key::W))
     {
         currentSpeed = RunSpeed;
     }

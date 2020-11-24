@@ -15,6 +15,8 @@ namespace Astra
 		GLFWwindow* m_window;
 		float m_mouseScroll;
 		Math::Vec2 m_mousePosition;
+		unsigned int m_pressed;
+		unsigned int m_released;
 	public:
 		Input(const Input&) = delete;
 		void operator=(const Input&) = delete;
@@ -47,11 +49,13 @@ namespace Astra
 
 		inline static void SetMousePosition(float x, float y) { Get().SetMousePositionImpl(x,y); }
 		inline static void SetMouseScroll(float scroll) { Get().SetMouseScrollImpl(scroll); }
+		inline static void SetPressedKey(unsigned int key) { Get().m_pressed = key; }
+		inline static void SetReleasedKey(unsigned int key) { Get().m_released = key; }
 
 		inline static const Math::Vec2& GetMousePosition() { return Get().m_mousePosition; }
 		inline static float GetMouseScroll() { return Get().m_mouseScroll; }
-
-	protected:
+		inline static bool IsKeyJustPressed(Key key) { return Get().m_pressed == static_cast<unsigned int>(key); }
+		inline static bool IsKeyJustReleased(Key key) { return Get().m_released == static_cast<unsigned int>(key); }
 	private:
 		Input();
 		void InitImpl(GLFWwindow* ptr);
