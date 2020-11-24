@@ -27,6 +27,7 @@ namespace Astra::Graphics
 		inline const Gizmo* const GetGizmo() const { return m_gizmo; }
 	#endif
 		void GenerateParticles(float delta) const;
+	private:
 		virtual void EmitParticle() const = 0;
 	};
 }
