@@ -37,3 +37,5 @@
 
 #include "src/audio/AudioController.h"
 #include "src/audio/AudioSource.h"
+
+#include "src/graphics/ResourceLoader.h"

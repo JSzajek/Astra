@@ -6,8 +6,11 @@ Player::Player(const Vec3& position, Terrain* terrain)
 	: m_camera(new Camera(20, 45, 0)), m_movement(Vec3(0)),
            m_rotating(false), m_oldPosition(Vec2(0,0)), m_terrain(terrain)
 {
-    ImageMaterial* containerMat = new ImageMaterial("res/textures/container.png", "res/textures/container_specular.png", 1, 32, false);
-	m_body = new Entity("res/cube.obj", containerMat, 0, position, Vec3(0), Vec3(1));
+    //ImageMaterial* containerMat = new ImageMaterial("res/textures/container.png", "res/textures/container_specular.png", 1, 32, false);
+    auto* containerMat = ResourceLoader::LoadMaterial("res/textures/container.png", "res/textures/container_specular.png", NULL, 1, 32);
+    //m_body = new Entity("res/cube.obj", containerMat, 0, position, Vec3(0), Vec3(1));
+    m_body = ResourceLoader::LoadEntity("res/cube.obj", 0, position, Vec3::Zero, Vec3::One);
+    m_body->SetMaterial(containerMat);
 }
 
 void Player::Update(float delta)

@@ -114,7 +114,7 @@ namespace Astra::Graphics
 
 		for (auto* entity : scene->GetEntities())
 		{
-			if (entity->IsNormalMapped() || entity->IsParallaxMapped())
+			if (entity->material->IsNormalMapped() || entity->material->IsParallaxMapped())
 			{
 				m_normalEntityRenderer->AddEntity(entity);
 			}

@@ -188,36 +188,40 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Tangents));
 		
-		m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(entity->material->GetRowCount()));
-		if (entity->material->Transparent)
+		auto* material = entity->material;
+		if (material != NULL)
 		{
-			glDisable(GL_CULL_FACE);
-		}
+			m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(material->GetRowCount()));
+			if (material->Transparent)
+			{
+				glDisable(GL_CULL_FACE);
+			}
 
-		if (entity->material != NULL)
-		{
-			m_shader->SetUniform1f(HEIGHT_SCALE, entity->GetHeightOffset());
-			m_shader->SetUniform1i(FAKE_LIGHT, entity->material->FakeLight);
-			m_shader->SetUniform1i(NORMAL_MAPPED_FLAG_TAG, entity->IsNormalMapped());
-			m_shader->SetUniform1i(PARALLAX_MAPPED_FLAG_TAG, entity->IsParallaxMapped());
-			m_shader->SetUniform1i(GLOWING, entity->material->HasGlow());
+			m_shader->SetUniform1f(HEIGHT_SCALE, material->GetHeightOffset());
+			m_shader->SetUniform1i(FAKE_LIGHT, material->FakeLight);
+			m_shader->SetUniform1i(NORMAL_MAPPED_FLAG_TAG, material->IsNormalMapped());
+			m_shader->SetUniform1i(PARALLAX_MAPPED_FLAG_TAG, material->IsParallaxMapped());
+			m_shader->SetUniform1i(GLOWING, material->HasGlow());
 
-			m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, entity->material->Reflectivity);
+			m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, material->Reflectivity);
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, entity->material->GetId());
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, entity->normalMap->id);
+			glBindTexture(GL_TEXTURE_2D, material->GetId());
+			if (material->IsNormalMapped())
+			{
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, material->GetNormalMapId());
+			}
 			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, entity->material->GetSpecularId());
-			if (entity->parallaxMap != NULL)
+			glBindTexture(GL_TEXTURE_2D, material->GetSpecularId());
+			if (material->IsParallaxMapped())
 			{
 				glActiveTexture(GL_TEXTURE3);
-				glBindTexture(GL_TEXTURE_2D, entity->parallaxMap->id);
+				glBindTexture(GL_TEXTURE_2D, material->GetParallaxMapId());
 			}
-			if (entity->material->HasGlow())
+			if (material->HasGlow())
 			{
 				glActiveTexture(GL_TEXTURE4);
-				glBindTexture(GL_TEXTURE_2D, entity->material->GetEmissionId());
+				glBindTexture(GL_TEXTURE_2D, material->GetEmissionId());
 			}
 		}
 	}

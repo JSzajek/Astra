@@ -19,6 +19,9 @@ namespace Astra::Graphics
 {
 	class ResourceManager
 	{
+	
+	#define RESOURCE_UNLOAD(resource) { if (resource != NULL) ResourceManager::Unload(resource); }
+
 	private:
 		std::unordered_map<const void*, unsigned int> m_loaded;
 	public:
@@ -90,12 +93,12 @@ namespace Astra::Graphics
 					delete ptr;
 				}
 			}
-#if _DEBUG
+		#if _DEBUG
 			if (loaded.size() == 0)
 			{
 				Logger::Log("Resource Manager: Cleaned All Loaded Resources");
 			}
-#endif
+		#endif
 		}
 
 	private:
@@ -113,7 +116,5 @@ namespace Astra::Graphics
 		FontType* TrackFontTypeImpl(FontType* type);
 
 		const FrameBuffer* TrackFrameBufferImpl(const FrameBuffer* buffer);
-		
-		
 	};
 }

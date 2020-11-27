@@ -5,35 +5,28 @@
 
 namespace Astra::Graphics
 {
-	ImageMaterial::ImageMaterial(const char* const filepath, int rowCount, float reflectivity, 
-								 bool transparent, bool fakeLight)
-		: m_diffuse(Loader::LoadTexture(filepath)), m_rowCount(rowCount), Reflectivity(reflectivity),
-			Transparent(transparent), FakeLight(fakeLight), m_glowing(false), m_emission(NULL)
+	ImageMaterial::ImageMaterial(const char* diffuse, const char* specular, const char* emission, size_t rowCount, float reflectivity, bool transparent)
+		: m_diffuse(Loader::LoadTexture(diffuse)), m_rowCount(rowCount), Reflectivity(reflectivity), Transparent(transparent), FakeLight(false),
+			m_specular(Loader::LoadTexture(specular, false)), m_normalMap(NULL), m_parallaxMap(NULL), m_height(0)
 	{
-		m_specular = Loader::LoadTexture(Texture::DefaultSpecular);
+		m_emission = emission ? Loader::LoadTexture(emission) : NULL;
 	}
 
-	ImageMaterial::ImageMaterial(const char* const diffusepath, const char* const specularpath,
-								 int rowCount, float reflectivity, bool transparent)
-		: m_diffuse(Loader::LoadTexture(diffusepath)), m_rowCount(rowCount), Reflectivity(reflectivity), 
-			Transparent(transparent), FakeLight(false), m_glowing(false), m_emission(NULL)
+	ImageMaterial::ImageMaterial(const char* diffuse, const char* specular, const char* normalMap, const char* parallaxMap, float heightOffset, const char* emission, size_t rowCount, float reflectivity, bool transparent)
+		: m_diffuse(Loader::LoadTexture(diffuse)), m_rowCount(rowCount), Reflectivity(reflectivity), Transparent(transparent), FakeLight(false),
+			m_specular(Loader::LoadTexture(specular, false)), m_normalMap(Loader::LoadTexture(normalMap, false))
 	{
-		m_specular = specularpath != NULL ? Loader::LoadTexture(specularpath, false) : Loader::LoadTexture(Texture::DefaultSpecular, false);
-	}
-
-	ImageMaterial::ImageMaterial(const char* const diffusepath, const char* const specularpath, const char* const emissionpath,
-									int rowCount, float reflectivity, bool transparent)
-		: m_diffuse(Loader::LoadTexture(diffusepath)), m_rowCount(rowCount), Reflectivity(reflectivity), Transparent(transparent), FakeLight(false)
-	{
-		m_specular = specularpath != NULL ? Loader::LoadTexture(specularpath, false) : Loader::LoadTexture(Texture::DefaultSpecular, false);
-		m_glowing = emissionpath != NULL;
-		m_emission = Loader::LoadTexture(m_glowing ? emissionpath : Texture::DefaultSpecular);
+		m_parallaxMap = parallaxMap ? Loader::LoadTexture(parallaxMap) : NULL;
+		m_height = heightOffset;
+		m_emission = emission ? Loader::LoadTexture(emission) : NULL;
 	}
 
 	ImageMaterial::~ImageMaterial()
 	{
-		ResourceManager::Unload(m_diffuse);
-		ResourceManager::Unload(m_specular);
-		ResourceManager::Unload(m_emission);
+		RESOURCE_UNLOAD(m_diffuse);
+		RESOURCE_UNLOAD(m_specular);
+		RESOURCE_UNLOAD(m_emission);
+		RESOURCE_UNLOAD(m_normalMap);
+		RESOURCE_UNLOAD(m_parallaxMap);
 	}
 }

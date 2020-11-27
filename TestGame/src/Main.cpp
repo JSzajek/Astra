@@ -17,6 +17,7 @@ int main()
     srand((unsigned)time(0));
 
     std::vector<Synchronous*> worldItems;
+    std::vector<const Entity*> entities;
     Window::SetWindowTitle("Astra");
     Window::SetWindowSize(960, 540);
     Window::SetWindowResizeCallback([&](int width, int height) { RendererController::UpdateScreen(width, height); });
@@ -97,46 +98,57 @@ int main()
     mainScene->AddPointLight(light4);
     mainScene->SetDirectionalLight(dir_light);
 
-    ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.jpg", 1, 32);
-    Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-40, terrain.GetHeightOfTerrain(-40, 55) + 5, 55), Vec3(0), Vec3(1));
-    mainScene->AddEntity(&barrelModel2);
-    barrelModel2.SetSelected(true);
+    auto* barrelMat = ResourceLoader::LoadMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.jpg", "res/textures/barrelNormal.png", NULL, 0, NULL, 1, 32);
+    auto* barrelModel = ResourceLoader::LoadNormalEntity("res/barrel.obj", 0, Vec3(-40, terrain.GetHeightOfTerrain(-40, 55) + 5, 55), Vec3(0), Vec3(1));
+    barrelModel->SetMaterial(barrelMat);
+    barrelModel->SetSelected(true);
+    entities.emplace_back(barrelModel);
+    mainScene->AddEntity(barrelModel);
 
-    ImageMaterial* brickMat = new ImageMaterial("res/textures/bricks.jpg", "res/textures/bricks_specular.jpg", 1, 16);
-    Entity brick = Entity("res/plane.obj", "res/textures/bricks_normal.jpg", "res/textures/bricks_heightmap.jpg", 0.1f, brickMat, Vec3(-50, terrain.GetHeightOfTerrain(-50, 50) + 5, 50), Vec3(90, 0, 0), Vec3(5, 1, 5));
-    mainScene->AddEntity(&brick);
+    auto* brickMat = ResourceLoader::LoadMaterial("res/textures/bricks.jpg", "res/textures/bricks_specular.jpg", "res/textures/bricks_normal.jpg", "res/textures/bricks_heightmap.jpg", 0.1f, NULL, 1, 16);
+    auto* brick = ResourceLoader::LoadNormalEntity("res/plane.obj", 0, Vec3(-50, terrain.GetHeightOfTerrain(-50, 50) + 5, 50), Vec3(90, 0, 0), Vec3(5, 1, 5));
+    brick->SetMaterial(brickMat);
+    entities.emplace_back(brick);
+    mainScene->AddEntity(brick);
 
-    ImageMaterial* runestoneMat = new ImageMaterial("res/textures/rock1_basecolor.png", "res/textures/rock1_roughness.png", "res/textures/rock1_emissive.png", 1, 32);
-    Entity runestone = Entity("res/runestone_1.obj", "res/textures/rock1_normal.png", runestoneMat, Vec3(-60, terrain.GetHeightOfTerrain(-60, 60) + 2, 60), Vec3::Zero, Vec3(2));
-    mainScene->AddEntity(&runestone);
+    auto* runestoneMat = ResourceLoader::LoadMaterial("res/textures/rock1_basecolor.png", "res/textures/rock1_roughness.png", "res/textures/rock1_normal.png", NULL, 0, "res/textures/rock1_emissive.png", 1, 32);
+    auto* runestone = ResourceLoader::LoadNormalEntity("res/runestone_1.obj", 0, Vec3(-60, terrain.GetHeightOfTerrain(-60, 60) + 2, 60), Vec3::Zero, Vec3(2));
+    runestone->SetMaterial(runestoneMat);
+    entities.emplace_back(runestone);
+    mainScene->AddEntity(runestone);
 
-    ImageMaterial* lampMat = new ImageMaterial("res/textures/Lamp_UV_Layout.png", "res/textures/Lamp_Specular.png", "res/textures/Lamp_Emission.png", 1, 32);
-    Entity lamp = Entity("res/Lamp.obj", lampMat, 1, Vec3(-28.75f, -1.25f, -65.5f), Vec3::Zero, Vec3(1.5f));
-    mainScene->AddEntity(&lamp);
+    auto* lampMat = ResourceLoader::LoadMaterial("res/textures/Lamp_UV_Layout.png", "res/textures/Lamp_Specular.png", "res/textures/Lamp_Emission.png", 1, 32);
+    auto* lamp = ResourceLoader::LoadEntity("res/Lamp.obj", 0, Vec3(-28.75f, -1.25f, -65.5f), Vec3::Zero, Vec3(1.5f));
+    lamp->SetMaterial(lampMat);
+    entities.emplace_back(lamp);
+    mainScene->AddEntity(lamp);
 
-    ImageMaterial* mushroomMat = new ImageMaterial("res/textures/Boxing_Shroom_UV_Layout.png", "res/textures/Boxing_Shroom_Specular.png", 1, 8);
-    Entity mushroom = Entity("res/Boxing_Shroom.obj", mushroomMat, 1, Vec3(-25, terrain.GetHeightOfTerrain(-25, -65), -65), Vec3(0, 180, 0), Vec3(2));
-    mainScene->AddEntity(&mushroom);
+    auto* mushroomMat = ResourceLoader::LoadMaterial("res/textures/Boxing_Shroom_UV_Layout.png", "res/textures/Boxing_Shroom_Specular.png", NULL, 1, 8);
+    auto* mushroom = ResourceLoader::LoadEntity("res/Boxing_Shroom.obj", 0, Vec3(-25, terrain.GetHeightOfTerrain(-25, -65), -65), Vec3(0, 180, 0), Vec3(2));
+    mushroom->SetMaterial(mushroomMat);
+    entities.emplace_back(mushroom);
+    mainScene->AddEntity(mushroom);
 
     // Example of duplicate usage of vertex array object (duplicate of player)
-    ImageMaterial* containerMat = new ImageMaterial("res/textures/container.png", "res/textures/container_specular.png", 1, 32, false);
-    Entity container = Entity("res/cube.obj", containerMat, 0, Vec3(-30, terrain.GetHeightOfTerrain(-30, -65) + 2, -65), Vec3(0), Vec3(2));
-    mainScene->AddEntity(&container);
-    container.SetSelected(true);
+    auto* containerMat = ResourceLoader::LoadMaterial("res/textures/container.png", "res/textures/container_specular.png", NULL, 1, 32);
+    auto* container = ResourceLoader::LoadEntity("res/cube.obj", 0, Vec3(-30, terrain.GetHeightOfTerrain(-30, -65) + 2, -65), Vec3(0), Vec3(2));
+    container->SetMaterial(containerMat);
+    container->SetSelected(true);
+    entities.emplace_back(container);
+    mainScene->AddEntity(container);
 
-    ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 0.25f, true, true);
-    std::vector<const Entity*> entities;
+    auto* fernMat = ResourceLoader::LoadMaterial("res/textures/fernAtlas.png", Texture::DefaultSpecular, NULL, 2, 0.25f, true);
+    fernMat->FakeLight = true;
     for (int i = 0; i < 12; i++)
     {
         int x = (rand() % 256) - 128;
         int z = (rand() % 256) - 128;
-        //int x = RandomRange(-45, -5);
-        //int z = RandomRange(-100, -52);
         float y = terrain.GetHeightOfTerrain(x, z);
-        Entity* entity = new Entity("res/fern.obj", fernMat, rand() % 4, Vec3(static_cast<float>(x), y, static_cast<float>(z)), Vec3::Zero, Vec3::One);
-        entities.emplace_back(entity);
-        mainScene->AddEntity(entity);
-        entity->SetSelected(Math::RandomRange(0, 10) > 5);
+        auto* fern = ResourceLoader::LoadEntity("res/fern.obj", rand() % 4, Vec3(static_cast<float>(x), y, static_cast<float>(z)), Vec3::Zero, Vec3::One);
+        fern->SetMaterial(fernMat);
+        entities.emplace_back(fern);
+        mainScene->AddEntity(fern);
+        fern->SetSelected(Math::RandomRange(0, 10) > 5);
     }
     
     ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);
@@ -196,7 +208,7 @@ int main()
             item->Update(delta);
         }
 
-        barrelModel2(ROTATION, SUM_EQ, Y_POS, 0.5f);
+        //(*barrelModel)(ROTATION, SUM_EQ, Y_POS, 0.5f);
 
         skybox->BlendFactor() += InGameTimeSpeed * timeDir;
         if (skybox->BlendFactor() >= 1)
