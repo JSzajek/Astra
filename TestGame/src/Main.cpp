@@ -26,22 +26,22 @@ int main()
     mainScene->Start();
 
     TerrainMaterial* grassTerrainMat = new TerrainMaterial("res/textures/grass.jpg");
-    TerrainMaterial* flowerTerrainMat = new TerrainMaterial("res/textures/grassFlowers.png");
+    //TerrainMaterial* flowerTerrainMat = new TerrainMaterial("res/textures/grassFlowers.png");
     TerrainMaterial* mudTerrainMat = new TerrainMaterial("res/textures/mud.png");
-    TerrainMaterial* pathTerrainMat = new TerrainMaterial("res/textures/path.png");
+    //TerrainMaterial* pathTerrainMat = new TerrainMaterial("res/textures/path.png");
 
     //TerrainMaterialPack pack(grassTerrainMat, flowerTerrainMat, mudTerrainMat, pathTerrainMat);
-    TerrainMaterialPack pack(grassTerrainMat, grassTerrainMat, mudTerrainMat, grassTerrainMat);
+    TerrainMaterialPack* pack = new TerrainMaterialPack(grassTerrainMat, grassTerrainMat, mudTerrainMat, grassTerrainMat);
     TerrainMaterial* blendMap = new TerrainMaterial("res/textures/blendMap.png");
 
     //Terrain terrain = Terrain(0, 0, "res/textures/meteorcrater_heightmap.png", &pack, blendMap);
-    Terrain terrain = Terrain(0, 0, 40, 4, 0.01f, 4862, &pack, blendMap);
+    Terrain terrain = Terrain(0, 0, 40, 4, 0.01f, 4862, pack, blendMap);
     terrain(TRANSLATION, SUB_EQ, X_POS, 128);
     terrain(TRANSLATION, SUB_EQ, Z_POS, 128);
     
     mainScene->AddTerrain(&terrain);
 
-    Player player(Vec3(-25,50,-100), &terrain);
+    Player player(Vec3(-25, 50, -100), &terrain);
     
     mainScene->SetMainCamera(player.GetCamera());
     mainScene->AddEntity(player.GetRendering());
@@ -53,16 +53,16 @@ int main()
 
     // TODO: Store Fonts in a directory and handle deletion before game closure or when no references
 
-    Texture fontTexture = Loader::LoadAtlasTexture("res/fonts/candara.png");
-    FontType* font = new FontType(fontTexture.id, "res/fonts/candara.fnt");
+    const Texture* fontTexture = Loader::LoadAtlasTexture("res/fonts/candara.png");
+    FontType* font = new FontType(fontTexture, "res/fonts/candara.fnt");
     GuiText* text = new GuiText("This is a test text!", font, 3, Vec2(0, 0), 1, true);
     GuiText* outlineText = new GuiText("Outlines", font, 3, Vec2(0), Vec3(0), 0, 1, Vec3(0, 0, 1));
 
     mainScene->AddText(text);
     mainScene->AddText(outlineText);
 
-    Texture texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
-    GuiTexture gui = GuiTexture("grass_sprite", texture.id, Vec2(0.75f, 0.75f), Vec2(0.1f, 0.1f));
+    const Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
+    GuiTexture gui = GuiTexture("grass_sprite", texture, Vec2(0.75f, 0.75f), Vec2(0.1f, 0.1f));
     mainScene->AddGui(&gui);
 
     std::vector<const char*> m_textureFiles =
@@ -85,8 +85,8 @@ int main()
         "res/textures/Default_Night_Skybox/front.png",
     };
 
-    SkyboxMaterial skybox(m_textureFiles, m_nightTextureFiles);
-    mainScene->SetSkyBox(&skybox);
+    SkyboxMaterial* skybox = new SkyboxMaterial(m_textureFiles, m_nightTextureFiles);
+    mainScene->SetSkyBox(skybox);
     
     Vec3 light_pos = Math::Vec3(-55, terrain.GetHeightOfTerrain(-55, 55) + 7, 55);
     DirectionalLight* dir_light = new DirectionalLight(Vec3(0), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0));
@@ -198,15 +198,15 @@ int main()
 
         barrelModel2(ROTATION, SUM_EQ, Y_POS, 0.5f);
 
-        skybox.BlendFactor() += InGameTimeSpeed * timeDir;
-        if (skybox.BlendFactor() >= 1)
+        skybox->BlendFactor() += InGameTimeSpeed * timeDir;
+        if (skybox->BlendFactor() >= 1)
         {
-            skybox.BlendFactor() = 1;
+            skybox->BlendFactor() = 1;
             timeDir = -1;
         }
-        else if (skybox.BlendFactor() <= 0)
+        else if (skybox->BlendFactor() <= 0)
         {
-            skybox.BlendFactor() = 0;
+            skybox->BlendFactor() = 0;
             timeDir = 1;
         }
 
@@ -235,15 +235,11 @@ int main()
         delete entity;
     }
 
-    delete font;
     delete text;
     delete outlineText;
-
-    delete grassTerrainMat;
-    delete flowerTerrainMat;
-    delete mudTerrainMat;
-    delete pathTerrainMat;
-    delete blendMap;
+    
+    // TODO: Store Fonts in a directory and handle deletion before game closure or when no references
+    delete font;
 
     delete dir_light;
     delete light3;

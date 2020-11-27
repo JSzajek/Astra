@@ -1,21 +1,19 @@
 #include "TextMesh.h"
 #include "../../math/Maths.h"
 
+#include "../ResourceManager.h"
+
 namespace Astra::Graphics
 {
-	FontType::FontType(int textureAtlas, const char* filepath)
+	FontType::FontType(const Texture* textureAtlas, const char* filepath)
 		: m_textureAtlas(textureAtlas), m_loader(new TextMeshCreator(filepath))
-	{
-	}
-
-	FontType::FontType(const FontType& other)
-		: m_textureAtlas(other.m_textureAtlas), m_loader(other.m_loader)
 	{
 	}
 
 	FontType::~FontType()
 	{
 		//delete m_loader;
+		ResourceManager::Unload(m_textureAtlas);
 	}
 
 	const TextMeshData* FontType::LoadText(const GuiText* text) 

@@ -9,9 +9,9 @@ namespace Astra::Graphics
 	{
 	private:
 		int m_rowCount;
-		Texture m_diffuse;
-		Texture m_specular;
-		Texture m_emission;
+		const Texture* m_diffuse;
+		const Texture* m_specular;
+		const Texture* m_emission;
 		bool m_glowing;
 	public:
 		float Reflectivity;
@@ -32,18 +32,14 @@ namespace Astra::Graphics
 					  const char* const emmissionpath,
 					  int rowCount = 1, float reflectivity = 0.25f,
 					  bool transparent = false);
-
-		//ImageMaterial(const char* const filepath,
-		//			  const char* const specularpath,
-		//			  const char* const heightmappath = NULL,
-		//			  int rowCount = 1, float reflectivity = 0.25f,
-		//			  bool transparent = false);
+		
+		~ImageMaterial();
 
 		inline bool HasGlow() const { return m_glowing; }
 
 		inline int GetRowCount() const { return m_rowCount; }
-		inline unsigned int GetId() const { return m_diffuse.id; }
-		inline unsigned int GetSpecularId() const { return m_specular.id; }
-		inline unsigned int GetEmissionId() const { return m_emission.id; }
+		inline unsigned int GetId() const { return m_diffuse->id; }
+		inline unsigned int GetSpecularId() const { return m_specular->id; }
+		inline unsigned int GetEmissionId() const { return m_emission == NULL ? 0 :m_emission->id; }
 	};
 }

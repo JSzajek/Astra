@@ -4,12 +4,17 @@
 
 namespace Astra::Graphics
 {
-	class TerrainMaterial : public Texture
+	class TerrainMaterial
 	{
+	private:
+		const Texture* m_texture;
 	public:
 		float shineDampener, reflectivity;
 	public:
 		TerrainMaterial(const char* const filepath);
+		~TerrainMaterial();
+
+		inline unsigned int GetId() const { return m_texture->id; }
 	};
 	
 	struct TerrainMaterialPack
@@ -19,9 +24,10 @@ namespace Astra::Graphics
 		const TerrainMaterial* gTexture;
 		const TerrainMaterial* bTexture;
 
-		const Texture specularTexture;
+		const Texture* specularTexture;
 	
 		TerrainMaterialPack(const TerrainMaterial* background, const TerrainMaterial* red,
 							const TerrainMaterial* green, const TerrainMaterial* blue);
+		~TerrainMaterialPack();
 	};
 }

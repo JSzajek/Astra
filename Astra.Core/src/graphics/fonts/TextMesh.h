@@ -6,6 +6,7 @@
 #include "MetaFile.h"
 #include "GuiText.h"
 #include "Line.h"
+#include "../buffers/Texture.h"
 
 namespace Astra::Graphics
 {
@@ -41,14 +42,13 @@ namespace Astra::Graphics
 	struct FontType
 	{
 	private:
-		int m_textureAtlas;
+		const Texture* m_textureAtlas;
 		TextMeshCreator* m_loader;
 	public:
-		FontType(int textureAtlas, const char* filepath);
-		FontType(const FontType& other);
-		~FontType();
+		FontType(const Texture* textureAtlas, const char* filepath);
+		virtual ~FontType();
 
-		inline int GetTextureAtlas() const { return m_textureAtlas; }
+		inline int GetTextureAtlas() const { return m_textureAtlas->id; }
 		
 		const TextMeshData* LoadText(const GuiText* text);
 	};

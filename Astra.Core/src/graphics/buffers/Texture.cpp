@@ -12,13 +12,18 @@ namespace Astra::Graphics
 	{
 	}
 
-	Texture::Texture(GLuint id, const char* const filepath)
+	Texture::Texture(unsigned int id, const char* const filepath)
 		: id(id), width(0), height(0), m_filePath(filepath)
 	{
 	}
 
 	Texture::Texture(const Texture& other)
 		: id(other.id), width(other.width), height(other.height), m_filePath(other.m_filePath)
+	{
+	}
+
+	Texture::Texture(const Texture* other)
+		: id(other->id), width(other->width), height(other->height), m_filePath(other->m_filePath)
 	{
 	}
 	

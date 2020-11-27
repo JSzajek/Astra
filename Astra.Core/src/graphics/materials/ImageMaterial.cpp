@@ -1,20 +1,22 @@
 #include "ImageMaterial.h"
 
 #include "../loaders/Loader.h"
+#include "../ResourceManager.h"
 
 namespace Astra::Graphics
 {
 	ImageMaterial::ImageMaterial(const char* const filepath, int rowCount, float reflectivity, 
 								 bool transparent, bool fakeLight)
 		: m_diffuse(Loader::LoadTexture(filepath)), m_rowCount(rowCount), Reflectivity(reflectivity),
-			Transparent(transparent), FakeLight(fakeLight), m_glowing(false)
+			Transparent(transparent), FakeLight(fakeLight), m_glowing(false), m_emission(NULL)
 	{
 		m_specular = Loader::LoadTexture(Texture::DefaultSpecular);
 	}
 
 	ImageMaterial::ImageMaterial(const char* const diffusepath, const char* const specularpath,
 								 int rowCount, float reflectivity, bool transparent)
-		: m_diffuse(Loader::LoadTexture(diffusepath)), m_rowCount(rowCount), Reflectivity(reflectivity), Transparent(transparent), FakeLight(false), m_glowing(false)
+		: m_diffuse(Loader::LoadTexture(diffusepath)), m_rowCount(rowCount), Reflectivity(reflectivity), 
+			Transparent(transparent), FakeLight(false), m_glowing(false), m_emission(NULL)
 	{
 		m_specular = specularpath != NULL ? Loader::LoadTexture(specularpath, false) : Loader::LoadTexture(Texture::DefaultSpecular, false);
 	}
@@ -26,5 +28,12 @@ namespace Astra::Graphics
 		m_specular = specularpath != NULL ? Loader::LoadTexture(specularpath, false) : Loader::LoadTexture(Texture::DefaultSpecular, false);
 		m_glowing = emissionpath != NULL;
 		m_emission = Loader::LoadTexture(m_glowing ? emissionpath : Texture::DefaultSpecular);
+	}
+
+	ImageMaterial::~ImageMaterial()
+	{
+		ResourceManager::Unload(m_diffuse);
+		ResourceManager::Unload(m_specular);
+		ResourceManager::Unload(m_emission);
 	}
 }

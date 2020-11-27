@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <cstring>
+#include <GL/glew.h>
 
 namespace Astra::Graphics
 {
@@ -17,6 +17,7 @@ namespace Astra::Graphics
 	private:
 		std::vector<unsigned int> m_data;
 		size_t m_colorAttachmentOffset;
+		size_t m_depthAttachements;
 		DepthBufferType m_type;
 		bool m_multisampled;
 	public:
@@ -24,7 +25,29 @@ namespace Astra::Graphics
 			: m_type(type), m_multisampled(multisampled)
 		{
 			m_colorAttachmentOffset = numOfColorAttachments;
+			m_depthAttachements = numOfDepthAttachments;
 			m_data.resize(1 + numOfColorAttachments + numOfDepthAttachments);
+		}
+
+		~FrameBuffer()
+		{
+			glDeleteFramebuffers(1, &m_data[0]);
+			for (size_t i = 0; i < m_colorAttachmentOffset; i++)
+			{
+				glDeleteTextures(m_colorAttachmentOffset, &GetColorAttachment(i));
+			}
+			
+			for (size_t i = 0; i < m_depthAttachements; i++)
+			{
+				if (m_type == DepthBufferType::Texture)
+				{
+					glDeleteTextures(1, &GetDepthAttachment(i));
+				}
+				else
+				{
+					glDeleteFramebuffers(1, &GetDepthAttachment(i));
+				}
+			}
 		}
 
 		const unsigned int& GetId() const { return m_data[0]; }

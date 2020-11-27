@@ -170,6 +170,7 @@
   <ItemGroup>
     <ClCompile Include="src\audio\AudioController.cpp" />
     <ClCompile Include="src\audio\AudioSource.cpp" />
+    <ClCompile Include="src\graphics\buffers\CubeMapTexture.cpp" />
     <ClCompile Include="src\graphics\buffers\ShadowFrameBuffer.cpp" />
     <ClCompile Include="src\graphics\buffers\Texture.cpp" />
     <ClCompile Include="src\graphics\buffers\VertexArray.cpp" />
@@ -214,6 +215,7 @@
     <ClCompile Include="src\graphics\renderers\SkyboxRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\TerrainRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\WaterRenderer.cpp" />
+    <ClCompile Include="src\graphics\ResourceManager.cpp" />
     <ClCompile Include="src\graphics\shaders\Shader.cpp" />
     <ClCompile Include="src\graphics\shadows\ShadowBox.cpp" />
     <ClCompile Include="src\graphics\shadows\ShadowMapController.cpp" />
@@ -289,6 +291,7 @@
     <ClInclude Include="src\graphics\renderers\SkyboxRenderer.h" />
     <ClInclude Include="src\graphics\renderers\TerrainRenderer.h" />
     <ClInclude Include="src\graphics\renderers\WaterRenderer.h" />
+    <ClInclude Include="src\graphics\ResourceManager.h" />
     <ClInclude Include="src\graphics\scenes\Scene.h" />
     <ClInclude Include="src\graphics\shaders\BloomShader.h" />
     <ClInclude Include="src\graphics\shaders\ContrastShader.h" />

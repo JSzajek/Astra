@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../math/Vec2.h"
+#include "../buffers/Texture.h"
 
 namespace Astra::Graphics
 {
@@ -11,12 +12,14 @@ namespace Astra::Graphics
 	private:
 		Math::Vec2 m_position;
 		Math::Vec2 m_scale;
+		const Texture* m_texture;
 		unsigned int m_id;
 		int m_offset;
 	public:
 		GuiTexture(const char* name, const Math::Vec2& position, const Math::Vec2& scale);
-		GuiTexture(const char* name, const unsigned int& id, const Math::Vec2& position, const Math::Vec2& scale);
-	
+		GuiTexture(const char* name, const Texture* texture, const Math::Vec2& position, const Math::Vec2& scale);
+		~GuiTexture();
+
 		inline void SetOffset(int offset) { m_offset = offset; }
 
 		inline Math::Vec2 GetPosition() const { return m_position; }

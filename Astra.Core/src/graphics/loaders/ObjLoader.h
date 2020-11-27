@@ -73,8 +73,7 @@ namespace Astra::Graphics
 	{
 	private:
 		std::unordered_map<std::string, const VertexArray*> m_loaded;
-		std::unordered_map<const VertexArray*, unsigned int> m_pointers;
-		std::unordered_map<const ImageMaterial*, unsigned int> m_pointerMaterials;
+	
 		std::vector<Vertex*> vertices;
 		std::vector<NormalVertex*> normVertices;
 		std::vector<Math::Vec2> textures;
@@ -100,28 +99,10 @@ namespace Astra::Graphics
 			return Get().LoadNormalMappedObjectModelImpl(filepath);
 		}
 
-		static const ImageMaterial* TrackImageMaterial(const ImageMaterial* material)
-		{
-			return Get().TrackImageMaterialImpl(material);
-		}
-
-		static void UnloadVertexArray(const VertexArray* vertexArray)
-		{
-			Get().UnloadVertexArrayImpl(vertexArray);
-		}
-
-		static void UnloadImageMaterial(const ImageMaterial* material)
-		{
-			Get().UnloadImageMaterialImpl(material);
-		}
-
 	private:
 		ObjLoader();
 		const VertexArray* LoadObjectModelImpl(const std::string& filepath);
 		const VertexArray* LoadNormalMappedObjectModelImpl(const std::string& filepath);
-		const ImageMaterial* TrackImageMaterialImpl(const ImageMaterial* material);
-		void UnloadVertexArrayImpl(const VertexArray* vertexArray);
-		void UnloadImageMaterialImpl(const ImageMaterial* material);
 	private:
 		void BasicProcessing(std::ifstream& stream, std::string& line, bool normalMapped);
 		float Convert(std::vector<float>& verticesArray, std::vector<float>& texturesArray, std::vector<float>& normalsArray);

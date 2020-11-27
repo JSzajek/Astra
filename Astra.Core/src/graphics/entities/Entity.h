@@ -11,8 +11,8 @@ namespace Astra::Graphics
 	public:
 		const VertexArray* vertexArray;
 		const ImageMaterial* material;
-		const Texture normalMap;
-		const Texture parallaxMap;
+		const Texture* normalMap;
+		const Texture* parallaxMap;
 		Math::Mat4* selectedModelMatrix;
 	private:
 		int m_textureIndex;

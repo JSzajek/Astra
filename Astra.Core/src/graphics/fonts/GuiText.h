@@ -36,7 +36,9 @@ namespace Astra::Graphics
 		GuiText(const std::string& text, FontType* font, float fontSize, const Math::Vec2& position, float maxLineLength, bool centered);
 		GuiText(const std::string& text, FontType* font, float fontSize = 1, const Math::Vec2& position = Math::Vec2::Zero, const Math::Vec3& color = Math::Vec3::Zero, float thickness = 0, float outlineSize = 0, const Math::Vec3& outlineColor = Math::Vec3::Zero,
 					const Math::Vec2& offset = Math::Vec2::Zero, float maxLineLength = 1, bool centered = false);
-		GuiText(const GuiText& other);
+		//GuiText(const GuiText& other);
+
+		~GuiText();
 
 		inline const float FontWidth() const { return m_fontWidth; }
 		inline const float FontEdge() const { return m_fontEdge; }
@@ -58,7 +60,6 @@ namespace Astra::Graphics
 		bool operator==(const GuiText& other);
 		bool operator!=(const GuiText& other);
 
-		void RemoveText();
 		void SetMeshInfo(unsigned int vao, int vertexCount);
 	};
 }

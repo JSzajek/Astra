@@ -3,6 +3,7 @@
 #include "../loaders/Loader.h"
 #include "../Window.h"
 #include "../../logger/Logger.h"
+#include "../ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -30,11 +31,16 @@ namespace Astra::Graphics
 
 	PostProcessor::~PostProcessor()
 	{
-		delete m_defaultQuad;
-		delete m_screenBuffer;
+		ResourceManager::Unload(m_defaultQuad);
+		ResourceManager::Unload(m_screenBuffer);
 	#if MULTI_SAMPLE
-		delete m_multisampledBuffer;
+		ResourceManager::Unload(m_multisampledBuffer);
 	#endif
+
+		for (const auto* effect : effects)
+		{
+			delete effect;
+		}
 	}
 
 	void PostProcessor::UpdateScreenRatio(unsigned int width, unsigned int height)

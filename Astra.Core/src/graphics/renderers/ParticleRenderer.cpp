@@ -25,7 +25,7 @@ namespace Astra::Graphics
 
 	void ParticleRenderer::AddParticle(Particle* particle)
 	{
-		unsigned int id = particle->Material->id;
+		unsigned int id = particle->Material->GetId();
 		auto temp = m_particles.find(id);
 		if (temp != m_particles.end())
 		{

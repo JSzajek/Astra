@@ -206,11 +206,14 @@ namespace Astra::Graphics
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, entity->material->GetId());
 			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, entity->normalMap.id);
+			glBindTexture(GL_TEXTURE_2D, entity->normalMap->id);
 			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, entity->material->GetSpecularId());
-			glActiveTexture(GL_TEXTURE3);
-			glBindTexture(GL_TEXTURE_2D, entity->parallaxMap.id);
+			if (entity->parallaxMap != NULL)
+			{
+				glActiveTexture(GL_TEXTURE3);
+				glBindTexture(GL_TEXTURE_2D, entity->parallaxMap->id);
+			}
 			if (entity->material->HasGlow())
 			{
 				glActiveTexture(GL_TEXTURE4);

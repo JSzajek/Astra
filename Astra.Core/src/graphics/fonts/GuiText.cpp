@@ -1,6 +1,7 @@
 #include "GuiText.h"
 
 #include "FontController.h"
+#include "../ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -29,11 +30,9 @@ namespace Astra::Graphics
 		FontController::LoadText(this);
 	}
 
-	GuiText::GuiText(const GuiText& other)
-		: m_textString(other.m_textString), m_fontSize(other.m_fontSize), m_font(other.m_font), Position(other.Position), m_lineMaxSize(other.m_lineMaxSize), m_thickness(other.m_thickness),
-			m_centerText(other.m_centerText), Color(other.Color), m_numberOfLines(other.m_numberOfLines), m_vertexCount(other.m_vertexCount), m_textMeshVao(other.m_textMeshVao),
-				m_fontWidth(other.m_fontWidth), m_fontEdge(other.m_fontEdge), m_outlineSize(other.m_outlineSize), m_outlineWidth(other.m_outlineWidth), m_outlineEdge(other.m_outlineEdge), OutlineColor(other.OutlineColor)
+	GuiText::~GuiText()
 	{
+		//FontController::RemoveText(this);
 	}
 
 	bool GuiText::operator==(const GuiText& other)
@@ -44,11 +43,6 @@ namespace Astra::Graphics
 	bool GuiText::operator!=(const GuiText& other)
 	{
 		return !(*this == other);
-	}
-
-	void GuiText::RemoveText()
-	{
-		FontController::RemoveText(this);
 	}
 
 	void GuiText::SetMeshInfo(unsigned int vao, int vertexCount)

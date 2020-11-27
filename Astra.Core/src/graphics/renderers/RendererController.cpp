@@ -2,6 +2,8 @@
 
 #include "../Window.h"
 
+#include "../ResourceManager.h"
+
 #include <functional>
 
 namespace Astra::Graphics
@@ -64,6 +66,12 @@ namespace Astra::Graphics
 		delete m_waterRenderer;
 		delete m_normalEntityRenderer;
 		delete m_shadowMapController;
+		delete m_postProcessor;
+
+		delete projectionMatrix;
+		delete m_toShadowMapMatrix;
+
+		delete m_waterBuffer;
 	}
 
 	bool RendererController::SetCurrentSceneImpl(const Scene* scene)
