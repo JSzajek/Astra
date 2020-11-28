@@ -13,7 +13,7 @@ namespace Astra::Graphics
 		rows[0].z = zCenter;
 		rows[2] = m_size;
 		UpdateMatrices();
-		this->material = ResourceManager::TrackWaterMaterial(material);
+		this->material = ResourceManager::Track(material);
 	}
 
 	WaterTile::WaterTile(float xCenter, float zCenter, float height, float size, WaterMaterial* const material)
@@ -24,7 +24,7 @@ namespace Astra::Graphics
 		rows[0].z = zCenter;
 		rows[2] = m_size;
 		UpdateMatrices();
-		this->material = ResourceManager::TrackWaterMaterial(material);
+		this->material = ResourceManager::Track(material);
 	}
 
 	WaterTile::WaterTile(const WaterTile& other)

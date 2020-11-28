@@ -11,6 +11,7 @@
 #include "buffers/FrameBuffer.h"
 #include "fonts/TextMesh.h"
 #include "buffers/Texture.h"
+#include "entities/Entity.h"
 
 #include "../logger/Logger.h"
 
@@ -23,6 +24,8 @@ namespace Astra::Graphics
 	#define RESOURCE_UNLOAD(resource) { if (resource != NULL) ResourceManager::Unload(resource); }
 
 	private:
+		std::unordered_map<size_t, ImageMaterial*> m_loadedImageMaterials;
+		std::unordered_map<std::string, Texture*> m_textureDirectory;
 		std::unordered_map<const void*, unsigned int> m_loaded;
 	public:
 		ResourceManager(const ResourceManager&) = delete;
@@ -34,87 +37,90 @@ namespace Astra::Graphics
 			return instance;
 		}
 
-		static const VertexArray* TrackVertexArray(const VertexArray* vao)
+		static bool QueryTexture(const char* filepath, Texture** texture)
 		{
-			return Get().TrackVertexArrayImpl(vao);
+			return Get().QueryTextureImpl(filepath, texture);
 		}
 
-		static const Texture* TrackTexture(const Texture* texture)
+		static ImageMaterial* LoadMaterial(const char* diffuse, const char* specular, const char* emission = NULL, size_t rowCount = 1, float reflectivity = 16.f, bool transparent = false)
 		{
-			return Get().TrackTextureImpl(texture);
+			return Get().LoadMaterialImpl(diffuse, specular, emission, rowCount, reflectivity, transparent);
 		}
 
-		static const FrameBuffer* TrackFrameBuffer(const FrameBuffer* buffer)
+		static ImageMaterial* LoadMaterial(const char* diffuse, const char* specular, const char* normalMap, const char* parallaxMap = NULL, float heightOffset = 0.f, const char* emission = NULL, size_t rowCount = 1, float reflectivity = 16.f, bool transparent = false)
 		{
-			return Get().TrackFrameBufferImpl(buffer);
-		}
-		
-		static const ImageMaterial* TrackImageMaterial(const ImageMaterial* material)
-		{
-			return Get().TrackImageMaterialImpl(material);
+			return Get().LoadMaterialImpl(diffuse, specular, normalMap, parallaxMap, heightOffset, emission, rowCount, reflectivity, transparent);
 		}
 
-		static const ParticleMaterial* TrackParticleMaterial(const ParticleMaterial* material)
+		static Entity* LoadNormalEntity(const char* filepath, int textureIndex = 0,
+			const Math::Vec3& position = Math::Vec3::Zero,
+			const Math::Vec3& rotation = Math::Vec3::Zero,
+			const Math::Vec3& scale = Math::Vec3::One)
 		{
-			return Get().TrackParticleMaterialImpl(material);
+			return Get().LoadEntityImpl(filepath, true, textureIndex, position, rotation, scale);
 		}
 
-		static const SkyboxMaterial* TrackSkyboxMaterial(const SkyboxMaterial* material)
+		static Entity* LoadEntity(const char* filepath, int textureIndex = 0,
+			const Math::Vec3& position = Math::Vec3::Zero,
+			const Math::Vec3& rotation = Math::Vec3::Zero,
+			const Math::Vec3& scale = Math::Vec3::One)
 		{
-			return Get().TrackSkyboxMaterialImpl(material);
+			return Get().LoadEntityImpl(filepath, false, textureIndex, position, rotation, scale);
 		}
 
-		static const TerrainMaterial* TrackTerrainMaterial(const TerrainMaterial* material)
+		template <typename T>
+		static T* Track(T* ptr)
 		{
-			return Get().TrackTerrainMaterialImpl(material);
+			auto& loaded = Get().m_loaded;
+			if (loaded.find(ptr) != loaded.end())
+			{
+				loaded[ptr]++;
+			}
+			else
+			{
+				loaded[ptr] = 1;
+			}
+			return ptr;
 		}
 
-		static WaterMaterial* TrackWaterMaterial(WaterMaterial* material)
+		/* Template Override */
+		static void Unload(const Texture* ptr)
 		{
-			return Get().TrackWaterMaterialImpl(material);
+			if (Get().UnloadResource((void*)ptr))
+			{
+				Get().UnloadTexture(ptr);
+			}
 		}
 
-		static FontType* TrackFontType(FontType* type)
+		static void Unload(const ImageMaterial* ptr)
 		{
-			return Get().TrackFontTypeImpl(type);
+			if (Get().UnloadResource((void*)ptr))
+			{
+				Get().UnloadImageMaterial(ptr);
+			}
 		}
-		
+
 		template <typename T>
 		static void Unload(const T* ptr)
 		{
-			auto& loaded = Get().m_loaded;
-			const auto found = loaded.find(ptr);
-			if (found != loaded.end())
+			if (Get().UnloadResource((void*)ptr))
 			{
-				(*found).second--;
-				if (!(*found).second)
-				{
-					loaded.erase(found);
-					delete ptr;
-				}
+				delete ptr;
 			}
-		#if _DEBUG
-			if (loaded.size() == 0)
-			{
-				Logger::Log("Resource Manager: Cleaned All Loaded Resources");
-			}
-		#endif
 		}
 
 	private:
 		ResourceManager();
+		~ResourceManager();
 		
-		const VertexArray* TrackVertexArrayImpl(const VertexArray* vao);
-		const Texture* TrackTextureImpl(const Texture* texture);
-		
-		const ImageMaterial* TrackImageMaterialImpl(const ImageMaterial* material);
-		const ParticleMaterial* TrackParticleMaterialImpl(const ParticleMaterial* material);
-		const SkyboxMaterial* TrackSkyboxMaterialImpl(const SkyboxMaterial* material);
-		const TerrainMaterial* TrackTerrainMaterialImpl(const TerrainMaterial* material);
-		WaterMaterial* TrackWaterMaterialImpl(WaterMaterial* material);
+		bool QueryTextureImpl(const char* filepath, Texture** texture);
 
-		FontType* TrackFontTypeImpl(FontType* type);
-
-		const FrameBuffer* TrackFrameBufferImpl(const FrameBuffer* buffer);
+		Entity* LoadEntityImpl(const char* filepath, bool calcTangents, int textureIndex, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale);
+		ImageMaterial* LoadMaterialImpl(const char* diffuse, const char* specular, const char* emission, size_t rowCount, float reflectivity, bool transparent);
+		ImageMaterial* LoadMaterialImpl(const char* diffuse, const char* specular, const char* normalMap, const char* parallaxMap, float heightOffset, const char* emission, size_t rowCount, float reflectivity, bool transparent);
+	private:
+		void UnloadTexture(const Texture* texture);
+		void UnloadImageMaterial(const ImageMaterial* material);
+		bool UnloadResource(void* ptr);
 	};
 }

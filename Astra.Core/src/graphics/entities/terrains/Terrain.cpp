@@ -10,7 +10,7 @@ namespace Astra::Graphics
 		Translation()->x = xGrid * Size;
 		Translation()->z = zGrid * Size;
 		vertexArray = GeneratePlaneTerrain(heightmap);
-		blendMap = ResourceManager::TrackTerrainMaterial(map);
+		blendMap = ResourceManager::Track(map);
 		UpdateMatrices();
 	}
 
@@ -21,7 +21,7 @@ namespace Astra::Graphics
 		Translation()->z = zGrid * Size;
 		HeightGenerator* generator = new HeightGenerator(amplitude, octaves, roughness);
 		vertexArray = GeneratePlaneTerrain(generator);
-		blendMap = ResourceManager::TrackTerrainMaterial(map);
+		blendMap = ResourceManager::Track(map);
 		delete generator;
 		UpdateMatrices();
 	}
@@ -33,7 +33,7 @@ namespace Astra::Graphics
 		Translation()->z = zGrid * Size;
 		HeightGenerator* generator = new HeightGenerator(amplitude, octaves, roughness, seed);
 		vertexArray = GeneratePlaneTerrain(generator);
-		blendMap = ResourceManager::TrackTerrainMaterial(map);
+		blendMap = ResourceManager::Track(map);
 		delete generator;
 		UpdateMatrices();
 	}

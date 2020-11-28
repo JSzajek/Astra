@@ -1,5 +1,7 @@
 #include "Texture.h"
 
+#include <GL/glew.h>
+
 namespace Astra::Graphics
 {
 	Texture::Texture()
@@ -17,14 +19,9 @@ namespace Astra::Graphics
 	{
 	}
 
-	Texture::Texture(const Texture& other)
-		: id(other.id), width(other.width), height(other.height), m_filePath(other.m_filePath)
+	Texture::~Texture()
 	{
-	}
-
-	Texture::Texture(const Texture* other)
-		: id(other->id), width(other->width), height(other->height), m_filePath(other->m_filePath)
-	{
+		glDeleteTextures(1, &id);
 	}
 	
 	bool Texture::operator==(const Texture& other)

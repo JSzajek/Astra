@@ -16,11 +16,6 @@ namespace Astra::Graphics
 {
 	class Loader
 	{
-	private:
-		std::vector<GLuint> m_vaos;
-		std::vector<GLuint> m_vbos;
-		std::vector<GLuint> m_textureIds;
-		std::unordered_map<std::string, Texture*> m_textureDirectory;
 	public:
 		Loader(const Loader&) = delete;
 		void operator=(const Loader&) = delete;
@@ -96,7 +91,6 @@ namespace Astra::Graphics
 
 	private:
 		Loader();
-		~Loader();
 
 		const VertexArray* LoadImpl(unsigned int drawType, const std::vector<float>& vertices,
 									const std::vector<int>& indices, const std::vector<float>& texturesCoords,

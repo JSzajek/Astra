@@ -8,7 +8,7 @@ namespace Astra::Graphics
 	ParticleSystem::ParticleSystem(const ParticleMaterial* const material, const Math::Vec3* center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, bool additive)
 		: m_material(material), m_center(center), m_particlePerSecond(particlesPerSecond), m_speed(speed), m_gravityComplient(gravityComplient), m_lifeSpan(lifeSpan), m_additive(additive)
 	{
-		m_material = ResourceManager::TrackParticleMaterial(material);
+		m_material = ResourceManager::Track(material);
 	#if _DEBUG
 		m_gizmo = new Gizmo("../Astra.Core/src/resources/textures/Emitter.png", *center, 3);
 	#endif

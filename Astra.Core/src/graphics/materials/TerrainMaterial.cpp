@@ -12,10 +12,10 @@ namespace Astra::Graphics
 
 	TerrainMaterialPack::TerrainMaterialPack(const TerrainMaterial* background, const TerrainMaterial* red,
 											 const TerrainMaterial* green, const TerrainMaterial* blue)
-		: backgroundTexture(ResourceManager::TrackTerrainMaterial(background)), 
-		  rTexture(ResourceManager::TrackTerrainMaterial(red)), 
-		  gTexture(ResourceManager::TrackTerrainMaterial(green)), 
-		  bTexture(ResourceManager::TrackTerrainMaterial(blue)),
+		: backgroundTexture(ResourceManager::Track(background)),
+		  rTexture(ResourceManager::Track(red)), 
+		  gTexture(ResourceManager::Track(green)),
+		  bTexture(ResourceManager::Track(blue)),
 			specularTexture(Loader::LoadTexture(Texture::DefaultSpecular, false))
 	{
 	}

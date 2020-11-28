@@ -15,8 +15,7 @@ namespace Astra::Graphics
 		Texture();
 		Texture(const char* const filepath);
 		Texture(unsigned int id, const char* const filepath);
-		Texture(const Texture& other);
-		Texture(const Texture* other);
+		~Texture();
 
 		bool operator==(const Texture& other);
 	};

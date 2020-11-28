@@ -3,67 +3,108 @@
 
 namespace Astra::Graphics
 {
-	#define TrackPointer(list, pointer)\
-	  if(list.find(pointer) != list.end()) { list[pointer]++; } \
-	  else { list[pointer] = 1; } \
-
 	ResourceManager::ResourceManager()
 	{
 	}
 
-	const VertexArray* ResourceManager::TrackVertexArrayImpl(const VertexArray* vao)
+	ResourceManager::~ResourceManager()
 	{
-		TrackPointer(m_loaded, vao);
-		return vao;
-	}
-	
-	const Texture* ResourceManager::TrackTextureImpl(const Texture* texture)
-	{
-		TrackPointer(m_loaded, texture);
-		return texture;
+	#if _DEBUG
+		if (m_loaded.size() == 0)
+		{
+			Logger::Log("Resource Manager: Cleaned All Loaded Resources");
+		}
+	#endif
 	}
 
-	const ImageMaterial* ResourceManager::TrackImageMaterialImpl(const ImageMaterial* material)
+	bool ResourceManager::QueryTextureImpl(const char* filepath, Texture** texture)
 	{
-		TrackPointer(m_loaded, material);
+		auto found = m_textureDirectory.find(filepath);
+		if (found != m_textureDirectory.end())
+		{
+			*texture = found->second;
+			ResourceManager::Track(*texture);
+			return true;
+		}
+		*texture = new Texture(filepath);
+		ResourceManager::Track(*texture);
+		m_textureDirectory[filepath] = *texture;
+		return false;
+	}
+	
+	Entity* ResourceManager::LoadEntityImpl(const char* filepath, bool calcTangents, int textureIndex, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale)
+	{
+		return new Entity(filepath, calcTangents, textureIndex, position, rotation, scale);
+	}
+
+	ImageMaterial* ResourceManager::LoadMaterialImpl(const char* diffuse, const char* specular, const char* emission, size_t rowCount, float reflectivity, bool transparent)
+	{
+		size_t hash = std::hash<std::string>{}(std::string(diffuse) + std::string(specular) + std::string(emission ? emission : ""));
+		hash += rowCount + std::hash<float>{}(reflectivity)+std::hash<bool>{}(transparent);
+
+		auto found = m_loadedImageMaterials.find(hash);
+		if (found != m_loadedImageMaterials.end())
+		{
+			Track(found->second);
+			return found->second;
+		}
+
+		auto* material = new ImageMaterial(diffuse, specular, emission, rowCount, reflectivity, transparent);
+		Track(material);
+		m_loadedImageMaterials[hash] = material;
 		return material;
 	}
 
-	const ParticleMaterial* ResourceManager::TrackParticleMaterialImpl(const ParticleMaterial* material)
+	ImageMaterial* ResourceManager::LoadMaterialImpl(const char* diffuse, const char* specular, const char* normalMap, const char* parallaxMap, float heightOffset, const char* emission, size_t rowCount, float reflectivity, bool transparent)
 	{
-		TrackPointer(m_loaded, material);
+		size_t hash = std::hash<std::string>{}(std::string(diffuse) + std::string(specular) + std::string(normalMap) + std::string(parallaxMap ? parallaxMap : "") + std::string(emission ? emission : ""));
+		hash += rowCount + std::hash<float>{}(reflectivity)+std::hash<bool>{}(transparent);
+
+		auto found = m_loadedImageMaterials.find(hash);
+		if (found != m_loadedImageMaterials.end())
+		{
+			Track(found->second);
+			return found->second;
+		}
+
+		auto* material = new ImageMaterial(diffuse, specular, normalMap, parallaxMap, heightOffset, emission, rowCount, reflectivity, transparent);
+		Track(material);
+		m_loadedImageMaterials[hash] = material;
 		return material;
 	}
 
-	const SkyboxMaterial* ResourceManager::TrackSkyboxMaterialImpl(const SkyboxMaterial* material)
+	void ResourceManager::UnloadTexture(const Texture* texture)
 	{
-		TrackPointer(m_loaded, material);
-		return material;
+		m_textureDirectory.erase(m_textureDirectory.find(texture->m_filePath));
+		delete texture;
 	}
 
-	const TerrainMaterial* ResourceManager::TrackTerrainMaterialImpl(const TerrainMaterial* material)
+	void ResourceManager::UnloadImageMaterial(const ImageMaterial* material)
 	{
-		TrackPointer(m_loaded, material);
-		return material;
+		for (auto it = m_loadedImageMaterials.begin(); it != m_loadedImageMaterials.end(); it++)
+		{
+			if (it->second == material)
+			{
+				m_loadedImageMaterials.erase(it);
+				delete material;
+				break;
+			}
+		}
 	}
 
-	WaterMaterial* ResourceManager::TrackWaterMaterialImpl(WaterMaterial* material)
+	bool ResourceManager::UnloadResource(void* ptr)
 	{
-		TrackPointer(m_loaded, material);
-		return material;
+		auto& loaded = Get().m_loaded;
+		const auto found = loaded.find(ptr);
+		if (found != loaded.end())
+		{
+			(*found).second--;
+			if (!(*found).second)
+			{
+				loaded.erase(found);
+				return true;
+			}
+		}
+		return false;
 	}
-	
-	FontType* ResourceManager::TrackFontTypeImpl(FontType* type)
-	{
-		TrackPointer(m_loaded, type);
-		return type;
-	}
-	
-	const FrameBuffer* ResourceManager::TrackFrameBufferImpl(const FrameBuffer* buffer)
-	{
-		TrackPointer(m_loaded, buffer);
-		return buffer;
-	}
-	
-	
 }

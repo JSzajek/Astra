@@ -1,5 +1,7 @@
 #include "VertexArray.h"
 
+#include <GL/glew.h>
+
 namespace Astra::Graphics
 {
 	VertexArray::VertexArray(unsigned int vaoId, unsigned int vertexCount, unsigned int drawType)
@@ -17,6 +19,11 @@ namespace Astra::Graphics
 
 	VertexArray::~VertexArray()
 	{
+		for (size_t i = 0; i < TRACKED_VBOS; i++)
+		{
+			glDeleteBuffers(1, &vboIds[i]);
+		}
+		glDeleteVertexArrays(1, &vaoId);
 		delete[] vboIds;
 	}
 
