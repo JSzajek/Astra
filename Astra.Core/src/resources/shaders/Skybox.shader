@@ -1,5 +1,5 @@
 #shader vertex
-#version 460
+#version 330
 
 layout(location = 0) in vec3 position;
 
@@ -15,7 +15,7 @@ void main()
 }
 
 #shader fragment
-#version 460
+#version 330
 
 in vec3 v_TexCoordinates;
 

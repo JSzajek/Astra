@@ -1,5 +1,5 @@
 #shader vertex
-#version 460
+#version 330
 
 layout(location = 0) in vec2 position;
 layout(location = 1) in mat4 modelViewMatrix;
@@ -25,7 +25,7 @@ void main()
 }
 
 #shader fragment
-#version 460
+#version 330
 
 in vec2 v_TexCoordinates1;
 in vec2 v_TexCoordinates2;

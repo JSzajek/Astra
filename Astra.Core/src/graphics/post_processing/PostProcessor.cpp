@@ -17,7 +17,7 @@ namespace Astra::Graphics
 		m_screenBuffer = Loader::LoadFrameBuffer(Window::GetWidth(), Window::GetHeight(), false, DepthBufferType::Texture, HDR);
 	#else
 		m_multisampledBuffer = NULL;
-		m_screenBuffer = Loader::LoadFrameBuffer(Window::width, Window::height, false, DepthBufferType::Render);
+		m_screenBuffer = Loader::LoadFrameBuffer(Window::GetWidth(), Window::GetHeight(), false, DepthBufferType::Render);
 	#endif
 	#if BLOOM
 		effects.push_back(new BloomEffect(Window::GetWidth(), Window::GetHeight()));

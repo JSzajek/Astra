@@ -16,7 +16,7 @@ namespace Astra::Graphics
 	#define DEFAULT_HEIGHT		540
 	#define DEFAULT_TITLE		"Astra"
 
-	#define V_SYNC				0	
+	#define V_SYNC				1	
 	#define MULTI_SAMPLE		1
 	#define MULTI_SAMPLE_SIZE	4
 	#define HDR					1

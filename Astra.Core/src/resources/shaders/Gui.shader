@@ -1,5 +1,5 @@
 #shader vertex
-#version 460
+#version 330
 
 layout(location = 0) in vec2 position;
 layout(location = 1) in mat4 transformMatrix;
@@ -13,7 +13,7 @@ void main()
 }
 
 #shader fragment
-#version 460
+#version 330
 
 in vec2 v_TexCoordinates;
 out vec4 out_Color;
