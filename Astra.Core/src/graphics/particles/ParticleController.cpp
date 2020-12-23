@@ -27,19 +27,18 @@ namespace Astra::Graphics
 
 	void ParticleController::UpdateImpl(float delta, const Math::Vec3& cameraPosition)
 	{
-		auto iter = m_particleRenderer->GetParticles().begin();
-		while (iter != m_particleRenderer->GetParticles().end())
+		for (size_t x = 0; x < NUM_OF_TYPES; x++)
 		{
-			bool additive = (*(*iter).second.begin())->GetAdditive();
+			auto& particles = m_particleRenderer->GetParticles(x);
 
-			auto particlesIter = (*iter).second.begin();
-			while (particlesIter != (*iter).second.end())
-			{
+			auto particlesIter = particles.begin();
+			while (particlesIter != particles.end())
+			{ 
 				bool stillAlive = (*particlesIter)->Update(delta, cameraPosition);
 				if (!stillAlive)
 				{
 					auto* temp = (*particlesIter);
-					particlesIter = (*iter).second.erase(particlesIter);
+					particlesIter = particles.erase(particlesIter);
 					m_leftovers.emplace(temp);
 				}
 				else
@@ -48,17 +47,47 @@ namespace Astra::Graphics
 				}
 			}
 
-			if ((*iter).second.empty())
+			if (particles.empty())
 			{
-				iter = m_particleRenderer->GetParticles().erase(iter);
-				return;
 			}
-			else if (!additive)
+			else if (x == 0)
 			{
-				InsertionSort((*iter).second);
+				InsertionSort(particles);
 			}
-			++iter;
 		}
+
+		//auto iter = m_particleRenderer->GetParticles().begin();
+		//while (iter != m_particleRenderer->GetParticles().end())
+		//{
+		//	bool additive = (*(*iter).second.begin())->GetAdditive();
+
+		//	auto particlesIter = (*iter).second.begin();
+		//	while (particlesIter != (*iter).second.end())
+		//	{
+		//		bool stillAlive = (*particlesIter)->Update(delta, cameraPosition);
+		//		if (!stillAlive)
+		//		{
+		//			auto* temp = (*particlesIter);
+		//			particlesIter = (*iter).second.erase(particlesIter);
+		//			m_leftovers.emplace(temp);
+		//		}
+		//		else
+		//		{
+		//			++particlesIter;
+		//		}
+		//	}
+
+		//	if ((*iter).second.empty())
+		//	{
+		//		iter = m_particleRenderer->GetParticles().erase(iter);
+		//		return;
+		//	}
+		//	else if (!additive)
+		//	{
+		//		InsertionSort((*iter).second);
+		//	}
+		//	++iter;
+		//}
 	}
 
 	void ParticleController::AddParticleImpl(Particle* particle)

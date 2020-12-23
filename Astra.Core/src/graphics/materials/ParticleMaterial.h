@@ -13,6 +13,7 @@ namespace Astra::Graphics
 		ParticleMaterial(const char* const filepath, int rowCount);
 		~ParticleMaterial();
 
+		inline const Texture* GetTexture() const { return m_texture; }
 		inline int GetRowCount() const { return m_rowCount; }
 		inline unsigned int GetId() const { return m_texture->id; }
 	};

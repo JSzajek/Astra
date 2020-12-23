@@ -73,12 +73,6 @@ namespace Astra::Graphics
 			return false;
 		}
 
-		if (!glewIsSupported("GL_VERSION_3_3"))
-		{
-			Logger::LogError("OpenGL Version 3.3 Not Supported.");
-			return false;
-		}
-
 		// Force usage of OpenGL 3.3.0
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

@@ -24,6 +24,11 @@ namespace Astra::Graphics
 		glUniform1i(GetUniformLocation(name), value);
 	}
 
+	void Shader::SetUniform1iv(const GLchar* name, int count, const int* value)
+	{
+		glUniform1iv(GetUniformLocation(name), count, value);
+	}
+
 	void Shader::SetUniform1f(const GLchar* name, const float& value)
 	{
 		glUniform1f(GetUniformLocation(name), value);

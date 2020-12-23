@@ -74,6 +74,7 @@ namespace Astra::Graphics
 		~Shader();
 
 		void SetUniform1i(const GLchar* name, const int& value);
+		void SetUniform1iv(const GLchar* name, int count, const int* value);
 		void SetUniform1f(const GLchar* name, const float& value);
 		void SetUniform2f(const GLchar* name, const Math::Vec2& value);
 		void SetUniform2f(const GLchar* name, const float& v1, const float& v2);
@@ -122,6 +123,12 @@ namespace Astra::Graphics
 		static const char* GetPointLightAttenuationTag(int index)
 		{
 			sprintf(GetBuffer(), "pointLights[%i].attenuation", index);
+			return GetBuffer();
+		}
+
+		static const char* GetInstancedTextureTag(int index)
+		{
+			sprintf(GetBuffer(), "instanced_Textures[%i]", index);
 			return GetBuffer();
 		}
 	private:
