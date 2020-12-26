@@ -6,9 +6,7 @@ Player::Player(const Vec3& position, Terrain* terrain)
 	: m_camera(new Camera(20, 45, 0)), m_movement(Vec3(0)),
            m_rotating(false), m_oldPosition(Vec2(0,0)), m_terrain(terrain)
 {
-    //ImageMaterial* containerMat = new ImageMaterial("res/textures/container.png", "res/textures/container_specular.png", 1, 32, false);
     auto* containerMat = ResourceManager::LoadMaterial("res/textures/container.png", "res/textures/container_specular.png", NULL, 1, 32);
-    //m_body = new Entity("res/cube.obj", containerMat, 0, position, Vec3(0), Vec3(1));
     m_body = ResourceManager::LoadEntity("res/cube.obj", 0, position, Vec3::Zero, Vec3::One);
     m_body->SetMaterial(containerMat);
 }
@@ -32,13 +30,13 @@ void Player::Update(float delta)
         m_oldPosition = Input::GetMousePosition();
     }
 
-    else if (m_rotating)
+    if (m_rotating)
     {
         Vec2 change(Input::GetMousePosition());
         change -= m_oldPosition;
 
         change.Normalize();
-        change *= PanSpeed;
+        change *= PanSpeed * Window::GetDelta();
 
         m_camera->operator()(SWIVEL, SUM_EQ, NULL, -change.x);
         m_camera->operator()(PITCH, EQ, NULL, Clamp(m_camera->GetPitch() + change.y, (float)MIN_PITCH, (float)MAX_PITCH));

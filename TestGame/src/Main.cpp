@@ -194,21 +194,23 @@ int main()
     const float InGameTimeSpeed = 0.00005f;
     short timeDir = 1;
 
-    Timer time;
-    float timer = 0;
+    Timer timer;
+    float elapsedTime = 0;
     unsigned int frames = 0;
+    float delta;
 
     while (!Window::Closed())
     {
+        delta = Window::GetDelta();
         Window::Clear();
-        float delta = Window::GetDelta();
         
+        // Update All Updatable Items and Collision Detections
         for (Synchronous* item : worldItems)
         {
             item->Update(delta);
         }
 
-        //(*barrelModel)(ROTATION, SUM_EQ, Y_POS, 0.5f);
+        (*barrelModel)(ROTATION, SUM_EQ, Y_POS, 0.5f);
 
         skybox->BlendFactor() += InGameTimeSpeed * timeDir;
         if (skybox->BlendFactor() >= 1)
@@ -233,10 +235,11 @@ int main()
         Window::Update();
 
         frames++;
-        if (time.Elapsed() - timer > 1.0f)
+        if (timer.Elapsed() - elapsedTime > 1.0f)
         {
-            timer += 1.0f;
+            elapsedTime += 1.0f;
             printf("%dfps\n", frames);
+            //printf("%f delta\n", delta);
             frames = 0;
         }
     }

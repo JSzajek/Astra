@@ -16,7 +16,7 @@ namespace Astra::Graphics
 	#define DEFAULT_HEIGHT		540
 	#define DEFAULT_TITLE		"Astra"
 
-	#define V_SYNC				1	
+	#define V_SYNC				0	
 	#define MULTI_SAMPLE		1
 	#define MULTI_SAMPLE_SIZE	4
 	#define HDR					1
@@ -29,10 +29,13 @@ namespace Astra::Graphics
 		int m_width, m_height;
 		clock_t m_lastFrameTime;
 		float m_delta;
+		float m_last;
 		const char* m_title;
 		GLFWwindow* m_window;
 		bool m_closed;
 		std::function<void(int, int)> m_windowResizeCallback;
+
+		std::vector<std::function<void(float, float)>> m_mouseMoveCallbacks;
 	public:
 		Window(const Window&) = delete;
 		void operator=(const Window&) = delete;
@@ -47,7 +50,7 @@ namespace Astra::Graphics
 		inline static int GetWidth() { return Get().m_width; }
 		inline static int GetHeight() { return Get().m_height; }
 		inline static float GetAspectRatio() { return Get().m_width / (float)Get().m_height; }
-
+		
 		static void Clear()
 		{
 			Get().ClearImpl();
@@ -77,16 +80,6 @@ namespace Astra::Graphics
 		{
 			Get().SetWindowResizeCallbackImpl(callback);
 		}
-
-		/*static const Math::Vec2& GetMousePosition()
-		{
-
-		}
-
-		static float GetMouseWheel()
-		{
-
-		}*/
 
 	private:
 		Window();

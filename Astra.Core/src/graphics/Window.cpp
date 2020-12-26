@@ -96,6 +96,8 @@ namespace Astra::Graphics
 
 	#if V_SYNC
 		glfwSwapInterval(0);
+	#else
+		glfwSwapInterval(1);
 	#endif
 
 		glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height)

@@ -5,7 +5,7 @@
 namespace Astra::Graphics
 {
 	ParticleRenderer::ParticleRenderer(ParticleShader* shader)
-		: Renderer(), m_modelViewMatrix(new Math::Mat4(1)), m_viewMatrix(new Math::Mat4())
+		: Renderer(), m_modelViewMatrix(new Math::Mat4(1)), m_viewMatrix(NULL)
 	{
 		Renderer::SetShader(shader);
 

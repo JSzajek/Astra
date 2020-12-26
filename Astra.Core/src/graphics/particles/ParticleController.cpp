@@ -47,47 +47,11 @@ namespace Astra::Graphics
 				}
 			}
 
-			if (particles.empty())
-			{
-			}
-			else if (x == 0)
+			if (x == 0)
 			{
 				InsertionSort(particles);
 			}
 		}
-
-		//auto iter = m_particleRenderer->GetParticles().begin();
-		//while (iter != m_particleRenderer->GetParticles().end())
-		//{
-		//	bool additive = (*(*iter).second.begin())->GetAdditive();
-
-		//	auto particlesIter = (*iter).second.begin();
-		//	while (particlesIter != (*iter).second.end())
-		//	{
-		//		bool stillAlive = (*particlesIter)->Update(delta, cameraPosition);
-		//		if (!stillAlive)
-		//		{
-		//			auto* temp = (*particlesIter);
-		//			particlesIter = (*iter).second.erase(particlesIter);
-		//			m_leftovers.emplace(temp);
-		//		}
-		//		else
-		//		{
-		//			++particlesIter;
-		//		}
-		//	}
-
-		//	if ((*iter).second.empty())
-		//	{
-		//		iter = m_particleRenderer->GetParticles().erase(iter);
-		//		return;
-		//	}
-		//	else if (!additive)
-		//	{
-		//		InsertionSort((*iter).second);
-		//	}
-		//	++iter;
-		//}
 	}
 
 	void ParticleController::AddParticleImpl(Particle* particle)
