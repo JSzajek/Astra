@@ -4,6 +4,7 @@
 
 #include "buffers/VertexArray.h"
 #include "materials/ImageMaterial.h"
+#include "materials/GuiMaterial.h"
 #include "materials/ParticleMaterial.h"
 #include "materials/SkyboxMaterial.h"
 #include "materials/TerrainMaterial.h"

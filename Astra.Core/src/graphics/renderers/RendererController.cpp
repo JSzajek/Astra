@@ -138,9 +138,9 @@ namespace Astra::Graphics
 		{
 			m_terrainRenderer->AddTerrain(terrain);
 		}
-		for (auto* gui : scene->GetGuis())
+		for (const auto& gui : scene->GetGuis())
 		{
-			m_guiRenderer->AddGui(gui);
+			m_guiRenderer->AddGui(std::get<0>(gui), std::get<1>(gui));
 		}
 		for (auto* text : scene->GetTexts())
 		{
@@ -225,24 +225,25 @@ namespace Astra::Graphics
 		if (m_waterBuffer && m_mainCamera)
 		{
 			float distance = 2 * (m_mainCamera->GetTranslation().y - m_refractionClipPlane.w);
-
+			
+			// Reflection Rendering
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetReflectionBuffer()->GetId(), 320, 180);
 			m_mainCamera->Translation()->y -= distance;
 			m_mainCamera->InvertPitch(); // Updates the view matrix
-			PreRender(delta, viewMatrix->Inverse() * Math::Vec4::W_Axis, m_reflectionClipPlane);
+			Render(delta, viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_reflectionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 
+			// Refraction Rendering
 			m_mainCamera->Translation()->y += distance;
 			m_mainCamera->InvertPitch(); // Updates the view matrix
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetRefractionBuffer()->GetId(), 1280, 720);
-			PreRender(delta, viewMatrix->Inverse() * Math::Vec4::W_Axis, m_refractionClipPlane);
+			Render(delta, viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_refractionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 		}
 
 		Math::Vec4 inverseView = viewMatrix->Inverse() * Math::Vec4::W_Axis;
 		PrepareRender(delta);
-		PreRender(delta, inverseView);
-		PostRender(inverseView);
+		Render(delta, inverseView, false);
 		GuiRender();
 	}
 
@@ -260,23 +261,31 @@ namespace Astra::Graphics
 		*m_toShadowMapMatrix = m_shadowMapController->GetToShadowMapSpaceMatrix();
 	}
 
-	void RendererController::PreRender(float delta, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void RendererController::Render(float delta, const Math::Vec4& inverseViewVector, bool waterPass, const Math::Vec4& clipPlane)
 	{
 		if (m_currentScene == NULL || m_block) { return; }
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
+		
 		m_terrainRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
-		m_entityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
-		m_normalEntityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
-		m_skyboxRenderer->Draw(delta, viewMatrix, NULL);
-	}
 
-	void RendererController::PostRender(const Math::Vec4& inverseViewVector)
-	{
-		if (m_currentScene == NULL || m_block) { return; }
+		if (!waterPass)
+		{
+			m_skyboxRenderer->Draw(delta, viewMatrix, NULL);
+			m_waterRenderer->Draw(0, viewMatrix, inverseViewVector);
 
-		m_waterRenderer->Draw(0, viewMatrix, inverseViewVector);
+			m_entityRenderer->FlagSelectionDraw();
+			m_normalEntityRenderer->FlagSelectionDraw();
+			
+			m_entityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
+			m_normalEntityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
+		}
+		else
+		{
+			m_entityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
+			m_normalEntityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
+			m_skyboxRenderer->Draw(delta, viewMatrix, NULL);
+		}
 	}
 
 	void RendererController::GuiRender()

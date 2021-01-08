@@ -11,7 +11,7 @@
 #include "../entities/Camera.h"
 #include "../entities/terrains/WaterTile.h"
 #include "../entities/Entity.h"
-#include "../textures/GuiTexture.h"
+#include "../guis/Gui.h"
 #include "../particles/ParticleSystem.h"
 #include "../fonts/GuiText.h"
 #include "../materials/SkyboxMaterial.h"
@@ -32,7 +32,7 @@ namespace Astra::Graphics
 
 		std::vector<const Entity*> m_entities;
 		std::vector<const ParticleSystem*> m_particles;
-		std::vector<GuiTexture*> m_guis;
+		std::vector<std::tuple<Gui*, int>> m_guis;
 		std::vector<GuiText*> m_texts;
 		std::vector<PointLight*> m_pointlights;
 		//std::vector<const SpotLight*> m_spotlights;
@@ -67,7 +67,7 @@ namespace Astra::Graphics
 
 		inline void AddEntity(const Entity* entity) { m_entities.emplace_back(entity); }
 		inline void AddParticleSystem(const ParticleSystem* system) { m_particles.emplace_back(system); }
-		inline void AddGui(GuiTexture* gui) { m_guis.emplace_back(gui); }
+		inline void AddGui(Gui* gui, int layer) { m_guis.push_back(std::make_tuple(gui, layer)); }
 		inline void AddText(GuiText* text) { m_texts.emplace_back(text); }
 		inline void AddTerrain(const Terrain* terrain) { m_terrains.emplace_back(terrain); }
 		inline void AddWaterTile(const WaterTile* tile) { m_tiles.emplace_back(tile); }
@@ -80,7 +80,7 @@ namespace Astra::Graphics
 		inline const std::vector<const Entity*>& GetEntities() const { return m_entities; }
 		inline const std::vector<PointLight*>& GetPointLights() const { return m_pointlights; }
 		inline const std::vector<const Terrain*>& GetTerrains() const { return m_terrains; }
-		inline const std::vector<GuiTexture*>& GetGuis() const { return m_guis; }
+		inline const std::vector<std::tuple<Gui*, int>>& GetGuis() const { return m_guis; }
 		inline const std::vector<GuiText*>& GetTexts() const { return m_texts; }
 		inline const std::vector<const WaterTile*>& GetWaterTiles() const { return m_tiles; }
 		inline const std::vector<const ParticleSystem*>& GetParticles() const { return m_particles; }

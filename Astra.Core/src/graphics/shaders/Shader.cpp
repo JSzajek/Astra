@@ -3,8 +3,8 @@
 
 namespace Astra::Graphics
 {
-	Shader::Shader(const char* filpath, ShaderType type, std::tuple<const char*, int>* replace)
-		: m_filepath(filpath), m_type(type), m_replace(replace)
+	Shader::Shader(const char* filpath, std::tuple<const char*, int>* replace)
+		: m_filepath(filpath), m_replace(replace)
 	{
 		ShaderProgramSource source = ParseShader(m_filepath);
 		m_id = CreateShader(source.VertextSource, source.FragmentSource);

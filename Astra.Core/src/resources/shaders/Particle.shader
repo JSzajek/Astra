@@ -11,7 +11,7 @@ uniform mat4 projectionMatrix = mat4(1.0);
 out vec2 v_TexCoordinates1;
 out vec2 v_TexCoordinates2;
 out float v_Blend;
-out float v_TextureIndex;
+flat out uint v_TexIndex;
 
 void main()
 {
@@ -21,7 +21,8 @@ void main()
 	v_TexCoordinates1 = textureCoords + texOffsets.xy;
 	v_TexCoordinates2 = textureCoords + texOffsets.zw;
 	v_Blend = texCoordInfo.z;
-	v_TextureIndex = int(texCoordInfo.x);
+	
+	v_TexIndex = uint(texCoordInfo.x);
 
 	gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 0.0, 1.0);
 }
@@ -34,7 +35,7 @@ void main()
 in vec2 v_TexCoordinates1;
 in vec2 v_TexCoordinates2;
 in float v_Blend;
-in float v_TextureIndex;
+flat in uint v_TexIndex;
 
 out vec4 out_Color;
 
@@ -42,8 +43,8 @@ uniform sampler2D instanced_Textures[MAX_TEXTURE_SLOTS];
 
 void main()
 {
-	vec4 color1 = texture(instanced_Textures[int(v_TextureIndex)], v_TexCoordinates1);
-	vec4 color2 = texture(instanced_Textures[int(v_TextureIndex)], v_TexCoordinates2);
+	vec4 color1 = texture(instanced_Textures[v_TexIndex], v_TexCoordinates1);
+	vec4 color2 = texture(instanced_Textures[v_TexIndex], v_TexCoordinates2);
 
 	out_Color = mix(color1, color2, v_Blend);
 }

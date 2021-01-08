@@ -62,9 +62,10 @@ int main()
     mainScene->AddText(text);
     mainScene->AddText(outlineText);
 
-    const Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
-    GuiTexture gui = GuiTexture("grass_sprite", texture, Vec2(0.75f, 0.75f), Vec2(0.1f, 0.1f));
-    mainScene->AddGui(&gui);
+    //const Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
+    GuiMaterial* guiMat = new GuiMaterial("res/textures/grassTexture.png", 1);
+    GuiTexture gui = GuiTexture(guiMat, Vec2(0.75f, 0.75f), Vec2(0.1f, 0.1f));
+    mainScene->AddGui(&gui, 0);
 
     std::vector<const char*> m_textureFiles =
     {
@@ -162,6 +163,17 @@ int main()
     partSystem.SetRandomRotation(true);
     mainScene->AddParticleSystem(&partSystem);
     
+    /*ParticleMaterial* partMaterial2 = new ParticleMaterial("res/textures/particleStar.png", 1);
+    Vec3 particleCenter2(-100, terrain.GetHeightOfTerrain(-100, 80) + 5, 80);
+
+    ConeParticleSystem partSystem2(partMaterial2, &particleCenter2, 15, 5, -0.1f, 1.5f, 2, false);
+    partSystem2.SetDirection(Vec3(0, 1, 0), 0.5f);
+    partSystem2.SetLifeError(0.1f);
+    partSystem2.SetSpeedError(0.4f);
+    partSystem2.SetScaleError(0.8f);
+    partSystem2.SetRandomRotation(true);
+    mainScene->AddParticleSystem(&partSystem2);*/
+
     // Example of Gui Texture Instancing
     #define EXAMPLE_GUI_INSTANCING  0
     
@@ -209,6 +221,8 @@ int main()
         {
             item->Update(delta);
         }
+
+        gui.Rotation += 0.5f;
 
         (*barrelModel)(ROTATION, SUM_EQ, Y_POS, 0.5f);
 

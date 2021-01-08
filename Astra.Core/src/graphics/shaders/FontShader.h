@@ -22,7 +22,7 @@ namespace Astra::Graphics
 	public:
 		FontShader(const char* filepath =
 			"../Astra.Core/src/resources/shaders/Font.shader")
-			: Shader(filepath, ShaderType::Gui)
+			: Shader(filepath)
 		{
 		}
 	};

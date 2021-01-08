@@ -191,6 +191,7 @@
     <ClCompile Include="src\graphics\Input.cpp" />
     <ClCompile Include="src\graphics\loaders\Loader.cpp" />
     <ClCompile Include="src\graphics\loaders\ObjLoader.cpp" />
+    <ClCompile Include="src\graphics\materials\GuiMaterial.cpp" />
     <ClCompile Include="src\graphics\materials\ImageMaterial.cpp" />
     <ClCompile Include="src\graphics\materials\ParticleMaterial.cpp" />
     <ClCompile Include="src\graphics\materials\SkyboxMaterial.cpp" />
@@ -219,7 +220,7 @@
     <ClCompile Include="src\graphics\shaders\Shader.cpp" />
     <ClCompile Include="src\graphics\shadows\ShadowBox.cpp" />
     <ClCompile Include="src\graphics\shadows\ShadowMapController.cpp" />
-    <ClCompile Include="src\graphics\textures\GuiTexture.cpp" />
+    <ClCompile Include="src\graphics\guis\GuiTexture.cpp" />
     <ClCompile Include="src\graphics\Window.cpp" />
     <ClCompile Include="src\logger\Logger.cpp" />
     <ClCompile Include="src\math\Mat4.cpp" />
@@ -251,8 +252,10 @@
     <ClInclude Include="src\graphics\fonts\Word.h" />
     <ClInclude Include="src\graphics\gizmos\Gizmo.h" />
     <ClInclude Include="src\graphics\gizmos\GizmoController.h" />
+    <ClInclude Include="src\graphics\guis\Gui.h" />
     <ClInclude Include="src\graphics\Input.h" />
     <ClInclude Include="src\graphics\Inputs.h" />
+    <ClInclude Include="src\graphics\materials\GuiMaterial.h" />
     <ClInclude Include="src\graphics\materials\ImageMaterial.h" />
     <ClInclude Include="src\graphics\materials\Materials.h" />
     <ClInclude Include="src\graphics\materials\ParticleMaterial.h" />
@@ -312,7 +315,7 @@
     <ClInclude Include="src\graphics\shaders\WaterShader.h" />
     <ClInclude Include="src\graphics\shadows\ShadowBox.h" />
     <ClInclude Include="src\graphics\shadows\ShadowMapController.h" />
-    <ClInclude Include="src\graphics\textures\GuiTexture.h" />
+    <ClInclude Include="src\graphics\guis\GuiTexture.h" />
     <ClInclude Include="src\graphics\Window.h" />
     <ClInclude Include="src\logger\Logger.h" />
     <ClInclude Include="src\math\Mat4.h" />

@@ -12,7 +12,7 @@ namespace Astra::Graphics
 	public:
 		SplitBloomShader(const char* filepath =
 			"../Astra.Core/src/resources/shaders/Bloom.shader")
-			: Shader(filepath, ShaderType::Basic)
+			: Shader(filepath)
 		{
 		}
 	};
@@ -22,7 +22,7 @@ namespace Astra::Graphics
 	public:
 		CombineBloomShader(const char* filepath =
 			"../Astra.Core/src/resources/shaders/FinalBloom.shader")
-			: Shader(filepath, ShaderType::Basic)
+			: Shader(filepath)
 		{
 		}
 	};

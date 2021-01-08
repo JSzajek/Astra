@@ -12,7 +12,7 @@ namespace Astra::Graphics
 	public:
 		HDRShader(const char* filepath =
 			"../Astra.Core/src/resources/shaders/HDR.shader")
-			: Shader(filepath, ShaderType::Basic)
+			: Shader(filepath)
 		{
 		}
 	};

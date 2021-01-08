@@ -15,7 +15,7 @@ namespace Astra::Graphics
 	public:
 		TerrainShader(int numOfLights, const char* filepath =
 			"../Astra.Core/src/resources/shaders/Terrain.shader")
-			: Shader(filepath, ShaderType::Terrains, &std::make_tuple("NR_POINT_LIGHTS %i", numOfLights))
+			: Shader(filepath, &std::make_tuple("NR_POINT_LIGHTS %i", numOfLights))
 		{
 		}
 	};
