@@ -51,6 +51,8 @@ namespace Astra::Math
 
 		Vec4(const Vec3& other, float _w);
 
+		Vec4(const Vec2& first, const Vec2& second);
+
 		/// <summary>
 		/// Copy constructor of the <see cref="Vec4"/> class.
 		/// </summary>
@@ -63,6 +65,8 @@ namespace Astra::Math
 		/// <param name="index">The index of the element to access</param>
 		/// <returns></returns>
 		float& operator[](int index);
+
+		const float operator[](int index) const;
 
 		/// <summary>
 		/// Adds the passed vector.

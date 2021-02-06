@@ -21,7 +21,12 @@ namespace Astra::Math
 
 		static Mat4 Transformation(const Graphics::Gui& gui) 
 		{
-			return Get().TransformationImpl(gui.Position, gui.Rotation, gui.Scale);
+			return Get().TransformationImpl(gui.Position, gui.Rotation, gui.GetSize() * gui.Scale);
+		}
+
+		static Mat4 Transformation(const Math::Vec2& position, float rotation, const Math::Vec2& scale)
+		{
+			return Get().TransformationImpl(position, rotation, scale);
 		}
 
 		static Mat4 Transformation(const Graphics::Spatial* entity)

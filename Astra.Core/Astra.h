@@ -18,6 +18,7 @@
 #include "src/graphics/buffers/WaterFrameBuffer.h"
 
 #include "src/graphics/fonts/TextMesh.h"
+#include "src/graphics/guis/Guis.h"
 
 #include "src/graphics/renderers/RendererController.h"
 

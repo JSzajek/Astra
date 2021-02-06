@@ -50,11 +50,9 @@ namespace Astra::Math
 		return *this;
 	}
 
-	Vec2& Vec2::Multiply(const Vec2& other)
+	Vec2 Vec2::Multiply(const Vec2& other)
 	{
-		x *= other.x;
-		y *= other.y;
-		return *this;
+		return Vec2(x * other.x, y * other.y);
 	}
 
 	Vec2& Vec2::Multiply(const float& scalar)
@@ -88,7 +86,7 @@ namespace Astra::Math
 		return left.Subtract(right);
 	}
 
-	Vec2& operator*(Vec2 left, const Vec2& right)
+	Vec2 operator*(Vec2 left, const Vec2& right)
 	{
 		return left.Multiply(right);
 	}
@@ -118,7 +116,7 @@ namespace Astra::Math
 		return Subtract(other);
 	}
 
-	Vec2& Vec2::operator*=(const Vec2& other)
+	Vec2 Vec2::operator*=(const Vec2& other)
 	{
 		return Multiply(other);
 	}

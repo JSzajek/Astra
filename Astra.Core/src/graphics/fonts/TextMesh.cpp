@@ -86,7 +86,7 @@ namespace Astra::Graphics
 		{
 			if (text->IsCentered())
 			{
-				xCursor = (line.GetMaxLength() - line.GetLineLength()) / 2;
+				xCursor = (line.GetMaxLength() - line.GetLineLength()) / 2.0f;
 			}
 			for (auto word : line.GetWords())
 			{

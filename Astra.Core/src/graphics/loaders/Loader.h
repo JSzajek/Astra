@@ -58,6 +58,11 @@ namespace Astra::Graphics
 			return Get().LoadAtlasTextureImpl(filepath);
 		}
 
+		static const Texture* LoadFontAtlasTexture(const char* const filepath, unsigned int fontSize, const std::vector<unsigned char>& data, unsigned int width, unsigned int height)
+		{
+			return Get().LoadFontAtlasTextureImpl(filepath, fontSize, data, width, height);
+		}
+
 		static const CubeMapTexture* LoadCubeMap(const std::vector<const char*>& filepaths)
 		{
 			return Get().LoadCubeMapImpl(filepaths);
@@ -104,6 +109,7 @@ namespace Astra::Graphics
 		const GLuint LoadImpl(unsigned int drawType, const std::vector<float>& vertices, const std::vector<float>& textureCoords);
 		
 		const Texture* LoadAtlasTextureImpl(const char* const filepath);
+		const Texture* LoadFontAtlasTextureImpl(const char* const filepath, unsigned int fontSize, const std::vector<unsigned char>& data, unsigned int width, unsigned int height);
 		const Texture* LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert);
 		
 		const CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);

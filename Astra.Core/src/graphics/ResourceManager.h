@@ -9,6 +9,9 @@
 #include "materials/SkyboxMaterial.h"
 #include "materials/TerrainMaterial.h"
 #include "materials/WaterMaterial.h"
+
+#include "guis/utility/FontAtlas.h"
+
 #include "buffers/FrameBuffer.h"
 #include "fonts/TextMesh.h"
 #include "buffers/Texture.h"
@@ -26,7 +29,9 @@ namespace Astra::Graphics
 
 	private:
 		std::unordered_map<size_t, ImageMaterial*> m_loadedImageMaterials;
-		std::unordered_map<std::string, Texture*> m_textureDirectory;
+		std::unordered_map<size_t, GuiMaterial*> m_loadedGuiMaterials;
+		std::unordered_map<size_t, FontAtlas*> m_loadedFontAtlases;
+		std::unordered_map<size_t, Texture*> m_textureDirectory;
 		std::unordered_map<const void*, unsigned int> m_loaded;
 	public:
 		ResourceManager(const ResourceManager&) = delete;
@@ -43,6 +48,16 @@ namespace Astra::Graphics
 			return Get().QueryTextureImpl(filepath, texture);
 		}
 
+		static bool QueryFontAtlasTexture(const char* filepath, unsigned int fontSize, Texture** texture)
+		{
+			return Get().QueryFontAtlasTextureImpl(filepath, fontSize, texture);
+		}
+
+		static GuiMaterial* LoadGuiMaterial(const char* filepath, size_t rowCount)
+		{
+			return Get().LoadGuiMaterialImpl(filepath, rowCount);
+		}
+
 		static ImageMaterial* LoadMaterial(const char* diffuse, const char* specular, const char* emission = NULL, size_t rowCount = 1, float reflectivity = 16.f, bool transparent = false)
 		{
 			return Get().LoadMaterialImpl(diffuse, specular, emission, rowCount, reflectivity, transparent);
@@ -51,6 +66,11 @@ namespace Astra::Graphics
 		static ImageMaterial* LoadMaterial(const char* diffuse, const char* specular, const char* normalMap, const char* parallaxMap = NULL, float heightOffset = 0.f, const char* emission = NULL, size_t rowCount = 1, float reflectivity = 16.f, bool transparent = false)
 		{
 			return Get().LoadMaterialImpl(diffuse, specular, normalMap, parallaxMap, heightOffset, emission, rowCount, reflectivity, transparent);
+		}
+
+		static FontAtlas* LoadFontAtlas(const char* filepath, unsigned int fontSize)
+		{
+			return Get().LoadFontAtlasImpl(filepath, fontSize);
 		}
 
 		static Entity* LoadNormalEntity(const char* filepath, int textureIndex = 0,
@@ -101,6 +121,14 @@ namespace Astra::Graphics
 			}
 		}
 
+		static void Unload(const GuiMaterial* ptr)
+		{
+			if (Get().UnloadResource((void*)ptr))
+			{
+				Get().UnloadGuiMaterial(ptr);
+			}
+		}
+
 		template <typename T>
 		static void Unload(const T* ptr)
 		{
@@ -115,13 +143,19 @@ namespace Astra::Graphics
 		~ResourceManager();
 		
 		bool QueryTextureImpl(const char* filepath, Texture** texture);
+		bool QueryFontAtlasTextureImpl(const char* filepath, unsigned int fontSize, Texture** texture);
 
 		Entity* LoadEntityImpl(const char* filepath, bool calcTangents, int textureIndex, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale);
 		ImageMaterial* LoadMaterialImpl(const char* diffuse, const char* specular, const char* emission, size_t rowCount, float reflectivity, bool transparent);
 		ImageMaterial* LoadMaterialImpl(const char* diffuse, const char* specular, const char* normalMap, const char* parallaxMap, float heightOffset, const char* emission, size_t rowCount, float reflectivity, bool transparent);
+		GuiMaterial* LoadGuiMaterialImpl(const char* filepath, size_t rowCount);
+		FontAtlas* LoadFontAtlasImpl(const char* filepath, unsigned int fontSize);
 	private:
 		void UnloadTexture(const Texture* texture);
+		void UnloadTexture(const Texture* atlas, unsigned int fontSize);
 		void UnloadImageMaterial(const ImageMaterial* material);
+		void UnloadGuiMaterial(const GuiMaterial* material);
+		void UnloadFontAtlas(const FontAtlas* atlas);
 		bool UnloadResource(void* ptr);
 	};
 }

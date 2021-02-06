@@ -21,7 +21,7 @@ namespace Astra::Graphics
 		m_postProcessor = new PostProcessor();
 		m_shadowMapController = new ShadowMapController(FieldOfView, NearPlane, FarPlane);
 
-		m_guiRenderer = new GuiRenderer(new GuiShader());
+		m_guiRenderer = new GuiRenderer(new GuiShader(), new FontShader());
 		m_skyboxRenderer = new SkyboxRenderer(new SkyboxShader(), m_fogColor);
 		m_entityRenderer = new Entity3dRenderer(m_fogColor);
 		m_terrainRenderer = new TerrainRenderer(m_fogColor);
@@ -209,6 +209,12 @@ namespace Astra::Graphics
 	#if _DEBUG
 		GizmoController::UpdateProjectionMatrix(projectionMatrix);
 	#endif
+
+		// Keeping the original design size causes the gui to scale up or down based on the window.
+		// This could be potentially counteractive for higher scale resizing causing the loss of resolution.
+		// TODO :: Add switch to either scale up implicitly or keep same resolution.
+		auto ortho = Math::Mat4::Orthographic(0, 960, 540, 0, -1, 1);
+		m_guiRenderer->UpdateProjectionMatrix(&ortho);
 	}
 
 	void RendererController::RenderImpl(float delta)

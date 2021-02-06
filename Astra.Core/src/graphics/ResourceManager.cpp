@@ -19,7 +19,8 @@ namespace Astra::Graphics
 
 	bool ResourceManager::QueryTextureImpl(const char* filepath, Texture** texture)
 	{
-		auto found = m_textureDirectory.find(filepath);
+		size_t hash = std::hash<std::string>{}(std::string(filepath));
+		auto found = m_textureDirectory.find(hash);
 		if (found != m_textureDirectory.end())
 		{
 			*texture = found->second;
@@ -28,10 +29,27 @@ namespace Astra::Graphics
 		}
 		*texture = new Texture(filepath);
 		ResourceManager::Track(*texture);
-		m_textureDirectory[filepath] = *texture;
+		m_textureDirectory[hash] = *texture;
 		return false;
 	}
 	
+	bool ResourceManager::QueryFontAtlasTextureImpl(const char* filepath, unsigned int fontSize, Texture** texture)
+	{
+		size_t hash = std::hash<std::string>{}(std::string(filepath));
+		hash += fontSize;
+		auto found = m_textureDirectory.find(hash);
+		if (found != m_textureDirectory.end())
+		{
+			*texture = found->second;
+			ResourceManager::Track(*texture);
+			return true;
+		}
+		*texture = new Texture(filepath);
+		ResourceManager::Track(*texture);
+		m_textureDirectory[hash] = *texture;
+		return false;
+	}
+
 	Entity* ResourceManager::LoadEntityImpl(const char* filepath, bool calcTangents, int textureIndex, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale)
 	{
 		return new Entity(filepath, calcTangents, textureIndex, position, rotation, scale);
@@ -73,10 +91,54 @@ namespace Astra::Graphics
 		return material;
 	}
 
+	GuiMaterial* ResourceManager::LoadGuiMaterialImpl(const char* filepath, size_t rowCount)
+	{
+		size_t hash = std::hash<std::string>{}(std::string(filepath));
+		hash += rowCount;
+
+		auto found = m_loadedGuiMaterials.find(hash);
+		if (found != m_loadedGuiMaterials.end())
+		{
+			Track(found->second);
+			return found->second;
+		}
+
+		auto* material = new GuiMaterial(filepath, rowCount);
+		Track(material);
+		m_loadedGuiMaterials[hash] = material;
+		return material;
+	}
+
+	FontAtlas* ResourceManager::LoadFontAtlasImpl(const char* filepath, unsigned int fontSize)
+	{
+		size_t hash = std::hash<std::string>{}(std::string(filepath));
+
+		auto found = m_loadedFontAtlases.find(hash);
+		if (found != m_loadedFontAtlases.end())
+		{
+			Track(found->second);
+			return found->second;
+		}
+
+		auto* material = new FontAtlas(filepath, fontSize);
+		Track(material);
+		m_loadedFontAtlases[hash] = material;
+		return material;
+	}
+
 	void ResourceManager::UnloadTexture(const Texture* texture)
 	{
-		m_textureDirectory.erase(m_textureDirectory.find(texture->m_filePath));
+		size_t hash = std::hash<std::string>{}(std::string(texture->m_filePath));
+		m_textureDirectory.erase(m_textureDirectory.find(hash));
 		delete texture;
+	}
+	
+	void ResourceManager::UnloadTexture(const Texture* atlas, unsigned int fontSize)
+	{
+		size_t hash = std::hash<std::string>{}(std::string(atlas->m_filePath));
+		hash += fontSize;
+		m_textureDirectory.erase(m_textureDirectory.find(hash));
+		delete atlas;
 	}
 
 	void ResourceManager::UnloadImageMaterial(const ImageMaterial* material)
@@ -87,6 +149,32 @@ namespace Astra::Graphics
 			{
 				m_loadedImageMaterials.erase(it);
 				delete material;
+				break;
+			}
+		}
+	}
+
+	void ResourceManager::UnloadGuiMaterial(const GuiMaterial* material)
+	{
+		for (auto it = m_loadedGuiMaterials.begin(); it != m_loadedGuiMaterials.end(); it++)
+		{
+			if (it->second == material)
+			{
+				m_loadedGuiMaterials.erase(it);
+				delete material;
+				break;
+			}
+		}
+	}
+
+	void ResourceManager::UnloadFontAtlas(const FontAtlas* atlas)
+	{
+		for (auto it = m_loadedFontAtlases.begin(); it != m_loadedFontAtlases.end(); it++)
+		{
+			if (it->second == atlas)
+			{
+				m_loadedFontAtlases.erase(it);
+				delete atlas;
 				break;
 			}
 		}

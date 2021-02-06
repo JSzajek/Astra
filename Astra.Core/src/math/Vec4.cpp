@@ -30,12 +30,22 @@ namespace Astra::Math
 	{
 	}
 
+	Vec4::Vec4(const Vec2& first, const Vec2& second)
+		: x(first.x), y(first.y), z(second.x), w(second.y)
+	{
+	}
+
 	Vec4::Vec4(const Vec4& other)
 		: x(other.x), y(other.y), z(other.z), w(other.w)
 	{
 	}
 
 	float& Vec4::operator[](int index)
+	{
+		return index == 0 ? x : index == 1 ? y : index == 2 ? z : w;
+	}
+
+	const float Vec4::operator[](int index) const
 	{
 		return index == 0 ? x : index == 1 ? y : index == 2 ? z : w;
 	}

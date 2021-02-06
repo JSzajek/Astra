@@ -76,6 +76,7 @@ namespace Astra::Graphics
 		return id;
 	}
 
+	// TODO: Clean up or reutilize
 	const Texture* Loader::LoadAtlasTextureImpl(const char* const filepath)
 	{
 		static int m_bpp;
@@ -116,6 +117,41 @@ namespace Astra::Graphics
 		return NULL;
 	}
 
+	const Texture* Loader::LoadFontAtlasTextureImpl(const char* const filepath, unsigned int fontSize, const std::vector<unsigned char>& data, unsigned int width, unsigned int height)
+	{
+		Texture* texture = NULL;
+		if (ResourceManager::QueryFontAtlasTexture(filepath, fontSize, &texture))
+		{
+			return texture;
+		}
+		else if (texture)
+		{
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+			glGenTextures(1, &texture->id);
+			glBindTexture(GL_TEXTURE_2D, texture->id);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, &data[0]);
+
+			texture->width = width;
+			texture->height = height;
+
+			// set texture options
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // Reset unpacking alignment to default
+			
+			glBindTexture(GL_TEXTURE_2D, 0);
+
+			return texture;
+		}
+		Logger::LogError(std::string("Loader Error in Font Atlas Texture Initialization"));
+		return NULL;
+	}
+
+
 	const Texture* Loader::LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert)
 	{
 		static int m_bpp;
@@ -147,7 +183,8 @@ namespace Astra::Graphics
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clippingOption);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clippingOption);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, diffuse ? GL_LINEAR : GL_NEAREST);
+			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
 			if (glfwExtensionSupported("GL_EXT_texture_filter_anisotropic"))
