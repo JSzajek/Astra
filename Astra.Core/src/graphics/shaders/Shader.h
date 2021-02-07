@@ -14,20 +14,6 @@
 
 namespace Astra::Graphics
 {
-	enum ShaderType
-	{
-		Basic,
-		Lighting,
-		Gui,
-		Terrains,
-		Skybox,
-		Water,
-		NormalMapped,
-		Particles,
-		Shadows,
-		Gizmos
-	};
-
 	struct ShaderProgramSource
 	{
 		std::string VertextSource;
@@ -67,13 +53,13 @@ namespace Astra::Graphics
 		const char* m_filepath;
 		std::unordered_map<std::string, GLint> indexDirectory;
 		std::unordered_map<std::string, GLint> failedDirectory;
-		ShaderType m_type;
 		std::tuple<const char*, int>* m_replace;
 	public:
-		Shader(const char* filepath, ShaderType type = ShaderType::Basic, std::tuple<const char*, int>* replace = NULL);
+		Shader(const char* filepath, std::tuple<const char*, int>* replace = NULL);
 		~Shader();
 
 		void SetUniform1i(const GLchar* name, const int& value);
+		void SetUniform1iv(const GLchar* name, int count, const int* value);
 		void SetUniform1f(const GLchar* name, const float& value);
 		void SetUniform2f(const GLchar* name, const Math::Vec2& value);
 		void SetUniform2f(const GLchar* name, const float& v1, const float& v2);
@@ -84,8 +70,6 @@ namespace Astra::Graphics
 		void SetUniformMat4(const GLchar* name, const Math::Mat4* const matrix);
 		void Start() const;
 		void Stop() const;
-
-		inline const ShaderType& GetType() const { return m_type; }
 	protected:
 		inline void BindAttribute(GLuint index, const char* const name) const { glBindAttribLocation(m_id, index, name); }
 		GLint GetUniformLocation(const GLchar* name);
@@ -122,6 +106,12 @@ namespace Astra::Graphics
 		static const char* GetPointLightAttenuationTag(int index)
 		{
 			sprintf(GetBuffer(), "pointLights[%i].attenuation", index);
+			return GetBuffer();
+		}
+
+		static const char* GetInstancedTextureTag(int index)
+		{
+			sprintf(GetBuffer(), "instanced_Textures[%i]", index);
 			return GetBuffer();
 		}
 	private:

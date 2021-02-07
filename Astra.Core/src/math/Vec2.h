@@ -32,13 +32,13 @@ namespace Astra::Math
 		/// </summary>
 		/// <param name="_x">The x value</param>
 		/// <param name="_y">The y value</param>
-		Vec2(const float& _x, const float& _y);
+		Vec2(float _x, float _y);
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Vec2"/> class.
 		/// </summary>
 		/// <param name="_value">The value across the Vec2</param>
-		Vec2(const float& _value);
+		Vec2(float _value);
 
 		/// <summary>
 		/// Copy constructor of the <see cref="Vec2"/> class.
@@ -72,7 +72,7 @@ namespace Astra::Math
 		/// </summary>
 		/// <param name="other">The other Vec2 to multiply</param>
 		/// <returns>The multiplied Vec2</returns>
-		Vec2& Multiply(const Vec2& other);
+		Vec2 Multiply(const Vec2& other);
 
 		/// <summary>
 		/// Multiplies the passed vector.
@@ -114,7 +114,7 @@ namespace Astra::Math
 		/// </summary>
 		/// <param name="other">The other Vec2 to multiply</param>
 		/// <returns>The multiplied Vec2</returns>
-		friend Vec2& operator*(Vec2 left, const Vec2& right);
+		friend Vec2 operator*(Vec2 left, const Vec2& right);
 		
 		/// <summary>
 		/// Multiplication operator override.
@@ -156,7 +156,7 @@ namespace Astra::Math
 		/// </summary>
 		/// <param name="other">The other Vec2 to multiply</param>
 		/// <returns>The multiplied Vec2</returns>
-		Vec2& operator*=(const Vec2& other);
+		Vec2 operator*=(const Vec2& other);
 
 		/// <summary>
 		/// Multiplication operator override.

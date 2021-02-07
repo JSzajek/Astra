@@ -20,6 +20,7 @@ namespace Astra::Graphics
 		unsigned int m_brightTexture;
 	public:
 		BloomEffect(int width, int height);
+		~BloomEffect() override;
 		void Start(unsigned int* attachment) override;
 		void Stop() override;
 		void UpdateAspectRatio(unsigned int width, unsigned int height) override;

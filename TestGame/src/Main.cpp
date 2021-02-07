@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <stack>
+#include <unordered_map>
 
 #include <ctime>
 
@@ -17,6 +19,7 @@ int main()
     srand((unsigned)time(0));
 
     std::vector<Synchronous*> worldItems;
+    std::vector<const Entity*> entities;
     Window::SetWindowTitle("Astra");
     Window::SetWindowSize(960, 540);
     Window::SetWindowResizeCallback([&](int width, int height) { RendererController::UpdateScreen(width, height); });
@@ -26,22 +29,22 @@ int main()
     mainScene->Start();
 
     TerrainMaterial* grassTerrainMat = new TerrainMaterial("res/textures/grass.jpg");
-    TerrainMaterial* flowerTerrainMat = new TerrainMaterial("res/textures/grassFlowers.png");
+    //TerrainMaterial* flowerTerrainMat = new TerrainMaterial("res/textures/grassFlowers.png");
     TerrainMaterial* mudTerrainMat = new TerrainMaterial("res/textures/mud.png");
-    TerrainMaterial* pathTerrainMat = new TerrainMaterial("res/textures/path.png");
+    //TerrainMaterial* pathTerrainMat = new TerrainMaterial("res/textures/path.png");
 
     //TerrainMaterialPack pack(grassTerrainMat, flowerTerrainMat, mudTerrainMat, pathTerrainMat);
-    TerrainMaterialPack pack(grassTerrainMat, grassTerrainMat, mudTerrainMat, grassTerrainMat);
+    TerrainMaterialPack* pack = new TerrainMaterialPack(grassTerrainMat, grassTerrainMat, mudTerrainMat, grassTerrainMat);
     TerrainMaterial* blendMap = new TerrainMaterial("res/textures/blendMap.png");
 
     //Terrain terrain = Terrain(0, 0, "res/textures/meteorcrater_heightmap.png", &pack, blendMap);
-    Terrain terrain = Terrain(0, 0, 40, 4, 0.01f, 4862, &pack, blendMap);
+    Terrain terrain = Terrain(0, 0, 40, 4, 0.01f, 4862, pack, blendMap);
     terrain(TRANSLATION, SUB_EQ, X_POS, 128);
     terrain(TRANSLATION, SUB_EQ, Z_POS, 128);
     
     mainScene->AddTerrain(&terrain);
 
-    Player player(Vec3(-25,50,-100), &terrain);
+    Player player(Vec3(-25, 50, -100), &terrain);
     
     mainScene->SetMainCamera(player.GetCamera());
     mainScene->AddEntity(player.GetRendering());
@@ -51,19 +54,16 @@ int main()
 
     mainScene->AddWaterTile(&tile1);
 
-    // TODO: Store Fonts in a directory and handle deletion before game closure or when no references
-
-    Texture fontTexture = Loader::LoadAtlasTexture("res/fonts/candara.png");
-    FontType* font = new FontType(fontTexture.id, "res/fonts/candara.fnt");
-    GuiText* text = new GuiText("This is a test text!", font, 3, Vec2(0, 0), 1, true);
-    GuiText* outlineText = new GuiText("Outlines", font, 3, Vec2(0), Vec3(0), 0, 1, Vec3(0, 0, 1));
-
-    mainScene->AddText(text);
-    mainScene->AddText(outlineText);
-
-    Texture texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
-    GuiTexture gui = GuiTexture("grass_sprite", texture.id, Vec2(0.75f, 0.75f), Vec2(0.1f, 0.1f));
-    mainScene->AddGui(&gui);
+    //const Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
+    auto* guiMat = ResourceManager::LoadGuiMaterial("res/textures/fernAtlas.png", 2);
+    Image gui = Image(guiMat, Vec2(300), Vec2(0.3f), 0);
+    gui.SetModulate(Color::White);
+    mainScene->AddGui(&gui, 0);
+    
+    auto* fontAtlas = ResourceManager::LoadFontAtlas("res/fonts/OpenSans-Regular.ttf", 48);
+    TextBox textbox = TextBox("OpenGL", fontAtlas, Vec2(10), 0, Vec2(1));
+    textbox.SetModulate(Color::Green);
+    mainScene->AddGui(&textbox, 0);
 
     std::vector<const char*> m_textureFiles =
     {
@@ -85,8 +85,8 @@ int main()
         "res/textures/Default_Night_Skybox/front.png",
     };
 
-    SkyboxMaterial skybox(m_textureFiles, m_nightTextureFiles);
-    mainScene->SetSkyBox(&skybox);
+    SkyboxMaterial* skybox = new SkyboxMaterial(m_textureFiles, m_nightTextureFiles);
+    mainScene->SetSkyBox(skybox);
     
     Vec3 light_pos = Math::Vec3(-55, terrain.GetHeightOfTerrain(-55, 55) + 7, 55);
     DirectionalLight* dir_light = new DirectionalLight(Vec3(0), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0));
@@ -97,46 +97,57 @@ int main()
     mainScene->AddPointLight(light4);
     mainScene->SetDirectionalLight(dir_light);
 
-    ImageMaterial* barrelMat2 = new ImageMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.jpg", 1, 32);
-    Entity barrelModel2 = Entity("res/barrel.obj", "res/textures/barrelNormal.png", barrelMat2, Vec3(-40, terrain.GetHeightOfTerrain(-40, 55) + 5, 55), Vec3(0), Vec3(1));
-    mainScene->AddEntity(&barrelModel2);
-    barrelModel2.SetSelected(true);
+    auto* barrelMat = ResourceManager::LoadMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.jpg", "res/textures/barrelNormal.png", NULL, 0, NULL, 1, 32);
+    auto* barrelModel = ResourceManager::LoadNormalEntity("res/barrel.obj", 0, Vec3(-40, terrain.GetHeightOfTerrain(-40, 55) + 5, 55), Vec3(0), Vec3(1));
+    barrelModel->SetMaterial(barrelMat);
+    barrelModel->SetSelected(true);
+    entities.emplace_back(barrelModel);
+    mainScene->AddEntity(barrelModel);
 
-    ImageMaterial* brickMat = new ImageMaterial("res/textures/bricks.jpg", "res/textures/bricks_specular.jpg", 1, 16);
-    Entity brick = Entity("res/plane.obj", "res/textures/bricks_normal.jpg", "res/textures/bricks_heightmap.jpg", 0.1f, brickMat, Vec3(-50, terrain.GetHeightOfTerrain(-50, 50) + 5, 50), Vec3(90, 0, 0), Vec3(5, 1, 5));
-    mainScene->AddEntity(&brick);
+    auto* brickMat = ResourceManager::LoadMaterial("res/textures/bricks.jpg", "res/textures/bricks_specular.jpg", "res/textures/bricks_normal.jpg", "res/textures/bricks_heightmap.jpg", 0.1f, NULL, 1, 16);
+    auto* brick = ResourceManager::LoadNormalEntity("res/plane.obj", 0, Vec3(-50, terrain.GetHeightOfTerrain(-50, 50) + 5, 50), Vec3(90, 0, 0), Vec3(5, 1, 5));
+    brick->SetMaterial(brickMat);
+    entities.emplace_back(brick);
+    mainScene->AddEntity(brick);
 
-    ImageMaterial* runestoneMat = new ImageMaterial("res/textures/rock1_basecolor.png", "res/textures/rock1_roughness.png", "res/textures/rock1_emissive.png", 1, 32);
-    Entity runestone = Entity("res/runestone_1.obj", "res/textures/rock1_normal.png", runestoneMat, Vec3(-60, terrain.GetHeightOfTerrain(-60, 60) + 2, 60), Vec3::Zero, Vec3(2));
-    mainScene->AddEntity(&runestone);
+    auto* runestoneMat = ResourceManager::LoadMaterial("res/textures/rock1_basecolor.png", "res/textures/rock1_roughness.png", "res/textures/rock1_normal.png", NULL, 0, "res/textures/rock1_emissive.png", 1, 32);
+    auto* runestone = ResourceManager::LoadNormalEntity("res/runestone_1.obj", 0, Vec3(-60, terrain.GetHeightOfTerrain(-60, 60) + 2, 60), Vec3::Zero, Vec3(2));
+    runestone->SetMaterial(runestoneMat);
+    entities.emplace_back(runestone);
+    mainScene->AddEntity(runestone);
 
-    ImageMaterial* lampMat = new ImageMaterial("res/textures/Lamp_UV_Layout.png", "res/textures/Lamp_Specular.png", "res/textures/Lamp_Emission.png", 1, 32);
-    Entity lamp = Entity("res/Lamp.obj", lampMat, 1, Vec3(-28.75f, -1.25f, -65.5f), Vec3::Zero, Vec3(1.5f));
-    mainScene->AddEntity(&lamp);
+    auto* lampMat = ResourceManager::LoadMaterial("res/textures/Lamp_UV_Layout.png", "res/textures/Lamp_Specular.png", "res/textures/Lamp_Emission.png", 1, 32);
+    auto* lamp = ResourceManager::LoadEntity("res/Lamp.obj", 0, Vec3(-28.75f, -1.25f, -65.5f), Vec3::Zero, Vec3(1.5f));
+    lamp->SetMaterial(lampMat);
+    entities.emplace_back(lamp);
+    mainScene->AddEntity(lamp);
 
-    ImageMaterial* mushroomMat = new ImageMaterial("res/textures/Boxing_Shroom_UV_Layout.png", "res/textures/Boxing_Shroom_Specular.png", 1, 8);
-    Entity mushroom = Entity("res/Boxing_Shroom.obj", mushroomMat, 1, Vec3(-25, terrain.GetHeightOfTerrain(-25, -65), -65), Vec3(0, 180, 0), Vec3(2));
-    mainScene->AddEntity(&mushroom);
+    auto* mushroomMat = ResourceManager::LoadMaterial("res/textures/Boxing_Shroom_UV_Layout.png", "res/textures/Boxing_Shroom_Specular.png", NULL, 1, 8);
+    auto* mushroom = ResourceManager::LoadEntity("res/Boxing_Shroom.obj", 0, Vec3(-25, terrain.GetHeightOfTerrain(-25, -65), -65), Vec3(0, 180, 0), Vec3(2));
+    mushroom->SetMaterial(mushroomMat);
+    entities.emplace_back(mushroom);
+    mainScene->AddEntity(mushroom);
 
     // Example of duplicate usage of vertex array object (duplicate of player)
-    ImageMaterial* containerMat = new ImageMaterial("res/textures/container.png", "res/textures/container_specular.png", 1, 32, false);
-    Entity container = Entity("res/cube.obj", containerMat, 0, Vec3(-30, terrain.GetHeightOfTerrain(-30, -65) + 2, -65), Vec3(0), Vec3(2));
-    mainScene->AddEntity(&container);
-    container.SetSelected(true);
+    auto* containerMat = ResourceManager::LoadMaterial("res/textures/container.png", "res/textures/container_specular.png", NULL, 1, 32);
+    auto* container = ResourceManager::LoadEntity("res/cube.obj", 0, Vec3(-30, terrain.GetHeightOfTerrain(-30, -65) + 2, -65), Vec3(0), Vec3(2));
+    container->SetMaterial(containerMat);
+    container->SetSelected(true);
+    entities.emplace_back(container);
+    mainScene->AddEntity(container);
 
-    ImageMaterial* fernMat = new ImageMaterial("res/textures/fernAtlas.png", 2, 0.25f, true, true);
-    std::vector<const Entity*> entities;
+    auto* fernMat = ResourceManager::LoadMaterial("res/textures/fernAtlas.png", Texture::DefaultSpecular, NULL, 2, 0.25f, true);
+    fernMat->FakeLight = true;
     for (int i = 0; i < 12; i++)
     {
         int x = (rand() % 256) - 128;
         int z = (rand() % 256) - 128;
-        //int x = RandomRange(-45, -5);
-        //int z = RandomRange(-100, -52);
         float y = terrain.GetHeightOfTerrain(x, z);
-        Entity* entity = new Entity("res/fern.obj", fernMat, rand() % 4, Vec3(static_cast<float>(x), y, static_cast<float>(z)), Vec3::Zero, Vec3::One);
-        entities.emplace_back(entity);
-        mainScene->AddEntity(entity);
-        entity->SetSelected(Math::RandomRange(0, 10) > 5);
+        auto* fern = ResourceManager::LoadEntity("res/fern.obj", rand() % 4, Vec3(static_cast<float>(x), y, static_cast<float>(z)), Vec3::Zero, Vec3(Math::Random() * 1.5f));
+        fern->SetMaterial(fernMat);
+        entities.emplace_back(fern);
+        mainScene->AddEntity(fern);
+        fern->SetSelected(Math::RandomRange(0, 10) > 5);
     }
     
     ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);
@@ -150,6 +161,17 @@ int main()
     partSystem.SetRandomRotation(true);
     mainScene->AddParticleSystem(&partSystem);
     
+    /*ParticleMaterial* partMaterial2 = new ParticleMaterial("res/textures/particleStar.png", 1);
+    Vec3 particleCenter2(-100, terrain.GetHeightOfTerrain(-100, 80) + 5, 80);
+
+    ConeParticleSystem partSystem2(partMaterial2, &particleCenter2, 15, 5, -0.1f, 1.5f, 2, false);
+    partSystem2.SetDirection(Vec3(0, 1, 0), 0.5f);
+    partSystem2.SetLifeError(0.1f);
+    partSystem2.SetSpeedError(0.4f);
+    partSystem2.SetScaleError(0.8f);
+    partSystem2.SetRandomRotation(true);
+    mainScene->AddParticleSystem(&partSystem2);*/
+
     // Example of Gui Texture Instancing
     #define EXAMPLE_GUI_INSTANCING  0
     
@@ -182,31 +204,35 @@ int main()
     const float InGameTimeSpeed = 0.00005f;
     short timeDir = 1;
 
-    Timer time;
-    float timer = 0;
+    Timer timer;
+    float elapsedTime = 0;
     unsigned int frames = 0;
+    float delta;
 
     while (!Window::Closed())
     {
+        delta = Window::GetDelta();
         Window::Clear();
-        float delta = Window::GetDelta();
         
+        // Update All Updatable Items and Collision Detections
         for (Synchronous* item : worldItems)
         {
             item->Update(delta);
         }
 
-        barrelModel2(ROTATION, SUM_EQ, Y_POS, 0.5f);
+        //gui.Rotation += 0.5f;
 
-        skybox.BlendFactor() += InGameTimeSpeed * timeDir;
-        if (skybox.BlendFactor() >= 1)
+        (*barrelModel)(ROTATION, SUM_EQ, Y_POS, 0.5f);
+
+        skybox->BlendFactor() += InGameTimeSpeed * timeDir;
+        if (skybox->BlendFactor() >= 1)
         {
-            skybox.BlendFactor() = 1;
+            skybox->BlendFactor() = 1;
             timeDir = -1;
         }
-        else if (skybox.BlendFactor() <= 0)
+        else if (skybox->BlendFactor() <= 0)
         {
-            skybox.BlendFactor() = 0;
+            skybox->BlendFactor() = 0;
             timeDir = 1;
         }
 
@@ -221,9 +247,9 @@ int main()
         Window::Update();
 
         frames++;
-        if (time.Elapsed() - timer > 1.0f)
+        if (timer.Elapsed() - elapsedTime > 1.0f)
         {
-            timer += 1.0f;
+            elapsedTime += 1.0f;
             printf("%dfps\n", frames);
             frames = 0;
         }
@@ -234,16 +260,6 @@ int main()
     {
         delete entity;
     }
-
-    delete font;
-    delete text;
-    delete outlineText;
-
-    delete grassTerrainMat;
-    delete flowerTerrainMat;
-    delete mudTerrainMat;
-    delete pathTerrainMat;
-    delete blendMap;
 
     delete dir_light;
     delete light3;

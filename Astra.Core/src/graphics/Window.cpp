@@ -73,6 +73,10 @@ namespace Astra::Graphics
 			return false;
 		}
 
+		// Force usage of OpenGL 3.3.0
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		m_window = glfwCreateWindow(m_width, m_height, m_title, NULL, NULL);
 
 		if (!m_window)
@@ -92,6 +96,8 @@ namespace Astra::Graphics
 
 	#if V_SYNC
 		glfwSwapInterval(0);
+	#else
+		glfwSwapInterval(1);
 	#endif
 
 		glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height)

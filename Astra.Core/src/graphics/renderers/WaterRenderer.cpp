@@ -6,6 +6,8 @@
 #include "../entities/SpotLight.h"
 #include "../shadows/ShadowMapController.h"
 
+#include "../ResourceManager.h"
+
 namespace Astra::Graphics
 {
 	WaterRenderer::WaterRenderer(float near, float far)
@@ -16,6 +18,11 @@ namespace Astra::Graphics
 		#endif
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLES, { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 }, 2);
+	}
+
+	WaterRenderer::~WaterRenderer()
+	{
+		ResourceManager::Unload(m_defaultQuad);
 	}
 
 	void WaterRenderer::SetShader(Shader* shader)
@@ -155,11 +162,11 @@ namespace Astra::Graphics
 		m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, tile->material->reflectivity);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, tile->material->diffuseTexture.id);
+		glBindTexture(GL_TEXTURE_2D, tile->material->diffuseTexture->id);
 		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, tile->material->dudvTexture.id);
+		glBindTexture(GL_TEXTURE_2D, tile->material->dudvTexture->id);
 		glActiveTexture(GL_TEXTURE4);
-		glBindTexture(GL_TEXTURE_2D, tile->material->normalTexture.id);
+		glBindTexture(GL_TEXTURE_2D, tile->material->normalTexture->id);
 		glActiveTexture(GL_TEXTURE5);
 		glBindTexture(GL_TEXTURE_2D, tile->material->GetSpecularId());
 	}

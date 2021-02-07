@@ -9,7 +9,7 @@ namespace Astra::Graphics
 	public:
 		ContrastShader(const char* filepath =
 			"../Astra.Core/src/resources/shaders/Contrast.shader")
-			: Shader(filepath, ShaderType::Basic)
+			: Shader(filepath)
 		{
 		}
 	};

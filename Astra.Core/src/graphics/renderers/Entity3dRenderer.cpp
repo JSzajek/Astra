@@ -11,7 +11,7 @@
 namespace Astra::Graphics
 {
 	Entity3dRenderer::Entity3dRenderer(const Math::Vec3* fogColor)
-		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), 
+		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), m_drawSelection(false),
 			m_selectionShader(new SelectionShader()), m_toShadowSpaceMatrix(NULL)
 		#if _DEBUG
 			, m_wireframe(false)
@@ -84,7 +84,7 @@ namespace Astra::Graphics
 			PrepareEntity(directory.second.front());
 			for (const Entity* entity : directory.second)
 			{
-				if (entity->IsSelected())
+				if (m_drawSelection && entity->IsSelected())
 				{
 					glStencilFunc(GL_ALWAYS, 1, 0xFF);
 					glStencilMask(0xFF);
@@ -111,7 +111,10 @@ namespace Astra::Graphics
 		}
 	#endif
 		m_shader->Stop();
-		DrawSelected(viewMatrix);
+		if (m_drawSelection)
+		{
+			DrawSelected(viewMatrix);
+		}
 	#if _DEBUG
 		glCheckError();
 	#endif 
@@ -252,5 +255,6 @@ namespace Astra::Graphics
 			m_selected.pop();
 		}
 		m_selectionShader->Stop();
+		m_drawSelection = false;
 	}
 }

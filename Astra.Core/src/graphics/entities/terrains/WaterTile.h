@@ -12,11 +12,12 @@ namespace Astra::Graphics
 	private:
 		float m_size;
 	public:
-		WaterMaterial* const material;
+		WaterMaterial* material;
 	public:
 		WaterTile(float xCenter, float zCenter, float height, WaterMaterial* const material = new WaterMaterial());
 		WaterTile(float xCenter, float zCenter, float height, float size, WaterMaterial* const material = new WaterMaterial());
 		WaterTile(const WaterTile& other);
+		~WaterTile();
 		inline Math::Vec3* Rotation() override;
 	};
 }

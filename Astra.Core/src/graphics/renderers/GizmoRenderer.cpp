@@ -1,11 +1,13 @@
 #include "GizmoRenderer.h"
 
 #include "../loaders/Loader.h"
+#include "../ResourceManager.h"
 
 namespace Astra::Graphics
 {
 #if _DEBUG
 	GizmoRenderer::GizmoRenderer(GizmoShader* shader)
+		: m_viewMatrix(NULL)
 	{
 		Renderer::SetShader(shader);
 		m_defaultQuad = Loader::Load(GL_TRIANGLE_STRIP, { -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5 }, 2);
@@ -14,7 +16,8 @@ namespace Astra::Graphics
 
 	GizmoRenderer::~GizmoRenderer()
 	{
-		delete m_defaultQuad;
+		ResourceManager::Unload(m_defaultQuad);
+		delete m_modelViewMatrix;
 	}
 
 	void GizmoRenderer::AddGizmo(const Gizmo* gizmo)

@@ -278,11 +278,12 @@ namespace Astra::Math
 		Mat4 result;
 		result.data[0 + 0 * 4] = 2.0f / (right - left);
 		result.data[1 + 1 * 4] = 2.0f / (top - bottom);
-		result.data[2 + 2 * 4] = 2.0f / (near - far);
+		result.data[2 + 2 * 4] = -2.0f / (far - near);
 
-		result.data[0 + 3 * 4] = (left + right) / (left - right);
-		result.data[1 + 3 * 4] = (bottom + top) / (bottom - top);
-		result.data[2 + 3 * 4] = (far + near) / (far - near);
+		result.data[0 + 3 * 4] = -((right + left) / (right - left));
+		result.data[1 + 3 * 4] = -((top + bottom) / (top - bottom));
+		result.data[2 + 3 * 4] = -((far + near) / (far - near));
+		result.data[3 + 3 * 4] = 1;
 		return result;
 	}
 

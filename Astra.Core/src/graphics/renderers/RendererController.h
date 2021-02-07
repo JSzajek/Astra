@@ -2,6 +2,7 @@
 
 #include <map>
 #include <vector>
+#include <tuple>
 
 #include "GuiRenderer.h"
 #include "Entity3dRenderer.h"
@@ -10,7 +11,6 @@
 #include "WaterRenderer.h"
 #include "NormalEntity3dRenderer.h"
 #include "../post_processing/PostProcessor.h"
-#include "../fonts/FontController.h"
 #include "../particles/ParticleController.h"
 #include "../gizmos/GizmoController.h"
 #include "../shadows/ShadowMapController.h"
@@ -21,7 +21,7 @@
 #include "../shaders/SkyboxShader.h"
 #include "../shaders/WaterShader.h"
 #include "../shaders/NormalEntityShader.h"
-#include "../textures/GuiTexture.h"
+#include "../guis/Gui.h"
 #include "../entities/Camera.h"
 #include "../../math/Mat4Utils.h"
 
@@ -124,8 +124,7 @@ namespace Astra::Graphics
 		void Clear();
 
 		void PrepareRender(float delta);
-		void PreRender(float delta, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane = Renderer::DefaultClipPlane);
-		void PostRender(const Math::Vec4& inverseViewVector);
+		void Render(float delta, const Math::Vec4& inverseViewVector, bool waterPass, const Math::Vec4& clipPlane = Renderer::DefaultClipPlane);
 		void GuiRender();
 	#if _DEBUG
 		void ToggleWireframeModeImpl(unsigned char state);

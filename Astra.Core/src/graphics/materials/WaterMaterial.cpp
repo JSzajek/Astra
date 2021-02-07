@@ -1,6 +1,7 @@
 #include "WaterMaterial.h"
 
 #include "../loaders/Loader.h"
+#include "../ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -24,5 +25,13 @@ namespace Astra::Graphics
 	{
 		m_currentWaveSpeed = fmodf(m_currentWaveSpeed + waveSpeed * delta, 1);
 		return m_currentWaveSpeed;
+	}
+
+	WaterMaterial::~WaterMaterial()
+	{
+		ResourceManager::Unload(m_specular);
+		ResourceManager::Unload(diffuseTexture);
+		ResourceManager::Unload(dudvTexture);
+		ResourceManager::Unload(normalTexture);
 	}
 }

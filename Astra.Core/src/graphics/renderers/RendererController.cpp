@@ -2,6 +2,8 @@
 
 #include "../Window.h"
 
+#include "../ResourceManager.h"
+
 #include <functional>
 
 namespace Astra::Graphics
@@ -19,7 +21,7 @@ namespace Astra::Graphics
 		m_postProcessor = new PostProcessor();
 		m_shadowMapController = new ShadowMapController(FieldOfView, NearPlane, FarPlane);
 
-		m_guiRenderer = new GuiRenderer(new GuiShader());
+		m_guiRenderer = new GuiRenderer(new GuiShader(), new FontShader());
 		m_skyboxRenderer = new SkyboxRenderer(new SkyboxShader(), m_fogColor);
 		m_entityRenderer = new Entity3dRenderer(m_fogColor);
 		m_terrainRenderer = new TerrainRenderer(m_fogColor);
@@ -64,6 +66,12 @@ namespace Astra::Graphics
 		delete m_waterRenderer;
 		delete m_normalEntityRenderer;
 		delete m_shadowMapController;
+		delete m_postProcessor;
+
+		delete projectionMatrix;
+		delete m_toShadowMapMatrix;
+
+		delete m_waterBuffer;
 	}
 
 	bool RendererController::SetCurrentSceneImpl(const Scene* scene)
@@ -106,7 +114,7 @@ namespace Astra::Graphics
 
 		for (auto* entity : scene->GetEntities())
 		{
-			if (entity->IsNormalMapped() || entity->IsParallaxMapped())
+			if (entity->material->IsNormalMapped() || entity->material->IsParallaxMapped())
 			{
 				m_normalEntityRenderer->AddEntity(entity);
 			}
@@ -130,13 +138,9 @@ namespace Astra::Graphics
 		{
 			m_terrainRenderer->AddTerrain(terrain);
 		}
-		for (auto* gui : scene->GetGuis())
+		for (const auto& gui : scene->GetGuis())
 		{
-			m_guiRenderer->AddGui(gui);
-		}
-		for (auto* text : scene->GetTexts())
-		{
-			FontController::LoadText(text);
+			m_guiRenderer->AddGui(std::get<0>(gui), std::get<1>(gui));
 		}
 		for (auto* tile : scene->GetWaterTiles())
 		{
@@ -178,7 +182,6 @@ namespace Astra::Graphics
 		m_terrainRenderer->Clear();
 		m_normalEntityRenderer->Clear();
 		m_waterRenderer->Clear();
-		FontController::Clear();
 		ParticleController::Clear();
 		m_systems.clear();
 	#if _DEBUG
@@ -201,6 +204,12 @@ namespace Astra::Graphics
 	#if _DEBUG
 		GizmoController::UpdateProjectionMatrix(projectionMatrix);
 	#endif
+
+		// Keeping the original design size causes the gui to scale up or down based on the window.
+		// This could be potentially counteractive for higher scale resizing causing the loss of resolution.
+		// TODO :: Add switch to either scale up implicitly or keep same resolution.
+		auto ortho = Math::Mat4::Orthographic(0, 960, 540, 0, -1, 1);
+		m_guiRenderer->UpdateProjectionMatrix(&ortho);
 	}
 
 	void RendererController::RenderImpl(float delta)
@@ -217,24 +226,25 @@ namespace Astra::Graphics
 		if (m_waterBuffer && m_mainCamera)
 		{
 			float distance = 2 * (m_mainCamera->GetTranslation().y - m_refractionClipPlane.w);
-
+			
+			// Reflection Rendering
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetReflectionBuffer()->GetId(), 320, 180);
 			m_mainCamera->Translation()->y -= distance;
 			m_mainCamera->InvertPitch(); // Updates the view matrix
-			PreRender(delta, viewMatrix->Inverse() * Math::Vec4::W_Axis, m_reflectionClipPlane);
+			Render(delta, viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_reflectionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 
+			// Refraction Rendering
 			m_mainCamera->Translation()->y += distance;
 			m_mainCamera->InvertPitch(); // Updates the view matrix
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetRefractionBuffer()->GetId(), 1280, 720);
-			PreRender(delta, viewMatrix->Inverse() * Math::Vec4::W_Axis, m_refractionClipPlane);
+			Render(delta, viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_refractionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 		}
 
 		Math::Vec4 inverseView = viewMatrix->Inverse() * Math::Vec4::W_Axis;
 		PrepareRender(delta);
-		PreRender(delta, inverseView);
-		PostRender(inverseView);
+		Render(delta, inverseView, false);
 		GuiRender();
 	}
 
@@ -252,23 +262,31 @@ namespace Astra::Graphics
 		*m_toShadowMapMatrix = m_shadowMapController->GetToShadowMapSpaceMatrix();
 	}
 
-	void RendererController::PreRender(float delta, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void RendererController::Render(float delta, const Math::Vec4& inverseViewVector, bool waterPass, const Math::Vec4& clipPlane)
 	{
 		if (m_currentScene == NULL || m_block) { return; }
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
+		
 		m_terrainRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
-		m_entityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
-		m_normalEntityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
-		m_skyboxRenderer->Draw(delta, viewMatrix, NULL);
-	}
 
-	void RendererController::PostRender(const Math::Vec4& inverseViewVector)
-	{
-		if (m_currentScene == NULL || m_block) { return; }
+		if (!waterPass)
+		{
+			m_skyboxRenderer->Draw(delta, viewMatrix, NULL);
+			m_waterRenderer->Draw(0, viewMatrix, inverseViewVector);
 
-		m_waterRenderer->Draw(0, viewMatrix, inverseViewVector);
+			m_entityRenderer->FlagSelectionDraw();
+			m_normalEntityRenderer->FlagSelectionDraw();
+			
+			m_entityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
+			m_normalEntityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
+		}
+		else
+		{
+			m_entityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
+			m_normalEntityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
+			m_skyboxRenderer->Draw(delta, viewMatrix, NULL);
+		}
 	}
 
 	void RendererController::GuiRender()
@@ -285,7 +303,6 @@ namespace Astra::Graphics
 		GizmoController::Render(viewMatrix);
 	#endif
 		m_guiRenderer->Draw();
-		FontController::Render();
 	}
 
 #if _DEBUG

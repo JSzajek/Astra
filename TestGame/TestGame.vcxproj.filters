@@ -117,5 +117,8 @@
     <ClInclude Include="src\Synchronous.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="res\temp.shader">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

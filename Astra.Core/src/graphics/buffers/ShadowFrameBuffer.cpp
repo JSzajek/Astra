@@ -1,5 +1,7 @@
 #include "ShadowFrameBuffer.h"
 
+#include "../ResourceManager.h"
+
 namespace Astra::Graphics
 {
 	ShadowFrameBuffer::ShadowFrameBuffer(FrameBuffer* buffer, unsigned int mapId, unsigned int width, unsigned int height)
@@ -14,6 +16,6 @@ namespace Astra::Graphics
 
 	ShadowFrameBuffer::~ShadowFrameBuffer()
 	{
-		delete m_buffer;
+		ResourceManager::Unload(m_buffer);
 	}
 }

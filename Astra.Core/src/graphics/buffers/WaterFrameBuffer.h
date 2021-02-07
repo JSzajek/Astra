@@ -17,6 +17,7 @@ namespace Astra::Graphics
 						 unsigned int reflectionWidth, unsigned int reflectionHeight,
 					     unsigned int refractionWidth, unsigned int refractionHeight);
 		WaterFrameBuffer(const WaterFrameBuffer& other);
+		~WaterFrameBuffer();
 
 		const FrameBuffer* GetReflectionBuffer() const { return m_reflectionBuffer; }
 		const FrameBuffer* GetRefractionBuffer() const { return m_refractionBuffer; }

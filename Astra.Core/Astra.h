@@ -17,7 +17,7 @@
 #include "src/graphics/buffers/Texture.h"
 #include "src/graphics/buffers/WaterFrameBuffer.h"
 
-#include "src/graphics/fonts/TextMesh.h"
+#include "src/graphics/guis/Guis.h"
 
 #include "src/graphics/renderers/RendererController.h"
 
@@ -37,3 +37,5 @@
 
 #include "src/audio/AudioController.h"
 #include "src/audio/AudioSource.h"
+
+#include "src/graphics/ResourceManager.h"

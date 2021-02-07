@@ -1,5 +1,7 @@
 #include "SkyboxRenderer.h"
 
+#include "../ResourceManager.h"
+
 namespace Astra::Graphics
 {
 	SkyboxRenderer::SkyboxRenderer(Shader* shader, const Math::Vec3* fogColor)
@@ -13,6 +15,12 @@ namespace Astra::Graphics
 		m_shader->Stop();
 
 		m_cube = Loader::Load(GL_TRIANGLES, Vertices, 3);
+	}
+
+	SkyboxRenderer::~SkyboxRenderer()
+	{
+		ResourceManager::Unload(m_cube);
+		delete m_material;
 	}
 
 	void SkyboxRenderer::Draw(float delta, const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
