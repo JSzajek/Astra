@@ -3,8 +3,8 @@
 
 namespace Astra::Graphics
 {
-	Shader::Shader(const char* filpath, ShaderType type, std::tuple<const char*, int>* replace)
-		: m_filepath(filpath), m_type(type), m_replace(replace)
+	Shader::Shader(const char* filpath, std::tuple<const char*, int>* replace)
+		: m_filepath(filpath), m_replace(replace)
 	{
 		ShaderProgramSource source = ParseShader(m_filepath);
 		m_id = CreateShader(source.VertextSource, source.FragmentSource);
@@ -22,6 +22,11 @@ namespace Astra::Graphics
 	void Shader::SetUniform1i(const GLchar* name, const int& value)
 	{
 		glUniform1i(GetUniformLocation(name), value);
+	}
+
+	void Shader::SetUniform1iv(const GLchar* name, int count, const int* value)
+	{
+		glUniform1iv(GetUniformLocation(name), count, value);
 	}
 
 	void Shader::SetUniform1f(const GLchar* name, const float& value)

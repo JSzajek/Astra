@@ -25,7 +25,7 @@ namespace Astra::Graphics
 	#endif
 	public:
 		WaterRenderer(float near, float far);
-		
+		~WaterRenderer();
 	#if _DEBUG
 		void SetWireframe(bool wireframe) { m_wireframe = wireframe; };
 	#endif

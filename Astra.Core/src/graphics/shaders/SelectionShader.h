@@ -11,7 +11,7 @@ namespace Astra::Graphics
 	public:
 		SelectionShader(const char* filepath =
 			"../Astra.Core/src/resources/shaders/Selection.shader")
-			: Shader(filepath, ShaderType::Basic)
+			: Shader(filepath)
 		{
 		}
 	};

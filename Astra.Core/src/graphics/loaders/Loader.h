@@ -1,9 +1,9 @@
 #pragma once
 
 #include <vector>
+#include <string>
 #include <unordered_map>
 #include "../../utils/vendor/stb_image/stb_image.h"
-#include <string>
 
 #include "../buffers/VertexArray.h"
 #include "../buffers/Texture.h"
@@ -16,11 +16,6 @@ namespace Astra::Graphics
 {
 	class Loader
 	{
-	private:
-		std::vector<GLuint> m_vaos;
-		std::vector<GLuint> m_vbos;
-		std::unordered_map<std::string, Texture> m_textureDirectory;
-		std::vector<GLuint> m_textureIds;
 	public:
 		Loader(const Loader&) = delete;
 		void operator=(const Loader&) = delete;
@@ -53,14 +48,19 @@ namespace Astra::Graphics
 			return Get().LoadImpl(drawType, vertices, textureCoords);
 		}
 
-		static Texture LoadTexture(const char* const filepath, bool diffuse = true, GLint clippingOption = GL_REPEAT, bool flip = true, bool invert = false)
+		static const Texture* LoadTexture(const char* const filepath, bool diffuse = true, GLint clippingOption = GL_REPEAT, bool flip = true, bool invert = false)
 		{
 			return Get().LoadTextureImpl(filepath, diffuse, clippingOption, flip, invert);
 		}
 
-		static Texture LoadAtlasTexture(const char* const filepath)
+		static const Texture* LoadAtlasTexture(const char* const filepath)
 		{
 			return Get().LoadAtlasTextureImpl(filepath);
+		}
+
+		static const Texture* LoadFontAtlasTexture(const char* const filepath, unsigned int fontSize, const std::vector<unsigned char>& data, unsigned int width, unsigned int height)
+		{
+			return Get().LoadFontAtlasTextureImpl(filepath, fontSize, data, width, height);
 		}
 
 		static const CubeMapTexture* LoadCubeMap(const std::vector<const char*>& filepaths)
@@ -96,7 +96,6 @@ namespace Astra::Graphics
 
 	private:
 		Loader();
-		~Loader();
 
 		const VertexArray* LoadImpl(unsigned int drawType, const std::vector<float>& vertices,
 									const std::vector<int>& indices, const std::vector<float>& texturesCoords,
@@ -109,8 +108,9 @@ namespace Astra::Graphics
 		const VertexArray* LoadImpl(unsigned int drawType, const std::vector<float>& vertices, unsigned int dimensions);
 		const GLuint LoadImpl(unsigned int drawType, const std::vector<float>& vertices, const std::vector<float>& textureCoords);
 		
-		Texture LoadAtlasTextureImpl(const char* const filepath);
-		Texture LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert);
+		const Texture* LoadAtlasTextureImpl(const char* const filepath);
+		const Texture* LoadFontAtlasTextureImpl(const char* const filepath, unsigned int fontSize, const std::vector<unsigned char>& data, unsigned int width, unsigned int height);
+		const Texture* LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert);
 		
 		const CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);
 

@@ -1,35 +1,13 @@
 #include "Loader.h"
 
 #include "../../logger/Logger.h"
+#include "../ResourceManager.h"
 #include "../Window.h"
 
 namespace Astra::Graphics
 { 
 	Loader::Loader()
 	{
-	}
-
-	Loader::~Loader()
-	{
-		for (const GLuint& vao : m_vaos)
-		{
-			glDeleteVertexArrays(1, &vao);
-		}
-
-		for (const GLuint& vbo : m_vbos)
-		{
-			glDeleteBuffers(1, &vbo);
-		}
-
-		for (const auto& texture : m_textureDirectory)
-		{
-			glDeleteTextures(1, &texture.second.id);
-		}
-
-		for (const GLuint& textureId : m_textureIds)
-		{
-			glDeleteTextures(1, &textureId);
-		}
 	}
 
 	const VertexArray* Loader::LoadImpl(unsigned int drawType, const std::vector<float>& vertices,
@@ -44,6 +22,8 @@ namespace Astra::Graphics
 		UnbindVertexArray();
 
 		VertexArray* vertArray = new VertexArray(id, indices.size(), drawType);
+		ResourceManager::Track(vertArray);
+
 		(*vertArray)(BufferType::Vertices) = verticesID;
 		(*vertArray)(BufferType::Normals) = normalsID;
 		(*vertArray)(BufferType::TextureCoords) = texturesID;
@@ -64,6 +44,8 @@ namespace Astra::Graphics
 		UnbindVertexArray();
 
 		VertexArray* vertArray = new VertexArray(id, indices.size(), drawType);
+		ResourceManager::Track(vertArray);
+
 		(*vertArray)(BufferType::Vertices) = verticesID;
 		(*vertArray)(BufferType::Normals) = normalsID;
 		(*vertArray)(BufferType::TextureCoords) = texturesID;
@@ -79,6 +61,8 @@ namespace Astra::Graphics
 		UnbindVertexArray();
 
 		VertexArray* vertArray = new VertexArray(id, vertices.size() / dimensions, drawType);
+		ResourceManager::Track(vertArray);
+
 		(*vertArray)(BufferType::Vertices) = vboId;
 		return vertArray;
 	}
@@ -92,28 +76,32 @@ namespace Astra::Graphics
 		return id;
 	}
 
-	Texture Loader::LoadAtlasTextureImpl(const char* const filepath)
+	// TODO: Clean up or reutilize
+	const Texture* Loader::LoadAtlasTextureImpl(const char* const filepath)
 	{
 		static int m_bpp;
 		static unsigned char* buffer;
 
-		auto found = m_textureDirectory.find(filepath);
-		if (found != m_textureDirectory.end())
+		Texture* texture = NULL;
+		if (ResourceManager::QueryTexture(filepath, &texture))
 		{
-			return found->second;
+			return texture;
 		}
-
-		Texture texture(filepath);
-
-		stbi_set_flip_vertically_on_load(0);
-		buffer = stbi_load(std::string(filepath).c_str(), &texture.width, &texture.height, &m_bpp, 4);
-
-		if (buffer)
+		else if (texture)
 		{
-			glGenTextures(1, &texture.id);
-			glBindTexture(GL_TEXTURE_2D, texture.id);
+			stbi_set_flip_vertically_on_load(0);
+			buffer = stbi_load(std::string(filepath).c_str(), &texture->width, &texture->height, &m_bpp, 4);
 
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+			if (!buffer)
+			{
+				Logger::LogWarning(std::string("Texture ") + std::string(filepath) + std::string(" did not load correctly."));
+				return NULL;
+			}
+
+			glGenTextures(1, &texture->id);
+			glBindTexture(GL_TEXTURE_2D, texture->id);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 
@@ -123,43 +111,80 @@ namespace Astra::Graphics
 			glBindTexture(GL_TEXTURE_2D, 0);
 			stbi_image_free(buffer);
 
-			m_textureDirectory[filepath] = texture;
 			return texture;
 		}
-		Logger::LogWarning(std::string("Texture ") + std::string(filepath) + std::string(" did not load correctly."));
+		Logger::LogError(std::string("Loader Error in Texture Initialization"));
 		return NULL;
 	}
 
-	Texture Loader::LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert)
+	const Texture* Loader::LoadFontAtlasTextureImpl(const char* const filepath, unsigned int fontSize, const std::vector<unsigned char>& data, unsigned int width, unsigned int height)
+	{
+		Texture* texture = NULL;
+		if (ResourceManager::QueryFontAtlasTexture(filepath, fontSize, &texture))
+		{
+			return texture;
+		}
+		else if (texture)
+		{
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+			glGenTextures(1, &texture->id);
+			glBindTexture(GL_TEXTURE_2D, texture->id);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, &data[0]);
+
+			texture->width = width;
+			texture->height = height;
+
+			// set texture options
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // Reset unpacking alignment to default
+			
+			glBindTexture(GL_TEXTURE_2D, 0);
+
+			return texture;
+		}
+		Logger::LogError(std::string("Loader Error in Font Atlas Texture Initialization"));
+		return NULL;
+	}
+
+
+	const Texture* Loader::LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert)
 	{
 		static int m_bpp;
 		static unsigned char* buffer;
 
-		auto found = m_textureDirectory.find(filepath);
-		if (found != m_textureDirectory.end())
+		Texture* texture = NULL;
+		if (ResourceManager::QueryTexture(filepath, &texture))
 		{
-			return found->second;
+			return texture;
 		}
-
-		Texture texture(filepath);
-
-		stbi_set_flip_vertically_on_load(flip);
-		buffer = stbi_load(std::string(filepath).c_str(), &texture.width, &texture.height, &m_bpp, !invert ? 4 : 1);
-		
-		if (buffer)
+		else if (texture)
 		{
-			glGenTextures(1, &texture.id);
-			glBindTexture(GL_TEXTURE_2D, texture.id);
+			stbi_set_flip_vertically_on_load(flip);
+			buffer = stbi_load(std::string(filepath).c_str(), &texture->width, &texture->height, &m_bpp, !invert ? 4 : 1);
+
+			if (!buffer)
+			{
+				Logger::LogWarning(std::string("Texture ") + std::string(filepath) + std::string(" did not load correctly."));
+				return NULL;
+			}
+			glGenTextures(1, &texture->id);
+			glBindTexture(GL_TEXTURE_2D, texture->id);
 		#if HDR
-			glTexImage2D(GL_TEXTURE_2D, 0, diffuse ? GL_SRGB8_ALPHA8 : GL_RGBA8, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+			glTexImage2D(GL_TEXTURE_2D, 0, diffuse ? GL_SRGB8_ALPHA8 : GL_RGBA8, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 		#else
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 		#endif
 			glGenerateMipmap(GL_TEXTURE_2D);
-			
+
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clippingOption);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clippingOption);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, diffuse ? GL_LINEAR : GL_NEAREST);
+			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
 			if (glfwExtensionSupported("GL_EXT_texture_filter_anisotropic"))
@@ -179,10 +204,9 @@ namespace Astra::Graphics
 			glBindTexture(GL_TEXTURE_2D, 0);
 			stbi_image_free(buffer);
 
-			m_textureDirectory[filepath] = texture;
 			return texture;
 		}
-		Logger::LogWarning(std::string("Texture ") + std::string(filepath) + std::string(" did not load correctly."));
+		Logger::LogError(std::string("Loader Error in Texture Initialization"));
 		return NULL;
 	}
 
@@ -192,20 +216,19 @@ namespace Astra::Graphics
 		static unsigned char* buffer;
 
 		CubeMapTexture* resultTexture = new CubeMapTexture(filepaths);
-		CubeMapTexture& cubemapTexture = *resultTexture;
 
-		glGenTextures(1, &cubemapTexture.id);
+		glGenTextures(1, &resultTexture->id);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture.id);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, resultTexture->id);
 		stbi_set_flip_vertically_on_load(0); // Don't flip?
 
 		for (size_t i = 0; i < filepaths.size(); i++)
 		{
-			Texture& texture = cubemapTexture[i];
-			buffer = stbi_load(std::string(texture.m_filePath).c_str(), &texture.width, &texture.height, &m_bpp, 4);
+			auto* texture = (*resultTexture)[i];
+			buffer = stbi_load(std::string(texture->m_filePath).c_str(), &texture->width, &texture->height, &m_bpp, 4);
 			if (buffer)
 			{
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 				stbi_image_free(buffer);
 			}
 		}
@@ -214,8 +237,6 @@ namespace Astra::Graphics
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		m_textureIds.push_back(cubemapTexture.id);
-
 		return resultTexture;
 	}
 
@@ -293,6 +314,7 @@ namespace Astra::Graphics
 	FrameBuffer* Loader::LoadMultiTargetFrameBufferImpl(unsigned int width, unsigned int height, size_t colorAttachments, size_t depthAttachments, bool floating)
 	{
 		FrameBuffer* buffer = new FrameBuffer(DepthBufferType::None, false, colorAttachments, depthAttachments);
+		ResourceManager::Track(buffer);
 		glGenFramebuffers(1, &buffer->Id());
 		glBindFramebuffer(GL_FRAMEBUFFER, buffer->Id());
 		
@@ -364,6 +386,7 @@ namespace Astra::Graphics
 	FrameBuffer* Loader::CreateFrameBuffer(DepthBufferType type, bool multisampled, int drawAttachment, int readAttachment)
 	{
 		FrameBuffer* buffer = new FrameBuffer(type, multisampled);
+		ResourceManager::Track(buffer);
 		glGenFramebuffers(1, &buffer->Id());
 		glBindFramebuffer(GL_FRAMEBUFFER, buffer->Id());
 		glDrawBuffer(drawAttachment);
@@ -386,7 +409,6 @@ namespace Astra::Graphics
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapping);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + offset, GL_TEXTURE_2D, id, 0);
-		m_textureIds.push_back(id);
 	}
 
 	GLuint Loader::CreateDepthTextureAttachment(GLuint& id, unsigned int width, unsigned int height, int component, int filter, int wrap)
@@ -400,7 +422,6 @@ namespace Astra::Graphics
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, id, 0);
-		m_textureIds.push_back(id);
 		return id;
 	}
 
@@ -431,7 +452,6 @@ namespace Astra::Graphics
 	#endif
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, id, 0);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
-		m_textureIds.push_back(id);
 	}
 
 	GLuint Loader::BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage, GLboolean normalized)
@@ -457,7 +477,6 @@ namespace Astra::Graphics
 		GLuint vaoId;
 		glGenVertexArrays(1, &vaoId);
 		glBindVertexArray(vaoId);
-		m_vaos.emplace_back(vaoId);
 		return vaoId;
 	}
 
@@ -465,7 +484,6 @@ namespace Astra::Graphics
 	{
 		GLuint vboId;
 		glGenBuffers(1, &vboId);
-		m_vbos.emplace_back(vboId);
 		return vboId;
 	}
 	

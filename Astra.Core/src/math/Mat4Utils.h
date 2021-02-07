@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Mat4.h"
-#include "../graphics/textures/GuiTexture.h"
+#include "../graphics/guis/Gui.h"
 #include "../graphics/entities/Spatial.h"
 #include "../graphics/entities/Camera.h"
 
@@ -19,9 +19,14 @@ namespace Astra::Math
 			return instance;
 		}
 
-		static Mat4 Transformation(const Graphics::GuiTexture& texture) 
+		static Mat4 Transformation(const Graphics::Gui& gui) 
 		{
-			return Get().TransformationImpl(texture.GetPosition(), texture.GetScale());
+			return Get().TransformationImpl(gui.Position, gui.Rotation, gui.GetSize() * gui.Scale);
+		}
+
+		static Mat4 Transformation(const Math::Vec2& position, float rotation, const Math::Vec2& scale)
+		{
+			return Get().TransformationImpl(position, rotation, scale);
 		}
 
 		static Mat4 Transformation(const Graphics::Spatial* entity)
@@ -48,10 +53,11 @@ namespace Astra::Math
 			return result;
 		}
 		
-		Mat4 TransformationImpl(const Vec2& translation, const Vec2& scale)
+		Mat4 TransformationImpl(const Vec2& translation, float rotation, const Vec2& scale)
 		{
 			Mat4 result(1);
 			result = result.Translate(Vec3(translation, 0));
+			result = result.Rotate(rotation, Vec3::Z_Axis);
 			result = result.Scale(Vec3(scale, 1));
 			return result;
 		}

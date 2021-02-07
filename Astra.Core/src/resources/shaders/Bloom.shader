@@ -1,5 +1,5 @@
 #shader vertex
-#version 460
+#version 330
 
 layout(location = 0) in vec2 position;
 
@@ -12,7 +12,7 @@ void main()
 }
 
 #shader fragment
-#version 460
+#version 330
 
 layout(location = 0) out vec4 out_Color;
 layout(location = 1) out vec4 bright_Color;

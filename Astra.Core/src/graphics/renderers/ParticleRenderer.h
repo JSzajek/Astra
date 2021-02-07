@@ -9,43 +9,38 @@
 
 namespace Astra::Graphics
 {
-	struct ParticleBuffer
+	struct ParticleInfo
 	{
-		unsigned int VAO;
-		unsigned int VBO;
-		size_t MaxSize;
-
-		ParticleBuffer()
-			: VAO(0), VBO(0), MaxSize(0)
-		{
-		}
-
-		ParticleBuffer(unsigned int vao, unsigned int vbo, size_t size)
-			: VAO(vao), VBO(vbo), MaxSize(size)
-		{
-		}
+		Math::Mat4 modelview;
+		Math::Vec4 texOffsets;
+		Math::Vec3 animInfo;
 	};
 
-	#define MAX_PARTICLES 10000
+	#define MAX_TEXTURE_SLOTS		16
+	#define MAX_PARTICLES			10000
+
+	#define NUM_OF_TYPES			2	
 
 	class ParticleRenderer : public Renderer
 	{
 	private:
-		std::unordered_map<unsigned int, std::vector<Particle*>> m_particles;
-		std::unordered_map<unsigned int, ParticleBuffer> m_buffers;
+		unsigned int m_defaultVAO;
+		unsigned int m_defaultVBO;
+
+		std::vector<Particle*> m_particles[NUM_OF_TYPES];
 		const Math::Mat4* m_viewMatrix;
 		Math::Mat4* m_modelViewMatrix;
 	public:
 		ParticleRenderer(ParticleShader* shader);
 		~ParticleRenderer();
 		
-		inline void Clear() override { m_particles.clear(); }
-		inline std::unordered_map<unsigned int, std::vector<Particle*>>& GetParticles() { return m_particles; }
+		inline std::vector<Particle*>& GetParticles(unsigned int index) { return m_particles[index]; }
 		
+		void Clear() override;
 		void AddParticle(Particle* particle);
 		void Draw(float delta = 0, const Math::Mat4* viewMatrix = NULL, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 	private:
-		void UpdateParticleData();
+		void Flush(std::unordered_map<unsigned int, unsigned int>& mapping, size_t& offset);
 		void CreateInstancedBuffer(unsigned int* id, size_t size, bool gen = false);
 		unsigned int CreateDefaultQuadVao();
 	};

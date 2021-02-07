@@ -1,5 +1,7 @@
 #include "WaterFrameBuffer.h"
 
+#include "../ResourceManager.h"
+
 namespace Astra::Graphics
 {
 	WaterFrameBuffer::WaterFrameBuffer(FrameBuffer* reflection, FrameBuffer* refraction,
@@ -16,5 +18,11 @@ namespace Astra::Graphics
 			m_reflectionHeight(other.m_reflectionHeight), m_reflectionWidth(other.m_reflectionWidth),
 			m_refractionHeight(other.m_refractionHeight), m_refractionWidth(other.m_refractionWidth)
 	{
+	}
+
+	WaterFrameBuffer::~WaterFrameBuffer()
+	{
+		ResourceManager::Unload(m_reflectionBuffer);
+		ResourceManager::Unload(m_refractionBuffer);
 	}
 }

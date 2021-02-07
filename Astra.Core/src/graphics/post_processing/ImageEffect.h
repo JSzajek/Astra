@@ -18,7 +18,7 @@ namespace Astra::Graphics
 	public:
 		ImageEffect(Shader* shader, size_t totalSteps = 1);
 		ImageEffect(Shader* shader, int width, int height, size_t totalSteps = 1, bool floating = false, unsigned int clamping = GL_LINEAR);
-		~ImageEffect();
+		virtual ~ImageEffect();
 		virtual void Start(unsigned int* attachment);
 		virtual void Stop();
 		virtual void UpdateAspectRatio(unsigned int width, unsigned int height);

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -75,15 +75,15 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Dependencies\$(TargetName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)$(ProjectName)\intermediates\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\OpenALSoft\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Dependencies\GLEW\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\OpenALSoft\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\OpenALSoft\include;$(SolutionDir)Dependencies\FreeType\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Dependencies\GLEW\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\OpenALSoft\lib\$(Configuration)\;$(SolutionDir)Dependencies\FreeType\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Dependencies\$(TargetName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)$(ProjectName)\intermediates\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\OpenALSoft\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Dependencies\GLEW\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\OpenALSoft\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\OpenALSoft\include;$(SolutionDir)Dependencies\FreeType\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Dependencies\GLEW\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\OpenALSoft\lib\$(Configuration)\;$(SolutionDir)Dependencies\FreeType\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -170,6 +170,7 @@
   <ItemGroup>
     <ClCompile Include="src\audio\AudioController.cpp" />
     <ClCompile Include="src\audio\AudioSource.cpp" />
+    <ClCompile Include="src\graphics\buffers\CubeMapTexture.cpp" />
     <ClCompile Include="src\graphics\buffers\ShadowFrameBuffer.cpp" />
     <ClCompile Include="src\graphics\buffers\Texture.cpp" />
     <ClCompile Include="src\graphics\buffers\VertexArray.cpp" />
@@ -181,15 +182,16 @@
     <ClCompile Include="src\graphics\entities\Light.cpp" />
     <ClCompile Include="src\graphics\entities\terrains\Terrain.cpp" />
     <ClCompile Include="src\graphics\entities\terrains\WaterTile.cpp" />
-    <ClCompile Include="src\graphics\fonts\FontController.cpp" />
-    <ClCompile Include="src\graphics\fonts\GuiText.cpp" />
-    <ClCompile Include="src\graphics\fonts\MetaFile.cpp" />
-    <ClCompile Include="src\graphics\fonts\TextMesh.cpp" />
     <ClCompile Include="src\graphics\gizmos\Gizmo.cpp" />
     <ClCompile Include="src\graphics\gizmos\GizmoController.cpp" />
+    <ClCompile Include="src\graphics\guis\Color.cpp" />
+    <ClCompile Include="src\graphics\guis\Gui.cpp" />
+    <ClCompile Include="src\graphics\guis\TextBox.cpp" />
+    <ClCompile Include="src\graphics\guis\utility\FontAtlas.cpp" />
     <ClCompile Include="src\graphics\Input.cpp" />
     <ClCompile Include="src\graphics\loaders\Loader.cpp" />
     <ClCompile Include="src\graphics\loaders\ObjLoader.cpp" />
+    <ClCompile Include="src\graphics\materials\GuiMaterial.cpp" />
     <ClCompile Include="src\graphics\materials\ImageMaterial.cpp" />
     <ClCompile Include="src\graphics\materials\ParticleMaterial.cpp" />
     <ClCompile Include="src\graphics\materials\SkyboxMaterial.cpp" />
@@ -203,7 +205,6 @@
     <ClCompile Include="src\graphics\post_processing\ImageEffect.cpp" />
     <ClCompile Include="src\graphics\post_processing\PostProcessor.cpp" />
     <ClCompile Include="src\graphics\renderers\Entity3dRenderer.cpp" />
-    <ClCompile Include="src\graphics\renderers\FontRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\GizmoRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\GuiRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\NormalEntity3dRenderer.cpp" />
@@ -214,12 +215,14 @@
     <ClCompile Include="src\graphics\renderers\SkyboxRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\TerrainRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\WaterRenderer.cpp" />
+    <ClCompile Include="src\graphics\ResourceManager.cpp" />
     <ClCompile Include="src\graphics\shaders\Shader.cpp" />
     <ClCompile Include="src\graphics\shadows\ShadowBox.cpp" />
     <ClCompile Include="src\graphics\shadows\ShadowMapController.cpp" />
-    <ClCompile Include="src\graphics\textures\GuiTexture.cpp" />
     <ClCompile Include="src\graphics\Window.cpp" />
     <ClCompile Include="src\logger\Logger.cpp" />
+    <ClCompile Include="src\math\iVec2.cpp" />
+    <ClCompile Include="src\math\iVec4.cpp" />
     <ClCompile Include="src\math\Mat4.cpp" />
     <ClCompile Include="src\math\Vec2.cpp" />
     <ClCompile Include="src\math\Vec3.cpp" />
@@ -240,17 +243,19 @@
     <ClInclude Include="src\graphics\entities\SpotLight.h" />
     <ClInclude Include="src\graphics\entities\terrains\HeightGenerator.h" />
     <ClInclude Include="src\graphics\entities\terrains\WaterTile.h" />
-    <ClInclude Include="src\graphics\fonts\Character.h" />
-    <ClInclude Include="src\graphics\fonts\FontController.h" />
-    <ClInclude Include="src\graphics\fonts\GuiText.h" />
-    <ClInclude Include="src\graphics\fonts\Line.h" />
-    <ClInclude Include="src\graphics\fonts\MetaFile.h" />
-    <ClInclude Include="src\graphics\fonts\TextMesh.h" />
-    <ClInclude Include="src\graphics\fonts\Word.h" />
     <ClInclude Include="src\graphics\gizmos\Gizmo.h" />
     <ClInclude Include="src\graphics\gizmos\GizmoController.h" />
+    <ClInclude Include="src\graphics\guis\Color.h" />
+    <ClInclude Include="src\graphics\guis\Gui.h" />
+    <ClInclude Include="src\graphics\guis\Guis.h" />
+    <ClInclude Include="src\graphics\guis\Label.h" />
+    <ClInclude Include="src\graphics\guis\Panel.h" />
+    <ClInclude Include="src\graphics\guis\TextBox.h" />
+    <ClInclude Include="src\graphics\guis\utility\FontAtlas.h" />
+    <ClInclude Include="src\graphics\guis\utility\FontStructs.h" />
     <ClInclude Include="src\graphics\Input.h" />
     <ClInclude Include="src\graphics\Inputs.h" />
+    <ClInclude Include="src\graphics\materials\GuiMaterial.h" />
     <ClInclude Include="src\graphics\materials\ImageMaterial.h" />
     <ClInclude Include="src\graphics\materials\Materials.h" />
     <ClInclude Include="src\graphics\materials\ParticleMaterial.h" />
@@ -278,7 +283,6 @@
     <ClInclude Include="src\graphics\post_processing\PostProcessor.h" />
     <ClInclude Include="src\graphics\post_processing\VerticalBlurEffect.h" />
     <ClInclude Include="src\graphics\renderers\Entity3dRenderer.h" />
-    <ClInclude Include="src\graphics\renderers\FontRenderer.h" />
     <ClInclude Include="src\graphics\renderers\GizmoRenderer.h" />
     <ClInclude Include="src\graphics\renderers\GuiRenderer.h" />
     <ClInclude Include="src\graphics\renderers\NormalEntity3dRenderer.h" />
@@ -289,6 +293,7 @@
     <ClInclude Include="src\graphics\renderers\SkyboxRenderer.h" />
     <ClInclude Include="src\graphics\renderers\TerrainRenderer.h" />
     <ClInclude Include="src\graphics\renderers\WaterRenderer.h" />
+    <ClInclude Include="src\graphics\ResourceManager.h" />
     <ClInclude Include="src\graphics\scenes\Scene.h" />
     <ClInclude Include="src\graphics\shaders\BloomShader.h" />
     <ClInclude Include="src\graphics\shaders\ContrastShader.h" />
@@ -309,9 +314,11 @@
     <ClInclude Include="src\graphics\shaders\WaterShader.h" />
     <ClInclude Include="src\graphics\shadows\ShadowBox.h" />
     <ClInclude Include="src\graphics\shadows\ShadowMapController.h" />
-    <ClInclude Include="src\graphics\textures\GuiTexture.h" />
+    <ClInclude Include="src\graphics\guis\Image.h" />
     <ClInclude Include="src\graphics\Window.h" />
     <ClInclude Include="src\logger\Logger.h" />
+    <ClInclude Include="src\math\iVec2.h" />
+    <ClInclude Include="src\math\iVec4.h" />
     <ClInclude Include="src\math\Mat4.h" />
     <ClInclude Include="src\math\Mat4Utils.h" />
     <ClInclude Include="src\math\Maths.h" />
@@ -326,6 +333,12 @@
     <ClInclude Include="src\utils\vendor\dr_lib\dr_flac.h" />
     <ClInclude Include="src\utils\vendor\dr_lib\dr_mp3.h" />
     <ClInclude Include="src\utils\vendor\dr_lib\dr_wav.h" />
+    <ClInclude Include="src\utils\vendor\rectpack2D\best_bin_finder.h" />
+    <ClInclude Include="src\utils\vendor\rectpack2D\empty_spaces.h" />
+    <ClInclude Include="src\utils\vendor\rectpack2D\empty_space_allocators.h" />
+    <ClInclude Include="src\utils\vendor\rectpack2D\finders_interface.h" />
+    <ClInclude Include="src\utils\vendor\rectpack2D\insert_and_split.h" />
+    <ClInclude Include="src\utils\vendor\rectpack2D\rect_structs.h" />
     <ClInclude Include="src\utils\vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>

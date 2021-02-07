@@ -26,7 +26,7 @@ private:
 	float TurnSpeed = 160;  // In Degrees
 	float JumpPower = 30;
 	float ZoomPower = 20;
-	float PanSpeed = 1;
+	float PanSpeed = 180; // In Degrees per sec
 	
 	Camera* m_camera;
 	Entity* m_body;
@@ -45,6 +45,7 @@ private:
 public:
 	Player(const Vec3& position, Terrain* terrain);
 	~Player();
+
 	void Update(float delta) override;
 	void CheckInput();
 	inline Camera* GetCamera() { return m_camera; }

@@ -2,6 +2,8 @@
 #include "../Window.h"
 #include "../loaders/Loader.h"
 
+#include "../ResourceManager.h"
+
 namespace Astra::Graphics
 {
 	BloomEffect::BloomEffect(int width, int height)
@@ -27,6 +29,16 @@ namespace Astra::Graphics
 		m_secondShader->SetUniform1i(REGULAR_COLOR_MAP, 0);
 		m_secondShader->SetUniform1i(BRIGHT_BLUR_MAP, 1);
 		m_secondShader->Stop();
+	}
+
+	BloomEffect::~BloomEffect()
+	{
+		ResourceManager::Unload(m_secondBuffer);
+		delete m_secondShader;
+		for (const auto* effect : m_blurs)
+		{
+			delete effect;
+		}
 	}
 
 	void BloomEffect::Start(unsigned int* attachment)

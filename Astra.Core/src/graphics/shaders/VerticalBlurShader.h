@@ -11,7 +11,7 @@ namespace Astra::Graphics
 	public:
 		VerticalBlurShader(const char* filepath =
 			"../Astra.Core/src/resources/shaders/VerticalBlur.shader")
-			: Shader(filepath, ShaderType::Basic)
+			: Shader(filepath)
 		{
 		}
 	};

@@ -1,5 +1,5 @@
 #shader vertex
-#version 460
+#version 330
 
 layout(location = 0) in vec2 position;
 
@@ -47,7 +47,7 @@ void main()
 }
 
 #shader fragment
-#version 460
+#version 330
 
 #define NR_POINT_LIGHTS %i
 #define BLINN 1

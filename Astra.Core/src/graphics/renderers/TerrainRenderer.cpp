@@ -158,16 +158,16 @@ namespace Astra::Graphics
 		m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, 1);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->backgroundTexture->id);
+		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->backgroundTexture->GetId());
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->rTexture->id);
+		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->rTexture->GetId());
 		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->gTexture->id);
+		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->gTexture->GetId());
 		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->bTexture->id);
+		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->bTexture->GetId());
 		glActiveTexture(GL_TEXTURE4);
-		glBindTexture(GL_TEXTURE_2D, terrain->blendMap->id);
+		glBindTexture(GL_TEXTURE_2D, terrain->blendMap->GetId());
 		glActiveTexture(GL_TEXTURE5);
-		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->specularTexture.id);
+		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->specularTexture->id);
 	}
 }

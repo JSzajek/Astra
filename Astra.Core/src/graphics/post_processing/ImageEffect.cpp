@@ -3,6 +3,7 @@
 
 #include "../Window.h"
 #include "../../logger/Logger.h"
+#include "../ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -19,7 +20,8 @@ namespace Astra::Graphics
 	
 	ImageEffect::~ImageEffect()
 	{
-		delete m_buffer;
+		ResourceManager::Unload(m_buffer);
+		delete m_shader;
 	}
 
 	void ImageEffect::Start(unsigned int* attachment)

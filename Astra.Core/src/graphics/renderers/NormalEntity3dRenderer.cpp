@@ -10,7 +10,7 @@
 namespace Astra::Graphics
 {
 	NormalEntity3dRenderer::NormalEntity3dRenderer(const Math::Vec3* fogColor)
-		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), 
+		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), m_drawSelection(false),
 			m_selectionShader(new SelectionShader()), m_toShadowSpaceMatrix(NULL)
 		#if _DEBUG
 			, m_wireframe(false)
@@ -85,7 +85,7 @@ namespace Astra::Graphics
 			PrepareEntity(directory.second.front());
 			for (const Entity* entity : directory.second)
 			{
-				if (entity->IsSelected())
+				if (m_drawSelection && entity->IsSelected())
 				{
 					glStencilFunc(GL_ALWAYS, 1, 0xFF);
 					glStencilMask(0xFF);
@@ -112,7 +112,10 @@ namespace Astra::Graphics
 		}
 	#endif
 		m_shader->Stop();
-		DrawSelected(viewMatrix);
+		if (m_drawSelection)
+		{
+			DrawSelected(viewMatrix);
+		}
 	#if _DEBUG
 		glCheckError();
 	#endif
@@ -188,33 +191,40 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Tangents));
 		
-		m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(entity->material->GetRowCount()));
-		if (entity->material->Transparent)
+		auto* material = entity->material;
+		if (material != NULL)
 		{
-			glDisable(GL_CULL_FACE);
-		}
+			m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(material->GetRowCount()));
+			if (material->Transparent)
+			{
+				glDisable(GL_CULL_FACE);
+			}
 
-		if (entity->material != NULL)
-		{
-			m_shader->SetUniform1f(HEIGHT_SCALE, entity->GetHeightOffset());
-			m_shader->SetUniform1i(FAKE_LIGHT, entity->material->FakeLight);
-			m_shader->SetUniform1i(NORMAL_MAPPED_FLAG_TAG, entity->IsNormalMapped());
-			m_shader->SetUniform1i(PARALLAX_MAPPED_FLAG_TAG, entity->IsParallaxMapped());
-			m_shader->SetUniform1i(GLOWING, entity->material->HasGlow());
+			m_shader->SetUniform1f(HEIGHT_SCALE, material->GetHeightOffset());
+			m_shader->SetUniform1i(FAKE_LIGHT, material->FakeLight);
+			m_shader->SetUniform1i(NORMAL_MAPPED_FLAG_TAG, material->IsNormalMapped());
+			m_shader->SetUniform1i(PARALLAX_MAPPED_FLAG_TAG, material->IsParallaxMapped());
+			m_shader->SetUniform1i(GLOWING, material->HasGlow());
 
-			m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, entity->material->Reflectivity);
+			m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, material->Reflectivity);
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, entity->material->GetId());
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, entity->normalMap.id);
+			glBindTexture(GL_TEXTURE_2D, material->GetId());
+			if (material->IsNormalMapped())
+			{
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, material->GetNormalMapId());
+			}
 			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, entity->material->GetSpecularId());
-			glActiveTexture(GL_TEXTURE3);
-			glBindTexture(GL_TEXTURE_2D, entity->parallaxMap.id);
-			if (entity->material->HasGlow())
+			glBindTexture(GL_TEXTURE_2D, material->GetSpecularId());
+			if (material->IsParallaxMapped())
+			{
+				glActiveTexture(GL_TEXTURE3);
+				glBindTexture(GL_TEXTURE_2D, material->GetParallaxMapId());
+			}
+			if (material->HasGlow())
 			{
 				glActiveTexture(GL_TEXTURE4);
-				glBindTexture(GL_TEXTURE_2D, entity->material->GetEmissionId());
+				glBindTexture(GL_TEXTURE_2D, material->GetEmissionId());
 			}
 		}
 	}
@@ -264,5 +274,6 @@ namespace Astra::Graphics
 			m_selected.pop();
 		}
 		m_selectionShader->Stop();
+		m_drawSelection = false;
 	}
 }

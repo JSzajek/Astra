@@ -2,6 +2,7 @@
 
 #include "../loaders/Loader.h"
 #include "GizmoController.h"
+#include "../ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -16,5 +17,11 @@ namespace Astra::Graphics
 		: Position(other.Position), Scale(other.Scale), m_texture(other.m_texture)
 	{
 	}
+
+	Gizmo::~Gizmo()
+	{
+		ResourceManager::Unload(m_texture);
+	}
+
 #endif
 }

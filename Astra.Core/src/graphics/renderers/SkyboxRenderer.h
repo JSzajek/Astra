@@ -69,6 +69,7 @@ namespace Astra::Graphics
 		float m_rotation;
 	public:
 		SkyboxRenderer(Shader* shader, const Math::Vec3* fogColor);
+		~SkyboxRenderer();
 
 		inline void Clear() override { m_material = NULL; }
 		inline void SetSkyBox(const SkyboxMaterial* material) { m_material = material; }
