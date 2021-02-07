@@ -7,7 +7,6 @@
 #include "../guis/TextBox.h"
 
 #include "../shaders/FontShader.h"
-//#include "../fonts/GuiText.h"
 
 namespace Astra::Graphics
 {
@@ -74,23 +73,18 @@ namespace Astra::Graphics
 		Shader* m_fontShader;
 		
 		std::vector<GuiLayer*> m_layers;
-
-		//std::unordered_map<unsigned int, std::vector<GuiTexture*>> m_guis;
-		//std::unordered_map<unsigned int, GuiBuffer> m_buffers;
 	public:
 		GuiRenderer(Shader* guiShader, Shader* fontShader);
 		~GuiRenderer();
 
 		void UpdateProjectionMatrix(const Math::Mat4* projectionMatrix) override;
 
-		//void AddGui(GuiTexture* gui);
 		void AddGui(Gui* gui, int layer);
 		
 		//inline void Clear() override { m_guis.clear(); m_buffers.clear(); }
 		void Draw(float delta = 0, const Math::Mat4* viewMatrix = NULL, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
 	private:
 		void Flush(std::unordered_map<unsigned int, unsigned int>& mapping, size_t& offset);
-		//void RenderText(const GuiText* text);
 
 		void CreateInstancedBuffer(unsigned int* id, size_t size);
 		unsigned int CreateDefaultQuadVao();

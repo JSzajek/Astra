@@ -46,11 +46,11 @@ namespace Astra::Graphics
         const Texture* LoadFontTextureAtlas(const char* const filepath, unsigned int fontSize, const FT_Face& face);
     };
 
-    struct Vec2Hasher
+    struct iVec2Hasher
     {
-        std::size_t operator()(const Math::Vec2& k) const
+        std::size_t operator()(const Math::iVec2& k) const
         {
-            return ((17 * 31 + std::hash<float>()(k.x)) * 31 + std::hash<float>()(k.y));
+            return ((17 * 31 + std::hash<int>()(k.x)) * 31 + std::hash<int>()(k.y));
         }
     };
 }

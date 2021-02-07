@@ -142,10 +142,6 @@ namespace Astra::Graphics
 		{
 			m_guiRenderer->AddGui(std::get<0>(gui), std::get<1>(gui));
 		}
-		for (auto* text : scene->GetTexts())
-		{
-			FontController::LoadText(text);
-		}
 		for (auto* tile : scene->GetWaterTiles())
 		{
 			// Determine better method of offseting clipping planes.
@@ -186,7 +182,6 @@ namespace Astra::Graphics
 		m_terrainRenderer->Clear();
 		m_normalEntityRenderer->Clear();
 		m_waterRenderer->Clear();
-		FontController::Clear();
 		ParticleController::Clear();
 		m_systems.clear();
 	#if _DEBUG
@@ -308,7 +303,6 @@ namespace Astra::Graphics
 		GizmoController::Render(viewMatrix);
 	#endif
 		m_guiRenderer->Draw();
-		FontController::Render();
 	}
 
 #if _DEBUG

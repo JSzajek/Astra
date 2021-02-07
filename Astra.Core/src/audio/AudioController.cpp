@@ -55,13 +55,12 @@ namespace Astra::Audio
 		}
 
 		alcDestroyContext(m_context);
-		if (m_context)
+		if (alcGetError(m_device) != AL_NO_ERROR)
 		{
 			Logger::LogError("OpenAL: failed to unset context");
 		}
 
-		alcCloseDevice(m_device);
-		if (m_device)
+		if (!alcCloseDevice(m_device))
 		{
 			Logger::LogError("OpenAL: failed to close device");
 		}

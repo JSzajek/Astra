@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Gui.h"
-#include "../fonts/GuiText.h"
 
 namespace Astra::Graphics
 {
@@ -9,11 +8,11 @@ namespace Astra::Graphics
 	{
 	private:
 		unsigned int m_textureIndex;
-		FontType* m_font;
-		GuiText* m_text;
+		//FontType* m_font;
+		//GuiText* m_text;
 	public:
 		Label(const GuiMaterial* material, const Math::Vec2& position, float rotation, const Math::Vec2& scale, unsigned int textureIndex = 1)
-			: Gui(material, position, rotation, scale), m_textureIndex(textureIndex), m_text(NULL), m_font(NULL)
+			: Gui(material, position, rotation, scale), m_textureIndex(textureIndex)/*, m_text(NULL), m_font(NULL)*/
 		{
 			SetType(GuiType::Label);
 			/*Position = position;
@@ -21,7 +20,7 @@ namespace Astra::Graphics
 			Position /= 2.0f;*/
 		}
 
-		void SetFont(FontType* font)
+		/*void SetFont(FontType* font)
 		{
 			m_font = font;
 		}
@@ -34,7 +33,7 @@ namespace Astra::Graphics
 			}
 		}
 		
-		inline GuiText* GetText() const { return m_text; }
+		inline GuiText* GetText() const { return m_text; }*/
 
 		inline float GetMaterialXOffset() const { return (float)(m_textureIndex % Material->GetRowCount()) / (float)Material->GetRowCount(); }
 		inline float GetMaterialYOffset() const { return (float)(m_textureIndex / Material->GetRowCount()) / (float)Material->GetRowCount(); }

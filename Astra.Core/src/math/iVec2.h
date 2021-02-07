@@ -5,214 +5,213 @@
 namespace Astra::Math
 {
 	/// <summary>
-	/// Struct representing a 2-dimensional vector.
+	/// Struct representing a 2-dimensional integer vector.
 	/// </summary>
-	struct Vec2
+	struct iVec2
 	{
 	public:
-		static const Vec2 X_Axis;
-		static const Vec2 Y_Axis;
-		static const Vec2 Zero;
-		static const Vec2 One;
-		static const Vec2 Left;
-		static const Vec2 Right;
-		static const Vec2 Up;
-		static const Vec2 Down;
+		static const iVec2 X_Axis;
+		static const iVec2 Y_Axis;
+		static const iVec2 Zero;
+		static const iVec2 One;
+		static const iVec2 Left;
+		static const iVec2 Right;
+		static const iVec2 Up;
+		static const iVec2 Down;
 	public:
-		float x, y;
+		int x, y;
 	public:
-
 		/// <summary>
-		/// Initializes a empty instance of the <see cref="Vec2"/> class.
+		/// Initializes a empty instance of the <see cref="iVec2"/> class.
 		/// </summary>
-		Vec2();
+		iVec2();
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Vec2"/> class.
+		/// Initializes a new instance of the <see cref="iVec2"/> class.
 		/// </summary>
 		/// <param name="_x">The x value</param>
 		/// <param name="_y">The y value</param>
-		Vec2(float _x, float _y);
+		iVec2(int _x, int _y);
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Vec2"/> class.
+		/// Initializes a new instance of the <see cref="iVec2"/> class.
 		/// </summary>
-		/// <param name="_value">The value across the Vec2</param>
-		Vec2(float _value);
+		/// <param name="_value">The value across the iVec2</param>
+		iVec2(int _value);
 
 		/// <summary>
-		/// Copy constructor of the <see cref="Vec2"/> class.
+		/// Copy constructor of the <see cref="iVec2"/> class.
 		/// </summary>
 		/// <param name="other"></param>
-		Vec2(const Vec2& other);
+		iVec2(const iVec2& other);
 
 		/// <summary>
 		/// Element access operator override.
 		/// </summary>
 		/// <param name="index">The index of the element to access</param>
 		/// <returns></returns>
-		float& operator[](int index);
+		int& operator[](int index);
 
 		/// <summary>
 		/// Adds the passed vector.
 		/// </summary>
-		/// <param name="other">The other Vec2 to add</param>
-		/// <returns>The summation Vec2</returns>
-		Vec2& Add(const Vec2& other);
-		
+		/// <param name="other">The other iVec2 to add</param>
+		/// <returns>The summation iVec2</returns>
+		iVec2& Add(const iVec2& other);
+
 		/// <summary>
 		/// Subtracts the passed vector.
 		/// </summary>
-		/// <param name="other">The other Vec2 to subtract</param>
-		/// <returns>The subtracted Vec2</returns>
-		Vec2& Subtract(const Vec2& other);
+		/// <param name="other">The other iVec2 to subtract</param>
+		/// <returns>The subtracted iVec2</returns>
+		iVec2& Subtract(const iVec2& other);
 
 		/// <summary>
 		/// Multiplies the passed vector.
 		/// </summary>
-		/// <param name="other">The other Vec2 to multiply</param>
-		/// <returns>The multiplied Vec2</returns>
-		Vec2 Multiply(const Vec2& other);
+		/// <param name="other">The other iVec2 to multiply</param>
+		/// <returns>The multiplied iVec2</returns>
+		iVec2 Multiply(const iVec2& other);
 
 		/// <summary>
 		/// Multiplies the passed vector.
 		/// </summary>
 		/// <param name="other">The scalar to multiply</param>
-		/// <returns>The multiplied Vec2</returns>
-		Vec2& Multiply(const float& scalar);
-		
+		/// <returns>The multiplied iVec2</returns>
+		iVec2& Multiply(int scalar);
+
 		/// <summary>
 		/// Divides the passed vector.
 		/// </summary>
-		/// <param name="other">The other Vec2 to divide</param>
-		/// <returns>The divided Vec2</returns>
-		Vec2& Divide(const Vec2& other);
+		/// <param name="other">The other iVec2 to divide</param>
+		/// <returns>The divided iVec2</returns>
+		iVec2& Divide(const iVec2& other);
 
 		/// <summary>
 		/// Divides the passed vector.
 		/// </summary>
 		/// <param name="other">The scalar to divide</param>
-		/// <returns>The divided Vec2</returns>
-		Vec2& Divide(const float& scalar);
+		/// <returns>The divided iVec2</returns>
+		iVec2& Divide(int scalar);
 
 		/// <summary>
 		/// Addition operator override.
 		/// </summary>
-		/// <param name="other">The other Vec2 to add</param>
-		/// <returns>The summation Vec2</returns>
-		friend Vec2& operator+(Vec2 left, const Vec2& right);
+		/// <param name="other">The other iVec2 to add</param>
+		/// <returns>The summation iVec2</returns>
+		friend iVec2& operator+(iVec2 left, const iVec2& right);
 
 		/// <summary>
 		/// Subtraction operator override.
 		/// </summary>
-		/// <param name="other">The other Vec2 to subtract</param>
-		/// <returns>The subtracted Vec2</returns>
-		friend Vec2& operator-(Vec2 left, const Vec2& right);
-		
-		/// <summary>
-		/// Multiplication operator override.
-		/// </summary>
-		/// <param name="other">The other Vec2 to multiply</param>
-		/// <returns>The multiplied Vec2</returns>
-		friend Vec2 operator*(Vec2 left, const Vec2& right);
-		
-		/// <summary>
-		/// Multiplication operator override.
-		/// </summary>
-		/// <param name="scalar">The scalar to multiply</param>
-		/// <returns>The multiplied Vec2</returns>
-		friend Vec2& operator*(Vec2 left, const float& scalar);
-
-		/// <summary>
-		/// Division operator override.
-		/// </summary>
-		/// <param name="other">The other Vec2 to divide</param>
-		/// <returns>The divided Vec2</returns>
-		friend Vec2& operator/(Vec2 left, const Vec2& right);
-
-		/// <summary>
-		/// Division operator override.
-		/// </summary>
-		/// <param name="scalar">The scalar to divide</param>
-		/// <returns>The divided Vec2</returns>
-		friend Vec2& operator/(Vec2 left, const float& scalar);
-
-		/// <summary>
-		/// Addition operator override.
-		/// </summary>
-		/// <param name="other">The other Vec2 to add</param>
-		/// <returns>The summation Vec2</returns>
-		Vec2& operator+=(const Vec2& other);
-
-		/// <summary>
-		/// Subtraction operator override.
-		/// </summary>
-		/// <param name="other">The other Vec2 to subtract</param>
-		/// <returns>The subtracted Vec2</returns>
-		Vec2& operator-=(const Vec2& other);
+		/// <param name="other">The other iVec2 to subtract</param>
+		/// <returns>The subtracted iVec2</returns>
+		friend iVec2& operator-(iVec2 left, const iVec2& right);
 
 		/// <summary>
 		/// Multiplication operator override.
 		/// </summary>
-		/// <param name="other">The other Vec2 to multiply</param>
-		/// <returns>The multiplied Vec2</returns>
-		Vec2 operator*=(const Vec2& other);
+		/// <param name="other">The other iVec2 to multiply</param>
+		/// <returns>The multiplied iVec2</returns>
+		friend iVec2 operator*(iVec2 left, const iVec2& right);
 
 		/// <summary>
 		/// Multiplication operator override.
 		/// </summary>
 		/// <param name="scalar">The scalar to multiply</param>
-		/// <returns>The multiplied Vec2</returns>
-		Vec2& operator*=(const float& scalar);
+		/// <returns>The multiplied iVec2</returns>
+		friend iVec2& operator*(iVec2 left, int scalar);
 
 		/// <summary>
 		/// Division operator override.
 		/// </summary>
-		/// <param name="other">The other Vec2 to divide</param>
-		/// <returns>The divided Vec2</returns>
-		Vec2& operator/=(const Vec2& other);
+		/// <param name="other">The other iVec2 to divide</param>
+		/// <returns>The divided iVec2</returns>
+		friend iVec2& operator/(iVec2 left, const iVec2& right);
 
 		/// <summary>
 		/// Division operator override.
 		/// </summary>
 		/// <param name="scalar">The scalar to divide</param>
-		/// <returns>The divided Vec2</returns>
-		Vec2& operator/=(const float& scalar);
+		/// <returns>The divided iVec2</returns>
+		friend iVec2& operator/(iVec2 left, int scalar);
+
+		/// <summary>
+		/// Addition operator override.
+		/// </summary>
+		/// <param name="other">The other iVec2 to add</param>
+		/// <returns>The summation iVec2</returns>
+		iVec2& operator+=(const iVec2& other);
+
+		/// <summary>
+		/// Subtraction operator override.
+		/// </summary>
+		/// <param name="other">The other iVec2 to subtract</param>
+		/// <returns>The subtracted iVec2</returns>
+		iVec2& operator-=(const iVec2& other);
+
+		/// <summary>
+		/// Multiplication operator override.
+		/// </summary>
+		/// <param name="other">The other iVec2 to multiply</param>
+		/// <returns>The multiplied iVec2</returns>
+		iVec2 operator*=(const iVec2& other);
+
+		/// <summary>
+		/// Multiplication operator override.
+		/// </summary>
+		/// <param name="scalar">The scalar to multiply</param>
+		/// <returns>The multiplied iVec2</returns>
+		iVec2& operator*=(int scalar);
+
+		/// <summary>
+		/// Division operator override.
+		/// </summary>
+		/// <param name="other">The other iVec2 to divide</param>
+		/// <returns>The divided iVec2</returns>
+		iVec2& operator/=(const iVec2& other);
+
+		/// <summary>
+		/// Division operator override.
+		/// </summary>
+		/// <param name="scalar">The scalar to divide</param>
+		/// <returns>The divided iVec2</returns>
+		iVec2& operator/=(int scalar);
 
 		/// <summary>
 		/// Equality operator override.
 		/// </summary>
 		/// <param name="comparison">The other object to compare to</param>
 		/// <returns>Whether they are are equal</returns>
-		bool operator==(const Vec2& other) const;
+		bool operator==(const iVec2& other) const;
 
 		/// <summary>
 		/// Inequality operator override.
 		/// </summary>
 		/// <param name="comparison">The other object to compare to</param>
 		/// <returns>Whether they are are inequal</returns>
-		bool operator!=(const Vec2& other) const;
+		bool operator!=(const iVec2& other) const;
 
 		/// <summary>
 		/// Calculates the dot product with the passed vector.
 		/// </summary>
 		/// <param name="other">The vector to calculate the dot</param>
 		/// <returns>The dot product of the two vectors</returns>
-		float Dot(const Vec2& other) const;
+		int Dot(const iVec2& other) const;
 
 		/// <summary>
 		/// Calculates the euclidean distance to the passed vector.
 		/// </summary>
 		/// <param name="other">The other vector to calculate to</param>
 		/// <returns>The euclidean distance to the passed vector</returns>
-		float DistanceTo(const Vec2& other) const;
+		float DistanceTo(const iVec2& other) const;
 
 		/// <summary>
 		/// Calculates the manhatten distance to the passed vector.
 		/// </summary>
 		/// <param name="other">The other vector to calculate to</param>
 		/// <returns>The manhatten distance to the passed vector</returns>
-		float ManhattenDistanceTo(const Vec2& other) const;
+		int ManhattenDistanceTo(const iVec2& other) const;
 
 		/// <summary>
 		/// Calculates the magnitude of the vector.
@@ -230,15 +229,15 @@ namespace Astra::Math
 		/// </summary>
 		/// <param name="other">The other vector to calculate to</param>
 		/// <returns></returns>
-		float DirectionTo(const Vec2& other);
+		float DirectionTo(const iVec2& other);
 
 		/// <summary>
-		/// Overloads the stream operator retrieving the vec2's string.
+		/// Overloads the stream operator retrieving the iVec2's string.
 		/// </summary>
 		/// <param name="stream">The stream to append to</param>
-		/// <param name="other">The vec2 to convert</param>
+		/// <param name="other">The iVec2 to convert</param>
 		/// <returns>The modified stream</returns>
-		friend std::ostream& operator<<(std::ostream& stream, const Vec2& other)
+		friend std::ostream& operator<<(std::ostream& stream, const iVec2& other)
 		{
 			stream << "(" << other.x << ", " << other.y << ")";
 			return stream;

@@ -18,40 +18,15 @@ void main()
 #version 330
 
 in vec2 v_TexCoordinates;
+in vec4 v_modulateColor;
+
 out vec4 out_Color;
 
 uniform sampler2D fontAtlas;
-uniform vec3 textColor;
-//uniform sampler2D fontAtlas;
-//
-//uniform vec3 color;
-//uniform float width;
-//uniform float edge;
-//
-//uniform vec3 outlineColor;
-//uniform float outlineWidth;
-//uniform float outlineEdge;
-//
-//uniform vec2 offset;
+uniform vec4 modulateColor;
 
 void main()
 {
-	vec4 sampled = vec4(1.0, 1.0, 1.0, texture(fontAtlas, v_TexCoordinates).r);
-	out_Color = vec4(textColor, 1.0) * sampled;
-
-	/*float distance = 1.0 - texture(fontAtlas, v_TexCoordinates).a;
-	float alpha = 1.0 - smoothstep(width, width + edge, distance);
-
-	if (outlineWidth == outlineEdge)
-	{
-		out_Color = vec4(color, alpha);
-	}
-	else
-	{
-		float outlineDist = 1.0 - texture(fontAtlas, v_TexCoordinates + offset).a;
-		float outlineAlpha = 1.0 - smoothstep(outlineWidth, outlineWidth + outlineEdge, outlineDist);
-		
-		float overallAlpha = alpha + (1.0 - alpha) * outlineAlpha;
-		out_Color = vec4(mix(outlineColor, color, alpha / overallAlpha), overallAlpha);
-	}*/
+	out_Color = vec4(1.0, 1.0, 1.0, texture(fontAtlas, v_TexCoordinates).r);
+	out_Color *= modulateColor;
 }

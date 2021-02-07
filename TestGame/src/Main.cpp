@@ -54,16 +54,6 @@ int main()
 
     mainScene->AddWaterTile(&tile1);
 
-    // TODO: Store Fonts in a directory and handle deletion before game closure or when no references
-
-    const Texture* fontTexture = Loader::LoadAtlasTexture("res/fonts/candara.png");
-    FontType* font = new FontType(fontTexture, "res/fonts/candara.fnt");
-    /*GuiText* text = new GuiText("This is a test text!", font, 3, Vec2(0, 0), 1, true);
-    GuiText* outlineText = new GuiText("Outlines", font, 3, Vec2(0), Vec3(0), 0, 1, Vec3(0, 0, 1));*/
-
-    /*mainScene->AddText(text);
-    mainScene->AddText(outlineText);*/
-
     //const Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
     auto* guiMat = ResourceManager::LoadGuiMaterial("res/textures/fernAtlas.png", 2);
     Image gui = Image(guiMat, Vec2(300), Vec2(0.3f), 0);
@@ -72,23 +62,9 @@ int main()
     
     auto* fontAtlas = ResourceManager::LoadFontAtlas("res/fonts/OpenSans-Regular.ttf", 48);
     TextBox textbox = TextBox("OpenGL", fontAtlas, Vec2(10), 0, Vec2(1));
+    textbox.SetModulate(Color::Green);
     mainScene->AddGui(&textbox, 0);
 
-    /*auto* guiMat2 = ResourceManager::LoadGuiMaterial("res/fonts/candara.png", 1);
-    MetaFile* temp = new MetaFile("res/fonts/candara.fnt");
-    Panel panel = Panel(guiMat2, Vec2(100), Vec2(1), 0, temp);
-    mainScene->AddGui(&panel, 1);*/
-
-   /* Label label = Label(guiMat, Vec2(0), 0, Vec2(0.25), 1);
-    label.SetFont(font);
-    label.SetText("This is Text the testing the line length thingy");
-
-    mainScene->AddGui(&label, 1);*/
-
-    //auto* guiMat2 = ResourceManager::LoadGuiMaterial("res/textures/fernTexture.png", 1);
-    //Image gui2 = Image(guiMat2, Vec2(0.8f, 0.8f), Vec2(0.1f, 0.1f));
-    //mainScene->AddGui(&gui2, -1);
-    
     std::vector<const char*> m_textureFiles =
     {
         "res/textures/Default_Skybox/right.png",
@@ -233,107 +209,6 @@ int main()
     unsigned int frames = 0;
     float delta;
 
-
-    /*unsigned int VAO, VBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glBindVertexArray(VAO); 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    
-    std::string testString = "Open";
-
-    auto vertices = std::vector<float>();
-    vertices.reserve(testString.size() * 4 * 6);
-    std::string::const_iterator c;
-    float cursorX = 0;
-    
-    for (c = testString.begin(); c != testString.end(); c++)
-    {
-        const auto& character = fontAtlas->GetCharacter(*c);// m_characters[*c];
-        const auto flipped = character.GetFlipped();
-        //std::cout << character.GetChar() << " flipped " << flipped << std::endl;
-
-        float w = character.GetWidth();
-        float h = character.GetHeight();
-        
-        float xpos = cursorX + character.GetBearingX();
-        float ypos = fontAtlas->GetFontSize() - (character.GetBearingY() - h);// (character.GetSize().y - character.GetBearing().y);
-
-        float l_x = character.GetTexCoord(0);
-        float r_x = character.GetTexCoord(1);
-        float top = character.GetTexCoord(2);
-        float bottom = character.GetTexCoord(3);
-        
-        vertices.push_back(xpos);
-        vertices.push_back(ypos);
-        vertices.push_back(flipped ? r_x : l_x);
-        vertices.push_back(bottom);
-
-        vertices.push_back(xpos + w);
-        vertices.push_back(ypos - h);
-        vertices.push_back(flipped ? l_x : r_x);
-        vertices.push_back(top);
-
-        vertices.push_back(xpos);
-        vertices.push_back(ypos - h);
-        vertices.push_back(l_x);
-        vertices.push_back(flipped ? bottom : top);
-
-        vertices.push_back(xpos);
-        vertices.push_back(ypos);
-        vertices.push_back(flipped ? r_x : l_x);
-        vertices.push_back(bottom);
-
-        vertices.push_back(xpos + w);
-        vertices.push_back(ypos);
-        vertices.push_back(r_x);
-        vertices.push_back(flipped ? top : bottom);
-
-        vertices.push_back(xpos + w);
-        vertices.push_back(ypos - h);
-        vertices.push_back(flipped ? l_x : r_x);
-        vertices.push_back(top);
-
-        cursorX += character.GetAdvance();
-    }
-
-    // update content of VBO memory
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 6 * testString.size(), &vertices[0], GL_DYNAMIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-    unsigned int tex_VAO, tex_VBO;
-    glGenVertexArrays(1, &tex_VAO);
-    glGenBuffers(1, &tex_VBO);
-    glBindVertexArray(tex_VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, tex_VBO);
-
-    float tex_vertices[6][4] = {
-        { 0.0f, 1.0f,   0.0f, 1.0f },
-        { 1.0f, 0.0f,   1.0f, 0.0f },
-        { 0.0f, 0.0f,   0.0f, 0.0f },
-
-        { 0.0f, 1.0f,   0.0f, 1.0f },
-        { 1.0f, 1.0f,   1.0f, 1.0f },
-        { 1.0f, 0.0f,   1.0f, 0.0f }
-    };
-
-    glBufferData(GL_ARRAY_BUFFER, sizeof(tex_vertices), tex_vertices, GL_DYNAMIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);*/
-
-    /*Shader shader("res/temp.shader");
-    shader.Start();
-    auto ortho = Math::Mat4::Orthographic(0, 960, 540, 0, -1, 1);
-
-    shader.SetUniformMat4("projectionMatrix", ortho);
-    shader.Stop();
-    */
-
     while (!Window::Closed())
     {
         delta = Window::GetDelta();
@@ -369,27 +244,6 @@ int main()
     #endif
 
         RendererController::Render(delta);
-        
-        /*shader.Start();
-                                                                        // Size * Scale
-        auto transform = Math::Mat4Utils::Transformation(Vec2(10,0), 0, Vec2(1));
-        shader.SetUniformMat4("transformMatrix", transform);
-
-        shader.SetUniform3f("textColor", Vec3(1, 0, 0));
-        glActiveTexture(GL_TEXTURE0);
-        glBindVertexArray(VAO);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        glBindTexture(GL_TEXTURE_2D, fontAtlas->GetId());
-
-        // render quad
-        glDrawArrays(GL_TRIANGLES, 0, testString.size() * 6);
-        glDisable(GL_BLEND);
-
-        shader.Stop();*/
-        
         Window::Update();
 
         frames++;
@@ -397,7 +251,6 @@ int main()
         {
             elapsedTime += 1.0f;
             printf("%dfps\n", frames);
-            //printf("%f delta\n", delta);
             frames = 0;
         }
     }
@@ -407,12 +260,6 @@ int main()
     {
         delete entity;
     }
-
-    //delete text;
-    //delete outlineText;
-    
-    // TODO: Store Fonts in a directory and handle deletion before game closure or when no references
-    delete font;
 
     delete dir_light;
     delete light3;

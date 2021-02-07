@@ -13,17 +13,22 @@ namespace Astra::Graphics
 		std::string m_text;
 		unsigned int m_vao, m_vbo;
 		const FontAtlas* m_font;
+
+		// TODO: Implement bolding and outlining
+		//uniform float width;
+		//uniform float edge;
+		//uniform vec3 outlineColor;
+		//uniform float outlineWidth;
+		//uniform float outlineEdge;
 	public:
-		TextBox(const char* text, FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
-			: Gui(NULL, position, rotation, scale), m_font(font), m_vao(0), m_vbo(0)
-		{
-			SetText(text);
-			SetType(GuiType::Textbox);
-		}
+		TextBox(const char* text, FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		~TextBox();
 
 		inline const bool HasCustomVao() const override { return true; }
 		inline const int GetCustomVao() const override { return m_vao; }
 		inline const int GetCustomVbo() const override { return m_vbo; }
+
+		inline unsigned int GetVertexCount() const { return m_text.size() * 6; }
 
 		inline const FontAtlas* GetFont() const { return m_font; }
 		inline const std::string& GetText() const { return m_text; }

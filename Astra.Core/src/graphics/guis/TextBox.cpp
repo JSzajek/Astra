@@ -1,9 +1,22 @@
 #include "TextBox.h"
 
+#include "../ResourceManager.h"
 #include "../loaders/Loader.h"
 
 namespace Astra::Graphics
 {
+    TextBox::TextBox(const char* text, FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
+        : Gui(NULL, position, rotation, scale), m_font(font), m_vao(0), m_vbo(0)
+    {
+        SetText(text);
+        SetType(GuiType::TextBox);
+    }
+
+    TextBox::~TextBox()
+    {
+        RESOURCE_UNLOAD(m_font);
+    }
+
     void TextBox::GenerateVertices(const std::string& string)
     {
         glGenVertexArrays(1, &m_vao);
@@ -16,18 +29,18 @@ namespace Astra::Graphics
         auto vertices = std::vector<float>();
         vertices.reserve(m_text.size() * 4 * 6);
         std::string::const_iterator c;
-        float cursorX = 0;
+        unsigned int cursorX = 0;
 
         for (c = m_text.begin(); c != m_text.end(); c++)
         {
-            const auto& character = m_font->GetCharacter(*c);// m_characters[*c];
+            const auto& character = m_font->GetCharacter(*c);
             const auto flipped = character.GetFlipped();
 
-            float w = character.GetWidth();
-            float h = character.GetHeight();
+            unsigned int w = character.GetWidth();
+            unsigned int h = character.GetHeight();
 
-            float xpos = cursorX + character.GetBearingX();
-            float ypos = m_font->GetFontSize() - (character.GetBearingY() - h);// (character.GetSize().y - character.GetBearing().y);
+            float xpos = static_cast<float>(cursorX + character.GetBearingX());
+            float ypos = static_cast<float>(m_font->GetFontSize() - (character.GetBearingY() - h));
 
             float l_x = character.GetTexCoord(0);
             float r_x = character.GetTexCoord(1);

@@ -13,19 +13,17 @@
 #include "guis/utility/FontAtlas.h"
 
 #include "buffers/FrameBuffer.h"
-#include "fonts/TextMesh.h"
 #include "buffers/Texture.h"
 #include "entities/Entity.h"
 
 #include "../logger/Logger.h"
-
 
 namespace Astra::Graphics
 {
 	class ResourceManager
 	{
 	
-	#define RESOURCE_UNLOAD(resource) { if (resource != NULL) ResourceManager::Unload(resource); }
+	#define RESOURCE_UNLOAD(resource, ...) { if (resource != NULL) ResourceManager::Unload(resource, __VA_ARGS__); }
 
 	private:
 		std::unordered_map<size_t, ImageMaterial*> m_loadedImageMaterials;
@@ -113,6 +111,16 @@ namespace Astra::Graphics
 			}
 		}
 
+		/* Template Overload */
+		static void Unload(const Texture* ptr, unsigned int fontSize)
+		{
+			if (Get().UnloadResource((void*)ptr))
+			{
+				Get().UnloadTexture(ptr, fontSize);
+			}
+		}
+
+		/* Template Override */
 		static void Unload(const ImageMaterial* ptr)
 		{
 			if (Get().UnloadResource((void*)ptr))
@@ -121,11 +129,21 @@ namespace Astra::Graphics
 			}
 		}
 
+		/* Template Override */
 		static void Unload(const GuiMaterial* ptr)
 		{
 			if (Get().UnloadResource((void*)ptr))
 			{
 				Get().UnloadGuiMaterial(ptr);
+			}
+		}
+
+		/* Template Override */
+		static void Unload(const FontAtlas* ptr)
+		{
+			if (Get().UnloadResource((void*)ptr))
+			{
+				Get().UnloadFontAtlas(ptr);
 			}
 		}
 

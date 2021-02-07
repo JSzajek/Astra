@@ -182,15 +182,10 @@
     <ClCompile Include="src\graphics\entities\Light.cpp" />
     <ClCompile Include="src\graphics\entities\terrains\Terrain.cpp" />
     <ClCompile Include="src\graphics\entities\terrains\WaterTile.cpp" />
-    <ClCompile Include="src\graphics\fonts\FontController.cpp" />
-    <ClCompile Include="src\graphics\fonts\GuiText.cpp" />
-    <ClCompile Include="src\graphics\fonts\MetaFile.cpp" />
-    <ClCompile Include="src\graphics\fonts\TextMesh.cpp" />
     <ClCompile Include="src\graphics\gizmos\Gizmo.cpp" />
     <ClCompile Include="src\graphics\gizmos\GizmoController.cpp" />
     <ClCompile Include="src\graphics\guis\Color.cpp" />
     <ClCompile Include="src\graphics\guis\Gui.cpp" />
-    <ClCompile Include="src\graphics\guis\Panel.cpp" />
     <ClCompile Include="src\graphics\guis\TextBox.cpp" />
     <ClCompile Include="src\graphics\guis\utility\FontAtlas.cpp" />
     <ClCompile Include="src\graphics\Input.cpp" />
@@ -210,7 +205,6 @@
     <ClCompile Include="src\graphics\post_processing\ImageEffect.cpp" />
     <ClCompile Include="src\graphics\post_processing\PostProcessor.cpp" />
     <ClCompile Include="src\graphics\renderers\Entity3dRenderer.cpp" />
-    <ClCompile Include="src\graphics\renderers\FontRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\GizmoRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\GuiRenderer.cpp" />
     <ClCompile Include="src\graphics\renderers\NormalEntity3dRenderer.cpp" />
@@ -227,6 +221,8 @@
     <ClCompile Include="src\graphics\shadows\ShadowMapController.cpp" />
     <ClCompile Include="src\graphics\Window.cpp" />
     <ClCompile Include="src\logger\Logger.cpp" />
+    <ClCompile Include="src\math\iVec2.cpp" />
+    <ClCompile Include="src\math\iVec4.cpp" />
     <ClCompile Include="src\math\Mat4.cpp" />
     <ClCompile Include="src\math\Vec2.cpp" />
     <ClCompile Include="src\math\Vec3.cpp" />
@@ -247,13 +243,6 @@
     <ClInclude Include="src\graphics\entities\SpotLight.h" />
     <ClInclude Include="src\graphics\entities\terrains\HeightGenerator.h" />
     <ClInclude Include="src\graphics\entities\terrains\WaterTile.h" />
-    <ClInclude Include="src\graphics\fonts\Character.h" />
-    <ClInclude Include="src\graphics\fonts\FontController.h" />
-    <ClInclude Include="src\graphics\fonts\GuiText.h" />
-    <ClInclude Include="src\graphics\fonts\Line.h" />
-    <ClInclude Include="src\graphics\fonts\MetaFile.h" />
-    <ClInclude Include="src\graphics\fonts\TextMesh.h" />
-    <ClInclude Include="src\graphics\fonts\Word.h" />
     <ClInclude Include="src\graphics\gizmos\Gizmo.h" />
     <ClInclude Include="src\graphics\gizmos\GizmoController.h" />
     <ClInclude Include="src\graphics\guis\Color.h" />
@@ -294,7 +283,6 @@
     <ClInclude Include="src\graphics\post_processing\PostProcessor.h" />
     <ClInclude Include="src\graphics\post_processing\VerticalBlurEffect.h" />
     <ClInclude Include="src\graphics\renderers\Entity3dRenderer.h" />
-    <ClInclude Include="src\graphics\renderers\FontRenderer.h" />
     <ClInclude Include="src\graphics\renderers\GizmoRenderer.h" />
     <ClInclude Include="src\graphics\renderers\GuiRenderer.h" />
     <ClInclude Include="src\graphics\renderers\NormalEntity3dRenderer.h" />
@@ -329,6 +317,8 @@
     <ClInclude Include="src\graphics\guis\Image.h" />
     <ClInclude Include="src\graphics\Window.h" />
     <ClInclude Include="src\logger\Logger.h" />
+    <ClInclude Include="src\math\iVec2.h" />
+    <ClInclude Include="src\math\iVec4.h" />
     <ClInclude Include="src\math\Mat4.h" />
     <ClInclude Include="src\math\Mat4Utils.h" />
     <ClInclude Include="src\math\Maths.h" />

@@ -17,14 +17,11 @@ out vec4 v_modulateColor;
 void main()
 {
 	gl_Position = projectionMatrix * transformMatrix * vec4(vertex.xy, 0.0, 1.0);
-	//gl_Position = transformMatrix * vec4(flipped, 0.0, 1.0);
 	
 	v_TexIndex = uint(textureInfo.x);
 	v_TexCoordinates = vertex.zw;
-	//v_TexCoordinates = (vec2(vertex.z, vertex.w) / textureInfo.y) + textureInfo.zw;
+	v_TexCoordinates = (vec2(vertex.z, vertex.w) / textureInfo.y) + textureInfo.zw;
 	
-	//v_TexCoordinates = (vec2((position.x + 1.0) / 2.0, 1 - (position.y + 1.0) / 2.0) / textureInfo.y) + textureInfo.zw;
-
 	v_modulateColor = modulateColor;
 }
 
@@ -35,12 +32,12 @@ void main()
 
 in vec2 v_TexCoordinates;
 in vec4 v_modulateColor;
+
 flat in uint v_TexIndex;
 
 out vec4 out_Color;
 
 uniform sampler2D instanced_Textures[MAX_TEXTURE_SLOTS];
-
 
 void main()
 {

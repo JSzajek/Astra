@@ -16,12 +16,12 @@ namespace Astra::Math
 	{
 	}
 
-	Vec2::Vec2(const float& _x, const float& _y)
+	Vec2::Vec2(float _x, float _y)
 		: x(_x), y(_y)
 	{
 	}
 
-	Vec2::Vec2(const float& _value)
+	Vec2::Vec2(float _value)
 		: x(_value), y(_value)
 	{
 	}

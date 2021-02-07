@@ -12,7 +12,7 @@ namespace Astra::Graphics
 		Label,
 		Button,
 		Image,
-		Textbox
+		TextBox
 	};
 
 	class Gui

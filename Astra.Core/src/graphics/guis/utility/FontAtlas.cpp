@@ -26,6 +26,7 @@ namespace Astra::Graphics
 		// Set pixel sizes
 		FT_Set_Pixel_Sizes(face, 0, fontSize);
 
+        // Initialize texture
 		m_texture = LoadFontTextureAtlas(fontFile, fontSize, face);
 
 		// Clean up the face
@@ -35,7 +36,7 @@ namespace Astra::Graphics
 
 	FontAtlas::~FontAtlas()
 	{
-        ResourceManager::Unload(m_texture);
+        RESOURCE_UNLOAD(m_texture, m_fontSize);
 	}
 
     const Post_Char& FontAtlas::GetCharacter(char c) const
@@ -60,7 +61,7 @@ namespace Astra::Graphics
 	const Texture* FontAtlas::LoadFontTextureAtlas(const char* const filepath, unsigned int fontSize, const FT_Face& face)
 	{
 		std::vector<rect_type> rectangles;
-		std::unordered_map<Math::Vec2, std::stack<char>, Vec2Hasher> m_possible;
+		std::unordered_map<Math::iVec2, std::stack<char>, iVec2Hasher> m_possible;
         std::unordered_map<char, Pre_Char> characters;
 
 		static const auto report_successful = [](rect_type&) {
@@ -75,9 +76,9 @@ namespace Astra::Graphics
         {
             LoadCharacter(face, c);
 
-            Math::Vec2 size = Math::Vec2(face->glyph->bitmap.width, face->glyph->bitmap.rows);
+            Math::iVec2 size = Math::iVec2(face->glyph->bitmap.width, face->glyph->bitmap.rows);
             auto character = Pre_Char(c, size.x, size.y, face->glyph->bitmap_left, face->glyph->bitmap_top, face->glyph->advance.x);
-            float padding = size.x * size.y > 0 ? 2 * PADDING_AMOUNT : 0;
+            unsigned int padding = size.x * size.y > 0 ? 2 * PADDING_AMOUNT : 0;
             
             auto rect = rectpack2D::rect_xywh(0, 0, size.x + padding, size.y + padding);
             rectangles.emplace_back(rect);
@@ -93,19 +94,19 @@ namespace Astra::Graphics
         const auto result_size = rectpack2D::find_best_packing<spaces_type>(rectangles, make_finder_input(MAX_SIDE, DISCARD_STEP,
                                                                             report_successful, report_unsuccessful, runtime_flipping_mode));
         std::vector<unsigned char> imgBuffer(result_size.area(), 0);
-        float padding = (2 * PADDING_AMOUNT);
+        unsigned int padding = (2 * PADDING_AMOUNT);
         bool flipped = 0;
         unsigned char c;
         for (const auto& rect : rectangles)
         {
-            Math::Vec2 size = rect.area() == 0 ? Math::Vec2(rect.w, rect.h) : Math::Vec2(rect.w - padding, rect.h - padding);
+            Math::iVec2 size = rect.area() == 0 ? Math::iVec2(rect.w, rect.h) : Math::iVec2(rect.w - padding, rect.h - padding);
 
             auto found = m_possible.find(size);
             if (found != m_possible.end())
             {
                 if (found->second.empty())
                 {
-                    found = m_possible.find(Math::Vec2(rect.h - padding, rect.w - padding));
+                    found = m_possible.find(Math::iVec2(rect.h - padding, rect.w - padding));
                     c = found->second.top();
                     found->second.pop();
 
@@ -120,22 +121,22 @@ namespace Astra::Graphics
             else
             {
                 // Rectangle has been flipped
-                found = m_possible.find(Math::Vec2(rect.h - padding, rect.w - padding));
+                found = m_possible.find(Math::iVec2(rect.h - padding, rect.w - padding));
                 c = found->second.top();
                 found->second.pop();
                 
                 characters[c].SetFlipped(true);
             }
 
-            float xOffset = rect.x + PADDING_AMOUNT;
-            float yOffset = rect.y + PADDING_AMOUNT;
+            unsigned int xOffset = rect.x + PADDING_AMOUNT;
+            unsigned int yOffset = rect.y + PADDING_AMOUNT;
             characters[c].SetOffset(xOffset, yOffset);
 
             const auto& character = characters[c];
             LoadCharacter(face, character.GetChar());
-            for (unsigned int sx = 0; sx < character.GetSize().x; sx++)
+            for (int sx = 0; sx < character.GetSize().x; sx++)
             {
-                for (unsigned int sy = 0; sy < character.GetSize().y; sy++)
+                for (int sy = 0; sy < character.GetSize().y; sy++)
                 {
                 #if FLIPPING
                     if (character.GetFlipped())

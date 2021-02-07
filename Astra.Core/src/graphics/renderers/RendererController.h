@@ -11,7 +11,6 @@
 #include "WaterRenderer.h"
 #include "NormalEntity3dRenderer.h"
 #include "../post_processing/PostProcessor.h"
-#include "../fonts/FontController.h"
 #include "../particles/ParticleController.h"
 #include "../gizmos/GizmoController.h"
 #include "../shadows/ShadowMapController.h"

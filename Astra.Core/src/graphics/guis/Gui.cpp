@@ -17,6 +17,6 @@ namespace Astra::Graphics
 
 	Gui::~Gui()
 	{
-		ResourceManager::Unload(Material);
+		RESOURCE_UNLOAD(Material);
 	}
 }

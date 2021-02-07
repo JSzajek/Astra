@@ -47,6 +47,8 @@ namespace Astra::Graphics
 								std::stoi(code.substr(5, 2), 0, 16) / 255.0f, 1);
 		}
 
+		operator Math::Vec4() const { return m_data; }
+
 		inline float GetR() { return m_data.x; }
 		inline float GetG() { return m_data.y; }
 		inline float GetB() { return m_data.z; }
