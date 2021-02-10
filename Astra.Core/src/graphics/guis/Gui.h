@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../../math/Vec2.h"
+#include "Spatial2D.h"
+
 #include "../materials/GuiMaterial.h"
 #include "Color.h"
 
@@ -15,20 +17,18 @@ namespace Astra::Graphics
 		TextBox
 	};
 
-	class Gui
+	class Gui : public Spatial2D
 	{
 	private:
 		Color m_modulate;
 		GuiType m_type;
 	public:
 		std::string Name;
-		Math::Vec2 Position;
-		float Rotation;
-		Math::Vec2 Scale;
 		const GuiMaterial* Material;
 	public:
 		Gui(const GuiMaterial* material, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
 		Gui(const GuiMaterial* material, const char* const name, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		Gui(const Gui& other);
 		~Gui();
 
 		inline void SetModulate(const Color& modulate) { m_modulate = modulate; }

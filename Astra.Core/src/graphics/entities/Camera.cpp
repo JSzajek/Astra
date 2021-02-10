@@ -25,21 +25,26 @@ namespace Astra::Graphics
 		float horizontalDist = m_distance * cos(Math::ToRadians(m_pitch));
 		float verticalDist = m_distance * sin(Math::ToRadians(m_pitch));
 		
-		float theta = m_focalPoint.rows[1].y + m_angleAroundFocal;
+		float theta = m_focalPoint.GetRotation().y + m_angleAroundFocal;
 		float xOffset = horizontalDist * sin(Math::ToRadians(theta));
 		float zOffset = horizontalDist * cos(Math::ToRadians(theta));
-		rows[0].x = m_focalPoint.rows[0].x - xOffset;
-		rows[0].y = m_focalPoint.rows[0].y + verticalDist;
-		rows[0].z = m_focalPoint.rows[0].z - zOffset;
-		m_yaw = 180 - (m_focalPoint.rows[1].y + m_angleAroundFocal);
+		m_rows[0].x = m_focalPoint.GetTranslation().x - xOffset;
+		m_rows[0].y = m_focalPoint.GetTranslation().y + verticalDist;
+		m_rows[0].z = m_focalPoint.GetTranslation().z - zOffset;
+		m_yaw = 180 - (m_focalPoint.GetRotation().y + m_angleAroundFocal);
+		Camera::UpdateMatrices();
+	}
+
+	void Camera::InvertPitch(float yDelta)
+	{
+		Spatial::operator[](0).y += yDelta; // change y
+		m_pitch = -m_pitch;
 		Camera::UpdateMatrices();
 	}
 
 	void Camera::LookAt(const Math::Vec3& lookAtPoint)
 	{
-		m_focalPoint.rows[0].x = lookAtPoint.x;
-		m_focalPoint.rows[0].y = lookAtPoint.y;
-		m_focalPoint.rows[0].z = lookAtPoint.z;
+		m_focalPoint.SetTranslation(lookAtPoint);
 		UpdatePosition();
 	}
 

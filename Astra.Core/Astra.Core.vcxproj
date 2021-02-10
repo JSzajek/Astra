@@ -186,6 +186,7 @@
     <ClCompile Include="src\graphics\gizmos\GizmoController.cpp" />
     <ClCompile Include="src\graphics\guis\Color.cpp" />
     <ClCompile Include="src\graphics\guis\Gui.cpp" />
+    <ClCompile Include="src\graphics\guis\Spatial2D.cpp" />
     <ClCompile Include="src\graphics\guis\TextBox.cpp" />
     <ClCompile Include="src\graphics\guis\utility\FontAtlas.cpp" />
     <ClCompile Include="src\graphics\Input.cpp" />
@@ -250,6 +251,7 @@
     <ClInclude Include="src\graphics\guis\Guis.h" />
     <ClInclude Include="src\graphics\guis\Label.h" />
     <ClInclude Include="src\graphics\guis\Panel.h" />
+    <ClInclude Include="src\graphics\guis\Spatial2D.h" />
     <ClInclude Include="src\graphics\guis\TextBox.h" />
     <ClInclude Include="src\graphics\guis\utility\FontAtlas.h" />
     <ClInclude Include="src\graphics\guis\utility\FontStructs.h" />

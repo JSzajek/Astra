@@ -229,14 +229,12 @@ namespace Astra::Graphics
 			
 			// Reflection Rendering
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetReflectionBuffer()->GetId(), 320, 180);
-			m_mainCamera->Translation()->y -= distance;
-			m_mainCamera->InvertPitch(); // Updates the view matrix
+			m_mainCamera->InvertPitch(-distance); // Updates the view matrix
 			Render(delta, viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_reflectionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 
 			// Refraction Rendering
-			m_mainCamera->Translation()->y += distance;
-			m_mainCamera->InvertPitch(); // Updates the view matrix
+			m_mainCamera->InvertPitch(distance); // Updates the view matrix
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetRefractionBuffer()->GetId(), 1280, 720);
 			Render(delta, viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_refractionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();

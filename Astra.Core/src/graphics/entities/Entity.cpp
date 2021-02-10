@@ -36,9 +36,9 @@ namespace Astra::Graphics
 	{
 		if (m_selected)
 		{
-			*(Scale()) *= 1.1f;
-			*selectedModelMatrix = Math::Mat4Utils::Transformation(this);
-			*(Scale()) /= 1.1f;
+			Math::Vec3 scale = GetScale();
+			scale *= 1.1f;
+			*selectedModelMatrix = Math::Mat4Utils::Transformation(GetTranslation(), GetRotation(), scale);
 		}
 		Spatial::UpdateMatrices();
 	}

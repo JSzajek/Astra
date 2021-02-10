@@ -55,13 +55,13 @@ int main()
     mainScene->AddWaterTile(&tile1);
 
     //const Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
-    auto* guiMat = ResourceManager::LoadGuiMaterial("res/textures/fernAtlas.png", 2);
-    Image gui = Image(guiMat, Vec2(300), Vec2(0.3f), 0);
+    auto* guiMat = ResourceManager::LoadGuiMaterial("res/textures/grassTexture.png", 1);
+    Image gui = Image(guiMat, Vec2(0), Vec2(1), 1);
     gui.SetModulate(Color::White);
     mainScene->AddGui(&gui, 0);
     
     auto* fontAtlas = ResourceManager::LoadFontAtlas("res/fonts/OpenSans-Regular.ttf", 48);
-    TextBox textbox = TextBox("OpenGL", fontAtlas, Vec2(10), 0, Vec2(1));
+    TextBox textbox = TextBox("OpenGL", fontAtlas, Vec2(10, 200), 0, Vec2(1));
     textbox.SetModulate(Color::Green);
     mainScene->AddGui(&textbox, 0);
 

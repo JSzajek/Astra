@@ -44,4 +44,5 @@ void main()
 	out_Color = texture2D(instanced_Textures[v_TexIndex], v_TexCoordinates);
 	if (out_Color.a < 0.5) { discard; }
 	out_Color *= v_modulateColor;
+	out_Color = vec4(1);
 }
