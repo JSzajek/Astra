@@ -7,6 +7,9 @@
 
 namespace Astra::Graphics
 {
+	#define DEFAULT_FONT_PATH		"../Astra.Core/src/resources/fonts/calibri.ttf"
+	#define DEFAULT_FONT_SIZE		24
+
 	class TextBox : public Gui
 	{
 	private:
@@ -21,7 +24,8 @@ namespace Astra::Graphics
 		//uniform float outlineWidth;
 		//uniform float outlineEdge;
 	public:
-		TextBox(const char* text, FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		TextBox(const char* text, const FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		TextBox(const char* text, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
 		~TextBox();
 
 		inline const bool HasCustomVao() const override { return true; }

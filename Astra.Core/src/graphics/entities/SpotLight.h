@@ -18,9 +18,9 @@ namespace Astra::Graphics
 				  const Math::Vec3& diffuse, const Math::Vec3& specular, float cutOff, float outerCutOff)
 			: Light(translation, ambient, diffuse, specular), m_cutOff(cutOff), m_outerCutOff(outerCutOff)
 		{
-			data[3] = direction.x;
-			data[4] = direction.y;
-			data[5] = direction.z;
+			m_data[3] = direction.x;
+			m_data[4] = direction.y;
+			m_data[5] = direction.z;
 			m_type = LightType::Spotlight;
 		#if _DEBUG
 			m_gizmo = new Gizmo("../Astra.Core/src/resources/textures/SpotLight.png", translation, 3);

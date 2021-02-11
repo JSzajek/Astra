@@ -60,7 +60,7 @@ namespace Astra::Graphics
 
 		inline void SetTranslation(const Math::Vec3& translation) override 
 		{
-			rows[0] = translation;
+			Spatial::SetTranslation(translation);
 			if (m_lightChanged != NULL)
 			{
 				m_lightChanged(this);

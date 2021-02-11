@@ -17,6 +17,8 @@ namespace Astra
 		Math::Vec2 m_mousePosition;
 		unsigned int m_pressed;
 		unsigned int m_released;
+		unsigned int m_mousePressed;
+		unsigned int m_mouseReleased;
 	public:
 		Input(const Input&) = delete;
 		void operator=(const Input&) = delete;
@@ -52,6 +54,9 @@ namespace Astra
 		inline static void SetPressedKey(unsigned int key) { Get().m_pressed = key; }
 		inline static void SetReleasedKey(unsigned int key) { Get().m_released = key; }
 
+		inline static void SetMousePressedKey(unsigned int key) { Get().SetMousePressedKeyImpl(key);}
+		inline static void SetMouseReleasedKey(unsigned int key) { Get().SetMouseReleasedKeyImpl(key); }
+
 		inline static const Math::Vec2& GetMousePosition() { return Get().m_mousePosition; }
 		inline static float GetMouseScroll() { return Get().m_mouseScroll; }
 		inline static bool IsKeyJustPressed(Key key) { return Get().m_pressed == static_cast<unsigned int>(key); }
@@ -64,5 +69,7 @@ namespace Astra
 		bool IsMouseButtonPressedImpl(unsigned int button) const;
 		inline void SetMousePositionImpl(float x, float y) { m_mousePosition.x = x; m_mousePosition.y = y; };
 		inline void SetMouseScrollImpl(float scroll) { m_mouseScroll = scroll; };
+		void SetMousePressedKeyImpl(unsigned int key);
+		void SetMouseReleasedKeyImpl(unsigned int key);
 	};
 }

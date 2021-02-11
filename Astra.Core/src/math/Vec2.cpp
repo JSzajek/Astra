@@ -36,14 +36,14 @@ namespace Astra::Math
 		return index == 0 ? x : y;
 	}
 
-	Vec2& Vec2::Add(const Vec2& other)
+	Vec2 Vec2::Add(const Vec2& other)
 	{
 		x += other.x;
 		y += other.y;
 		return *this;
 	}
 
-	Vec2& Vec2::Subtract(const Vec2& other)
+	Vec2 Vec2::Subtract(const Vec2& other)
 	{
 		x -= other.x;
 		y -= other.y;
@@ -55,33 +55,33 @@ namespace Astra::Math
 		return Vec2(x * other.x, y * other.y);
 	}
 
-	Vec2& Vec2::Multiply(const float& scalar)
+	Vec2 Vec2::Multiply(const float& scalar)
 	{
 		x *= scalar;
 		y *= scalar;
 		return *this;
 	}
 
-	Vec2& Vec2::Divide(const Vec2& other)
+	Vec2 Vec2::Divide(const Vec2& other)
 	{
 		x /= other.x;
 		y /= other.y;
 		return *this;
 	}
 
-	Vec2& Vec2::Divide(const float& scalar)
+	Vec2 Vec2::Divide(const float& scalar)
 	{
 		x /= scalar;
 		y /= scalar;
 		return *this;
 	}
 
-	Vec2& operator+(Vec2 left, const Vec2& right)
+	Vec2 operator+(Vec2 left, const Vec2& right)
 	{
 		return left.Add(right);
 	}
 
-	Vec2& operator-(Vec2 left, const Vec2& right)
+	Vec2 operator-(Vec2 left, const Vec2& right)
 	{
 		return left.Subtract(right);
 	}
@@ -91,27 +91,27 @@ namespace Astra::Math
 		return left.Multiply(right);
 	}
 
-	Vec2& operator*(Vec2 left, const float& scalar)
+	Vec2 operator*(Vec2 left, const float& scalar)
 	{
 		return left.Multiply(scalar);
 	}
 
-	Vec2& operator/(Vec2 left, const Vec2& right)
+	Vec2 operator/(Vec2 left, const Vec2& right)
 	{
 		return left.Divide(right);
 	}
 
-	Vec2& operator/(Vec2 left, const float& scalar)
+	Vec2 operator/(Vec2 left, const float& scalar)
 	{
 		return left.Divide(scalar);
 	}
 
-	Vec2& Vec2::operator+=(const Vec2& other)
+	Vec2 Vec2::operator+=(const Vec2& other)
 	{
 		return Add(other);
 	}
 
-	Vec2& Vec2::operator-=(const Vec2& other)
+	Vec2 Vec2::operator-=(const Vec2& other)
 	{
 		return Subtract(other);
 	}
@@ -121,17 +121,17 @@ namespace Astra::Math
 		return Multiply(other);
 	}
 
-	Vec2& Vec2::operator*=(const float& scalar)
+	Vec2 Vec2::operator*=(const float& scalar)
 	{
 		return Multiply(scalar);
 	}
 
-	Vec2& Vec2::operator/=(const Vec2& other)
+	Vec2 Vec2::operator/=(const Vec2& other)
 	{
 		return Divide(other);
 	}
 
-	Vec2& Vec2::operator/=(const float& scalar)
+	Vec2 Vec2::operator/=(const float& scalar)
 	{
 		return Divide(scalar);
 	}

@@ -45,7 +45,17 @@ namespace Astra::Graphics
 
 	void GuiLayer::Add(Gui* gui)
 	{
-		if (gui->GetType() == GuiType::TextBox)
+		if (gui->GetType() == GuiType::Panel)
+		{
+			m_texts.emplace_back(static_cast<Panel*>(gui)->GetTextBox());
+			m_textures.emplace_back(gui);
+		}
+		else if (gui->GetType() == GuiType::Button)
+		{
+			m_texts.emplace_back(static_cast<Button*>(gui)->GetTextBox());
+			m_textures.emplace_back(gui);
+		}
+		else if (gui->GetType() == GuiType::TextBox)
 		{
 			m_texts.emplace_back(static_cast<TextBox*>(gui));
 		}
@@ -115,8 +125,6 @@ namespace Astra::Graphics
 
 		for (const auto* layer : m_layers)
 		{
-			
-
 			// Render Guis
 			m_shader->Start();
 
@@ -146,8 +154,7 @@ namespace Astra::Graphics
 				}
 
 				// Determine whether subbuffer once or per offset is more efficient
-				Math::Mat4 transform = Math::Mat4Utils::Transformation(*gui);
-				glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(GuiInfo), sizeof(Math::Mat4), transform.data);
+				glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(GuiInfo), sizeof(Math::Mat4), gui->GetModelMatrix()->data);
 				Color color = gui->GetModulate();
 				float dat[8] =
 				{
@@ -193,8 +200,7 @@ namespace Astra::Graphics
 
 			for (const auto* text : layer->GetTexts())
 			{
-				Math::Mat4 transform = Math::Mat4Utils::Transformation(*text);
-				m_fontShader->SetUniformMat4(TRANSFORM_MATRIX_TAG, transform);
+				m_fontShader->SetUniformMat4(TRANSFORM_MATRIX_TAG, text->GetModelMatrix());
 				m_fontShader->SetUniform4f(MODULATE_TAG, text->GetModulate());
 
 				glActiveTexture(GL_TEXTURE0);

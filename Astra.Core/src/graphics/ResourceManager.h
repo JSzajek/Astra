@@ -51,7 +51,7 @@ namespace Astra::Graphics
 			return Get().QueryFontAtlasTextureImpl(filepath, fontSize, texture);
 		}
 
-		static GuiMaterial* LoadGuiMaterial(const char* filepath, size_t rowCount)
+		static GuiMaterial* LoadGuiMaterial(const char* filepath, size_t rowCount = 1)
 		{
 			return Get().LoadGuiMaterialImpl(filepath, rowCount);
 		}

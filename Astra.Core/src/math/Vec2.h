@@ -58,14 +58,14 @@ namespace Astra::Math
 		/// </summary>
 		/// <param name="other">The other Vec2 to add</param>
 		/// <returns>The summation Vec2</returns>
-		Vec2& Add(const Vec2& other);
+		Vec2 Add(const Vec2& other);
 		
 		/// <summary>
 		/// Subtracts the passed vector.
 		/// </summary>
 		/// <param name="other">The other Vec2 to subtract</param>
 		/// <returns>The subtracted Vec2</returns>
-		Vec2& Subtract(const Vec2& other);
+		Vec2 Subtract(const Vec2& other);
 
 		/// <summary>
 		/// Multiplies the passed vector.
@@ -79,35 +79,35 @@ namespace Astra::Math
 		/// </summary>
 		/// <param name="other">The scalar to multiply</param>
 		/// <returns>The multiplied Vec2</returns>
-		Vec2& Multiply(const float& scalar);
+		Vec2 Multiply(const float& scalar);
 		
 		/// <summary>
 		/// Divides the passed vector.
 		/// </summary>
 		/// <param name="other">The other Vec2 to divide</param>
 		/// <returns>The divided Vec2</returns>
-		Vec2& Divide(const Vec2& other);
+		Vec2 Divide(const Vec2& other);
 
 		/// <summary>
 		/// Divides the passed vector.
 		/// </summary>
 		/// <param name="other">The scalar to divide</param>
 		/// <returns>The divided Vec2</returns>
-		Vec2& Divide(const float& scalar);
+		Vec2 Divide(const float& scalar);
 
 		/// <summary>
 		/// Addition operator override.
 		/// </summary>
 		/// <param name="other">The other Vec2 to add</param>
 		/// <returns>The summation Vec2</returns>
-		friend Vec2& operator+(Vec2 left, const Vec2& right);
+		friend Vec2 operator+(Vec2 left, const Vec2& right);
 
 		/// <summary>
 		/// Subtraction operator override.
 		/// </summary>
 		/// <param name="other">The other Vec2 to subtract</param>
 		/// <returns>The subtracted Vec2</returns>
-		friend Vec2& operator-(Vec2 left, const Vec2& right);
+		friend Vec2 operator-(Vec2 left, const Vec2& right);
 		
 		/// <summary>
 		/// Multiplication operator override.
@@ -121,35 +121,35 @@ namespace Astra::Math
 		/// </summary>
 		/// <param name="scalar">The scalar to multiply</param>
 		/// <returns>The multiplied Vec2</returns>
-		friend Vec2& operator*(Vec2 left, const float& scalar);
+		friend Vec2 operator*(Vec2 left, const float& scalar);
 
 		/// <summary>
 		/// Division operator override.
 		/// </summary>
 		/// <param name="other">The other Vec2 to divide</param>
 		/// <returns>The divided Vec2</returns>
-		friend Vec2& operator/(Vec2 left, const Vec2& right);
+		friend Vec2 operator/(Vec2 left, const Vec2& right);
 
 		/// <summary>
 		/// Division operator override.
 		/// </summary>
 		/// <param name="scalar">The scalar to divide</param>
 		/// <returns>The divided Vec2</returns>
-		friend Vec2& operator/(Vec2 left, const float& scalar);
+		friend Vec2 operator/(Vec2 left, const float& scalar);
 
 		/// <summary>
 		/// Addition operator override.
 		/// </summary>
 		/// <param name="other">The other Vec2 to add</param>
 		/// <returns>The summation Vec2</returns>
-		Vec2& operator+=(const Vec2& other);
+		Vec2 operator+=(const Vec2& other);
 
 		/// <summary>
 		/// Subtraction operator override.
 		/// </summary>
 		/// <param name="other">The other Vec2 to subtract</param>
 		/// <returns>The subtracted Vec2</returns>
-		Vec2& operator-=(const Vec2& other);
+		Vec2 operator-=(const Vec2& other);
 
 		/// <summary>
 		/// Multiplication operator override.
@@ -163,21 +163,21 @@ namespace Astra::Math
 		/// </summary>
 		/// <param name="scalar">The scalar to multiply</param>
 		/// <returns>The multiplied Vec2</returns>
-		Vec2& operator*=(const float& scalar);
+		Vec2 operator*=(const float& scalar);
 
 		/// <summary>
 		/// Division operator override.
 		/// </summary>
 		/// <param name="other">The other Vec2 to divide</param>
 		/// <returns>The divided Vec2</returns>
-		Vec2& operator/=(const Vec2& other);
+		Vec2 operator/=(const Vec2& other);
 
 		/// <summary>
 		/// Division operator override.
 		/// </summary>
 		/// <param name="scalar">The scalar to divide</param>
 		/// <returns>The divided Vec2</returns>
-		Vec2& operator/=(const float& scalar);
+		Vec2 operator/=(const float& scalar);
 
 		/// <summary>
 		/// Equality operator override.

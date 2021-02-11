@@ -47,11 +47,20 @@ namespace Astra::Graphics
 								std::stoi(code.substr(5, 2), 0, 16) / 255.0f, 1);
 		}
 
+		Color(const Color& color)
+			: m_data(color.m_data)
+		{
+		}
+
+		// Explicit conversion
 		operator Math::Vec4() const { return m_data; }
 
-		inline float GetR() { return m_data.x; }
-		inline float GetG() { return m_data.y; }
-		inline float GetB() { return m_data.z; }
-		inline float GetA() { return m_data.w; }
+		Color& Multiply(const Color& other);
+		friend Color& operator*(Color left, const Color& right);
+
+		inline float GetR() const { return m_data.x; }
+		inline float GetG() const { return m_data.y; }
+		inline float GetB() const { return m_data.z; }
+		inline float GetA() const { return m_data.w; }
 	};
 }
