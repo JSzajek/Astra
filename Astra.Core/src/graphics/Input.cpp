@@ -1,9 +1,13 @@
+#include "renderers/RendererController.h" // Move to event system?
+
 #include "Input.h"
+
 
 namespace Astra
 {
 	Input::Input()
-		: m_window(NULL), m_mouseScroll(0), m_mousePosition(Math::Vec2())
+		: m_window(NULL), m_mouseScroll(0), m_mousePosition(Math::Vec2()),
+			m_pressed(0), m_released(0)
 	{
 	}
 
@@ -33,6 +37,18 @@ namespace Astra
 			}
 		});
 
+		glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods)
+		{
+			if (action == GLFW_PRESS)
+			{
+				Input::SetMousePressedKey(button);
+			}
+			else if (action == GLFW_RELEASE)
+			{
+				Input::SetMouseReleasedKey(button);
+			}
+		});
+
 	}
 
 	void Input::FlushImpl()
@@ -50,5 +66,14 @@ namespace Astra
 	bool Input::IsMouseButtonPressedImpl(unsigned int button) const
 	{
 		return glfwGetMouseButton(m_window, button) == GLFW_PRESS;
+	}
+
+	void Input::SetMousePressedKeyImpl(unsigned int key)
+	{
+		m_mousePressed = key;
+		if (m_mousePressed == GLFW_MOUSE_BUTTON_1)
+		{
+			Astra::Graphics::RendererController::CheckInput(m_mousePosition);
+		}
 	}
 }

@@ -12,6 +12,7 @@ namespace Astra::Graphics
 		Image(const GuiMaterial* material, const Math::Vec2& position, float rotation, const Math::Vec2& scale, unsigned int textureIndex = 0)
 			: Gui(material, position, rotation, scale), m_textureIndex(textureIndex)
 		{
+			m_rect.SetSize(Math::iVec2(static_cast<int>(m_rows[1].x * Material->GetSize().x), static_cast<int>(m_rows[1].y * Material->GetSize().y)));
 			SetType(GuiType::Image);
 			UpdateMatrices();
 		}

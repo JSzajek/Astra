@@ -26,10 +26,7 @@
 #include "../../math/Mat4Utils.h"
 
 #include "../buffers/WaterFrameBuffer.h"
-
 #include "../scenes/Scene.h"
-
-#include "../../logger/Logger.h"
 
 namespace Astra::Graphics
 {
@@ -103,6 +100,16 @@ namespace Astra::Graphics
 			Get().SetSelectionColorImpl(color);
 		}
 
+		static void CheckGuis()
+		{
+			Get().CheckGuisImpl();
+		}
+
+		static void CheckInput(const Math::Vec2& position)
+		{
+			Get().CheckInputImpl(position);
+		}
+
 	#if _DEBUG
 		static void ToggleWireframeMode()
 		{
@@ -117,6 +124,9 @@ namespace Astra::Graphics
 		~RendererController();
 		void UpdateScreenImpl(int width, int height);
 		void RenderImpl(float delta);
+
+		void CheckGuisImpl();
+		void CheckInputImpl(const Math::Vec2& position);
 
 		void Init() const;
 		bool SetCurrentSceneImpl(const Scene* scene);

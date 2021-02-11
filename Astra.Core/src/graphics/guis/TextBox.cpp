@@ -8,6 +8,7 @@ namespace Astra::Graphics
     TextBox::TextBox(const char* text, FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
         : Gui(NULL, position, rotation, scale), m_font(font), m_vao(0), m_vbo(0)
     {
+        m_rect.SetSize(Math::iVec2(0, m_font->GetFontSize()));
         SetText(text);
         SetType(GuiType::TextBox);
     }
@@ -19,12 +20,25 @@ namespace Astra::Graphics
 
     void TextBox::GenerateVertices(const std::string& string)
     {
-        glGenVertexArrays(1, &m_vao);
-        glGenBuffers(1, &m_vbo);
+        // TODO: Investigate better buffer object streaming techniques
+        m_text = string;
+        if (m_vao == 0)
+        {
+            glGenVertexArrays(1, &m_vao);
+        }
+
+        if (m_vbo == 0)
+        {
+            glGenBuffers(1, &m_vbo);
+        }
+
+        if (m_text.size() == 0)
+        {
+            return;
+        }
+
         glBindVertexArray(m_vao);
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-
-        m_text = string;
 
         auto vertices = std::vector<float>();
         vertices.reserve(m_text.size() * 4 * 6);
@@ -81,10 +95,12 @@ namespace Astra::Graphics
         }
 
         // update content of VBO memory
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 6 * m_text.size(), &vertices[0], GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 6 * m_text.size(), &vertices[0], GL_STREAM_DRAW);
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
+
+        m_rect.GetSize().x = cursorX;
     }
 }

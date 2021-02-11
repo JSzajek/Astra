@@ -3,6 +3,7 @@
 #include "../Window.h"
 
 #include "../ResourceManager.h"
+#include "../../logger/Logger.h"
 
 #include <functional>
 
@@ -164,6 +165,30 @@ namespace Astra::Graphics
 		UpdateScreenImpl(Window::GetWidth(), Window::GetHeight());
 
 		return true;
+	}
+
+	void RendererController::CheckInputImpl(const Math::Vec2& position)
+	{
+		for (auto tuple_gui : m_currentScene->GetGuis())
+		{
+			auto* gui = std::get<0>(tuple_gui);
+			if (gui->GetBounds().HasPoint(Input::GetMousePosition()))
+			{
+				gui->OnPressed();
+			}
+		}
+	}
+
+	void RendererController::CheckGuisImpl()
+	{
+		for (auto tuple_gui : m_currentScene->GetGuis())
+		{
+			auto* gui = std::get<0>(tuple_gui);
+			if (gui->GetBounds().HasPoint(Input::GetMousePosition()))
+			{
+				gui->OnHover();
+			}
+		}
 	}
 
 	void RendererController::SetSelectionColorImpl(const Math::Vec3& color)

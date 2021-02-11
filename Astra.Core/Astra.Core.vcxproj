@@ -189,6 +189,7 @@
     <ClCompile Include="src\graphics\guis\Spatial2D.cpp" />
     <ClCompile Include="src\graphics\guis\TextBox.cpp" />
     <ClCompile Include="src\graphics\guis\utility\FontAtlas.cpp" />
+    <ClCompile Include="src\graphics\guis\utility\Rect2.cpp" />
     <ClCompile Include="src\graphics\Input.cpp" />
     <ClCompile Include="src\graphics\loaders\Loader.cpp" />
     <ClCompile Include="src\graphics\loaders\ObjLoader.cpp" />
@@ -255,6 +256,7 @@
     <ClInclude Include="src\graphics\guis\TextBox.h" />
     <ClInclude Include="src\graphics\guis\utility\FontAtlas.h" />
     <ClInclude Include="src\graphics\guis\utility\FontStructs.h" />
+    <ClInclude Include="src\graphics\guis\utility\Rect2.h" />
     <ClInclude Include="src\graphics\Input.h" />
     <ClInclude Include="src\graphics\Inputs.h" />
     <ClInclude Include="src\graphics\materials\GuiMaterial.h" />
