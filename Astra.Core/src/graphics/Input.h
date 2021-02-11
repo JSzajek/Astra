@@ -55,7 +55,7 @@ namespace Astra
 		inline static void SetReleasedKey(unsigned int key) { Get().m_released = key; }
 
 		inline static void SetMousePressedKey(unsigned int key) { Get().SetMousePressedKeyImpl(key);}
-		inline static void SetMouseReleasedKey(unsigned int key) { Get().m_mouseReleased = key; }
+		inline static void SetMouseReleasedKey(unsigned int key) { Get().SetMouseReleasedKeyImpl(key); }
 
 		inline static const Math::Vec2& GetMousePosition() { return Get().m_mousePosition; }
 		inline static float GetMouseScroll() { return Get().m_mouseScroll; }
@@ -70,5 +70,6 @@ namespace Astra
 		inline void SetMousePositionImpl(float x, float y) { m_mousePosition.x = x; m_mousePosition.y = y; };
 		inline void SetMouseScrollImpl(float scroll) { m_mouseScroll = scroll; };
 		void SetMousePressedKeyImpl(unsigned int key);
+		void SetMouseReleasedKeyImpl(unsigned int key);
 	};
 }

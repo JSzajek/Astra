@@ -247,6 +247,7 @@
     <ClInclude Include="src\graphics\entities\terrains\WaterTile.h" />
     <ClInclude Include="src\graphics\gizmos\Gizmo.h" />
     <ClInclude Include="src\graphics\gizmos\GizmoController.h" />
+    <ClInclude Include="src\graphics\guis\Button.h" />
     <ClInclude Include="src\graphics\guis\Color.h" />
     <ClInclude Include="src\graphics\guis\Gui.h" />
     <ClInclude Include="src\graphics\guis\Guis.h" />

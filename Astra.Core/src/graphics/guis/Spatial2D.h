@@ -42,12 +42,14 @@ namespace Astra::Graphics
 
 		virtual void SetTranslation(const Math::Vec2& translation);
 		virtual void operator()(unsigned int _type, unsigned int _op, unsigned int _index, float _val);
+		virtual void operator()(unsigned int _type, unsigned int _op, float _val);
 	protected:
 		float& operator()(const unsigned int& row, const unsigned int& column);
 		Math::Vec2& operator[](const unsigned int& index);
 		virtual void UpdateMatrices();
 	private:
 		void UpdateVector(Math::Vec2* _vec, unsigned int _op, unsigned int _index, float _val);
+		void UpdateValue(float* _base, unsigned int _op, float _val);
 	};
 
 }

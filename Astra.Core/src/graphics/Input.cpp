@@ -73,7 +73,16 @@ namespace Astra
 		m_mousePressed = key;
 		if (m_mousePressed == GLFW_MOUSE_BUTTON_1)
 		{
-			Astra::Graphics::RendererController::CheckInput(m_mousePosition);
+			Astra::Graphics::RendererController::CheckInput(m_mousePosition, GLFW_PRESS);
+		}
+	}
+
+	void Input::SetMouseReleasedKeyImpl(unsigned int key)
+	{
+		m_mousePressed = key;
+		if (m_mousePressed == GLFW_MOUSE_BUTTON_1)
+		{
+			Astra::Graphics::RendererController::CheckInput(m_mousePosition, GLFW_RELEASE);
 		}
 	}
 }

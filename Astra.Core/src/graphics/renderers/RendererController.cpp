@@ -167,25 +167,40 @@ namespace Astra::Graphics
 		return true;
 	}
 
-	void RendererController::CheckInputImpl(const Math::Vec2& position)
+	void RendererController::CheckInputImpl(const Math::Vec2& position, int action)
 	{
-		for (auto tuple_gui : m_currentScene->GetGuis())
+		if (action == 0 && m_last)
 		{
-			auto* gui = std::get<0>(tuple_gui);
-			if (gui->GetBounds().HasPoint(Input::GetMousePosition()))
+			m_last->OnReleased();
+		}
+		else
+		{
+			for (auto tuple_gui : m_currentScene->GetGuis())
 			{
-				gui->OnPressed();
+				auto* gui = std::get<0>(tuple_gui);
+				if (gui->GetBounds().HasPoint(Input::GetMousePosition()))
+				{
+					m_last = gui;
+					gui->OnPressed();
+				}
 			}
 		}
 	}
 
 	void RendererController::CheckGuisImpl()
 	{
+		const auto& position = Input::GetMousePosition();
+		if (m_last && !m_last->GetBounds().HasPoint(position))
+		{
+			m_last->OnExit();
+		}
+
 		for (auto tuple_gui : m_currentScene->GetGuis())
 		{
 			auto* gui = std::get<0>(tuple_gui);
-			if (gui->GetBounds().HasPoint(Input::GetMousePosition()))
+			if (gui->GetBounds().HasPoint(position))
 			{
+				m_last = gui;
 				gui->OnHover();
 			}
 		}

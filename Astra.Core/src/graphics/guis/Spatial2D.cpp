@@ -1,6 +1,7 @@
 #include "Spatial2D.h"
 
 #include "../../math/Mat4Utils.h"
+#include "../../logger/Logger.h"
 
 namespace Astra::Graphics
 {
@@ -69,9 +70,6 @@ namespace Astra::Graphics
 		case TRANSLATION:
 			UpdateVector(&m_rows[0], _op, _index, _val);
 			break;
-		case ROTATION:
-			m_rotation = _val;
-			break;
 		case SCALE:
 			UpdateVector(&m_rows[1], _op, _index, _val);
 			break;
@@ -79,6 +77,19 @@ namespace Astra::Graphics
 			return;
 		}
 		UpdateMatrices();
+	}
+
+	void Spatial2D::operator()(unsigned int _type, unsigned int _op, float _val)
+	{
+		if (_type != ROTATION)
+		{
+			Logger::LogWarning("Spatial2D: Only rotation is single value update");
+		}
+		else
+		{
+			UpdateValue(&m_rotation, _op, _val);
+			UpdateMatrices();
+		}
 	}
 	
 	void Spatial2D::UpdateMatrices()
@@ -98,6 +109,22 @@ namespace Astra::Graphics
 			break;
 		case EQ:
 			_vec->operator[](_index) = _val;
+			break;
+		}
+	}
+
+	void Spatial2D::UpdateValue(float* _base, unsigned int _op, float _val)
+	{
+		switch (_op)
+		{
+		case SUM_EQ:
+			*_base += _val;
+			break;
+		case SUB_EQ:
+			*_base -= _val;
+			break;
+		case EQ:
+			*_base = _val;
 			break;
 		}
 	}

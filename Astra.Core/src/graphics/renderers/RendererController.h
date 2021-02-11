@@ -45,6 +45,7 @@ namespace Astra::Graphics
 		static const constexpr float NearPlane = 0.1f;
 		static const constexpr float FarPlane = 500.0f;
 	private:
+		Gui* m_last;
 		Entity3dRenderer* m_entityRenderer;
 		TerrainRenderer* m_terrainRenderer;
 		SkyboxRenderer* m_skyboxRenderer;
@@ -105,9 +106,9 @@ namespace Astra::Graphics
 			Get().CheckGuisImpl();
 		}
 
-		static void CheckInput(const Math::Vec2& position)
+		static void CheckInput(const Math::Vec2& position, int action)
 		{
-			Get().CheckInputImpl(position);
+			Get().CheckInputImpl(position, action);
 		}
 
 	#if _DEBUG
@@ -126,7 +127,7 @@ namespace Astra::Graphics
 		void RenderImpl(float delta);
 
 		void CheckGuisImpl();
-		void CheckInputImpl(const Math::Vec2& position);
+		void CheckInputImpl(const Math::Vec2& position, int action);
 
 		void Init() const;
 		bool SetCurrentSceneImpl(const Scene* scene);

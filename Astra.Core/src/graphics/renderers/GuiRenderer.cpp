@@ -45,7 +45,17 @@ namespace Astra::Graphics
 
 	void GuiLayer::Add(Gui* gui)
 	{
-		if (gui->GetType() == GuiType::TextBox)
+		if (gui->GetType() == GuiType::Panel)
+		{
+			m_texts.emplace_back(static_cast<Panel*>(gui)->GetTextBox());
+			m_textures.emplace_back(gui);
+		}
+		else if (gui->GetType() == GuiType::Button)
+		{
+			m_texts.emplace_back(static_cast<Button*>(gui)->GetTextBox());
+			m_textures.emplace_back(gui);
+		}
+		else if (gui->GetType() == GuiType::TextBox)
 		{
 			m_texts.emplace_back(static_cast<TextBox*>(gui));
 		}
