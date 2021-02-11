@@ -26,10 +26,7 @@
 #include "../../math/Mat4Utils.h"
 
 #include "../buffers/WaterFrameBuffer.h"
-
 #include "../scenes/Scene.h"
-
-#include "../../logger/Logger.h"
 
 namespace Astra::Graphics
 {
@@ -48,6 +45,7 @@ namespace Astra::Graphics
 		static const constexpr float NearPlane = 0.1f;
 		static const constexpr float FarPlane = 500.0f;
 	private:
+		Gui* m_last;
 		Entity3dRenderer* m_entityRenderer;
 		TerrainRenderer* m_terrainRenderer;
 		SkyboxRenderer* m_skyboxRenderer;
@@ -103,6 +101,16 @@ namespace Astra::Graphics
 			Get().SetSelectionColorImpl(color);
 		}
 
+		static void CheckGuis()
+		{
+			Get().CheckGuisImpl();
+		}
+
+		static void CheckInput(const Math::Vec2& position, int action)
+		{
+			Get().CheckInputImpl(position, action);
+		}
+
 	#if _DEBUG
 		static void ToggleWireframeMode()
 		{
@@ -117,6 +125,9 @@ namespace Astra::Graphics
 		~RendererController();
 		void UpdateScreenImpl(int width, int height);
 		void RenderImpl(float delta);
+
+		void CheckGuisImpl();
+		void CheckInputImpl(const Math::Vec2& position, int action);
 
 		void Init() const;
 		bool SetCurrentSceneImpl(const Scene* scene);

@@ -55,15 +55,31 @@ int main()
     mainScene->AddWaterTile(&tile1);
 
     //const Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
-    auto* guiMat = ResourceManager::LoadGuiMaterial("res/textures/fernAtlas.png", 2);
-    Image gui = Image(guiMat, Vec2(300), Vec2(0.3f), 0);
+    auto* guiMat = ResourceManager::LoadGuiMaterial("res/textures/grassTexture.png");
+    Image gui = Image(guiMat, Vec2(10, 200), Vec2(1), 1);
     gui.SetModulate(Color::White);
     mainScene->AddGui(&gui, 0);
     
-    auto* fontAtlas = ResourceManager::LoadFontAtlas("res/fonts/OpenSans-Regular.ttf", 48);
-    TextBox textbox = TextBox("OpenGL", fontAtlas, Vec2(10), 0, Vec2(1));
-    textbox.SetModulate(Color::Green);
+    //auto* fontAtlas = ResourceManager::LoadFontAtlas("res/fonts/OpenSans-Regular.ttf", 24);
+    TextBox textbox = TextBox("", Vec2(10), 0, Vec2(1));
+    textbox.SetModulate(Color::Red);
     mainScene->AddGui(&textbox, 0);
+
+    auto* buttonMat = ResourceManager::LoadGuiMaterial("res/textures/Panel.png");
+    Button button = Button(buttonMat, Vec2(200, 10), Vec2(1));
+    button.SetHoverColor(Color::Red);
+    button.SetPressedColor(Color::Blue);
+    button.SetText("button");
+    mainScene->AddGui(&button, 2);
+
+    button.SetOnPressed([&] {
+        gui(ROTATION, SUM_EQ, 5);
+    });
+
+    auto* panelMat = ResourceManager::LoadGuiMaterial("res/textures/Panel.png");
+    Panel panel = Panel(panelMat, Vec2(100, 200), Vec2(1));
+    panel.SetText("panel");
+    mainScene->AddGui(&panel, 1);
 
     std::vector<const char*> m_textureFiles =
     {
@@ -243,6 +259,8 @@ int main()
         }
     #endif
 
+        RendererController::CheckGuis();
+
         RendererController::Render(delta);
         Window::Update();
 
@@ -250,7 +268,8 @@ int main()
         if (timer.Elapsed() - elapsedTime > 1.0f)
         {
             elapsedTime += 1.0f;
-            printf("%dfps\n", frames);
+            textbox.SetText(std::to_string(frames) + std::string("fps"));
+            //printf("%dfps\n", frames);
             frames = 0;
         }
     }

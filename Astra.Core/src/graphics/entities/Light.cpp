@@ -10,7 +10,7 @@ namespace Astra::Graphics
 	Light::Light(const Light& other)
 		: m_color(other.m_color), m_ambient(other.m_ambient), m_diffuse(other.m_diffuse), m_specular(other.m_specular)
 	{
-		memcpy(data, other.data, 3 * 3 * sizeof(float));
+		memcpy(m_data, other.m_data, 3 * 3 * sizeof(float));
 	}
 
 	Light::Light(const Math::Vec3& translation, const Math::Vec3& ambient,

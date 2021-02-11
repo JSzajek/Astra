@@ -19,40 +19,33 @@ namespace Astra::Graphics
 	struct Spatial
 	{
 	private:
-		Math::Mat4* modelMatrix;
-		Math::Mat4* normalMatrix;
-	public:
-		union
+		Math::Mat4* m_modelMatrix;
+		Math::Mat4* m_normalMatrix;
+	protected:
+		union // TODO: Look into moving into private encapsulation
 		{
-			float data[3 * 3];
-			Math::Vec3 rows[3];
+			float m_data[3 * 3];
+			Math::Vec3 m_rows[3];
 		};
-
+	public:
 		Spatial();
 		Spatial(const Spatial& other);
 		Spatial(const Math::Vec3& translation);
 		Spatial(const Math::Vec3& translation, const Math::Vec3& rotation, const Math::Vec3& scale);
 		~Spatial();
-
-		float& operator()(const unsigned int& row, const unsigned int& column);
 		
-		Math::Vec3& operator[](const unsigned int& index);
-		
-		virtual inline const Math::Vec3& GetTranslation() const { return rows[0]; }
-		virtual inline const Math::Vec3& GetRotation() const { return rows[1]; }
-		virtual inline const Math::Vec3& GetScale() const { return rows[2]; }
+		virtual inline const Math::Vec3& GetTranslation() const { return m_rows[0]; }
+		virtual inline const Math::Vec3& GetRotation() const { return m_rows[1]; }
+		virtual inline const Math::Vec3& GetScale() const { return m_rows[2]; }
 
-		virtual inline Math::Vec3* Translation() { return &rows[0]; }
-		virtual inline Math::Vec3* Rotation() { return &rows[1]; }
-		virtual inline Math::Vec3* Scale() { return &rows[2]; }
+		inline const Math::Mat4* const GetModelMatrix() const { return m_modelMatrix; }
+		inline const Math::Mat4* const GetNormalMatrix() const { return m_normalMatrix; }
 
-		virtual inline void SetTranslation(const Math::Vec3& translation) { rows[0] = translation; }
-
-		inline const Math::Mat4* const GetModelMatrix() const { return modelMatrix; }
-		inline const Math::Mat4* const GetNormalMatrix() const { return normalMatrix; }
-
+		virtual void SetTranslation(const Math::Vec3& translation);
 		virtual void operator()(unsigned int _type, unsigned int _op, unsigned int _index, float _val);
 	protected:
+		float& operator()(const unsigned int& row, const unsigned int& column);
+		Math::Vec3& operator[](const unsigned int& index);
 		virtual void UpdateMatrices();
 	private:
 		void UpdateVector(Math::Vec3* _vec, unsigned int _op, unsigned int _index, float _val);

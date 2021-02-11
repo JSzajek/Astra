@@ -7,35 +7,29 @@ namespace Astra::Graphics
 	Terrain::Terrain(int xGrid, int zGrid, const char* const heightmap, const TerrainMaterialPack* pack, const TerrainMaterial* map)
 		: Spatial(), texturePack(pack)
 	{
-		Translation()->x = xGrid * Size;
-		Translation()->z = zGrid * Size;
+		SetTranslation(Math::Vec3(xGrid * Size, 0, zGrid * Size));
 		vertexArray = GeneratePlaneTerrain(heightmap);
 		blendMap = ResourceManager::Track(map);
-		UpdateMatrices();
 	}
 
 	Terrain::Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, const TerrainMaterialPack* pack, const TerrainMaterial* map)
 		: Spatial(), texturePack(pack)
 	{
-		Translation()->x = xGrid * Size;
-		Translation()->z = zGrid * Size;
+		SetTranslation(Math::Vec3(xGrid * Size, 0, zGrid * Size));
 		HeightGenerator* generator = new HeightGenerator(amplitude, octaves, roughness);
 		vertexArray = GeneratePlaneTerrain(generator);
 		blendMap = ResourceManager::Track(map);
 		delete generator;
-		UpdateMatrices();
 	}
 
 	Terrain::Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, int seed, const TerrainMaterialPack* pack, const TerrainMaterial* map)
 		: Spatial(), texturePack(pack)
 	{
-		Translation()->x = xGrid * Size;
-		Translation()->z = zGrid * Size;
+		SetTranslation(Math::Vec3(xGrid * Size, 0, zGrid * Size));
 		HeightGenerator* generator = new HeightGenerator(amplitude, octaves, roughness, seed);
 		vertexArray = GeneratePlaneTerrain(generator);
 		blendMap = ResourceManager::Track(map);
 		delete generator;
-		UpdateMatrices();
 	}
 
 	Terrain::~Terrain()

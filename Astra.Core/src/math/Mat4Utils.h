@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Mat4.h"
-#include "../graphics/guis/Gui.h"
 #include "../graphics/entities/Spatial.h"
+#include "../graphics/guis/Spatial2D.h"
 #include "../graphics/entities/Camera.h"
 
 namespace Astra::Math
@@ -19,9 +19,9 @@ namespace Astra::Math
 			return instance;
 		}
 
-		static Mat4 Transformation(const Graphics::Gui& gui) 
+		static Mat4 Transformation(const Graphics::Spatial2D* gui)
 		{
-			return Get().TransformationImpl(gui.Position, gui.Rotation, gui.GetSize() * gui.Scale);
+			return Get().TransformationImpl(gui->GetTranslation(), gui->GetRotation(), gui->GetScale());
 		}
 
 		static Mat4 Transformation(const Math::Vec2& position, float rotation, const Math::Vec2& scale)
@@ -32,6 +32,11 @@ namespace Astra::Math
 		static Mat4 Transformation(const Graphics::Spatial* entity)
 		{
 			return Get().TransformationImpl(entity->GetTranslation(), entity->GetRotation(), entity->GetScale());
+		}
+
+		static Mat4 Transformation(const Vec3& translation, const Vec3& rotation, const Vec3& scale)
+		{
+			return Get().TransformationImpl(translation, rotation, scale);
 		}
 
 		static Mat4 ViewMatrix(const Graphics::Camera* camera)

@@ -1,10 +1,7 @@
 #pragma once
 
 #include "Renderer.h"
-#include "../guis/Gui.h"
-#include "../guis/Image.h"
-#include "../guis/Label.h"
-#include "../guis/TextBox.h"
+#include "../guis/Guis.h"
 
 #include "../shaders/FontShader.h"
 

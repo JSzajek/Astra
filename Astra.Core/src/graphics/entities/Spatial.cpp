@@ -5,61 +5,67 @@
 namespace Astra::Graphics
 {
 	Spatial::Spatial()
-		: modelMatrix(new Math::Mat4(0)), normalMatrix(new Math::Mat4(0))
+		: m_modelMatrix(new Math::Mat4(0)), m_normalMatrix(new Math::Mat4(0))
 	{
 		for (size_t i = 0; i < 3 * 3; i++)
 		{
-			data[i] = i < 6 ? 0.0f : 1.0f;
+			m_data[i] = i < 6 ? 0.0f : 1.0f;
 		}
 		UpdateMatrices();
 	}
 
 	Spatial::Spatial(const Spatial& other)
-		: modelMatrix(other.modelMatrix), normalMatrix(other.normalMatrix)
+		: m_modelMatrix(other.m_modelMatrix), m_normalMatrix(other.m_normalMatrix)
 	{
-		memcpy(data, other.data, 3 * 3 * sizeof(float));
+		memcpy(m_data, other.m_data, sizeof(m_data));
 	}
 
 	Spatial::Spatial(const Math::Vec3& translation)
 		: Spatial()
 	{
-		data[0] = translation.x;
-		data[1] = translation.y;
-		data[2] = translation.z;
+		m_data[0] = translation.x;
+		m_data[1] = translation.y;
+		m_data[2] = translation.z;
 		UpdateMatrices();
 	}
 
 	Spatial::Spatial(const Math::Vec3& translation, const Math::Vec3& rotation, const Math::Vec3& scale)
 		: Spatial()
 	{
-		data[0] = translation.x;
-		data[1] = translation.y;
-		data[2] = translation.z;
+		m_data[0] = translation.x;
+		m_data[1] = translation.y;
+		m_data[2] = translation.z;
 
-		data[3] = rotation.x;
-		data[4] = rotation.y;
-		data[5] = rotation.z;
+		m_data[3] = rotation.x;
+		m_data[4] = rotation.y;
+		m_data[5] = rotation.z;
 
-		data[6] = scale.x;
-		data[7] = scale.y;
-		data[8] = scale.z;
+		m_data[6] = scale.x;
+		m_data[7] = scale.y;
+		m_data[8] = scale.z;
 		UpdateMatrices();
 	}
 
 	Spatial::~Spatial()
 	{
-		delete modelMatrix;
-		delete normalMatrix;
+		delete m_modelMatrix;
+		delete m_normalMatrix;
 	}
 
 	float& Spatial::operator()(const unsigned int& row, const unsigned int& column)
 	{
-		return data[row + column * 3];
+		return m_data[column + row * 3];
 	}
 
 	Math::Vec3& Spatial::operator[](const unsigned int& index)
 	{
-		return rows[index];
+		return m_rows[index];
+	}
+
+	void Spatial::SetTranslation(const Math::Vec3& translation) 
+	{
+		m_rows[0] = translation;
+		UpdateMatrices();
 	}
 
 	void Spatial::operator()(unsigned int _type, unsigned int _op, unsigned int _index, float _val)
@@ -67,13 +73,13 @@ namespace Astra::Graphics
 		switch (_type)
 		{
 		case TRANSLATION:
-			UpdateVector(Spatial::Translation(), _op, _index, _val);
+			UpdateVector(&m_rows[0], _op, _index, _val);
 			break;
 		case ROTATION:
-			UpdateVector(Spatial::Rotation(), _op, _index, _val);
+			UpdateVector(&m_rows[1], _op, _index, _val);
 			break;
 		case SCALE:
-			UpdateVector(Spatial::Scale(), _op, _index, _val);
+			UpdateVector(&m_rows[2], _op, _index, _val);
 			break;
 		default:
 			return;
@@ -83,9 +89,9 @@ namespace Astra::Graphics
 
 	void Spatial::UpdateMatrices()
 	{
-		*modelMatrix = Math::Mat4Utils::Transformation(this);
-		*normalMatrix = modelMatrix->Inverse();
-		normalMatrix->Transpose();
+		*m_modelMatrix = Math::Mat4Utils::Transformation(this);
+		*m_normalMatrix = m_modelMatrix->Inverse();
+		m_normalMatrix->Transpose();
 	}
 
 	void Spatial::UpdateVector(Math::Vec3* _vec, unsigned int _op, unsigned int _index, float _val)
