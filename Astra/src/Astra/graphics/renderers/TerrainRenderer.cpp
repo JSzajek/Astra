@@ -9,7 +9,7 @@
 
 namespace Astra::Graphics
 {
-	TerrainRenderer::TerrainRenderer(const Math::Vec3* fogColor)
+	TerrainRenderer::TerrainRenderer(const Color* fogColor)
 		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), m_toShadowSpaceMatrix(NULL)
 		#if ASTRA_DEBUG
 			, m_wireframe(false)

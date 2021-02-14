@@ -2,9 +2,11 @@
 
 #include "Core.h"
 #include "Window.h"
-#include "Astra/LayerStack.h"
+#include "Astra/layers/LayerStack.h"
 #include "Astra/utils/Timestep.h"
 #include "Astra/events/ApplicationEvent.h"
+
+int main(int argc, char** argv); // Global entry point definition
 
 namespace Astra
 {
@@ -33,19 +35,25 @@ namespace Astra
 	public:
 		Application();
 		virtual ~Application();
-		
-		void Run();
 
 		void OnEvent(Event& _event);
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
+		
+		inline void PopLayer(Layer* layer) { m_layerStack.PopLayer(layer); }
+		inline void PopOverlay(Layer* layer) { m_layerStack.PopOverlay(layer); }
+
+		virtual void OnUpdate(float delta) { }
 
 		static Application& Get() { return *s_instance; }
 		inline Window& GetWindow() { return *m_window; }
 	private:
+		void Run();
 		bool OnWindowClose(WindowCloseEvent& _event);
 		bool OnWindowResize(WindowResizeEvent& _event);
+
+		friend int ::main(int argc, char** argv);
 	};
 
 	// To be defined in client

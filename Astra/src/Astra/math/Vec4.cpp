@@ -42,6 +42,11 @@ namespace Astra::Math
 	{
 	}
 
+	Vec4::operator Math::Vec3() const
+	{
+		return Math::Vec3(x, y, z);
+	}
+
 	float& Vec4::operator[](int index)
 	{
 		return index == 0 ? x : index == 1 ? y : index == 2 ? z : w;

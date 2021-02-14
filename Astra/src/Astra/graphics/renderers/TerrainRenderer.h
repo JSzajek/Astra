@@ -3,6 +3,8 @@
 #include <vector>
 
 #include "Renderer.h"
+#include "Astra/graphics/Color.h"
+
 #include "../loaders/Loader.h"
 #include "../entities/terrains/Terrain.h"
 #include "../entities/Light.h"
@@ -15,14 +17,14 @@ namespace Astra::Graphics
 	private:
 		std::unordered_map<GLuint, std::vector<const Terrain*>> m_terrains;
 		std::vector<const Light*> m_lights;
-		const Math::Vec3* m_fogColor;
+		const Color* m_fogColor;
 		const Light* m_directionalLight;
 		const Math::Mat4* m_toShadowSpaceMatrix;
 	#if ASTRA_DEBUG
 		bool m_wireframe;
 	#endif
 	public:
-		TerrainRenderer(const Math::Vec3* fogColor);
+		TerrainRenderer(const Color* fogColor);
 		
 	#if ASTRA_DEBUG
 		void SetWireframe(bool wireframe) { m_wireframe = wireframe; };

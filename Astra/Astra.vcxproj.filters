@@ -61,14 +61,17 @@
     <Filter Include="src\Astra\graphics\renderers">
       <UniqueIdentifier>{506B908B-3C26-8037-E5DD-F881D177CAC7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Astra\graphics\scenes">
-      <UniqueIdentifier>{07FF97D1-73C1-CB5B-BC71-5AE82873A439}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Astra\graphics\shaders">
       <UniqueIdentifier>{90CDF30F-7CDD-9FE0-E596-04FFD1C58E79}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Astra\graphics\shadows">
       <UniqueIdentifier>{BFF8F30F-AB08-A0E0-14C2-04FF00F18E79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\inputs">
+      <UniqueIdentifier>{E90F3E1A-D508-5D6C-FE3A-42F1EA923C78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\layers">
+      <UniqueIdentifier>{56F65620-42EF-7572-6B21-5BF75779557E}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Astra\math">
       <UniqueIdentifier>{B0F26102-9CC0-5508-8554-C62E71C1316D}</UniqueIdentifier>
@@ -111,22 +114,10 @@
     <ClInclude Include="src\Astra\EntryPoint.h">
       <Filter>src\Astra</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astra\Input.h">
-      <Filter>src\Astra</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Astra\KeyCodes.h">
-      <Filter>src\Astra</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Astra\Layer.h">
-      <Filter>src\Astra</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Astra\LayerStack.h">
-      <Filter>src\Astra</Filter>
-    </ClInclude>
     <ClInclude Include="src\Astra\Log.h">
       <Filter>src\Astra</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astra\MouseCodes.h">
+    <ClInclude Include="src\Astra\Scene.h">
       <Filter>src\Astra</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\Window.h">
@@ -149,6 +140,9 @@
     </ClInclude>
     <ClInclude Include="src\Astra\events\MouseEvent.h">
       <Filter>src\Astra\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\Color.h">
+      <Filter>src\Astra\graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\ResourceManager.h">
       <Filter>src\Astra\graphics</Filter>
@@ -208,9 +202,6 @@
       <Filter>src\Astra\graphics\gizmos</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\guis\Button.h">
-      <Filter>src\Astra\graphics\guis</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Astra\graphics\guis\Color.h">
       <Filter>src\Astra\graphics\guis</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\guis\Gui.h">
@@ -321,9 +312,6 @@
     <ClInclude Include="src\Astra\graphics\renderers\Renderer.h">
       <Filter>src\Astra\graphics\renderers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astra\graphics\renderers\RendererController.h">
-      <Filter>src\Astra\graphics\renderers</Filter>
-    </ClInclude>
     <ClInclude Include="src\Astra\graphics\renderers\ShadowMapRenderer.h">
       <Filter>src\Astra\graphics\renderers</Filter>
     </ClInclude>
@@ -335,9 +323,6 @@
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\renderers\WaterRenderer.h">
       <Filter>src\Astra\graphics\renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Astra\graphics\scenes\Scene.h">
-      <Filter>src\Astra\graphics\scenes</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\shaders\BloomShader.h">
       <Filter>src\Astra\graphics\shaders</Filter>
@@ -395,6 +380,27 @@
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\shadows\ShadowMapController.h">
       <Filter>src\Astra\graphics\shadows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\inputs\Input.h">
+      <Filter>src\Astra\inputs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\inputs\KeyCodes.h">
+      <Filter>src\Astra\inputs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\inputs\MouseCodes.h">
+      <Filter>src\Astra\inputs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\layers\Layer.h">
+      <Filter>src\Astra\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\layers\Layer2D.h">
+      <Filter>src\Astra\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\layers\Layer3D.h">
+      <Filter>src\Astra\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\layers\LayerStack.h">
+      <Filter>src\Astra\layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\math\Mat4.h">
       <Filter>src\Astra\math</Filter>
@@ -464,12 +470,6 @@
     <ClCompile Include="src\Astra\Application.cpp">
       <Filter>src\Astra</Filter>
     </ClCompile>
-    <ClCompile Include="src\Astra\Layer.cpp">
-      <Filter>src\Astra</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Astra\LayerStack.cpp">
-      <Filter>src\Astra</Filter>
-    </ClCompile>
     <ClCompile Include="src\Astra\Log.cpp">
       <Filter>src\Astra</Filter>
     </ClCompile>
@@ -478,6 +478,9 @@
     </ClCompile>
     <ClCompile Include="src\Astra\audio\AudioSource.cpp">
       <Filter>src\Astra\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\Color.cpp">
+      <Filter>src\Astra\graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\ResourceManager.cpp">
       <Filter>src\Astra\graphics</Filter>
@@ -523,9 +526,6 @@
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\gizmos\GizmoController.cpp">
       <Filter>src\Astra\graphics\gizmos</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Astra\graphics\guis\Color.cpp">
-      <Filter>src\Astra\graphics\guis</Filter>
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\guis\Gui.cpp">
       <Filter>src\Astra\graphics\guis</Filter>
@@ -605,9 +605,6 @@
     <ClCompile Include="src\Astra\graphics\renderers\Renderer.cpp">
       <Filter>src\Astra\graphics\renderers</Filter>
     </ClCompile>
-    <ClCompile Include="src\Astra\graphics\renderers\RendererController.cpp">
-      <Filter>src\Astra\graphics\renderers</Filter>
-    </ClCompile>
     <ClCompile Include="src\Astra\graphics\renderers\ShadowMapRenderer.cpp">
       <Filter>src\Astra\graphics\renderers</Filter>
     </ClCompile>
@@ -628,6 +625,18 @@
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\shadows\ShadowMapController.cpp">
       <Filter>src\Astra\graphics\shadows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\layers\Layer.cpp">
+      <Filter>src\Astra\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\layers\Layer2D.cpp">
+      <Filter>src\Astra\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\layers\Layer3D.cpp">
+      <Filter>src\Astra\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\layers\LayerStack.cpp">
+      <Filter>src\Astra\layers</Filter>
     </ClCompile>
     <ClCompile Include="src\Astra\math\Mat4.cpp">
       <Filter>src\Astra\math</Filter>

@@ -57,6 +57,8 @@ namespace Astra::Math
 		/// <param name="other"></param>
 		Vec4(const Vec4& other);
 
+		operator Math::Vec3() const;
+
 		/// <summary>
 		/// Element access operator override.
 		/// </summary>

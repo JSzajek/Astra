@@ -53,8 +53,8 @@ namespace Astra::Math
 		const Mat4 Inverse() const;
 		void Transpose();
 
-		static Mat4 Orthographic(float left, float right, float bottom, float top, float near, float far);
-		static Mat4 Perspective(float width, float height, float fov, float near, float far);
+		static Mat4 Orthographic(float left, float right, float bottom, float top, float _near, float _far);
+		static Mat4 Perspective(float width, float height, float fov, float _near, float _far);
 
 		static Mat4 TranslationMatrix(const Vec3& translation);
 		static Mat4 RotationMatrix(float angle, const Vec3& axis);

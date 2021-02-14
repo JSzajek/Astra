@@ -1,16 +1,11 @@
 #include "astra_pch.h"
 
-#include "Application.h"
-#include "Input.h"
-
 #include <GLFW\glfw3.h>
 
-#include "Astra/graphics/renderers/RendererController.h"
+#include "Application.h"
 
 namespace Astra
 {
-	#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
-
 	Application* Application::s_instance = NULL;
 
 	Application::Application()
@@ -30,11 +25,13 @@ namespace Astra
 	void Application::PushLayer(Layer* layer)
 	{
 		m_layerStack.PushLayer(layer);
+		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* layer)
 	{
 		m_layerStack.PushOverlay(layer);
+		layer->OnAttach();
 	}
 
 	void Application::Run()
@@ -45,6 +42,7 @@ namespace Astra
 			Timestep timestep = time - m_lastFrameTime;
 			m_lastFrameTime = time;
 
+			OnUpdate(timestep);
 			if (!m_minimized)
 			{
 				for (Layer* layer : m_layerStack)
@@ -87,9 +85,11 @@ namespace Astra
 		}
 		m_minimized = false;
 
-		// Connect Renderer Resize here
-		Astra::Graphics::RendererController::UpdateScreen(_event.GetWidth(), _event.GetHeight());
 
+		for (Layer* layer : m_layerStack)
+		{
+			layer->UpdateScreen(_event.GetWidth(), _event.GetHeight());
+		}
 		return true;
 	}
 }

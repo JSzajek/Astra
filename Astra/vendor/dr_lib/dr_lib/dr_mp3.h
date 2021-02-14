@@ -2882,11 +2882,11 @@ static drmp3_bool32 drmp3__on_seek_memory(void* pUserData, int byteOffset, drmp3
     if (origin == drmp3_seek_origin_current) {
         if (byteOffset > 0) {
             if (pMP3->memory.currentReadPos + byteOffset > pMP3->memory.dataSize) {
-                byteOffset = (int)(pMP3->memory.dataSize - pMP3->memory.currentReadPos);  /* Trying to seek too far forward. */
+                byteOffset = (int)(pMP3->memory.dataSize - pMP3->memory.currentReadPos);  /* Trying to seek too _far forward. */
             }
         } else {
             if (pMP3->memory.currentReadPos < (size_t)-byteOffset) {
-                byteOffset = -(int)pMP3->memory.currentReadPos;  /* Trying to seek too far backwards. */
+                byteOffset = -(int)pMP3->memory.currentReadPos;  /* Trying to seek too _far backwards. */
             }
         }
 
@@ -2896,7 +2896,7 @@ static drmp3_bool32 drmp3__on_seek_memory(void* pUserData, int byteOffset, drmp3
         if ((drmp3_uint32)byteOffset <= pMP3->memory.dataSize) {
             pMP3->memory.currentReadPos = byteOffset;
         } else {
-            pMP3->memory.currentReadPos = pMP3->memory.dataSize;  /* Trying to seek too far forward. */
+            pMP3->memory.currentReadPos = pMP3->memory.dataSize;  /* Trying to seek too _far forward. */
         }
     }
 
@@ -3377,7 +3377,7 @@ static drmp3_result drmp3_fopen(FILE** ppFile, const char* pFilePath, const char
 _wfopen() isn't always available in all compilation environments.
 
     * Windows only.
-    * MSVC seems to support it universally as far back as VC6 from what I can tell (haven't checked further back).
+    * MSVC seems to support it universally as _far back as VC6 from what I can tell (haven't checked further back).
     * MinGW-64 (both 32- and 64-bit) seems to support it.
     * MinGW wraps it in !defined(__STRICT_ANSI__).
     * OpenWatcom wraps it in !defined(_NO_EXT_KEYS).

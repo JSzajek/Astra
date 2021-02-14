@@ -80,10 +80,11 @@ project "Astra"
 			"_CRT_SECURE_NO_WARNINGS"
 		}
 
-		-- postbuildcommands
-		-- {
-		-- 	("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .."/TestGame")
-		-- }
+		-- Post build copy of required OpenAL dll
+		postbuildcommands
+		{
+			("{COPY} vendor/OpenALSoft/lib/OpenAL32.dll ../bin/" .. outputdir .."/TestGame")
+		}
 
 	filter "configurations:Debug"
 		defines

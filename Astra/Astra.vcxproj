@@ -91,6 +91,9 @@
       <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
+    <PostBuildEvent>
+      <Command>IF EXIST vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Debug-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Debug-x86\TestGame &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -116,6 +119,9 @@
       <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
+    <PostBuildEvent>
+      <Command>IF EXIST vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
     <ClCompile>
@@ -141,18 +147,17 @@
       <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
+    <PostBuildEvent>
+      <Command>IF EXIST vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Astra.h" />
     <ClInclude Include="src\Astra\Application.h" />
     <ClInclude Include="src\Astra\Core.h" />
     <ClInclude Include="src\Astra\EntryPoint.h" />
-    <ClInclude Include="src\Astra\Input.h" />
-    <ClInclude Include="src\Astra\KeyCodes.h" />
-    <ClInclude Include="src\Astra\Layer.h" />
-    <ClInclude Include="src\Astra\LayerStack.h" />
     <ClInclude Include="src\Astra\Log.h" />
-    <ClInclude Include="src\Astra\MouseCodes.h" />
+    <ClInclude Include="src\Astra\Scene.h" />
     <ClInclude Include="src\Astra\Window.h" />
     <ClInclude Include="src\Astra\audio\AudioController.h" />
     <ClInclude Include="src\Astra\audio\AudioSource.h" />
@@ -160,6 +165,7 @@
     <ClInclude Include="src\Astra\events\Event.h" />
     <ClInclude Include="src\Astra\events\KeyEvent.h" />
     <ClInclude Include="src\Astra\events\MouseEvent.h" />
+    <ClInclude Include="src\Astra\graphics\Color.h" />
     <ClInclude Include="src\Astra\graphics\ResourceManager.h" />
     <ClInclude Include="src\Astra\graphics\buffers\CubeMapTexture.h" />
     <ClInclude Include="src\Astra\graphics\buffers\FrameBuffer.h" />
@@ -180,7 +186,6 @@
     <ClInclude Include="src\Astra\graphics\gizmos\Gizmo.h" />
     <ClInclude Include="src\Astra\graphics\gizmos\GizmoController.h" />
     <ClInclude Include="src\Astra\graphics\guis\Button.h" />
-    <ClInclude Include="src\Astra\graphics\guis\Color.h" />
     <ClInclude Include="src\Astra\graphics\guis\Gui.h" />
     <ClInclude Include="src\Astra\graphics\guis\Guis.h" />
     <ClInclude Include="src\Astra\graphics\guis\Image.h" />
@@ -217,12 +222,10 @@
     <ClInclude Include="src\Astra\graphics\renderers\NormalEntity3dRenderer.h" />
     <ClInclude Include="src\Astra\graphics\renderers\ParticleRenderer.h" />
     <ClInclude Include="src\Astra\graphics\renderers\Renderer.h" />
-    <ClInclude Include="src\Astra\graphics\renderers\RendererController.h" />
     <ClInclude Include="src\Astra\graphics\renderers\ShadowMapRenderer.h" />
     <ClInclude Include="src\Astra\graphics\renderers\SkyboxRenderer.h" />
     <ClInclude Include="src\Astra\graphics\renderers\TerrainRenderer.h" />
     <ClInclude Include="src\Astra\graphics\renderers\WaterRenderer.h" />
-    <ClInclude Include="src\Astra\graphics\scenes\Scene.h" />
     <ClInclude Include="src\Astra\graphics\shaders\BloomShader.h" />
     <ClInclude Include="src\Astra\graphics\shaders\ContrastShader.h" />
     <ClInclude Include="src\Astra\graphics\shaders\EntityShader.h" />
@@ -242,6 +245,13 @@
     <ClInclude Include="src\Astra\graphics\shaders\WaterShader.h" />
     <ClInclude Include="src\Astra\graphics\shadows\ShadowBox.h" />
     <ClInclude Include="src\Astra\graphics\shadows\ShadowMapController.h" />
+    <ClInclude Include="src\Astra\inputs\Input.h" />
+    <ClInclude Include="src\Astra\inputs\KeyCodes.h" />
+    <ClInclude Include="src\Astra\inputs\MouseCodes.h" />
+    <ClInclude Include="src\Astra\layers\Layer.h" />
+    <ClInclude Include="src\Astra\layers\Layer2D.h" />
+    <ClInclude Include="src\Astra\layers\Layer3D.h" />
+    <ClInclude Include="src\Astra\layers\LayerStack.h" />
     <ClInclude Include="src\Astra\math\Mat4.h" />
     <ClInclude Include="src\Astra\math\Mat4Utils.h" />
     <ClInclude Include="src\Astra\math\Maths.h" />
@@ -266,11 +276,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astra\Application.cpp" />
-    <ClCompile Include="src\Astra\Layer.cpp" />
-    <ClCompile Include="src\Astra\LayerStack.cpp" />
     <ClCompile Include="src\Astra\Log.cpp" />
     <ClCompile Include="src\Astra\audio\AudioController.cpp" />
     <ClCompile Include="src\Astra\audio\AudioSource.cpp" />
+    <ClCompile Include="src\Astra\graphics\Color.cpp" />
     <ClCompile Include="src\Astra\graphics\ResourceManager.cpp" />
     <ClCompile Include="src\Astra\graphics\buffers\CubeMapTexture.cpp" />
     <ClCompile Include="src\Astra\graphics\buffers\ShadowFrameBuffer.cpp" />
@@ -286,7 +295,6 @@
     <ClCompile Include="src\Astra\graphics\entities\terrains\WaterTile.cpp" />
     <ClCompile Include="src\Astra\graphics\gizmos\Gizmo.cpp" />
     <ClCompile Include="src\Astra\graphics\gizmos\GizmoController.cpp" />
-    <ClCompile Include="src\Astra\graphics\guis\Color.cpp" />
     <ClCompile Include="src\Astra\graphics\guis\Gui.cpp" />
     <ClCompile Include="src\Astra\graphics\guis\Spatial2D.cpp" />
     <ClCompile Include="src\Astra\graphics\guis\TextBox.cpp" />
@@ -313,7 +321,6 @@
     <ClCompile Include="src\Astra\graphics\renderers\NormalEntity3dRenderer.cpp" />
     <ClCompile Include="src\Astra\graphics\renderers\ParticleRenderer.cpp" />
     <ClCompile Include="src\Astra\graphics\renderers\Renderer.cpp" />
-    <ClCompile Include="src\Astra\graphics\renderers\RendererController.cpp" />
     <ClCompile Include="src\Astra\graphics\renderers\ShadowMapRenderer.cpp" />
     <ClCompile Include="src\Astra\graphics\renderers\SkyboxRenderer.cpp" />
     <ClCompile Include="src\Astra\graphics\renderers\TerrainRenderer.cpp" />
@@ -321,6 +328,10 @@
     <ClCompile Include="src\Astra\graphics\shaders\Shader.cpp" />
     <ClCompile Include="src\Astra\graphics\shadows\ShadowBox.cpp" />
     <ClCompile Include="src\Astra\graphics\shadows\ShadowMapController.cpp" />
+    <ClCompile Include="src\Astra\layers\Layer.cpp" />
+    <ClCompile Include="src\Astra\layers\Layer2D.cpp" />
+    <ClCompile Include="src\Astra\layers\Layer3D.cpp" />
+    <ClCompile Include="src\Astra\layers\LayerStack.cpp" />
     <ClCompile Include="src\Astra\math\Mat4.cpp" />
     <ClCompile Include="src\Astra\math\Vec2.cpp" />
     <ClCompile Include="src\Astra\math\Vec3.cpp" />

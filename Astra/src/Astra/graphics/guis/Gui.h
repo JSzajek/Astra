@@ -7,7 +7,7 @@
 #include "utility/Rect2.h"
 
 #include "../materials/GuiMaterial.h"
-#include "Color.h"
+#include "Astra/graphics/Color.h"
 
 #include "utility/FontAtlas.h"
 
@@ -31,7 +31,7 @@ namespace Astra::Graphics
 		std::function<void()> m_onHover;
 		std::function<void()> m_onExit;
 		std::function<void()> m_onPressed;
-		std::function<void()> m_onReleased;
+		std::function<void(bool hovering)> m_onReleased;
 		Rect2 m_rect;
 	public:
 		std::string Name;
@@ -58,12 +58,12 @@ namespace Astra::Graphics
 		inline void SetOnHover(std::function<void()> func) { m_onHover = func; }
 		inline void SetOnExit(std::function<void()> func) { m_onExit = func; }
 		inline void SetOnPressed(std::function<void()> func) { m_onPressed = func; }
-		inline void SetOnReleased(std::function<void()> func) { m_onReleased = func; }
+		inline void SetOnReleased(std::function<void(bool)> func) { m_onReleased = func; }
 
 		inline virtual void OnHover() { if (m_onHover) m_onHover(); };
 		inline virtual void OnExit() { if (m_onExit) m_onExit(); };
 		inline virtual void OnPressed() { if (m_onPressed) m_onPressed(); };
-		inline virtual void OnReleased() { if (m_onReleased) m_onReleased(); };
+		inline virtual void OnReleased(bool hovering) { if (m_onReleased) m_onReleased(hovering); };
 	protected:
 		inline void SetType(GuiType type) { m_type = type; }
 	};

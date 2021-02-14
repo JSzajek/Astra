@@ -25,7 +25,7 @@ namespace Astra::Graphics
 		Math::Mat4 m_projectionViewMatrix;
 		Math::Mat4 m_offset;
 	public:
-		ShadowMapController(float fov, float near, float far);
+		ShadowMapController(float fov, float _near, float _far);
 		~ShadowMapController();
 		
 		void Render();

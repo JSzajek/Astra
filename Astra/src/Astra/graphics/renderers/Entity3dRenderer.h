@@ -4,6 +4,7 @@
 #include <stack>
 
 #include "Renderer.h"
+#include "Astra/graphics/Color.h"
 #include "../loaders/Loader.h"
 #include "../entities/Entity.h"
 #include "../entities/Light.h"
@@ -17,7 +18,7 @@ namespace Astra::Graphics
 		std::vector<const Light*> m_lights;
 		std::stack<std::pair<unsigned int, std::vector<const Entity*>>> m_selected;
 		const Light* m_directionalLight;
-		const Math::Vec3* m_fogColor;
+		const Color* m_fogColor;
 		const Math::Mat4* m_toShadowSpaceMatrix;
 		Shader* m_selectionShader;
 		bool m_drawSelection;
@@ -25,7 +26,7 @@ namespace Astra::Graphics
 		bool m_wireframe;
 	#endif
 	public:
-		Entity3dRenderer(const Math::Vec3* fogColor);
+		Entity3dRenderer(const Color* fogColor);
 
 	#if ASTRA_DEBUG
 		void SetWireframe(bool wireframe) { m_wireframe = wireframe; };

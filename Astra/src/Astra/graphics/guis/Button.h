@@ -53,11 +53,14 @@ namespace Astra::Graphics
 			m_outputColor = m_modulate * m_pressedColor;
 		}
 
-		inline void OnReleased() override
+		inline void OnReleased(bool hovering) override
 		{
-			Gui::OnReleased();
+			Gui::OnReleased(hovering);
 			m_pressing = false;
-			m_outputColor = m_modulate;
+			if (!hovering)
+				m_outputColor = m_modulate;
+			else
+				m_outputColor = m_modulate * m_hoverColor;
 		}
 
 		inline const Color& GetModulate() const override { return m_outputColor; }

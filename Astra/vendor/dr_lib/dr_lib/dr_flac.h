@@ -5876,7 +5876,7 @@ static drflac_bool32 drflac__seek_to_pcm_frame__binary_search_internal(drflac* p
                 const float approxCompressionRatio = (drflac_int64)(lastSuccessfulSeekOffset - pFlac->firstFLACFramePosInBytes) / ((drflac_int64)(pcmRangeLo * pFlac->channels * pFlac->bitsPerSample)/8.0f);
 
                 if (pcmRangeLo > pcmFrameIndex) {
-                    /* We seeked too far forward. We need to move our target byte backward and try again. */
+                    /* We seeked too _far forward. We need to move our target byte backward and try again. */
                     byteRangeHi = lastSuccessfulSeekOffset;
                     if (byteRangeLo > byteRangeHi) {
                         byteRangeLo = byteRangeHi;
@@ -5887,7 +5887,7 @@ static drflac_bool32 drflac__seek_to_pcm_frame__binary_search_internal(drflac* p
                         targetByte = byteRangeLo;
                     }
                 } else /*if (pcmRangeHi < pcmFrameIndex)*/ {
-                    /* We didn't seek far enough. We need to move our target byte forward and try again. */
+                    /* We didn't seek _far enough. We need to move our target byte forward and try again. */
 
                     /* If we're close enough we can just seek forward. */
                     if ((pcmFrameIndex - pcmRangeLo) < seekForwardThreshold) {
@@ -8355,7 +8355,7 @@ static drflac_result drflac_fopen(FILE** ppFile, const char* pFilePath, const ch
 _wfopen() isn't always available in all compilation environments.
 
     * Windows only.
-    * MSVC seems to support it universally as far back as VC6 from what I can tell (haven't checked further back).
+    * MSVC seems to support it universally as _far back as VC6 from what I can tell (haven't checked further back).
     * MinGW-64 (both 32- and 64-bit) seems to support it.
     * MinGW wraps it in !defined(__STRICT_ANSI__).
     * OpenWatcom wraps it in !defined(_NO_EXT_KEYS).
@@ -8573,13 +8573,13 @@ static drflac_bool32 drflac__on_seek_memory(void* pUserData, int offset, drflac_
         if (memoryStream->currentReadPos + offset <= memoryStream->dataSize) {
             memoryStream->currentReadPos += offset;
         } else {
-            return DRFLAC_FALSE;  /* Trying to seek too far forward. */
+            return DRFLAC_FALSE;  /* Trying to seek too _far forward. */
         }
     } else {
         if ((drflac_uint32)offset <= memoryStream->dataSize) {
             memoryStream->currentReadPos = offset;
         } else {
-            return DRFLAC_FALSE;  /* Trying to seek too far forward. */
+            return DRFLAC_FALSE;  /* Trying to seek too _far forward. */
         }
     }
 

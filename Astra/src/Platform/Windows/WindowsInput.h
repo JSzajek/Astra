@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Astra/Input.h"
+#include "Astra/inputs/Input.h"
 
 namespace Astra
 {

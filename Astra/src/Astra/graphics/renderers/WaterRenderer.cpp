@@ -12,9 +12,9 @@
 
 namespace Astra::Graphics
 {
-	WaterRenderer::WaterRenderer(float near, float far)
+	WaterRenderer::WaterRenderer(float _near, float _far)
 		: Renderer(), m_buffer(NULL), m_directionalLight(NULL), 
-			m_near(near), m_far(far), m_toShadowSpaceMatrix(NULL)
+			m_near(_near), m_far(_far), m_toShadowSpaceMatrix(NULL)
 		#if ASTRA_DEBUG
 			, m_wireframe(false)
 		#endif

@@ -10,7 +10,7 @@
 
 namespace Astra::Graphics
 {
-	NormalEntity3dRenderer::NormalEntity3dRenderer(const Math::Vec3* fogColor)
+	NormalEntity3dRenderer::NormalEntity3dRenderer(const Color* fogColor)
 		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), m_drawSelection(false),
 			m_selectionShader(new SelectionShader()), m_toShadowSpaceMatrix(NULL)
 		#if ASTRA_DEBUG

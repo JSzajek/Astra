@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Renderer.h"
+#include "Astra/graphics/Color.h"
 #include "../buffers/CubeMapTexture.h"
 #include "../materials/SkyboxMaterial.h"
 #include "../loaders/Loader.h"
@@ -63,12 +64,12 @@ namespace Astra::Graphics
 	private:
 		const VertexArray* m_cube;
 		const SkyboxMaterial* m_material;
-		const Math::Vec3* m_fogColor;
+		const Color* m_fogColor;
 		Math::Mat4* m_fixedViewMatrix;
 		float m_blendFactor;
 		float m_rotation;
 	public:
-		SkyboxRenderer(Shader* shader, const Math::Vec3* fogColor);
+		SkyboxRenderer(Shader* shader, const Color* fogColor);
 		~SkyboxRenderer();
 
 		inline void Clear() override { m_material = NULL; }

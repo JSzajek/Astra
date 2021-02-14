@@ -23,7 +23,7 @@ namespace Astra::Graphics
 		float m_farHeight, m_farWidth, m_nearHeight, m_nearWidth;
 		float m_nearPlane;
 	public:
-		ShadowBox(float fov, float near, float far);
+		ShadowBox(float fov, float _near, float _far);
 		~ShadowBox();
 
 		inline void SetCamera(Camera* camera) { m_camera = camera; }

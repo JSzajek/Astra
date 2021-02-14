@@ -2999,7 +2999,7 @@ static drwav_result drwav_fopen(FILE** ppFile, const char* pFilePath, const char
 _wfopen() isn't always available in all compilation environments.
 
     * Windows only.
-    * MSVC seems to support it universally as far back as VC6 from what I can tell (haven't checked further back).
+    * MSVC seems to support it universally as _far back as VC6 from what I can tell (haven't checked further back).
     * MinGW-64 (both 32- and 64-bit) seems to support it.
     * MinGW wraps it in !defined(__STRICT_ANSI__).
     * OpenWatcom wraps it in !defined(_NO_EXT_KEYS).
@@ -3274,11 +3274,11 @@ static drwav_bool32 drwav__on_seek_memory(void* pUserData, int offset, drwav_see
     if (origin == drwav_seek_origin_current) {
         if (offset > 0) {
             if (pWav->memoryStream.currentReadPos + offset > pWav->memoryStream.dataSize) {
-                return DRWAV_FALSE; /* Trying to seek too far forward. */
+                return DRWAV_FALSE; /* Trying to seek too _far forward. */
             }
         } else {
             if (pWav->memoryStream.currentReadPos < (size_t)-offset) {
-                return DRWAV_FALSE; /* Trying to seek too far backwards. */
+                return DRWAV_FALSE; /* Trying to seek too _far backwards. */
             }
         }
 
@@ -3288,7 +3288,7 @@ static drwav_bool32 drwav__on_seek_memory(void* pUserData, int offset, drwav_see
         if ((drwav_uint32)offset <= pWav->memoryStream.dataSize) {
             pWav->memoryStream.currentReadPos = offset;
         } else {
-            return DRWAV_FALSE; /* Trying to seek too far forward. */
+            return DRWAV_FALSE; /* Trying to seek too _far forward. */
         }
     }
     
@@ -3343,11 +3343,11 @@ static drwav_bool32 drwav__on_seek_memory_write(void* pUserData, int offset, drw
     if (origin == drwav_seek_origin_current) {
         if (offset > 0) {
             if (pWav->memoryStreamWrite.currentWritePos + offset > pWav->memoryStreamWrite.dataSize) {
-                offset = (int)(pWav->memoryStreamWrite.dataSize - pWav->memoryStreamWrite.currentWritePos);  /* Trying to seek too far forward. */
+                offset = (int)(pWav->memoryStreamWrite.dataSize - pWav->memoryStreamWrite.currentWritePos);  /* Trying to seek too _far forward. */
             }
         } else {
             if (pWav->memoryStreamWrite.currentWritePos < (size_t)-offset) {
-                offset = -(int)pWav->memoryStreamWrite.currentWritePos;  /* Trying to seek too far backwards. */
+                offset = -(int)pWav->memoryStreamWrite.currentWritePos;  /* Trying to seek too _far backwards. */
             }
         }
 
@@ -3357,7 +3357,7 @@ static drwav_bool32 drwav__on_seek_memory_write(void* pUserData, int offset, drw
         if ((drwav_uint32)offset <= pWav->memoryStreamWrite.dataSize) {
             pWav->memoryStreamWrite.currentWritePos = offset;
         } else {
-            pWav->memoryStreamWrite.currentWritePos = pWav->memoryStreamWrite.dataSize;  /* Trying to seek too far forward. */
+            pWav->memoryStreamWrite.currentWritePos = pWav->memoryStreamWrite.dataSize;  /* Trying to seek too _far forward. */
         }
     }
     

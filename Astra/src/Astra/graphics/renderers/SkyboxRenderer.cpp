@@ -6,7 +6,7 @@
 
 namespace Astra::Graphics
 {
-	SkyboxRenderer::SkyboxRenderer(Shader* shader, const Math::Vec3* fogColor)
+	SkyboxRenderer::SkyboxRenderer(Shader* shader, const Color* fogColor)
 		: Renderer(), m_fogColor(fogColor), m_blendFactor(0), m_material(NULL), m_rotation(0), m_fixedViewMatrix(new Math::Mat4())
 	{
 		Renderer::SetShader(shader);
