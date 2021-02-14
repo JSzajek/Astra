@@ -80,9 +80,9 @@ project "Astra"
 			"_CRT_SECURE_NO_WARNINGS"
 		}
 
-		-- Post build copy of required OpenAL dll
 		postbuildcommands
 		{
+			-- Post build copy of required OpenAL dll
 			("{COPY} vendor/OpenALSoft/lib/OpenAL32.dll ../bin/" .. outputdir .."/TestGame")
 		}
 
@@ -102,6 +102,15 @@ project "Astra"
 		defines "ASTRA_DIST"
 		runtime "Release"
 		optimize "on"
+
+		postbuildcommands
+		{
+			-- Post build copy of resource files
+			("{COPY} res/shaders/**.shader ../bin/" .. outputdir .."/TestGame/res/shaders"),
+			("{COPY} res/textures/**.png ../bin/" .. outputdir .."/TestGame/res/textures"),
+			("{COPY} res/textures/**.jpg ../bin/" .. outputdir .."/TestGame/res/textures"),
+			("{COPY} res/fonts/**.ttf ../bin/" .. outputdir .."/TestGame/res/fonts")
+		}
 
 project "TestGame"
 	location "TestGame"
@@ -177,3 +186,13 @@ project "TestGame"
 		defines "ASTRA_DIST"
 		runtime "Release"
 		optimize "On"
+
+		postbuildcommands
+		{
+			-- Post build copy of resource files
+			("{COPY} res/**.obj ../bin/" .. outputdir .."/TestGame/res/"),
+			("{COPY} res/textures/**.png ../bin/" .. outputdir .."/TestGame/res/textures"),
+			("{COPY} res/textures/**.jpg ../bin/" .. outputdir .."/TestGame/res/textures"),
+			("{COPY} res/fonts/**.ttf ../bin/" .. outputdir .."/TestGame/res/fonts"),
+			("{COPY} res/audio/**.wav ../bin/" .. outputdir .."/TestGame/res/audio")
+		}

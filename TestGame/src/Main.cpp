@@ -237,7 +237,7 @@ public:
         partSystem->SetRandomRotation(true);
         scene->AddParticleSystem(partSystem);
 
-        unsigned int tempSound = AudioController::LoadSound("res/bounce.wav");
+        unsigned int tempSound = AudioController::LoadSound("res/audio/bounce.wav");
         AudioSource source(1, 12, 100);
         source.SetPosition(Vec3(-25, terrain->GetHeightOfTerrain(-25, -65), -65));
         source.SetLooping(true);

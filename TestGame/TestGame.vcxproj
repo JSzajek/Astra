@@ -135,6 +135,13 @@
       <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\Astra\vendor\GLEW\lib;..\Astra\vendor\GLFW\lib;..\Astra\vendor\OpenALSoft\lib;..\Astra\vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>IF EXIST res\**.obj\ (xcopy /Q /E /Y /I res\**.obj ..\bin\windows-Dist-x86\TestGame\res &gt; nul) ELSE (xcopy /Q /Y /I res\**.obj ..\bin\windows-Dist-x86\TestGame\res &gt; nul)
+IF EXIST res\textures\**.png\ (xcopy /Q /E /Y /I res\textures\**.png ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul) ELSE (xcopy /Q /Y /I res\textures\**.png ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul)
+IF EXIST res\textures\**.jpg\ (xcopy /Q /E /Y /I res\textures\**.jpg ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul) ELSE (xcopy /Q /Y /I res\textures\**.jpg ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul)
+IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Dist-x86\TestGame\res\fonts &gt; nul) ELSE (xcopy /Q /Y /I res\fonts\**.ttf ..\bin\windows-Dist-x86\TestGame\res\fonts &gt; nul)
+IF EXIST res\audio\**.wav\ (xcopy /Q /E /Y /I res\audio\**.wav ..\bin\windows-Dist-x86\TestGame\res\audio &gt; nul) ELSE (xcopy /Q /Y /I res\audio\**.wav ..\bin\windows-Dist-x86\TestGame\res\audio &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Player.h" />
