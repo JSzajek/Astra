@@ -1,0 +1,5 @@
+﻿  Astra.vcxproj -> C:\Users\Justin\Documents\Cpp Projects\Astra\Astra\..\bin\windows-Debug-x86\Astra\Astra.lib
+  '{COPYDIR}' is not recognized as an internal or external command,
+  operable program or batch file.
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppCommon.targets(149,5): error MSB3073: The command "{COPYDIR} ../bin/windows-Debug-x86/Astra/res/ ../bin/windows-Debug-x86/TestGame
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppCommon.targets(149,5): error MSB3073: :VCEnd" exited with code 9009.

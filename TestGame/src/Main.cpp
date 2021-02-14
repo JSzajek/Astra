@@ -6,10 +6,97 @@
 #include <ctime>
 
 #include "Astra.h"
-#include "Synchronous.h"
-#include "Player.h"
+//#include "Player.h"
+//#include "Synchronous.h"
 
-int main()
+using namespace Astra::Graphics;
+using namespace Astra::Math;
+using namespace Astra::Audio;
+
+class ExampleLayer : public Astra::Layer
+{
+public:
+    ExampleLayer()
+        : Layer("Example")
+    {
+        Astra::Graphics::Scene* const mainScene = new Astra::Graphics::Scene(NULL, Astra::Math::Vec3(0.1f));
+
+        //TerrainMaterial* grassTerrainMat = new TerrainMaterial("res/textures/grass.jpg");
+        ////TerrainMaterial* flowerTerrainMat = new TerrainMaterial("res/textures/grassFlowers.png");
+        //TerrainMaterial* mudTerrainMat = new TerrainMaterial("res/textures/mud.png");
+        ////TerrainMaterial* pathTerrainMat = new TerrainMaterial("res/textures/path.png");
+
+        ////TerrainMaterialPack pack(grassTerrainMat, flowerTerrainMat, mudTerrainMat, pathTerrainMat);
+        //TerrainMaterialPack* pack = new TerrainMaterialPack(grassTerrainMat, grassTerrainMat, mudTerrainMat, grassTerrainMat);
+        //TerrainMaterial* blendMap = new TerrainMaterial("res/textures/blendMap.png");
+
+        ////Terrain terrain = Terrain(0, 0, "res/textures/meteorcrater_heightmap.png", &pack, blendMap);
+        //Terrain terrain = Terrain(0, 0, 40, 4, 0.01f, 4862, pack, blendMap);
+        //terrain(TRANSLATION, SUB_EQ, X_POS, 128);
+        //terrain(TRANSLATION, SUB_EQ, Z_POS, 128);
+
+        //mainScene->AddTerrain(&terrain);
+
+        //Player player(Vec3(-25, 50, -100), &terrain);
+        auto* camera = new Camera(20, 45, 0);
+
+        mainScene->SetMainCamera(camera);
+        //mainScene->AddEntity(player.GetRendering());
+
+        Astra::Math::Vec3 light_pos = Astra::Math::Vec3(-55, 0 + 7, 55);
+        DirectionalLight* dir_light = new DirectionalLight(Astra::Math::Vec3(0), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0));
+        PointLight* light4 = new PointLight(Vec3(-28.75f, 0, -65.5f), Vec3(3, 1.5f, 0), Vec3(1), Vec3(5), 1, 0.22f, 0.20f);
+        PointLight* light3 = new PointLight(light_pos, Vec3(3, 1.5f, 0), Vec3(1), Vec3(25));
+
+        mainScene->AddPointLight(light3);
+        mainScene->AddPointLight(light4);
+        mainScene->SetDirectionalLight(dir_light);
+
+        unsigned int tempSound = Astra::Audio::AudioController::LoadSound("res/bounce.wav");
+        Astra::Audio::AudioSource source(1, 12, 15);
+        source.SetPosition(Astra::Math::Vec3(-25, 0, -65));
+        source.SetLooping(true);
+        source.Play(tempSound);
+
+        Astra::Graphics::RendererController::SetCurrentScene(mainScene);
+
+        // TODO: Add cleanup for light pointers and re-enable ResourceManager Assert
+    }
+
+    void OnUpdate(float delta) override
+    {
+        if (Astra::Input::IsKeyPressed(Astra::Key::Tab))
+        {
+            ASTRA_INFO("ExampleLayer::Tab Key is Pressed");
+        }
+    }
+
+    /*void OnEvent(Astra::Event& _event) override
+    {
+        ASTRA_TRACE(_event.ToString());
+    }*/
+};
+
+class TestGame : public Astra::Application
+{
+public:
+    TestGame()
+        : Application()
+    {
+        PushLayer(new ExampleLayer());
+    }
+
+    ~TestGame()
+    {
+    }
+};
+
+Astra::Application* Astra::CreateApplication()
+{
+    return new TestGame();
+}
+
+/*int main()
 {
     using namespace Astra;
     using namespace Astra::Graphics;
@@ -18,11 +105,12 @@ int main()
 
     srand((unsigned)time(0));
 
-    std::vector<Synchronous*> worldItems;
-    std::vector<const Entity*> entities;
-    Window::SetWindowTitle("Astra");
-    Window::SetWindowSize(960, 540);
-    Window::SetWindowResizeCallback([&](int width, int height) { RendererController::UpdateScreen(width, height); });
+
+    //std::vector<Synchronous*> worldItems;
+    //std::vector<const Entity*> entities;
+    //Window::SetWindowTitle("Astra");
+    //Window::SetWindowSize(960, 540);
+    //Window::SetWindowResizeCallback([&](int width, int height) { RendererController::UpdateScreen(width, height); });
 
     Scene* const mainScene = new Scene(NULL, Vec3(0.1f));
 
@@ -177,16 +265,16 @@ int main()
     partSystem.SetRandomRotation(true);
     mainScene->AddParticleSystem(&partSystem);
     
-    /*ParticleMaterial* partMaterial2 = new ParticleMaterial("res/textures/particleStar.png", 1);
-    Vec3 particleCenter2(-100, terrain.GetHeightOfTerrain(-100, 80) + 5, 80);
+    //ParticleMaterial* partMaterial2 = new ParticleMaterial("res/textures/particleStar.png", 1);
+    //Vec3 particleCenter2(-100, terrain.GetHeightOfTerrain(-100, 80) + 5, 80);
 
-    ConeParticleSystem partSystem2(partMaterial2, &particleCenter2, 15, 5, -0.1f, 1.5f, 2, false);
-    partSystem2.SetDirection(Vec3(0, 1, 0), 0.5f);
-    partSystem2.SetLifeError(0.1f);
-    partSystem2.SetSpeedError(0.4f);
-    partSystem2.SetScaleError(0.8f);
-    partSystem2.SetRandomRotation(true);
-    mainScene->AddParticleSystem(&partSystem2);*/
+    //ConeParticleSystem partSystem2(partMaterial2, &particleCenter2, 15, 5, -0.1f, 1.5f, 2, false);
+    //partSystem2.SetDirection(Vec3(0, 1, 0), 0.5f);
+    //partSystem2.SetLifeError(0.1f);
+    //partSystem2.SetSpeedError(0.4f);
+    //partSystem2.SetScaleError(0.8f);
+    //partSystem2.SetRandomRotation(true);
+    //mainScene->AddParticleSystem(&partSystem2);
 
     // Example of Gui Texture Instancing
     #define EXAMPLE_GUI_INSTANCING  0
@@ -252,7 +340,7 @@ int main()
             timeDir = 1;
         }
 
-    #if _DEBUG
+    #if ASTRA_DEBUG
         if (Input::IsKeyJustPressed(Key::F3))
         {
             RendererController::ToggleWireframeMode();
@@ -283,6 +371,6 @@ int main()
     delete dir_light;
     delete light3;
     delete light4;
-
+    
     return 0;
-}
+}*/

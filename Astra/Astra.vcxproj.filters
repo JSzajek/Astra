@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="res">
+      <UniqueIdentifier>{4FA5880B-BBAE-887C-442A-9F7CB032947C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="res\fonts">
+      <UniqueIdentifier>{E81E0011-5489-B487-9DC7-652D097192DC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="res\shaders">
+      <UniqueIdentifier>{4841F028-B4F6-681E-3DEB-62F5A99F5F22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="res\textures">
+      <UniqueIdentifier>{227C1C83-0EDF-AB27-B764-E4DDA3A677AA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra">
+      <UniqueIdentifier>{575395B2-C3BD-4929-0CFC-FACE78A5277E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\audio">
+      <UniqueIdentifier>{B8D6D14D-2462-3F12-2D73-C206997D9B12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\events">
+      <UniqueIdentifier>{7B0B7411-6704-9363-9036-78E87C8E726F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\graphics">
+      <UniqueIdentifier>{976908DA-834D-C92F-ECAD-C382D8B0B3B1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\graphics\buffers">
+      <UniqueIdentifier>{33680412-1F78-B0E2-8831-150174609F7B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\graphics\entities">
+      <UniqueIdentifier>{4BD8651D-B7E5-9303-40CC-8FEEACD85FBA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\graphics\entities\terrains">
+      <UniqueIdentifier>{22892AFA-0E70-ECF1-B7C0-520FA3866558}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\graphics\gizmos">
+      <UniqueIdentifier>{7F2B12B6-EBED-4540-349E-D4CCA09F1E1E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\graphics\guis">
+      <UniqueIdentifier>{5EFA79B0-CA31-C247-D33B-266B3FF2E840}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\graphics\guis\utility">
+      <UniqueIdentifier>{C1CE380A-2DB2-474A-36B5-7586A2170E9B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\graphics\loaders">
+      <UniqueIdentifier>{B0407005-9C50-1CD6-050A-81F4F1380B6F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\graphics\materials">
+      <UniqueIdentifier>{48B53365-3470-2311-DD27-9C5BC9C16DA1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\graphics\particles">
+      <UniqueIdentifier>{4DF70B4B-39B2-FBF6-E269-7441CE034687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\graphics\post_processing">
+      <UniqueIdentifier>{8808CE64-7444-D1CE-DD56-E9C5C9B179E9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\graphics\renderers">
+      <UniqueIdentifier>{506B908B-3C26-8037-E5DD-F881D177CAC7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\graphics\scenes">
+      <UniqueIdentifier>{07FF97D1-73C1-CB5B-BC71-5AE82873A439}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\graphics\shaders">
+      <UniqueIdentifier>{90CDF30F-7CDD-9FE0-E596-04FFD1C58E79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\graphics\shadows">
+      <UniqueIdentifier>{BFF8F30F-AB08-A0E0-14C2-04FF00F18E79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\math">
+      <UniqueIdentifier>{B0F26102-9CC0-5508-8554-C62E71C1316D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Astra\utils">
+      <UniqueIdentifier>{174A3B4F-83D5-A813-8CE6-2B08F8F00414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Platform">
+      <UniqueIdentifier>{21CA02E5-0D2D-9289-B6B2-CA3FA2F45D0C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Platform\Windows">
+      <UniqueIdentifier>{5B054582-4794-CE4B-F0B2-E246DC20DFF1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor">
+      <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\dr_lib">
+      <UniqueIdentifier>{6ECD83FF-DA8D-FF35-A3C8-48B30F484412}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\dr_lib\dr_lib">
+      <UniqueIdentifier>{C9865E5D-B515-E826-5E34-FC214AA2F8CC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\stb_image">
+      <UniqueIdentifier>{0DA0BA59-F998-D9AB-22CB-BE300E23B9B7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\stb_image\stb_image">
+      <UniqueIdentifier>{E784F27D-D394-9E4E-3C4E-036D287D8DE7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Astra.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\Application.h">
+      <Filter>src\Astra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\Core.h">
+      <Filter>src\Astra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\EntryPoint.h">
+      <Filter>src\Astra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\Input.h">
+      <Filter>src\Astra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\KeyCodes.h">
+      <Filter>src\Astra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\Layer.h">
+      <Filter>src\Astra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\LayerStack.h">
+      <Filter>src\Astra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\Log.h">
+      <Filter>src\Astra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\MouseCodes.h">
+      <Filter>src\Astra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\Window.h">
+      <Filter>src\Astra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\audio\AudioController.h">
+      <Filter>src\Astra\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\audio\AudioSource.h">
+      <Filter>src\Astra\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\events\ApplicationEvent.h">
+      <Filter>src\Astra\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\events\Event.h">
+      <Filter>src\Astra\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\events\KeyEvent.h">
+      <Filter>src\Astra\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\events\MouseEvent.h">
+      <Filter>src\Astra\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\ResourceManager.h">
+      <Filter>src\Astra\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\buffers\CubeMapTexture.h">
+      <Filter>src\Astra\graphics\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\buffers\FrameBuffer.h">
+      <Filter>src\Astra\graphics\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\buffers\ShadowFrameBuffer.h">
+      <Filter>src\Astra\graphics\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\buffers\Texture.h">
+      <Filter>src\Astra\graphics\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\buffers\VertexArray.h">
+      <Filter>src\Astra\graphics\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\buffers\WaterFrameBuffer.h">
+      <Filter>src\Astra\graphics\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\Camera.h">
+      <Filter>src\Astra\graphics\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\DirectionalLight.h">
+      <Filter>src\Astra\graphics\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\Entity.h">
+      <Filter>src\Astra\graphics\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\Light.h">
+      <Filter>src\Astra\graphics\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\PointLight.h">
+      <Filter>src\Astra\graphics\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\Spatial.h">
+      <Filter>src\Astra\graphics\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\SpotLight.h">
+      <Filter>src\Astra\graphics\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\terrains\HeightGenerator.h">
+      <Filter>src\Astra\graphics\entities\terrains</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\terrains\Terrain.h">
+      <Filter>src\Astra\graphics\entities\terrains</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\terrains\WaterTile.h">
+      <Filter>src\Astra\graphics\entities\terrains</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\gizmos\Gizmo.h">
+      <Filter>src\Astra\graphics\gizmos</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\gizmos\GizmoController.h">
+      <Filter>src\Astra\graphics\gizmos</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\guis\Button.h">
+      <Filter>src\Astra\graphics\guis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\guis\Color.h">
+      <Filter>src\Astra\graphics\guis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\guis\Gui.h">
+      <Filter>src\Astra\graphics\guis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\guis\Guis.h">
+      <Filter>src\Astra\graphics\guis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\guis\Image.h">
+      <Filter>src\Astra\graphics\guis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\guis\Label.h">
+      <Filter>src\Astra\graphics\guis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\guis\Panel.h">
+      <Filter>src\Astra\graphics\guis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\guis\Spatial2D.h">
+      <Filter>src\Astra\graphics\guis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\guis\TextBox.h">
+      <Filter>src\Astra\graphics\guis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\guis\utility\FontAtlas.h">
+      <Filter>src\Astra\graphics\guis\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\guis\utility\FontStructs.h">
+      <Filter>src\Astra\graphics\guis\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\guis\utility\Rect2.h">
+      <Filter>src\Astra\graphics\guis\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\loaders\Loader.h">
+      <Filter>src\Astra\graphics\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\loaders\ObjLoader.h">
+      <Filter>src\Astra\graphics\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\materials\GuiMaterial.h">
+      <Filter>src\Astra\graphics\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\materials\ImageMaterial.h">
+      <Filter>src\Astra\graphics\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\materials\Materials.h">
+      <Filter>src\Astra\graphics\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\materials\ParticleMaterial.h">
+      <Filter>src\Astra\graphics\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\materials\SkyboxMaterial.h">
+      <Filter>src\Astra\graphics\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\materials\TerrainMaterial.h">
+      <Filter>src\Astra\graphics\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\materials\WaterMaterial.h">
+      <Filter>src\Astra\graphics\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\particles\ConeParticleSystem.h">
+      <Filter>src\Astra\graphics\particles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\particles\Particle.h">
+      <Filter>src\Astra\graphics\particles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\particles\ParticleController.h">
+      <Filter>src\Astra\graphics\particles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\particles\ParticleSystem.h">
+      <Filter>src\Astra\graphics\particles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\post_processing\BloomEffect.h">
+      <Filter>src\Astra\graphics\post_processing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\post_processing\ContrastEffect.h">
+      <Filter>src\Astra\graphics\post_processing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\post_processing\HDREffect.h">
+      <Filter>src\Astra\graphics\post_processing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\post_processing\HorizontalBlurEffect.h">
+      <Filter>src\Astra\graphics\post_processing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\post_processing\ImageEffect.h">
+      <Filter>src\Astra\graphics\post_processing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\post_processing\PostProcessor.h">
+      <Filter>src\Astra\graphics\post_processing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\post_processing\VerticalBlurEffect.h">
+      <Filter>src\Astra\graphics\post_processing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\renderers\Entity3dRenderer.h">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\renderers\GizmoRenderer.h">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\renderers\GuiRenderer.h">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\renderers\NormalEntity3dRenderer.h">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\renderers\ParticleRenderer.h">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\renderers\Renderer.h">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\renderers\RendererController.h">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\renderers\ShadowMapRenderer.h">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\renderers\SkyboxRenderer.h">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\renderers\TerrainRenderer.h">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\renderers\WaterRenderer.h">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\scenes\Scene.h">
+      <Filter>src\Astra\graphics\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\BloomShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\ContrastShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\EntityShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\FontShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\GizmoShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\GuiShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\HDRShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\HorizontalBlurShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\NormalEntityShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\ParticleShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\SelectionShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\Shader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\ShadowShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\SkyboxShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\TerrainShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\VerticalBlurShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\WaterShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shadows\ShadowBox.h">
+      <Filter>src\Astra\graphics\shadows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shadows\ShadowMapController.h">
+      <Filter>src\Astra\graphics\shadows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\math\Mat4.h">
+      <Filter>src\Astra\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\math\Mat4Utils.h">
+      <Filter>src\Astra\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\math\Maths.h">
+      <Filter>src\Astra\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\math\MathsUtils.h">
+      <Filter>src\Astra\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\math\Vec2.h">
+      <Filter>src\Astra\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\math\Vec3.h">
+      <Filter>src\Astra\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\math\Vec4.h">
+      <Filter>src\Astra\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\math\iVec2.h">
+      <Filter>src\Astra\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\math\iVec4.h">
+      <Filter>src\Astra\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\utils\FileUtils.h">
+      <Filter>src\Astra\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\utils\Properties.h">
+      <Filter>src\Astra\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\utils\StringUtils.h">
+      <Filter>src\Astra\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\utils\Timer.h">
+      <Filter>src\Astra\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\utils\Timestep.h">
+      <Filter>src\Astra\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Windows\WindowsInput.h">
+      <Filter>src\Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
+      <Filter>src\Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\astra_pch.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\dr_lib\dr_lib\dr_flac.h">
+      <Filter>vendor\dr_lib\dr_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\dr_lib\dr_lib\dr_mp3.h">
+      <Filter>vendor\dr_lib\dr_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\dr_lib\dr_lib\dr_wav.h">
+      <Filter>vendor\dr_lib\dr_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\stb_image\stb_image\stb_image.h">
+      <Filter>vendor\stb_image\stb_image</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Astra\Application.cpp">
+      <Filter>src\Astra</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\Layer.cpp">
+      <Filter>src\Astra</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\LayerStack.cpp">
+      <Filter>src\Astra</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\Log.cpp">
+      <Filter>src\Astra</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\audio\AudioController.cpp">
+      <Filter>src\Astra\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\audio\AudioSource.cpp">
+      <Filter>src\Astra\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\ResourceManager.cpp">
+      <Filter>src\Astra\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\buffers\CubeMapTexture.cpp">
+      <Filter>src\Astra\graphics\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\buffers\ShadowFrameBuffer.cpp">
+      <Filter>src\Astra\graphics\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\buffers\Texture.cpp">
+      <Filter>src\Astra\graphics\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\buffers\VertexArray.cpp">
+      <Filter>src\Astra\graphics\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\buffers\WaterFrameBuffer.cpp">
+      <Filter>src\Astra\graphics\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\Camera.cpp">
+      <Filter>src\Astra\graphics\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\Entity.cpp">
+      <Filter>src\Astra\graphics\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\Light.cpp">
+      <Filter>src\Astra\graphics\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\Spatial.cpp">
+      <Filter>src\Astra\graphics\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\terrains\HeightGenerator.cpp">
+      <Filter>src\Astra\graphics\entities\terrains</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\terrains\Terrain.cpp">
+      <Filter>src\Astra\graphics\entities\terrains</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\terrains\WaterTile.cpp">
+      <Filter>src\Astra\graphics\entities\terrains</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\gizmos\Gizmo.cpp">
+      <Filter>src\Astra\graphics\gizmos</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\gizmos\GizmoController.cpp">
+      <Filter>src\Astra\graphics\gizmos</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\guis\Color.cpp">
+      <Filter>src\Astra\graphics\guis</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\guis\Gui.cpp">
+      <Filter>src\Astra\graphics\guis</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\guis\Spatial2D.cpp">
+      <Filter>src\Astra\graphics\guis</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\guis\TextBox.cpp">
+      <Filter>src\Astra\graphics\guis</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\guis\utility\FontAtlas.cpp">
+      <Filter>src\Astra\graphics\guis\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\guis\utility\Rect2.cpp">
+      <Filter>src\Astra\graphics\guis\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\loaders\Loader.cpp">
+      <Filter>src\Astra\graphics\loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\loaders\ObjLoader.cpp">
+      <Filter>src\Astra\graphics\loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\materials\GuiMaterial.cpp">
+      <Filter>src\Astra\graphics\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\materials\ImageMaterial.cpp">
+      <Filter>src\Astra\graphics\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\materials\ParticleMaterial.cpp">
+      <Filter>src\Astra\graphics\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\materials\SkyboxMaterial.cpp">
+      <Filter>src\Astra\graphics\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\materials\TerrainMaterial.cpp">
+      <Filter>src\Astra\graphics\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\materials\WaterMaterial.cpp">
+      <Filter>src\Astra\graphics\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\particles\ConeParticleSystem.cpp">
+      <Filter>src\Astra\graphics\particles</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\particles\Particle.cpp">
+      <Filter>src\Astra\graphics\particles</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\particles\ParticleController.cpp">
+      <Filter>src\Astra\graphics\particles</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\particles\ParticleSystem.cpp">
+      <Filter>src\Astra\graphics\particles</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\post_processing\BloomEffect.cpp">
+      <Filter>src\Astra\graphics\post_processing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\post_processing\ImageEffect.cpp">
+      <Filter>src\Astra\graphics\post_processing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\post_processing\PostProcessor.cpp">
+      <Filter>src\Astra\graphics\post_processing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\renderers\Entity3dRenderer.cpp">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\renderers\GizmoRenderer.cpp">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\renderers\GuiRenderer.cpp">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\renderers\NormalEntity3dRenderer.cpp">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\renderers\ParticleRenderer.cpp">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\renderers\Renderer.cpp">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\renderers\RendererController.cpp">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\renderers\ShadowMapRenderer.cpp">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\renderers\SkyboxRenderer.cpp">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\renderers\TerrainRenderer.cpp">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\renderers\WaterRenderer.cpp">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\shaders\Shader.cpp">
+      <Filter>src\Astra\graphics\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\shadows\ShadowBox.cpp">
+      <Filter>src\Astra\graphics\shadows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\shadows\ShadowMapController.cpp">
+      <Filter>src\Astra\graphics\shadows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\math\Mat4.cpp">
+      <Filter>src\Astra\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\math\Vec2.cpp">
+      <Filter>src\Astra\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\math\Vec3.cpp">
+      <Filter>src\Astra\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\math\Vec4.cpp">
+      <Filter>src\Astra\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\math\iVec2.cpp">
+      <Filter>src\Astra\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\math\iVec4.cpp">
+      <Filter>src\Astra\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
+      <Filter>src\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
+      <Filter>src\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\astra_pch.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\dr_lib\dr_lib\dr_lib_impl.cpp">
+      <Filter>vendor\dr_lib\dr_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\stb_image\stb_image\stb_image.cpp">
+      <Filter>vendor\stb_image\stb_image</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\fonts\calibri.ttf">
+      <Filter>res\fonts</Filter>
+    </None>
+    <None Include="res\shaders\Bloom.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\Contrast.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\Entity.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\FinalBloom.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\Font.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\Gizmo.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\Gui.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\HDR.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\HorizontalBlur.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\NormalEntity.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\Particle.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\Selection.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\Shadow.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\Skybox.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\Terrain.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\VerticalBlur.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\Water.shader">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="vendor\dr_lib\dr_lib\README.md">
+      <Filter>vendor\dr_lib\dr_lib</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\Color_Palette.png">
+      <Filter>res\textures</Filter>
+    </Image>
+    <Image Include="res\textures\Default.jpg">
+      <Filter>res\textures</Filter>
+    </Image>
+    <Image Include="res\textures\DefaultDuDvMap.png">
+      <Filter>res\textures</Filter>
+    </Image>
+    <Image Include="res\textures\DefaultNormalMap.png">
+      <Filter>res\textures</Filter>
+    </Image>
+    <Image Include="res\textures\DefaultSpecular.jpg">
+      <Filter>res\textures</Filter>
+    </Image>
+    <Image Include="res\textures\DefaultWaterBase.jpg">
+      <Filter>res\textures</Filter>
+    </Image>
+    <Image Include="res\textures\DirectionalLight.png">
+      <Filter>res\textures</Filter>
+    </Image>
+    <Image Include="res\textures\Emitter.png">
+      <Filter>res\textures</Filter>
+    </Image>
+    <Image Include="res\textures\PointLight.png">
+      <Filter>res\textures</Filter>
+    </Image>
+    <Image Include="res\textures\SpotLight.png">
+      <Filter>res\textures</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
