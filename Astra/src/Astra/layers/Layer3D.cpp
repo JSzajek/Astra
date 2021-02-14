@@ -147,14 +147,19 @@ namespace Astra
 		// Update Projection Matrix
 		auto [width, height] = Application::Get().GetWindow().GetSize();
 		UpdateScreen(width, height);
+
+		m_attached = true;
 	}
 
 	void Layer3D::OnDetach()
 	{
+		m_attached = false;
 	}
 
 	void Layer3D::OnUpdate(float delta)
 	{
+		if (!m_attached) { return; }
+
 		m_shadowMapController->Render();
 
 		for (auto* system : m_particles)
@@ -183,12 +188,14 @@ namespace Astra
 		PrepareRender(delta);
 		Render(delta, inverseView, false);
 
+		Graphics::ParticleController::Render(viewMatrix);
+
 		// Perform Post Processing Effects
 		m_postProcessor->Detach();
 		m_postProcessor->Draw();
 
 	#if ASTRA_DEBUG
-		Graphics::GizmoController::Render(m_mainCamera->GetViewMatrix());
+		Graphics::GizmoController::Render(viewMatrix);
 	#endif
 	}
 

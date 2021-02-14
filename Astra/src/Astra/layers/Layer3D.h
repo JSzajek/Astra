@@ -78,6 +78,8 @@ namespace Astra
 
 		// Skybox
 		const Graphics::SkyboxMaterial* m_skybox;
+
+		bool m_attached = false;
 	public:
 		Layer3D();
 		~Layer3D();
