@@ -1,7 +1,5 @@
 #include "Player.h"
 
-#include <iostream>
-
 Player::Player(const Vec3& position, Terrain* terrain)
 	: m_camera(new Camera(20, 45, 0)), m_movement(Vec3(0)),
            m_rotating(false), m_oldPosition(Vec2(0,0)), m_terrain(terrain)
@@ -19,24 +17,27 @@ void Player::Update(float delta)
 #if LOCKED_CAMERA
     //m_camera->Swivel() = m_body->GetRotation().y;
 #else
-    if (!Input::IsMouseButtonPressed(Mouse::BUTTON_2))
+    if (!Input::IsMouseButtonPressed(Mouse::Button1))
     {
         m_rotating = false;
     }
 
-    if (!m_rotating && Input::IsMouseButtonPressed(Mouse::BUTTON_2))
+    if (!m_rotating && Input::IsMouseButtonPressed(Mouse::Button1))
     {
         m_rotating = true;
-        m_oldPosition = Input::GetMousePosition();
+        auto [x, y] = Input::GetMousePosition();
+        m_oldPosition.x = x;
+        m_oldPosition.y = y;
     }
 
     if (m_rotating)
     {
-        Vec2 change(Input::GetMousePosition());
+        auto [x, y] = Input::GetMousePosition();
+        Vec2 change(x, y);
         change -= m_oldPosition;
 
         change.Normalize();
-        change *= PanSpeed * Window::GetDelta();
+        change *= PanSpeed * delta;
 
         m_camera->operator()(SWIVEL, SUM_EQ, NULL, -change.x);
         m_camera->operator()(PITCH, EQ, NULL, Clamp(m_camera->GetPitch() + change.y, (float)MIN_PITCH, (float)MAX_PITCH));
@@ -51,8 +52,7 @@ void Player::Update(float delta)
     upwardsSpeed += GRAVITY * delta;
     (*m_body)(TRANSLATION, SUM_EQ, Y_POS, upwardsSpeed * delta);
 
-    m_camera->LookAt(m_body->GetTranslation());
-    
+
     float terrainHeight = m_terrain->GetHeightOfTerrain(static_cast<int>(m_body->GetTranslation().x), static_cast<int>(m_body->GetTranslation().z));
     if (m_body->GetTranslation().y < terrainHeight + GROUND_OFFSET)
     {
@@ -60,12 +60,14 @@ void Player::Update(float delta)
         isGrounded = true;
         (*m_body)(TRANSLATION, EQ, Y_POS, terrainHeight + GROUND_OFFSET);
     }
-
-    float mouseWheel = Input::GetMouseScroll();
+    
+    /*float mouseWheel = Input::GetMouseScroll();
     if (mouseWheel != 0)
     {
         m_camera->operator()(DISTANCE, EQ, NULL, Clamp(m_camera->GetDistance() + (mouseWheel * -1 * ZoomPower * 0.1f), (float)MIN_DISTANCE, (float)MAX_DISTANCE));
-    }
+    }*/
+    
+    m_camera->LookAt(m_body->GetTranslation());
 
     Astra::Audio::AudioController::SetListenerPosition(m_body->GetTranslation());
 }
@@ -98,7 +100,7 @@ void Player::CheckInput()
         currentTurnSpeed = 0;
     }
 
-    if (Input::IsKeyPressed(Key::SPACE))
+    if (Input::IsKeyPressed(Key::Space))
     {
         if (isGrounded)
         {
