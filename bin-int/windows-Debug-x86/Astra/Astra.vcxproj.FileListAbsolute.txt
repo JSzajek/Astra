@@ -1,2 +1,0 @@
-C:\Users\Justin\Documents\Cpp Projects\Astra\bin\windows-Debug-x86\Astra\Astra.pdb
-C:\Users\Justin\Documents\Cpp Projects\Astra\bin-int\windows-Debug-x86\Astra\Astra.pdb
