@@ -1,7 +1,7 @@
 .vs/
 .git/
 bin/
+bin-int/
 *.obj
-Dependencies/Astra.Core/
-Astra.Core/intermediates/
-!Astra.Core/src/resources/*.obj
+!Astra/res/*.obj
+!TestGame/res/*.obj

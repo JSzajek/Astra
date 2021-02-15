@@ -1,0 +1,382 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dist|Win32">
+      <Configuration>Dist</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0045D80C-6C59-00BE-35DB-A31DA1AEFCEE}</ProjectGuid>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Astra</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\bin\windows-Debug-x86\Astra\</OutDir>
+    <IntDir>..\bin-int\windows-Debug-x86\Astra\</IntDir>
+    <TargetName>Astra</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\bin\windows-Release-x86\Astra\</OutDir>
+    <IntDir>..\bin-int\windows-Release-x86\Astra\</IntDir>
+    <TargetName>Astra</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
+    <OutDir>..\bin\windows-Dist-x86\Astra\</OutDir>
+    <IntDir>..\bin-int\windows-Dist-x86\Astra\</IntDir>
+    <TargetName>Astra</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>astra_pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>ASTRA_PLATFORM_WINDOWS;ASTRA_BUILD_DLL;GLFW_INCLUDE_NONE;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;ASTRA_DEBUG;ASTRA_ENABLE_ASSERTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLEW\include;vendor\GLFW\include;vendor\OpenALSoft\include;vendor\FreeType\include;vendor\stb_image;vendor\dr_lib;vendor\rectpack2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>astra_pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>ASTRA_PLATFORM_WINDOWS;ASTRA_BUILD_DLL;GLFW_INCLUDE_NONE;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;ASTRA_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLEW\include;vendor\GLFW\include;vendor\OpenALSoft\include;vendor\FreeType\include;vendor\stb_image;vendor\dr_lib;vendor\rectpack2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>astra_pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>ASTRA_PLATFORM_WINDOWS;ASTRA_BUILD_DLL;GLFW_INCLUDE_NONE;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;ASTRA_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLEW\include;vendor\GLFW\include;vendor\OpenALSoft\include;vendor\FreeType\include;vendor\stb_image;vendor\dr_lib;vendor\rectpack2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <PreBuildEvent>
+      <Command>IF EXIST res\shaders\**.shader\ (xcopy /Q /E /Y /I res\shaders\**.shader ..\bin\windows-Dist-x86\TestGame\res\shaders &gt; nul) ELSE (xcopy /Q /Y /I res\shaders\**.shader ..\bin\windows-Dist-x86\TestGame\res\shaders &gt; nul)
+IF EXIST res\textures\**.png\ (xcopy /Q /E /Y /I res\textures\**.png ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul) ELSE (xcopy /Q /Y /I res\textures\**.png ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul)
+IF EXIST res\textures\**.jpg\ (xcopy /Q /E /Y /I res\textures\**.jpg ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul) ELSE (xcopy /Q /Y /I res\textures\**.jpg ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul)
+IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Dist-x86\TestGame\res\fonts &gt; nul) ELSE (xcopy /Q /Y /I res\fonts\**.ttf ..\bin\windows-Dist-x86\TestGame\res\fonts &gt; nul)</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Astra.h" />
+    <ClInclude Include="src\Astra\Application.h" />
+    <ClInclude Include="src\Astra\Core.h" />
+    <ClInclude Include="src\Astra\EntryPoint.h" />
+    <ClInclude Include="src\Astra\Log.h" />
+    <ClInclude Include="src\Astra\Scene.h" />
+    <ClInclude Include="src\Astra\Window.h" />
+    <ClInclude Include="src\Astra\audio\AudioController.h" />
+    <ClInclude Include="src\Astra\audio\AudioSource.h" />
+    <ClInclude Include="src\Astra\events\ApplicationEvent.h" />
+    <ClInclude Include="src\Astra\events\Event.h" />
+    <ClInclude Include="src\Astra\events\KeyEvent.h" />
+    <ClInclude Include="src\Astra\events\MouseEvent.h" />
+    <ClInclude Include="src\Astra\graphics\Color.h" />
+    <ClInclude Include="src\Astra\graphics\ResourceManager.h" />
+    <ClInclude Include="src\Astra\graphics\buffers\CubeMapTexture.h" />
+    <ClInclude Include="src\Astra\graphics\buffers\FrameBuffer.h" />
+    <ClInclude Include="src\Astra\graphics\buffers\ShadowFrameBuffer.h" />
+    <ClInclude Include="src\Astra\graphics\buffers\Texture.h" />
+    <ClInclude Include="src\Astra\graphics\buffers\VertexArray.h" />
+    <ClInclude Include="src\Astra\graphics\buffers\WaterFrameBuffer.h" />
+    <ClInclude Include="src\Astra\graphics\entities\Camera.h" />
+    <ClInclude Include="src\Astra\graphics\entities\DirectionalLight.h" />
+    <ClInclude Include="src\Astra\graphics\entities\Entity.h" />
+    <ClInclude Include="src\Astra\graphics\entities\Light.h" />
+    <ClInclude Include="src\Astra\graphics\entities\PointLight.h" />
+    <ClInclude Include="src\Astra\graphics\entities\Spatial.h" />
+    <ClInclude Include="src\Astra\graphics\entities\SpotLight.h" />
+    <ClInclude Include="src\Astra\graphics\entities\terrains\HeightGenerator.h" />
+    <ClInclude Include="src\Astra\graphics\entities\terrains\Terrain.h" />
+    <ClInclude Include="src\Astra\graphics\entities\terrains\WaterTile.h" />
+    <ClInclude Include="src\Astra\graphics\gizmos\Gizmo.h" />
+    <ClInclude Include="src\Astra\graphics\gizmos\GizmoController.h" />
+    <ClInclude Include="src\Astra\graphics\guis\Button.h" />
+    <ClInclude Include="src\Astra\graphics\guis\Gui.h" />
+    <ClInclude Include="src\Astra\graphics\guis\Guis.h" />
+    <ClInclude Include="src\Astra\graphics\guis\Image.h" />
+    <ClInclude Include="src\Astra\graphics\guis\Label.h" />
+    <ClInclude Include="src\Astra\graphics\guis\Panel.h" />
+    <ClInclude Include="src\Astra\graphics\guis\Spatial2D.h" />
+    <ClInclude Include="src\Astra\graphics\guis\TextBox.h" />
+    <ClInclude Include="src\Astra\graphics\guis\utility\FontAtlas.h" />
+    <ClInclude Include="src\Astra\graphics\guis\utility\FontStructs.h" />
+    <ClInclude Include="src\Astra\graphics\guis\utility\Rect2.h" />
+    <ClInclude Include="src\Astra\graphics\loaders\Loader.h" />
+    <ClInclude Include="src\Astra\graphics\loaders\ObjLoader.h" />
+    <ClInclude Include="src\Astra\graphics\materials\GuiMaterial.h" />
+    <ClInclude Include="src\Astra\graphics\materials\ImageMaterial.h" />
+    <ClInclude Include="src\Astra\graphics\materials\Materials.h" />
+    <ClInclude Include="src\Astra\graphics\materials\ParticleMaterial.h" />
+    <ClInclude Include="src\Astra\graphics\materials\SkyboxMaterial.h" />
+    <ClInclude Include="src\Astra\graphics\materials\TerrainMaterial.h" />
+    <ClInclude Include="src\Astra\graphics\materials\WaterMaterial.h" />
+    <ClInclude Include="src\Astra\graphics\particles\ConeParticleSystem.h" />
+    <ClInclude Include="src\Astra\graphics\particles\Particle.h" />
+    <ClInclude Include="src\Astra\graphics\particles\ParticleController.h" />
+    <ClInclude Include="src\Astra\graphics\particles\ParticleSystem.h" />
+    <ClInclude Include="src\Astra\graphics\post_processing\BloomEffect.h" />
+    <ClInclude Include="src\Astra\graphics\post_processing\ContrastEffect.h" />
+    <ClInclude Include="src\Astra\graphics\post_processing\HDREffect.h" />
+    <ClInclude Include="src\Astra\graphics\post_processing\HorizontalBlurEffect.h" />
+    <ClInclude Include="src\Astra\graphics\post_processing\ImageEffect.h" />
+    <ClInclude Include="src\Astra\graphics\post_processing\PostProcessor.h" />
+    <ClInclude Include="src\Astra\graphics\post_processing\VerticalBlurEffect.h" />
+    <ClInclude Include="src\Astra\graphics\renderers\Entity3dRenderer.h" />
+    <ClInclude Include="src\Astra\graphics\renderers\GizmoRenderer.h" />
+    <ClInclude Include="src\Astra\graphics\renderers\GuiRenderer.h" />
+    <ClInclude Include="src\Astra\graphics\renderers\NormalEntity3dRenderer.h" />
+    <ClInclude Include="src\Astra\graphics\renderers\ParticleRenderer.h" />
+    <ClInclude Include="src\Astra\graphics\renderers\Renderer.h" />
+    <ClInclude Include="src\Astra\graphics\renderers\ShadowMapRenderer.h" />
+    <ClInclude Include="src\Astra\graphics\renderers\SkyboxRenderer.h" />
+    <ClInclude Include="src\Astra\graphics\renderers\TerrainRenderer.h" />
+    <ClInclude Include="src\Astra\graphics\renderers\WaterRenderer.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\BloomShader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\ContrastShader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\EntityShader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\FontShader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\GizmoShader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\GuiShader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\HDRShader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\HorizontalBlurShader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\NormalEntityShader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\ParticleShader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\SelectionShader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\Shader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\ShadowShader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\SkyboxShader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\TerrainShader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\VerticalBlurShader.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\WaterShader.h" />
+    <ClInclude Include="src\Astra\graphics\shadows\ShadowBox.h" />
+    <ClInclude Include="src\Astra\graphics\shadows\ShadowMapController.h" />
+    <ClInclude Include="src\Astra\inputs\Input.h" />
+    <ClInclude Include="src\Astra\inputs\KeyCodes.h" />
+    <ClInclude Include="src\Astra\inputs\MouseCodes.h" />
+    <ClInclude Include="src\Astra\layers\Layer.h" />
+    <ClInclude Include="src\Astra\layers\Layer2D.h" />
+    <ClInclude Include="src\Astra\layers\Layer3D.h" />
+    <ClInclude Include="src\Astra\layers\LayerStack.h" />
+    <ClInclude Include="src\Astra\math\Mat4.h" />
+    <ClInclude Include="src\Astra\math\Mat4Utils.h" />
+    <ClInclude Include="src\Astra\math\Maths.h" />
+    <ClInclude Include="src\Astra\math\MathsUtils.h" />
+    <ClInclude Include="src\Astra\math\Vec2.h" />
+    <ClInclude Include="src\Astra\math\Vec3.h" />
+    <ClInclude Include="src\Astra\math\Vec4.h" />
+    <ClInclude Include="src\Astra\math\iVec2.h" />
+    <ClInclude Include="src\Astra\math\iVec4.h" />
+    <ClInclude Include="src\Astra\utils\FileUtils.h" />
+    <ClInclude Include="src\Astra\utils\Properties.h" />
+    <ClInclude Include="src\Astra\utils\StringUtils.h" />
+    <ClInclude Include="src\Astra\utils\Timer.h" />
+    <ClInclude Include="src\Astra\utils\Timestep.h" />
+    <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
+    <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
+    <ClInclude Include="src\astra_pch.h" />
+    <ClInclude Include="vendor\dr_lib\dr_lib\dr_flac.h" />
+    <ClInclude Include="vendor\dr_lib\dr_lib\dr_mp3.h" />
+    <ClInclude Include="vendor\dr_lib\dr_lib\dr_wav.h" />
+    <ClInclude Include="vendor\stb_image\stb_image\stb_image.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Astra\Application.cpp" />
+    <ClCompile Include="src\Astra\Log.cpp" />
+    <ClCompile Include="src\Astra\audio\AudioController.cpp" />
+    <ClCompile Include="src\Astra\audio\AudioSource.cpp" />
+    <ClCompile Include="src\Astra\graphics\Color.cpp" />
+    <ClCompile Include="src\Astra\graphics\ResourceManager.cpp" />
+    <ClCompile Include="src\Astra\graphics\buffers\CubeMapTexture.cpp" />
+    <ClCompile Include="src\Astra\graphics\buffers\ShadowFrameBuffer.cpp" />
+    <ClCompile Include="src\Astra\graphics\buffers\Texture.cpp" />
+    <ClCompile Include="src\Astra\graphics\buffers\VertexArray.cpp" />
+    <ClCompile Include="src\Astra\graphics\buffers\WaterFrameBuffer.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\Camera.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\Entity.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\Light.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\Spatial.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\terrains\HeightGenerator.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\terrains\Terrain.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\terrains\WaterTile.cpp" />
+    <ClCompile Include="src\Astra\graphics\gizmos\Gizmo.cpp" />
+    <ClCompile Include="src\Astra\graphics\gizmos\GizmoController.cpp" />
+    <ClCompile Include="src\Astra\graphics\guis\Gui.cpp" />
+    <ClCompile Include="src\Astra\graphics\guis\Spatial2D.cpp" />
+    <ClCompile Include="src\Astra\graphics\guis\TextBox.cpp" />
+    <ClCompile Include="src\Astra\graphics\guis\utility\FontAtlas.cpp" />
+    <ClCompile Include="src\Astra\graphics\guis\utility\Rect2.cpp" />
+    <ClCompile Include="src\Astra\graphics\loaders\Loader.cpp" />
+    <ClCompile Include="src\Astra\graphics\loaders\ObjLoader.cpp" />
+    <ClCompile Include="src\Astra\graphics\materials\GuiMaterial.cpp" />
+    <ClCompile Include="src\Astra\graphics\materials\ImageMaterial.cpp" />
+    <ClCompile Include="src\Astra\graphics\materials\ParticleMaterial.cpp" />
+    <ClCompile Include="src\Astra\graphics\materials\SkyboxMaterial.cpp" />
+    <ClCompile Include="src\Astra\graphics\materials\TerrainMaterial.cpp" />
+    <ClCompile Include="src\Astra\graphics\materials\WaterMaterial.cpp" />
+    <ClCompile Include="src\Astra\graphics\particles\ConeParticleSystem.cpp" />
+    <ClCompile Include="src\Astra\graphics\particles\Particle.cpp" />
+    <ClCompile Include="src\Astra\graphics\particles\ParticleController.cpp" />
+    <ClCompile Include="src\Astra\graphics\particles\ParticleSystem.cpp" />
+    <ClCompile Include="src\Astra\graphics\post_processing\BloomEffect.cpp" />
+    <ClCompile Include="src\Astra\graphics\post_processing\ImageEffect.cpp" />
+    <ClCompile Include="src\Astra\graphics\post_processing\PostProcessor.cpp" />
+    <ClCompile Include="src\Astra\graphics\renderers\Entity3dRenderer.cpp" />
+    <ClCompile Include="src\Astra\graphics\renderers\GizmoRenderer.cpp" />
+    <ClCompile Include="src\Astra\graphics\renderers\GuiRenderer.cpp" />
+    <ClCompile Include="src\Astra\graphics\renderers\NormalEntity3dRenderer.cpp" />
+    <ClCompile Include="src\Astra\graphics\renderers\ParticleRenderer.cpp" />
+    <ClCompile Include="src\Astra\graphics\renderers\Renderer.cpp" />
+    <ClCompile Include="src\Astra\graphics\renderers\ShadowMapRenderer.cpp" />
+    <ClCompile Include="src\Astra\graphics\renderers\SkyboxRenderer.cpp" />
+    <ClCompile Include="src\Astra\graphics\renderers\TerrainRenderer.cpp" />
+    <ClCompile Include="src\Astra\graphics\renderers\WaterRenderer.cpp" />
+    <ClCompile Include="src\Astra\graphics\shaders\Shader.cpp" />
+    <ClCompile Include="src\Astra\graphics\shadows\ShadowBox.cpp" />
+    <ClCompile Include="src\Astra\graphics\shadows\ShadowMapController.cpp" />
+    <ClCompile Include="src\Astra\layers\Layer.cpp" />
+    <ClCompile Include="src\Astra\layers\Layer2D.cpp" />
+    <ClCompile Include="src\Astra\layers\Layer3D.cpp" />
+    <ClCompile Include="src\Astra\layers\LayerStack.cpp" />
+    <ClCompile Include="src\Astra\math\Mat4.cpp" />
+    <ClCompile Include="src\Astra\math\Vec2.cpp" />
+    <ClCompile Include="src\Astra\math\Vec3.cpp" />
+    <ClCompile Include="src\Astra\math\Vec4.cpp" />
+    <ClCompile Include="src\Astra\math\iVec2.cpp" />
+    <ClCompile Include="src\Astra\math\iVec4.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
+    <ClCompile Include="src\astra_pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="vendor\dr_lib\dr_lib\dr_lib_impl.cpp" />
+    <ClCompile Include="vendor\stb_image\stb_image\stb_image.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\fonts\calibri.ttf" />
+    <None Include="res\shaders\Bloom.shader" />
+    <None Include="res\shaders\Contrast.shader" />
+    <None Include="res\shaders\Entity.shader" />
+    <None Include="res\shaders\FinalBloom.shader" />
+    <None Include="res\shaders\Font.shader" />
+    <None Include="res\shaders\Gizmo.shader" />
+    <None Include="res\shaders\Gui.shader" />
+    <None Include="res\shaders\HDR.shader" />
+    <None Include="res\shaders\HorizontalBlur.shader" />
+    <None Include="res\shaders\NormalEntity.shader" />
+    <None Include="res\shaders\Particle.shader" />
+    <None Include="res\shaders\Selection.shader" />
+    <None Include="res\shaders\Shadow.shader" />
+    <None Include="res\shaders\Skybox.shader" />
+    <None Include="res\shaders\Terrain.shader" />
+    <None Include="res\shaders\VerticalBlur.shader" />
+    <None Include="res\shaders\Water.shader" />
+    <None Include="vendor\dr_lib\dr_lib\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\Color_Palette.png" />
+    <Image Include="res\textures\Default.jpg" />
+    <Image Include="res\textures\DefaultDuDvMap.png" />
+    <Image Include="res\textures\DefaultNormalMap.png" />
+    <Image Include="res\textures\DefaultSpecular.jpg" />
+    <Image Include="res\textures\DefaultWaterBase.jpg" />
+    <Image Include="res\textures\DirectionalLight.png" />
+    <Image Include="res\textures\Emitter.png" />
+    <Image Include="res\textures\PointLight.png" />
+    <Image Include="res\textures\SpotLight.png" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
