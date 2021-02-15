@@ -120,7 +120,8 @@
       <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>IF EXIST vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul)</Command>
+      <Command>IF EXIST vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul)
+IF EXIST vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">

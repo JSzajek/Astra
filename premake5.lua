@@ -102,6 +102,13 @@ project "Astra"
 		}
 		runtime "Release"
 		optimize "on"
+
+		postbuildcommands
+		{
+			-- Post build copy of required OpenAL dll
+			("{COPY} vendor/OpenALSoft/lib/OpenAL32.dll ../bin/" .. outputdir .."/TestGame")
+		}
+
 	filter "configurations:Dist"
 		defines "ASTRA_DIST"
 		runtime "Release"
