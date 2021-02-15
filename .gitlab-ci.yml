@@ -8,6 +8,6 @@ variables:
 build_windows:
     stage: build
     script:
-        - '& "$msbuild" "$solution" /t:Rebuild /p:Configuration=Release /p:Platform="x86" /m'
+        - '& "$msbuild" "$solution" /t:Rebuild /p:Configuration=Release /p:Platform="Win32" /m'
     tags:
         - windows

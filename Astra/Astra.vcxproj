@@ -92,7 +92,7 @@
       <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>IF EXIST vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Debug-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Debug-x86\TestGame &gt; nul)</Command>
+      <Command>IF EXIST $(ProjectDir)vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I $(ProjectDir)vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Debug-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I $(ProjectDir)vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Debug-x86\TestGame &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -120,8 +120,7 @@
       <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>IF EXIST vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul)
-IF EXIST vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul)</Command>
+      <Command>IF EXIST $(ProjectDir)vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I $(ProjectDir)vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I $(ProjectDir)vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
@@ -149,8 +148,7 @@ IF EXIST vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I vendor\OpenALSof
       <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>IF EXIST vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul)
-IF EXIST vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul)
+      <Command>IF EXIST $(ProjectDir)vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I $(ProjectDir)vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I $(ProjectDir)vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul)
 IF EXIST res\shaders\**.shader\ (xcopy /Q /E /Y /I res\shaders\**.shader ..\bin\windows-Dist-x86\TestGame\res\shaders &gt; nul) ELSE (xcopy /Q /Y /I res\shaders\**.shader ..\bin\windows-Dist-x86\TestGame\res\shaders &gt; nul)
 IF EXIST res\textures\**.png\ (xcopy /Q /E /Y /I res\textures\**.png ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul) ELSE (xcopy /Q /Y /I res\textures\**.png ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul)
 IF EXIST res\textures\**.jpg\ (xcopy /Q /E /Y /I res\textures\**.jpg ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul) ELSE (xcopy /Q /Y /I res\textures\**.jpg ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul)

@@ -83,7 +83,7 @@ project "Astra"
 		postbuildcommands
 		{
 			-- Post build copy of required OpenAL dll
-			("{COPY} vendor/OpenALSoft/lib/OpenAL32.dll ../bin/" .. outputdir .."/TestGame")
+			("{COPY} %{prj.location}vendor/OpenALSoft/lib/OpenAL32.dll ../bin/" .. outputdir .."/TestGame")
 		}
 
 	filter "configurations:Debug"
@@ -103,22 +103,10 @@ project "Astra"
 		runtime "Release"
 		optimize "on"
 
-		postbuildcommands
-		{
-			-- Post build copy of required OpenAL dll
-			("{COPY} vendor/OpenALSoft/lib/OpenAL32.dll ../bin/" .. outputdir .."/TestGame")
-		}
-
 	filter "configurations:Dist"
 		defines "ASTRA_DIST"
 		runtime "Release"
 		optimize "on"
-
-		postbuildcommands
-		{
-			-- Post build copy of required OpenAL dll
-			("{COPY} vendor/OpenALSoft/lib/OpenAL32.dll ../bin/" .. outputdir .."/TestGame")
-		}
 
 		postbuildcommands
 		{
@@ -210,6 +198,10 @@ project "TestGame"
 			("{COPY} res/**.obj ../bin/" .. outputdir .."/TestGame/res/"),
 			("{COPY} res/textures/**.png ../bin/" .. outputdir .."/TestGame/res/textures"),
 			("{COPY} res/textures/**.jpg ../bin/" .. outputdir .."/TestGame/res/textures"),
+
+			("{COPY} res/textures/Default_Night_Skybox/**.png ../bin/" .. outputdir .."/TestGame/res/textures/Default_Night_Skybox"),
+			("{COPY} res/textures/Default_Skybox/**.png ../bin/" .. outputdir .."/TestGame/res/textures/Default_Skybox"),
+			
 			("{COPY} res/fonts/**.ttf ../bin/" .. outputdir .."/TestGame/res/fonts"),
 			("{COPY} res/audio/**.wav ../bin/" .. outputdir .."/TestGame/res/audio")
 		}
