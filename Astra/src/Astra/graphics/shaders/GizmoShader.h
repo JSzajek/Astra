@@ -11,7 +11,7 @@ namespace Astra::Graphics
 	{
 	public:
 		GizmoShader(const char* filepath =
-			"../Astra/res/shaders/Gizmo.shader")
+			RESOURCE("res/shaders/Gizmo.shader"))
 			: Shader(filepath)
 		{
 		}

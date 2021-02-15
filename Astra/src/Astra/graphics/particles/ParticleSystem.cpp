@@ -11,7 +11,7 @@ namespace Astra::Graphics
 	{
 		m_material = ResourceManager::Track(material);
 	#if ASTRA_DEBUG
-		m_gizmo = new Gizmo("../Astra/res/textures/Emitter.png", *center, 3);
+		m_gizmo = new Gizmo(RESOURCE("res/textures/Emitter.png"), *center, 3);
 	#endif
 	}
 

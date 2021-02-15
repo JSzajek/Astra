@@ -15,7 +15,7 @@ namespace Astra::Graphics
 	{
 	public:
 		EntityShader(int numOfLights, const char* filepath =
-			"../Astra/res/shaders/Entity.shader")
+			RESOURCE("res/shaders/Entity.shader"))
 			: Shader(filepath, &std::make_tuple("NR_POINT_LIGHTS %i", numOfLights))
 		{
 		}

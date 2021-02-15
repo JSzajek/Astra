@@ -10,7 +10,7 @@ namespace Astra::Graphics
 	{
 	public:
 		SelectionShader(const char* filepath =
-			"../Astra/res/shaders/Selection.shader")
+			RESOURCE("res/shaders/Selection.shader"))
 			: Shader(filepath)
 		{
 		}

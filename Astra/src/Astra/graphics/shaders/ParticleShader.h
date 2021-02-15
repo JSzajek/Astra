@@ -13,7 +13,7 @@ namespace Astra::Graphics
 	{
 	public:
 		ParticleShader(const char* filepath =
-			"../Astra/res/shaders/Particle.shader")
+			RESOURCE("res/shaders/Particle.shader"))
 			: Shader(filepath)
 		{
 		}

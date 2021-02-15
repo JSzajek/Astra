@@ -20,7 +20,7 @@ namespace Astra::Graphics
 		{
 			m_type = LightType::Point;
 		#if ASTRA_DEBUG
-			m_gizmo = new Gizmo("../Astra/res/textures/PointLight.png", translation, 3);
+			m_gizmo = new Gizmo(RESOURCE("res/textures/PointLight.png"), translation, 3);
 		#endif
 		}
 	#if ASTRA_DEBUG

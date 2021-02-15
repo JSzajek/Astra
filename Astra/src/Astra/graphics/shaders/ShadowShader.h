@@ -12,7 +12,7 @@ namespace Astra::Graphics
 	{
 	public:
 		ShadowShader(const char* filepath =
-			"../Astra/res/shaders/Shadow.shader")
+			RESOURCE("res/shaders/Shadow.shader"))
 			: Shader(filepath)
 		{
 		}

@@ -8,7 +8,7 @@ namespace Astra::Graphics
 	{
 	public:
 		ContrastShader(const char* filepath =
-			"../Astra/res/shaders/Contrast.shader")
+			RESOURCE("res/shaders/Contrast.shader"))
 			: Shader(filepath)
 		{
 		}

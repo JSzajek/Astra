@@ -149,6 +149,7 @@
     </Lib>
     <PostBuildEvent>
       <Command>IF EXIST vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul)
+IF EXIST vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul)
 IF EXIST res\shaders\**.shader\ (xcopy /Q /E /Y /I res\shaders\**.shader ..\bin\windows-Dist-x86\TestGame\res\shaders &gt; nul) ELSE (xcopy /Q /Y /I res\shaders\**.shader ..\bin\windows-Dist-x86\TestGame\res\shaders &gt; nul)
 IF EXIST res\textures\**.png\ (xcopy /Q /E /Y /I res\textures\**.png ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul) ELSE (xcopy /Q /Y /I res\textures\**.png ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul)
 IF EXIST res\textures\**.jpg\ (xcopy /Q /E /Y /I res\textures\**.jpg ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul) ELSE (xcopy /Q /Y /I res\textures\**.jpg ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul)

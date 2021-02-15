@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Light.h"
+#include "Astra/Core.h"
 #include "../gizmos/Gizmo.h"
 
 namespace Astra::Graphics
@@ -21,7 +22,7 @@ namespace Astra::Graphics
 			m_data[5] = direction.z;
 			m_type = LightType::Directional;
 		#if ASTRA_DEBUG
-			m_gizmo = new Gizmo("../Astra/res/textures/DirectionalLight.png", position, 3);
+			m_gizmo = new Gizmo(RESOURCE("res/textures/DirectionalLight.png"), position, 3);
 		#endif
 		}
 	#if ASTRA_DEBUG

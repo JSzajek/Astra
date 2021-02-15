@@ -23,7 +23,7 @@ namespace Astra::Graphics
 			m_data[5] = direction.z;
 			m_type = LightType::Spotlight;
 		#if ASTRA_DEBUG
-			m_gizmo = new Gizmo("../Astra/res/textures/SpotLight.png", translation, 3);
+			m_gizmo = new Gizmo(RESOURCE("res/textures/SpotLight.png"), translation, 3);
 		#endif
 		}
 	#if ASTRA_DEBUG

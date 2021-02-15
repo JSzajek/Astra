@@ -10,7 +10,7 @@ namespace Astra::Graphics
 	{
 	public:
 		HorizontalBlurShader(const char* filepath =
-			"../Astra/res/shaders/HorizontalBlur.shader")
+			RESOURCE("res/shaders/HorizontalBlur.shader"))
 			: Shader(filepath)
 		{
 		}

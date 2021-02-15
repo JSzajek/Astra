@@ -6,6 +6,10 @@
 
 namespace Astra::Graphics
 {
+	const char* WaterMaterial::DefaultDiffuseMap	= RESOURCE("res/textures/DefaultWaterBase.jpg");
+	const char* WaterMaterial::DefaultDuDvMap		= RESOURCE("res/textures/DefaultDuDvMap.png");
+	const char* WaterMaterial::DefaultNormalMap		= RESOURCE("res/textures/DefaultNormalMap.png");
+
 	WaterMaterial::WaterMaterial()
 		: waveStrength(DefaultWaveStrength), waveSpeed(DefaultWaveSpeed), shineDampener(DefaultShineDampener),
 			reflectivity(DefaultReflectivity), diffuseTexture(Loader::LoadTexture(DefaultDiffuseMap)), m_currentWaveSpeed(0),

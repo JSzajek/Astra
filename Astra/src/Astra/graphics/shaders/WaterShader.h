@@ -21,7 +21,7 @@ namespace Astra::Graphics
 	{
 	public:
 		WaterShader(int numOfLights, const char* filepath =
-			"../Astra/res/shaders/Water.shader")
+			RESOURCE("res/shaders/Water.shader"))
 			: Shader(filepath, &std::make_tuple("NR_POINT_LIGHTS %i", numOfLights))
 		{
 		}

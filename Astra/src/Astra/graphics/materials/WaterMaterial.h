@@ -13,9 +13,9 @@ namespace Astra::Graphics
 		static const constexpr float DefaultShineDampener = 20.0f;
 		static const constexpr float DefaultReflectivity = 0.6f;
 
-		static constexpr const char* DefaultDiffuseMap = "../Astra/res/textures/DefaultWaterBase.jpg";
-		static constexpr const char* DefaultDuDvMap = "../Astra/res/textures/DefaultDuDvMap.png";
-		static constexpr const char* DefaultNormalMap = "../Astra/res/textures/DefaultNormalMap.png";
+		static const char* DefaultDiffuseMap;
+		static const char* DefaultDuDvMap;
+		static const char* DefaultNormalMap;
 	private:
 		float m_currentWaveSpeed;
 		const Texture* m_specular;

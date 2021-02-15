@@ -5,8 +5,8 @@ namespace Astra::Graphics
 	class Texture
 	{
 	public:
-		static constexpr const char* const DefaultTexture = "../Astra/res/textures/Default.jpg";
-		static constexpr const char* const DefaultSpecular = "../Astra/res/textures/DefaultSpecular.jpg";
+		static const char* const DefaultTexture;
+		static const char* const DefaultSpecular;
 	public:
 		unsigned int id;
 		int width, height;

@@ -96,12 +96,22 @@ project "Astra"
 		symbols "on"
 	filter "configurations:Release"
 		defines "ASTRA_RELEASE"
+		defines
+		{
+			"ASTRA_RELEASE"
+		}
 		runtime "Release"
 		optimize "on"
 	filter "configurations:Dist"
 		defines "ASTRA_DIST"
 		runtime "Release"
 		optimize "on"
+
+		postbuildcommands
+		{
+			-- Post build copy of required OpenAL dll
+			("{COPY} vendor/OpenALSoft/lib/OpenAL32.dll ../bin/" .. outputdir .."/TestGame")
+		}
 
 		postbuildcommands
 		{

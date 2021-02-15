@@ -10,7 +10,7 @@ namespace Astra::Graphics
 	{
 	public:
 		FontShader(const char* filepath =
-			"../Astra/res/shaders/Font.shader")
+			RESOURCE("res/shaders/Font.shader"))
 			: Shader(filepath)
 		{
 		}

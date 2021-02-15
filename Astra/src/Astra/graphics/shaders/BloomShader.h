@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Shader.h"
+#include "Astra/Core.h"
 
 namespace Astra::Graphics
 {
@@ -11,7 +12,7 @@ namespace Astra::Graphics
 	{
 	public:
 		SplitBloomShader(const char* filepath =
-			"../Astra/res/shaders/Bloom.shader")
+			RESOURCE("res/shaders/Bloom.shader"))
 			: Shader(filepath)
 		{
 		}
@@ -21,7 +22,7 @@ namespace Astra::Graphics
 	{
 	public:
 		CombineBloomShader(const char* filepath =
-			"../Astra/res/shaders/FinalBloom.shader")
+			RESOURCE("res/shaders/FinalBloom.shader"))
 			: Shader(filepath)
 		{
 		}

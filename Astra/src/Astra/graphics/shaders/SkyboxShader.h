@@ -12,7 +12,7 @@ namespace Astra::Graphics
 	{
 	public:
 		SkyboxShader(const char* filepath =
-			"../Astra/res/shaders/Skybox.shader")
+			RESOURCE("res/shaders/Skybox.shader"))
 			: Shader(filepath)
 		{
 		}

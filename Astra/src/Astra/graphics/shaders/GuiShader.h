@@ -8,7 +8,7 @@ namespace Astra::Graphics
 	{
 	public:
 		GuiShader(const char* filepath =
-			"../Astra/res/shaders/Gui.shader")
+			RESOURCE("res/shaders/Gui.shader"))
 			: Shader(filepath)
 		{
 		}

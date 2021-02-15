@@ -22,7 +22,7 @@ namespace Astra::Graphics
 	{
 	public:
 		NormalEntityShader(int numOfLights, const char* filepath =
-			"../Astra/res/shaders/NormalEntity.shader")
+			RESOURCE("res/shaders/NormalEntity.shader"))
 			: Shader(filepath, &std::make_tuple("NR_POINT_LIGHTS %i", numOfLights))
 		{
 		}

@@ -7,7 +7,7 @@
 
 namespace Astra::Graphics
 {
-	#define DEFAULT_FONT_PATH		"../Astra/res/fonts/calibri.ttf"
+	#define DEFAULT_FONT_PATH		RESOURCE("res/fonts/calibri.ttf")
 	#define DEFAULT_FONT_SIZE		24
 
 	class TextBox : public Gui
