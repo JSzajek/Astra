@@ -80,12 +80,6 @@ project "Astra"
 			"_CRT_SECURE_NO_WARNINGS"
 		}
 
-		postbuildcommands
-		{
-			-- Post build copy of required OpenAL dll
-			("{COPY} %{prj.location}vendor/OpenALSoft/lib/OpenAL32.dll ../bin/" .. outputdir .."/TestGame")
-		}
-
 	filter "configurations:Debug"
 		defines
 		{
@@ -108,9 +102,9 @@ project "Astra"
 		runtime "Release"
 		optimize "on"
 
-		postbuildcommands
+		prebuildcommands
 		{
-			-- Post build copy of resource files
+			-- Pre build copy of resource files
 			("{COPY} res/shaders/**.shader ../bin/" .. outputdir .."/TestGame/res/shaders"),
 			("{COPY} res/textures/**.png ../bin/" .. outputdir .."/TestGame/res/textures"),
 			("{COPY} res/textures/**.jpg ../bin/" .. outputdir .."/TestGame/res/textures"),
@@ -179,6 +173,12 @@ project "TestGame"
 			"_CRT_SECURE_NO_WARNINGS"
 		}
 
+		postbuildcommands
+		{
+			-- Post build copy of required OpenAL dll
+			("{COPY} ../Astra/vendor/OpenALSoft/lib/OpenAL32.dll ../bin/" .. outputdir .."/TestGame")
+		}
+
 	filter "configurations:Debug"
 		defines "ASTRA_DEBUG"
 		runtime "Debug"
@@ -192,7 +192,7 @@ project "TestGame"
 		runtime "Release"
 		optimize "On"
 
-		postbuildcommands
+		prebuildcommands
 		{
 			-- Post build copy of resource files
 			("{COPY} res/**.obj ../bin/" .. outputdir .."/TestGame/res/"),

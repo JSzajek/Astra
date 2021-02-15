@@ -91,6 +91,9 @@
       <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\Astra\vendor\GLEW\lib;..\Astra\vendor\GLFW\lib;..\Astra\vendor\OpenALSoft\lib;..\Astra\vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>IF EXIST ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Debug-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Debug-x86\TestGame &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -113,6 +116,9 @@
       <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\Astra\vendor\GLEW\lib;..\Astra\vendor\GLFW\lib;..\Astra\vendor\OpenALSoft\lib;..\Astra\vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>IF EXIST ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
     <ClCompile>
@@ -135,7 +141,7 @@
       <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\Astra\vendor\GLEW\lib;..\Astra\vendor\GLFW\lib;..\Astra\vendor\OpenALSoft\lib;..\Astra\vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-    <PostBuildEvent>
+    <PreBuildEvent>
       <Command>IF EXIST res\**.obj\ (xcopy /Q /E /Y /I res\**.obj ..\bin\windows-Dist-x86\TestGame\res &gt; nul) ELSE (xcopy /Q /Y /I res\**.obj ..\bin\windows-Dist-x86\TestGame\res &gt; nul)
 IF EXIST res\textures\**.png\ (xcopy /Q /E /Y /I res\textures\**.png ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul) ELSE (xcopy /Q /Y /I res\textures\**.png ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul)
 IF EXIST res\textures\**.jpg\ (xcopy /Q /E /Y /I res\textures\**.jpg ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul) ELSE (xcopy /Q /Y /I res\textures\**.jpg ..\bin\windows-Dist-x86\TestGame\res\textures &gt; nul)
@@ -143,6 +149,9 @@ IF EXIST res\textures\Default_Night_Skybox\**.png\ (xcopy /Q /E /Y /I res\textur
 IF EXIST res\textures\Default_Skybox\**.png\ (xcopy /Q /E /Y /I res\textures\Default_Skybox\**.png ..\bin\windows-Dist-x86\TestGame\res\textures\Default_Skybox &gt; nul) ELSE (xcopy /Q /Y /I res\textures\Default_Skybox\**.png ..\bin\windows-Dist-x86\TestGame\res\textures\Default_Skybox &gt; nul)
 IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Dist-x86\TestGame\res\fonts &gt; nul) ELSE (xcopy /Q /Y /I res\fonts\**.ttf ..\bin\windows-Dist-x86\TestGame\res\fonts &gt; nul)
 IF EXIST res\audio\**.wav\ (xcopy /Q /E /Y /I res\audio\**.wav ..\bin\windows-Dist-x86\TestGame\res\audio &gt; nul) ELSE (xcopy /Q /Y /I res\audio\**.wav ..\bin\windows-Dist-x86\TestGame\res\audio &gt; nul)</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>IF EXIST ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
