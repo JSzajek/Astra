@@ -16,6 +16,26 @@ namespace Astra
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
 
+	bool WindowsInput::IsKeyJustPressedImplt(int keycode)
+	{
+		auto* window = (GLFWwindow*)Application::Get().GetWindow().GetNativeWindow();
+		auto state = glfwGetKey(window, keycode);
+		if (last_keycode == keycode)
+		{
+			if (state == GLFW_RELEASE)
+			{
+				last_keycode = -1;
+			}
+			return false;
+		}
+		if (state == GLFW_PRESS)
+		{
+			last_keycode = keycode;
+			return true;
+		}
+		return false;
+	}
+
 	bool WindowsInput::IsMouseButtonPressedImpl(int button)
 	{
 		auto* window = (GLFWwindow*)Application::Get().GetWindow().GetNativeWindow();

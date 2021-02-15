@@ -256,4 +256,28 @@ namespace Astra
 			m_skyboxRenderer->Draw(delta, viewMatrix, NULL);
 		}
 	}
+
+#if ASTRA_DEBUG
+	void Layer3D::ToggleWireframeMode(unsigned char state)
+	{
+		if (state == 0)
+		{
+			m_entityRenderer->SetWireframe(false);
+			m_normalEntityRenderer->SetWireframe(false);
+			m_waterRenderer->SetWireframe(false);
+			m_terrainRenderer->SetWireframe(false);
+		}
+		else if (state > 0)
+		{
+			m_entityRenderer->SetWireframe(true);
+			m_normalEntityRenderer->SetWireframe(true);
+
+			if (state > 1)
+			{
+				m_waterRenderer->SetWireframe(true);
+				m_terrainRenderer->SetWireframe(true);
+			}
+		}
+	}
+#endif
 }

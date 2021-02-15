@@ -8,6 +8,7 @@ namespace Astra
 	{
 	protected:
 		virtual bool IsKeyPressedImpl(int keycode) override;
+		virtual bool IsKeyJustPressedImplt(int keycode) override;
 		virtual bool IsMouseButtonPressedImpl(int button) override;
 
 		virtual std::pair<float, float> GetMousePositionImpl() override;

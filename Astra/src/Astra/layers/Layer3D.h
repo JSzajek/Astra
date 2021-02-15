@@ -95,11 +95,16 @@ namespace Astra
 		inline void AddTerrain(const Graphics::Terrain* terrain) { m_terrains.emplace_back(terrain); }
 		inline void AddWaterTile(const Graphics::WaterTile* tile) { m_tiles.emplace_back(tile); }
 		inline void AddPointLight(Graphics::PointLight* light) { m_pointlights.emplace_back(light); }
+
 	public:
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 		virtual void OnUpdate(float delta) override;
 		virtual void UpdateScreen(unsigned int width, unsigned int height) override;
+	public:
+	#if ASTRA_DEBUG
+		void ToggleWireframeMode(unsigned char state);
+	#endif
 	private:
 		void Init();
 		void PrepareRender(float delta);

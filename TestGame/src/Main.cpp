@@ -290,9 +290,9 @@ public:
         }
 
     #if ASTRA_DEBUG
-        if (Input::IsKeyPressed(Key::F3))
+        if (Input::IsKeyJustPressed(Key::F3))
         {
-            //RendererController::ToggleWireframeMode();
+            scene->ToggleWireframeMode();
         }
     #endif
     }

@@ -52,5 +52,14 @@ namespace Astra
 		inline void AddPointLight(Graphics::PointLight* light) { m_3dLayer->AddPointLight(light); }
 		
 		inline void AddGui(Graphics::Gui* gui, int layer) { m_canvas->AddGui(gui, layer); }
+
+	#if ASTRA_DEBUG
+		void ToggleWireframeMode() 
+		{
+			static unsigned char wireframe = 1;
+			m_3dLayer->ToggleWireframeMode(wireframe); 
+			wireframe = (wireframe + 1) % 3;
+		}
+	#endif
 	};
 }
