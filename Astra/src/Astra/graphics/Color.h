@@ -55,8 +55,8 @@ namespace Astra::Graphics
 		operator Math::Vec4() const { return m_data; }
 		operator Math::Vec3() const { return m_data; }
 
-		Color& Multiply(const Color& other);
-		friend Color& operator*(Color left, const Color& right);
+		Color Multiply(const Color& other);
+		friend Color operator*(Color left, const Color& right);
 
 		inline float GetR() const { return m_data.x; }
 		inline float GetG() const { return m_data.y; }

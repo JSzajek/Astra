@@ -14,7 +14,7 @@ namespace Astra::Graphics
 	const Color Color::Pink		= Color("#FFC0CB");
 	const Color Color::Purple	= Color("#800080");
 
-	Color& Color::Multiply(const Color& other)
+	Color Color::Multiply(const Color& other)
 	{
 		m_data.x *= other.GetR();
 		m_data.y *= other.GetG();
@@ -23,7 +23,7 @@ namespace Astra::Graphics
 		return *this;
 	}
 
-	Color& operator*(Color left, const Color& right)
+	Color operator*(Color left, const Color& right)
 	{
 		return left.Multiply(right);
 	}

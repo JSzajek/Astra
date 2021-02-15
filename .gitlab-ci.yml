@@ -4,10 +4,13 @@ stages:
 variables:
     msbuild: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe'
     solution: "Astra.sln"
+    GIT_DEPTH: 10
 
 build_windows:
     stage: build
     script:
         - '& "$msbuild" "$solution" /t:Rebuild /p:Configuration=Release /p:Platform="Win32" /m'
+    allow_failure:
+        exit_codes: 2
     tags:
         - windows
