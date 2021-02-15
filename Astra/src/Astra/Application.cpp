@@ -38,6 +38,8 @@ namespace Astra
 	{
 		while(m_running) 
 		{
+			m_window->Clear();
+
 			float time = (float)glfwGetTime();
 			Timestep timestep = time - m_lastFrameTime;
 			m_lastFrameTime = time;

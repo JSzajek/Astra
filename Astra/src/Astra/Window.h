@@ -28,6 +28,7 @@ namespace Astra
 		virtual ~Window() { };
 
 		virtual void OnUpdate() = 0;
+		virtual void Clear() = 0;
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;
 		virtual std::pair<unsigned int, unsigned int> GetSize() const = 0;

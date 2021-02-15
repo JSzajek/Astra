@@ -52,8 +52,7 @@ void Player::Update(float delta)
     upwardsSpeed += GRAVITY * delta;
     (*m_body)(TRANSLATION, SUM_EQ, Y_POS, upwardsSpeed * delta);
 
-    m_camera->LookAt(m_body->GetTranslation());
-    
+
     float terrainHeight = m_terrain->GetHeightOfTerrain(static_cast<int>(m_body->GetTranslation().x), static_cast<int>(m_body->GetTranslation().z));
     if (m_body->GetTranslation().y < terrainHeight + GROUND_OFFSET)
     {
@@ -61,12 +60,14 @@ void Player::Update(float delta)
         isGrounded = true;
         (*m_body)(TRANSLATION, EQ, Y_POS, terrainHeight + GROUND_OFFSET);
     }
-
+    
     /*float mouseWheel = Input::GetMouseScroll();
     if (mouseWheel != 0)
     {
         m_camera->operator()(DISTANCE, EQ, NULL, Clamp(m_camera->GetDistance() + (mouseWheel * -1 * ZoomPower * 0.1f), (float)MIN_DISTANCE, (float)MAX_DISTANCE));
     }*/
+    
+    m_camera->LookAt(m_body->GetTranslation());
 
     Astra::Audio::AudioController::SetListenerPosition(m_body->GetTranslation());
 }

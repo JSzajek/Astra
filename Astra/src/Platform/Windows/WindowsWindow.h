@@ -24,6 +24,7 @@ namespace Astra
 		virtual ~WindowsWindow();
 
 		virtual void OnUpdate() override;
+		virtual void Clear() override;
 
 		virtual inline unsigned int GetWidth() const override { return m_data.Width; }
 		virtual inline unsigned int GetHeight() const override { return m_data.Height; }

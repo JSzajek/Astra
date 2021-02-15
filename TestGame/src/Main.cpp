@@ -99,6 +99,7 @@ private:
     SkyboxMaterial* skybox;
     std::vector<const Entity*> entities;
     AudioSource* audioSource;
+    Vec3* particleCenter;
 public:
     TestGame()
         : Application()
@@ -221,16 +222,16 @@ public:
 
         // Example of duplicate usage of vertex array object (duplicate of player)
         auto* containerMat = ResourceManager::LoadMaterial("res/textures/container.png", "res/textures/container_specular.png", NULL, 1, 32);
-        auto* container = ResourceManager::LoadEntity("res/cube.obj", 0, Vec3(-30, terrain->GetHeightOfTerrain(-30, -65) + 2, -65), Vec3(0), Vec3(2));
+        auto* container = ResourceManager::LoadEntity("res/cube.obj", 0, Vec3(-25, 3000, 1000), Vec3(0), Vec3(2));
         container->SetMaterial(containerMat);
         container->SetSelected(true);
         entities.emplace_back(container);
         scene->AddEntity(container);
 
         ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);
-        Vec3 particleCenter(-80, terrain->GetHeightOfTerrain(-80, 80) + 5, 80);
+        particleCenter = new Vec3(-80, terrain->GetHeightOfTerrain(-80, 80) + 5, 80);
 
-        ConeParticleSystem* partSystem =  new ConeParticleSystem(partMaterial, &particleCenter, 15, 5, -0.1f, 1.5f, 2, true);
+        ConeParticleSystem* partSystem =  new ConeParticleSystem(partMaterial, particleCenter, 15, 5, -0.1f, 1.5f, 2, true);
         partSystem->SetDirection(Vec3(0, 1, 0), 0.5f);
         partSystem->SetLifeError(0.1f);
         partSystem->SetSpeedError(0.4f);
@@ -307,6 +308,8 @@ public:
         {
             delete entity;
         }
+
+        delete particleCenter;
 
         delete dir_light;
         delete light3;

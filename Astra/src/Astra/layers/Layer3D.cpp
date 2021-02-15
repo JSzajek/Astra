@@ -166,7 +166,7 @@ namespace Astra
 		{
 			system->GenerateParticles(delta);
 		}
-
+		
 		if (m_waterBuffer && m_mainCamera)
 		{
 			float distance = 2 * (m_mainCamera->GetTranslation().y - m_refractionClipPlane.w);
