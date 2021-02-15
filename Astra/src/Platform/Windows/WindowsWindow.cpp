@@ -8,6 +8,8 @@
 
 #include <GL/glew.h>
 
+#include "Astra/Application.h" // For vsync define - move?
+
 namespace Astra
 {
 	static bool GLFWInitialized = false;
@@ -59,7 +61,13 @@ namespace Astra
 		m_window = glfwCreateWindow((int)properties.Width, (int)properties.Height, properties.Title.c_str(), NULL, NULL);
 		glfwMakeContextCurrent(m_window);
 		glfwSetWindowUserPointer(m_window, &m_data);
-		SetVSync(true);
+
+	#if MULTI_SAMPLE
+		glEnable(GL_MULTISAMPLE);
+	#else
+		glDisable(GL_MULTISAMPLE);
+	#endif
+		SetVSync(V_SYNC);
 
 		if (!GLEWInitialized)
 		{

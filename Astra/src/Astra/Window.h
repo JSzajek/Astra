@@ -7,6 +7,10 @@
 
 namespace Astra
 {
+	#define DEFAULT_WIDTH		960
+	#define DEFAULT_HEIGHT		540
+	#define DEFAULT_TITLE		"Astra Project"
+
 	struct WindowProperties
 	{
 	public:
@@ -14,7 +18,7 @@ namespace Astra
 		unsigned int Width;
 		unsigned int Height;
 	public:
-		WindowProperties(const std::string& title = "Astra Project", unsigned int width = 960, unsigned int height = 540)
+		WindowProperties(const std::string& title = DEFAULT_TITLE, unsigned int width = DEFAULT_WIDTH, unsigned int height = DEFAULT_HEIGHT)
 			: Title(title), Width(width), Height(height)
 		{
 		}

@@ -10,17 +10,11 @@ int main(int argc, char** argv); // Global entry point definition
 
 namespace Astra
 {
-	#define DEFAULT_WIDTH		960
-	#define DEFAULT_HEIGHT		540
-	#define DEFAULT_TITLE		"Astra"
-
 	#define V_SYNC				0	
 	#define MULTI_SAMPLE		1
 	#define MULTI_SAMPLE_SIZE	4
 	#define BLOOM				1
 	#define HDR					1
-	#define MAX_KEYS			1024
-	#define MAX_BUTTONS			32
 
 	class ASTRA_API Application
 	{
