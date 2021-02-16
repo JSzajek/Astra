@@ -31,3 +31,4 @@
 #else
 	#define RESOURCE(x) x
 #endif
+

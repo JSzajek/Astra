@@ -2,34 +2,13 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <cmath>
 
 #include "Vec2.h"
 #include "Vec3.h"
 
 namespace Astra::Math
 {
-	#define PI	3.141592653589793238460f
-
-	inline float ToRadians(float degrees)
-	{
-		return degrees * PI / 180.0f;
-	}
-
-	inline float ToDegrees(float radians)
-	{
-		return radians * 180.0f / PI;
-	}
-
-	template <typename T> void Clamp(T& value, const T& low, const T& high)
-	{
-		value = value < low ? low : (value > high ? high : value);
-	}
-
-	template <typename T> T Clamp(T value, const T& low, const T& high)
-	{
-		return value < low ? low : (value > high ? high : value);
-	}
-
 	inline float BarryCentric(Vec3 p1, Vec3 p2, Vec3 p3, Vec2 pos)
 	{
 		float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
