@@ -4,18 +4,23 @@
 
 namespace Astra::Math
 {
-	const Vec4 Vec4::X_Axis		= Vec4(1, 0, 0, 0);
-	const Vec4 Vec4::Y_Axis		= Vec4(0, 1, 0, 0);
-	const Vec4 Vec4::Z_Axis		= Vec4(0, 0, 1, 0);
-	const Vec4 Vec4::W_Axis		= Vec4(0, 0, 0, 1);
+	const Vec4 Vec4::X_Axis		= Vec4(1,  0,  0, 0);
+	const Vec4 Vec4::Y_Axis		= Vec4(0,  1,  0, 0);
+	const Vec4 Vec4::Z_Axis		= Vec4(0,  0,  1, 0);
+	const Vec4 Vec4::W_Axis		= Vec4(0,  0,  0, 1);
 	const Vec4 Vec4::Zero		= Vec4(0);
 	const Vec4 Vec4::One		= Vec4(1);
-	const Vec4 Vec4::Left		= Vec4(-1, 0, 0, 0);
-	const Vec4 Vec4::Right		= Vec4(1, 0, 0, 0);
-	const Vec4 Vec4::Up			= Vec4(0, 1, 0, 0);
-	const Vec4 Vec4::Down		= Vec4(0, -1, 0, 0);
-	const Vec4 Vec4::Forward	= Vec4(0, 0, -1, 0);
-	const Vec4 Vec4::Back		= Vec4(0, 0, 1, 0);
+	const Vec4 Vec4::Left		= Vec4(-1, 0,  0, 0);
+	const Vec4 Vec4::Right		= Vec4(1,  0,  0, 0);
+	const Vec4 Vec4::Up			= Vec4(0,  1,  0, 0);
+	const Vec4 Vec4::Down		= Vec4(0, -1,  0, 0);
+	const Vec4 Vec4::Forward	= Vec4(0,  0, -1, 0);
+	const Vec4 Vec4::Back		= Vec4(0,  0,  1, 0);
+
+	Vec4::Vec4()
+		: x(0), y(0), z(0), w(0)
+	{
+	}
 
 	Vec4::Vec4(const float& _x, const float& _y, const float& _z, const float& _w)
 		: x(_x), y(_y), z(_z), w(_w)
@@ -42,185 +47,368 @@ namespace Astra::Math
 	{
 	}
 
-	Vec4::operator Math::Vec3() const
-	{
-		return Math::Vec3(x, y, z);
-	}
-
 	float& Vec4::operator[](int index)
 	{
+		ASTRA_ASSERT(index < 4, "Vec4: Out Of Index Axis Access.");
 		return index == 0 ? x : index == 1 ? y : index == 2 ? z : w;
 	}
 
 	const float Vec4::operator[](int index) const
 	{
+		ASTRA_ASSERT(index < 4, "Vec4: Out Of Index Axis Access.");
 		return index == 0 ? x : index == 1 ? y : index == 2 ? z : w;
 	}
 
-	Vec4& Vec4::Add(const Vec4& other)
+	Vec4 Vec4::operator+(const Vec4& r_val) const
 	{
-		x += other.x;
-		y += other.y;
-		z += other.z;
-		w += other.w;
-		return *this;
+		return Vec4(x + r_val.x, y + r_val.y, z + r_val.z, w + r_val.w);
 	}
 
-	Vec4& Vec4::Subtract(const Vec4& other)
+	void Vec4::operator+=(const Vec4& r_val)
 	{
-		x -= other.x;
-		y -= other.y;
-		z -= other.z;
-		w -= other.w;
-		return *this;
+		x += r_val.x;
+		y += r_val.y;
+		z += r_val.z;
+		w += r_val.w;
 	}
 
-	Vec4& Vec4::Multiply(const Vec4& other)
+	Vec4 Vec4::operator-(const Vec4& r_val) const
 	{
-		x *= other.x;
-		y *= other.y;
-		z *= other.z;
-		w *= other.w;
-		return *this;
+		return Vec4(x - r_val.x, y - r_val.y, z - r_val.z, w - r_val.w);
 	}
 
-	Vec4& Vec4::Multiply(const float& scalar)
+	void Vec4::operator-=(const Vec4& r_val)
 	{
-		x *= scalar;
-		y *= scalar;
-		z *= scalar;
-		w *= scalar;
-		return *this;
+		x -= r_val.x;
+		y -= r_val.y;
+		z -= r_val.z;
+		w -= r_val.w;
 	}
 
-	Vec4& Vec4::Divide(const Vec4& other)
+	Vec4 Vec4::operator*(const Vec4& r_val) const
 	{
-		x /= other.x;
-		y /= other.y;
-		z /= other.z;
-		w /= other.w;
-		return *this;
+		return Vec4(x * r_val.x, y * r_val.y, z * r_val.z, w * r_val.w);
 	}
 
-	Vec4& Vec4::Divide(const float& scalar)
+	Vec4 Vec4::operator*(const float r_val) const
 	{
-		x /= scalar;
-		y /= scalar;
-		z /= scalar;
-		w /= scalar;
-		return *this;
+		return Vec4(x * r_val, y * r_val, z * r_val, w * r_val);
 	}
 
-	Vec4& operator+(Vec4 left, const Vec4& right)
+	Vec4 Vec4::operator*(const double r_val) const
 	{
-		return left.Add(right);
+		return Vec4(static_cast<float>(x * r_val), static_cast<float>(y * r_val), static_cast<float>(z * r_val), static_cast<float>(w * r_val));
 	}
 
-	Vec4& operator-(Vec4 left, const Vec4& right)
+	Vec4 Vec4::operator*(const int r_val) const
 	{
-		return left.Subtract(right);
+		return Vec4(x * r_val, y * r_val, z * r_val, w * r_val);
 	}
 
-	Vec4& operator*(Vec4 left, const Vec4& right)
+	void Vec4::operator*=(const Vec4& r_val)
 	{
-		return left.Multiply(right);
+		x *= r_val.x;
+		y *= r_val.y;
+		z *= r_val.z;
+		w *= r_val.w;
 	}
 
-	Vec4& operator*(Vec4 left, const float& scalar)
+	void Vec4::operator*=(const float r_val)
 	{
-		return left.Multiply(scalar);
+		x *= r_val;
+		y *= r_val;
+		z *= r_val;
+		w *= r_val;
 	}
 
-	Vec4& operator/(Vec4 left, const Vec4& right)
+	void Vec4::operator*=(const double r_val)
 	{
-		return left.Divide(right);
+		x = static_cast<float>(x * r_val);
+		y = static_cast<float>(y * r_val);
+		z = static_cast<float>(z * r_val);
+		w = static_cast<float>(w * r_val);
 	}
 
-	Vec4& operator/(Vec4 left, const float& scalar)
+	void Vec4::operator*=(const int r_val)
 	{
-		return left.Divide(scalar);
+		x *= r_val;
+		y *= r_val;
+		z *= r_val;
+		w *= r_val;
 	}
 
-	Vec4& Vec4::operator+=(const Vec4& other)
+	Vec4 Vec4::operator/(const Vec4& r_val) const
 	{
-		return Add(other);
+		return Vec4(x / r_val.x, y / r_val.y, z / r_val.z, w / r_val.w);
 	}
 
-	Vec4& Vec4::operator-=(const Vec4& other)
+	Vec4 Vec4::operator/(const float r_val) const
 	{
-		return Subtract(other);
+		return Vec4(x / r_val, y / r_val, z / r_val, w / r_val);
 	}
 
-	Vec4& Vec4::operator*=(const Vec4& other)
+	void Vec4::operator/=(const Vec4& r_val)
 	{
-		return Multiply(other);
+		x /= r_val.x;
+		y /= r_val.y;
+		z /= r_val.z;
+		w /= r_val.w;
 	}
 
-	Vec4& Vec4::operator*=(const float& scalar)
+	void Vec4::operator/=(const float r_val)
 	{
-		return Multiply(scalar);
+		x /= r_val;
+		y /= r_val;
+		z /= r_val;
+		w /= r_val;
 	}
 
-	Vec4& Vec4::operator/=(const Vec4& other)
+	Vec4 Vec4::operator-() const
 	{
-		return Divide(other);
+		return Vec4(-x, -y, -z, -w);
 	}
 
-	Vec4& Vec4::operator/=(const float& scalar)
+	bool Vec4::operator==(const Vec4& r_val) const
 	{
-		return Divide(scalar);
+		return x == r_val.x && y == r_val.y && z == r_val.z && w == r_val.w;
 	}
 
-	bool Vec4::operator==(const Vec4& other) const
+	bool Vec4::operator!=(const Vec4& r_val) const
 	{
-		return abs(x - other.x) < FLT_EPSILON &&
-			   abs(y - other.y) < FLT_EPSILON &&
-			   abs(z - other.z) < FLT_EPSILON &&
-			   abs(w - other.w) < FLT_EPSILON;
+		return x != r_val.x || y != r_val.y || z != r_val.z || w != r_val.w;
 	}
 
-	bool Vec4::operator!=(const Vec4& other) const
+	bool Vec4::operator<(const Vec4& r_val) const
 	{
-		return !(*this == other);
+		if (x == r_val.x)
+		{
+			if (y == r_val.y)
+			{
+				if (z == r_val.z)
+				{
+					return w < r_val.w;
+				}
+				return z < r_val.z;
+			}
+			return y < r_val.y;
+		}
+		return x < r_val.x;
 	}
 
-	float Vec4::Dot(const Vec4& other) const
+	bool Vec4::operator>(const Vec4& r_val) const
 	{
-		return (x * other.x) + (y * other.y) + (z * other.z) + (w * other.w);
+		if (x == r_val.x)
+		{
+			if (y == r_val.y)
+			{
+				if (z == r_val.z)
+				{
+					return w > r_val.w;
+				}
+				return z > r_val.z;
+			}
+			return y > r_val.y;
+		}
+		return x > r_val.x;
 	}
 
-	float Vec4::DistanceTo(const Vec4& other) const
+	bool Vec4::operator<=(const Vec4& r_val) const
 	{
-		return sqrtf(powf(other.x - x, 2) + powf(other.y - y, 2) + powf(other.z - z, 2) + powf(other.w - w, 2));
+		if (x == r_val.x)
+		{
+			if (y == r_val.y) 
+			{
+				if (z == r_val.z)
+				{
+					return w <= r_val.w;
+				}
+				return z <= r_val.z;
+			}
+			return y < r_val.y;
+		}
+		return x < r_val.x;
 	}
 
-	float Vec4::ManhattenDistanceTo(const Vec4& other) const
+	bool Vec4::operator>=(const Vec4& r_val) const
 	{
-		return abs(x - other.x) + abs(y - other.y) + abs(z - other.z) + abs(w - other.w);
+		if (x == r_val.x) 
+		{
+			if (y == r_val.y) 
+			{
+				if (z == r_val.z)
+				{
+					return w >= r_val.w;
+				}
+				return z >= r_val.z;
+			}
+			return y > r_val.y;
+		}
+		return x > r_val.x;
 	}
 
-	float Vec4::Magnitude() const
+	Vec4 Vec4::Sign() const
 	{
-		return sqrtf((x * x) + (y * y) + (z * z) + (w * w));
+		return Vec4(SGN(x), SGN(y), SGN(z), SGN(w));
+	}
+
+	Vec4 Vec4::Floor() const
+	{
+		return Vec4(std::floorf(x), std::floorf(y), std::floorf(z), std::floorf(w));
+	}
+
+	Vec4 Vec4::Ceil() const
+	{
+		return Vec4(std::ceilf(x), std::ceilf(y), std::ceilf(z), std::ceilf(w));
+	}
+
+	Vec4 Vec4::Round() const
+	{
+		return Vec4(std::roundf(x), std::roundf(y), std::roundf(z), std::roundf(w));
+	}
+
+	void Vec4::Snap(const Vec4& r_val)
+	{
+		x = Math::Snapped(x, r_val.x);
+		y = Math::Snapped(y, r_val.y);
+		z = Math::Snapped(z, r_val.z);
+		w = Math::Snapped(z, r_val.z);
+	}
+
+	Vec4 Vec4::Snapped(const Vec4& r_val) const
+	{
+		return Vec4(Math::Snapped(x, r_val.x), Math::Snapped(y, r_val.y), Math::Snapped(z, r_val.z), Math::Snapped(w, r_val.w));
 	}
 
 	void Vec4::Normalize()
 	{
-		float norm = Magnitude();
-		if (norm <= 0) { return; }
-		x /= norm;
-		y /= norm;
-		z /= norm;
-		w /= norm;
+		float len = x * x + y * y;
+		if (len != 0)
+		{
+			len = std::sqrtf(len);
+			x /= len;
+			y /= len;
+			z /= len;
+			w /= len;
+		}
 	}
 
-	float Vec4::DirectionTo(const Vec4& other) const
+	Vec4 Vec4::Normalized() const
 	{
-		float norm = Magnitude() * other.Magnitude();
-		if (norm <= 0)
+		Vec4 result = *this;
+		result.Normalize();
+		return result;
+	}
+
+	bool Vec4::IsNormalized() const
+	{
+		return Math::IsEqualApprox(LengthSquared(), 1.0f, UNIT_EPSILON);
+	}
+
+	float Vec4::Length() const
+	{
+		return std::sqrtf((x * x) + (y * y) + (z * z) + (w * w));
+	}
+
+	float Vec4::LengthSquared() const
+	{
+		return (x * x) + (y * y) + (z * z) + (w * w);
+	}
+
+	void Vec4::SetAxis(int axis, float val)
+	{
+		ASTRA_ASSERT(axis < 4, "Vec4: Out Of Index Axis Access.");
+		m_data[axis] = val;
+	}
+
+	float Vec4::GetAxis(int axis) const
+	{
+		ASTRA_ASSERT(axis < 4, "Vec4: Out Of Index Axis Access.");
+		return operator[](axis);
+	}
+
+	int Vec4::MinAxis() const
+	{
+		// TODO Implement
+		//return x < y ? (x < z ? 0 : 2) : (y < z ? 1 : 2);
+		return 0;
+	}
+
+	int Vec4::MaxAxis() const
+	{
+		// TODO Implement
+		//return x < y ? (y < z ? 2 : 1) : (x < z ? 2 : 0);
+		return 0;
+	}
+
+	Vec4 Vec4::Clamped(const float val) const
+	{
+		float len = Length();
+		Vec4 temp = *this;
+		if (len > 0 && val < len)
 		{
-			return FLT_EPSILON;
+			temp /= len;
+			temp *= val;
 		}
-		return acosf(Dot(other) / norm);
+		return temp;
+	}
+
+	float Vec4::DistanceTo(const Vec4& r_val) const
+	{
+		return (r_val - *this).Length();
+	}
+
+	float Vec4::DistanceSquaredTo(const Vec4& r_val) const
+	{
+		return (r_val - *this).LengthSquared();
+	}
+
+	float Vec4::AngleTo(const Vec4& r_val) const
+	{
+		return std::atan2f(Cross(r_val).Length(), Dot(r_val));
+	}
+
+	Vec4 Vec4::DirectionTo(const Vec4& r_val) const
+	{
+		Vec4 result(r_val.x - x, r_val.y - y, r_val.z - z, r_val.w - w);
+		result.Normalize();
+		return result;
+	}
+
+	// Not correct?
+	float Vec4::Dot(const Vec4& r_val) const
+	{
+		return x * r_val.x + y * r_val.y + z * r_val.z;
+	}
+
+	Vec4 Vec4::Cross(const Vec4& r_val) const
+	{
+		return Vec4((y * r_val.z) - (z * r_val.y),
+					(z * r_val.x) - (x * r_val.z),
+					(x * r_val.y) - (y * r_val.x), 1);
+	}
+
+	Vec4 Vec4::PosMod(const Vec4& r_val) const
+	{
+		return Vec4(PosModf(x, r_val.x), PosModf(y, r_val.y), PosModf(z, r_val.z), PosModf(w, r_val.w));
+	}
+
+	Vec4 Vec4::PosMod(const float r_val) const
+	{
+		return Vec4(PosModf(x, r_val), PosModf(y, r_val), PosModf(z, r_val), PosModf(w, r_val));
+	}
+
+	Vec4 Vec4::Project(const Vec4& r_val) const
+	{
+		return r_val * (Dot(r_val) / r_val.LengthSquared());
+	}
+
+	Vec4 Vec4::PlaneProject(const float val, const Vec4& r_val) const
+	{
+		return r_val - *this * (Dot(r_val) - val);
+	}
+
+	bool Vec4::IsEqualApprox(const Vec4& val) const
+	{
+		return Math::IsEqualApprox(x, val.x) && Math::IsEqualApprox(y, val.y) && Math::IsEqualApprox(z, val.z) && Math::IsEqualApprox(w, val.w);
 	}
 }

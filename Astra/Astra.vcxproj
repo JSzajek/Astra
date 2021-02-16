@@ -154,6 +154,8 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\Core.h" />
     <ClInclude Include="src\Astra\EntryPoint.h" />
     <ClInclude Include="src\Astra\Log.h" />
+    <ClInclude Include="src\Astra\math\MathsDefines.h" />
+    <ClInclude Include="src\Astra\math\MathsFuncs.h" />
     <ClInclude Include="src\Astra\Scene.h" />
     <ClInclude Include="src\Astra\Window.h" />
     <ClInclude Include="src\Astra\audio\AudioController.h" />

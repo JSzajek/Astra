@@ -29,7 +29,7 @@ namespace Astra::Graphics
 		Vertex(int index, const Math::Vec3& position)
 			: index(index), position(position), textureIndex(-1), normalIndex(-1), duplicate(NULL)
 		{
-			length = position.Magnitude();
+			length = position.Length();
 		}
 
 		inline bool IsSet() const
@@ -53,7 +53,7 @@ namespace Astra::Graphics
 		NormalVertex(int index, const Math::Vec3& position)
 			: Vertex(index, position), duplicate(NULL), avgTangent(Math::Vec3::Zero)
 		{
-			length = position.Magnitude();
+			length = position.Length();
 		}
 
 		inline void AddTangent(const Math::Vec3& tangent) { tangents.push_back(tangent); }

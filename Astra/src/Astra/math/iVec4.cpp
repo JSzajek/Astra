@@ -8,14 +8,13 @@ namespace Astra::Math
 	const iVec4 iVec4::Y_Axis = iVec4(0, 1, 0, 0);
 	const iVec4 iVec4::Z_Axis = iVec4(0, 0, 1, 0);
 	const iVec4 iVec4::W_Axis = iVec4(0, 0, 0, 1);
-	const iVec4 iVec4::Zero = iVec4(0);
-	const iVec4 iVec4::One = iVec4(1);
-	const iVec4 iVec4::Left = iVec4(-1, 0, 0, 0);
-	const iVec4 iVec4::Right = iVec4(1, 0, 0, 0);
-	const iVec4 iVec4::Up = iVec4(0, 1, 0, 0);
-	const iVec4 iVec4::Down = iVec4(0, -1, 0, 0);
-	const iVec4 iVec4::Forward = iVec4(0, 0, -1, 0);
-	const iVec4 iVec4::Back = iVec4(0, 0, 1, 0);
+	const iVec4 iVec4::Zero	  = iVec4(0);
+	const iVec4 iVec4::One    = iVec4(1);
+
+	iVec4::iVec4()
+		: x(0), y(0), z(0), w(0)
+	{
+	}
 
 	iVec4::iVec4(int _x, int _y, int _z, int _w)
 		: x(_x), y(_y), z(_z), w(_w)
@@ -47,170 +46,228 @@ namespace Astra::Math
 		return index == 0 ? x : index == 1 ? y : index == 2 ? z : w;
 	}
 
-	iVec4& iVec4::Add(const iVec4& other)
+	iVec4 iVec4::operator+(const iVec4& r_val) const
 	{
-		x += other.x;
-		y += other.y;
-		z += other.z;
-		w += other.w;
-		return *this;
+		return iVec4(x + r_val.x, y + r_val.y, z + r_val.z, w + r_val.w);
 	}
 
-	iVec4& iVec4::Subtract(const iVec4& other)
+	void iVec4::operator+=(const iVec4& r_val)
 	{
-		x -= other.x;
-		y -= other.y;
-		z -= other.z;
-		w -= other.w;
-		return *this;
+		x += r_val.x;
+		y += r_val.y;
+		z += r_val.z;
+		w += r_val.w;
 	}
 
-	iVec4& iVec4::Multiply(const iVec4& other)
+	iVec4 iVec4::operator-(const iVec4& r_val) const
 	{
-		x *= other.x;
-		y *= other.y;
-		z *= other.z;
-		w *= other.w;
-		return *this;
+		return iVec4(x - r_val.x, y - r_val.y, z - r_val.z, w - r_val.w);
 	}
 
-	iVec4& iVec4::Multiply(int scalar)
+	void iVec4::operator-=(const iVec4& r_val)
 	{
-		x *= scalar;
-		y *= scalar;
-		z *= scalar;
-		w *= scalar;
-		return *this;
+		x -= r_val.x;
+		y -= r_val.y;
+		z -= r_val.z;
+		w -= r_val.w;
 	}
 
-	iVec4& iVec4::Divide(const iVec4& other)
+	iVec4 iVec4::operator*(const iVec4& r_val) const
 	{
-		x /= other.x;
-		y /= other.y;
-		z /= other.z;
-		w /= other.w;
-		return *this;
+		return iVec4(x * r_val.x, y * r_val.y, z * r_val.z, w * r_val.w);
 	}
 
-	iVec4& iVec4::Divide(int scalar)
+	iVec4 iVec4::operator*(const int r_val) const
 	{
-		x /= scalar;
-		y /= scalar;
-		z /= scalar;
-		w /= scalar;
-		return *this;
+		return iVec4(x * r_val, y * r_val, z * r_val, w * r_val);
 	}
 
-	iVec4& operator+(iVec4 left, const iVec4& right)
+	void iVec4::operator*=(const iVec4& r_val)
 	{
-		return left.Add(right);
+		x *= r_val.x;
+		y *= r_val.y;
+		z *= r_val.z;
+		w *= r_val.w;
 	}
 
-	iVec4& operator-(iVec4 left, const iVec4& right)
+	void iVec4::operator*=(const int r_val)
 	{
-		return left.Subtract(right);
+		x *= r_val;
+		y *= r_val;
+		z *= r_val;
+		w *= r_val;
 	}
 
-	iVec4& operator*(iVec4 left, const iVec4& right)
+	iVec4 iVec4::operator/(const iVec4& r_val) const
 	{
-		return left.Multiply(right);
+		return iVec4(x / r_val.x, y / r_val.y, z / r_val.z, w / r_val.w);
 	}
 
-	iVec4& operator*(iVec4 left, int scalar)
+	iVec4 iVec4::operator/(const int r_val) const
 	{
-		return left.Multiply(scalar);
+		return iVec4(x / r_val, y / r_val, z / r_val, w / r_val);
 	}
 
-	iVec4& operator/(iVec4 left, const iVec4& right)
+	void iVec4::operator/=(const iVec4& r_val)
 	{
-		return left.Divide(right);
+		x /= r_val.x;
+		y /= r_val.y;
+		z /= r_val.z;
+		w /= r_val.w;
 	}
 
-	iVec4& operator/(iVec4 left, int scalar)
+	void iVec4::operator/=(const int r_val)
 	{
-		return left.Divide(scalar);
+		x /= r_val;
+		y /= r_val;
+		z /= r_val;
+		w /= r_val;
 	}
 
-	iVec4& iVec4::operator+=(const iVec4& other)
+	iVec4 iVec4::operator-() const
 	{
-		return Add(other);
+		return iVec4(-x, -y, -z, -w);
 	}
 
-	iVec4& iVec4::operator-=(const iVec4& other)
+	bool iVec4::operator==(const iVec4& r_val) const
 	{
-		return Subtract(other);
+		return x == r_val.x && y == r_val.y && z == r_val.z && w == r_val.w;
 	}
 
-	iVec4& iVec4::operator*=(const iVec4& other)
+	bool iVec4::operator!=(const iVec4& r_val) const
 	{
-		return Multiply(other);
+		return x != r_val.x || y != r_val.y || z != r_val.z || w != r_val.w;
 	}
 
-	iVec4& iVec4::operator*=(int scalar)
+	bool iVec4::operator<(const iVec4& r_val) const
 	{
-		return Multiply(scalar);
-	}
-
-	iVec4& iVec4::operator/=(const iVec4& other)
-	{
-		return Divide(other);
-	}
-
-	iVec4& iVec4::operator/=(int scalar)
-	{
-		return Divide(scalar);
-	}
-
-	bool iVec4::operator==(const iVec4& other) const
-	{
-		return abs(x - other.x) < FLT_EPSILON &&
-			abs(y - other.y) < FLT_EPSILON &&
-			abs(z - other.z) < FLT_EPSILON &&
-			abs(w - other.w) < FLT_EPSILON;
-	}
-
-	bool iVec4::operator!=(const iVec4& other) const
-	{
-		return !(*this == other);
-	}
-
-	int iVec4::Dot(const iVec4& other) const
-	{
-		return (x * other.x) + (y * other.y) + (z * other.z) + (w * other.w);
-	}
-
-	float iVec4::DistanceTo(const iVec4& other) const
-	{
-		return static_cast<float>(sqrt(pow(other.x - x, 2) + pow(other.y - y, 2) + pow(other.z - z, 2) + pow(other.w - w, 2)));
-	}
-
-	int iVec4::ManhattenDistanceTo(const iVec4& other) const
-	{
-		return abs(x - other.x) + abs(y - other.y) + abs(z - other.z) + abs(w - other.w);
-	}
-
-	float iVec4::Magnitude() const
-	{
-		return static_cast<float>(sqrt((x * x) + (y * y) + (z * z) + (w * w)));
-	}
-
-	void iVec4::Normalize()
-	{
-		float norm = Magnitude();
-		if (norm <= 0) { return; }
-		x = static_cast<int>(x / norm);
-		y = static_cast<int>(y / norm);
-		z = static_cast<int>(z / norm);
-		w = static_cast<int>(w / norm);
-	}
-
-	float iVec4::DirectionTo(const iVec4& other) const
-	{
-		float norm = Magnitude() * other.Magnitude();
-		if (norm <= 0)
+		if (x == r_val.x)
 		{
-			return FLT_EPSILON;
+			if (y == r_val.y)
+			{
+				if (z == r_val.z)
+				{
+					return w < r_val.w;
+				}
+				return z < r_val.z;
+			}
+			return y < r_val.y;
 		}
-		return acosf(Dot(other) / norm);
+		return x < r_val.x;
+	}
+
+	bool iVec4::operator>(const iVec4& r_val) const
+	{
+		if (x == r_val.x)
+		{
+			if (y == r_val.y)
+			{
+				if (z == r_val.z)
+				{
+					return w > r_val.w;
+				}
+				return z > r_val.z;
+			}
+			return y > r_val.y;
+		}
+		return x > r_val.x;
+	}
+
+	bool iVec4::operator<=(const iVec4& r_val) const
+	{
+		if (x == r_val.x)
+		{
+			if (y == r_val.y)
+			{
+				if (z == r_val.z)
+				{
+					return w <= r_val.w;
+				}
+				return z <= r_val.z;
+			}
+			return y < r_val.y;
+		}
+		return x < r_val.x;
+	}
+
+	bool iVec4::operator>=(const iVec4& r_val) const
+	{
+		if (x == r_val.x)
+		{
+			if (y == r_val.y)
+			{
+				if (z == r_val.z)
+				{
+					return w >= r_val.w;
+				}
+				return z >= r_val.z;
+			}
+			return y > r_val.y;
+		}
+		return x > r_val.x;
+	}
+
+	float iVec4::Length() const
+	{
+		return static_cast<float>(std::sqrt((x * x) + (y * y) + (z * z) + (w * w)));
+	}
+
+	int iVec4::LengthSquared() const
+	{
+		return (x * x) + (y * y) + (z * z) + (w * w);
+	}
+
+	void iVec4::SetAxis(int axis, int val)
+	{
+		ASTRA_ASSERT(axis < 4, "iVec4: Out Of Index Axis Access.");
+		m_data[axis] = val;
+	}
+
+	int iVec4::GetAxis(int axis) const
+	{
+		ASTRA_ASSERT(axis < 4, "iVec4: Out Of Index Axis Access.");
+		return operator[](axis);
+	}
+
+	int iVec4::MinAxis() const
+	{
+		// TODO Implement
+		//return x < y ? (x < z ? 0 : 2) : (y < z ? 1 : 2);
+		return 0;
+	}
+
+	int iVec4::MaxAxis() const
+	{
+		// TODO Implement
+		//return x < y ? (y < z ? 2 : 1) : (x < z ? 2 : 0);
+		return 0;
+	}
+
+	float iVec4::DistanceTo(const iVec4& r_val) const
+	{
+		return (r_val - *this).Length();
+	}
+
+	int iVec4::DistanceSquaredTo(const iVec4& r_val) const
+	{
+		return (r_val - *this).LengthSquared();
+	}
+
+	float iVec4::AngleTo(const iVec4& r_val) const
+	{
+		return std::atan2f(Cross(r_val).Length(), static_cast<float>(Dot(r_val)));
+	}
+
+	// Not correct?
+	int iVec4::Dot(const iVec4& r_val) const
+	{
+		return x * r_val.x + y * r_val.y + z * r_val.z + w * r_val.w;
+	}
+
+	iVec4 iVec4::Cross(const iVec4& r_val) const
+	{
+		return iVec4((y * r_val.z) - (z * r_val.y),
+					 (z * r_val.x) - (x * r_val.z),
+					 (x * r_val.y) - (y * r_val.x), 1);
 	}
 }

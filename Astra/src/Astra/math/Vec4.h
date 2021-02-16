@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Vec3.h"
 #include <iostream>
+#include "MathsFuncs.h"
+#include "Vec3.h"
 
 namespace Astra::Math
 {
@@ -24,239 +25,124 @@ namespace Astra::Math
 		static const Vec4 Forward;
 		static const Vec4 Back;
 	public:
-		float x, y, z, w;
+		union
+		{
+			struct
+			{
+				float x, y, z, w;
+			};
+			float m_data[4];
+		};
 	public:
-	
-		/// <summary>
-		/// Default constructor of the <see cref="Vec4"/> class.
-		/// </summary>
-		Vec4() = default;
-	
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Vec4"/> class.
-		/// </summary>
-		/// <param name="_x">The x value</param>
-		/// <param name="_y">The y value</param>
-		/// <param name="_z">The z value</param>
-		/// <param name="_w">The w value</param>
+		Vec4();
 		Vec4(const float& _x, const float& _y, const float& _z, const float& _w);
-	
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Vec4"/> class.
-		/// </summary>
-		/// <param name="_value">The value across the Vec4</param>
 		Vec4(const float& _value);
-
 		Vec4(const Vec3& other, float _w);
-
 		Vec4(const Vec2& first, const Vec2& second);
-
-		/// <summary>
-		/// Copy constructor of the <see cref="Vec4"/> class.
-		/// </summary>
-		/// <param name="other"></param>
 		Vec4(const Vec4& other);
 
-		operator Math::Vec3() const;
-
-		/// <summary>
-		/// Element access operator override.
-		/// </summary>
-		/// <param name="index">The index of the element to access</param>
-		/// <returns></returns>
 		float& operator[](int index);
-
 		const float operator[](int index) const;
 
-		/// <summary>
-		/// Adds the passed vector.
-		/// </summary>
-		/// <param name="other">The other Vec4 to add</param>
-		/// <returns>The summation Vec4</returns>
-		Vec4& Add(const Vec4& other);
+		Vec4 operator+(const Vec4& r_val) const;
+		void operator+=(const Vec4& r_val);
 
-		/// <summary>
-		/// Subtracts the passed vector.
-		/// </summary>
-		/// <param name="other">The other Vec4 to subtract</param>
-		/// <returns>The subtracted Vec4</returns>
-		Vec4& Subtract(const Vec4& other);
+		Vec4 operator-(const Vec4& r_val) const;
+		void operator-=(const Vec4& r_val);
 
-		/// <summary>
-		/// Multiplies the passed vector.
-		/// </summary>
-		/// <param name="other">The other Vec4 to multiply</param>
-		/// <returns>The multiplied Vec4</returns>
-		Vec4& Multiply(const Vec4& other);
+		Vec4 operator*(const Vec4& r_val) const;
+		Vec4 operator*(const float r_val) const;
+		Vec4 operator*(const double r_val) const;
+		Vec4 operator*(const int r_val) const;
 
-		/// <summary>
-		/// Multiplies the passed vector.
-		/// </summary>
-		/// <param name="other">The scalar to multiply</param>
-		/// <returns>The multiplied Vec4</returns>
-		Vec4& Multiply(const float& scalar);
+		void operator*=(const Vec4& r_val);
+		void operator*=(const float r_val);
+		void operator*=(const double r_val);
+		void operator*=(const int r_val);
 
-		/// <summary>
-		/// Divides the passed vector.
-		/// </summary>
-		/// <param name="other">The other Vec4 to divide</param>
-		/// <returns>The divided Vec4</returns>
-		Vec4& Divide(const Vec4& other);
+		Vec4 operator/(const Vec4& r_val) const;
+		Vec4 operator/(const float r_val) const;
 
-		/// <summary>
-		/// Divides the passed vector.
-		/// </summary>
-		/// <param name="other">The scalar to divide</param>
-		/// <returns>The divided Vec4</returns>
-		Vec4& Divide(const float& scalar);
+		void operator/=(const Vec4& r_val);
+		void operator/=(const float r_val);
 
-		/// <summary>
-		/// Addition operator override.
-		/// </summary>
-		/// <param name="other">The other Vec4 to add</param>
-		/// <returns>The summation Vec4</returns>
-		friend Vec4& operator+(Vec4 left, const Vec4& right);
+		Vec4 operator-() const;
 
-		/// <summary>
-		/// Subtraction operator override.
-		/// </summary>
-		/// <param name="other">The other Vec4 to subtract</param>
-		/// <returns>The subtracted Vec4</returns>
-		friend Vec4& operator-(Vec4 left, const Vec4& right);
+		bool operator==(const Vec4& r_val) const;
+		bool operator!=(const Vec4& r_val) const;
 
-		/// <summary>
-		/// Multiplication operator override.
-		/// </summary>
-		/// <param name="other">The other Vec4 to multiply</param>
-		/// <returns>The multiplied Vec4</returns>
-		friend Vec4& operator*(Vec4 left, const Vec4& right);
+		inline bool operator<(const Vec4& r_val) const;
+		inline bool operator>(const Vec4& r_val) const;
+		inline bool operator<=(const Vec4& r_val) const;
+		inline bool operator>=(const Vec4& r_val) const;
 
-		/// <summary>
-		/// Multiplication operator override.
-		/// </summary>
-		/// <param name="scalar">The scalar to multiply</param>
-		/// <returns>The multiplied Vec4</returns>
-		friend Vec4& operator*(Vec4 left, const float& scalar);
+		inline Vec4 Abs() const { return Vec4(std::abs(x), std::abs(y), std::abs(z), std::abs(w)); }
 
-		/// <summary>
-		/// Division operator override.
-		/// </summary>
-		/// <param name="other">The other Vec4 to divide</param>
-		/// <returns>The divided Vec4</returns>
-		friend Vec4& operator/(Vec4 left, const Vec4& right);
+		Vec4 Sign() const;
+		Vec4 Floor() const;
+		Vec4 Ceil() const;
+		Vec4 Round() const;
 
-		/// <summary>
-		/// Division operator override.
-		/// </summary>
-		/// <param name="scalar">The scalar to divide</param>
-		/// <returns>The divided Vec4</returns>
-		friend Vec4& operator/(Vec4 left, const float& scalar);
+		void Snap(const Vec4& r_val);
+		Vec4 Snapped(const Vec4& r_val) const;
 
-		/// <summary>
-		/// Addition operator override.
-		/// </summary>
-		/// <param name="other">The other Vec4 to add</param>
-		/// <returns>The summation Vec4</returns>
-		Vec4& operator+=(const Vec4& other);
-
-		/// <summary>
-		/// Subtraction operator override.
-		/// </summary>
-		/// <param name="other">The other Vec4 to subtract</param>
-		/// <returns>The subtracted Vec4</returns>
-		Vec4& operator-=(const Vec4& other);
-
-		/// <summary>
-		/// Multiplication operator override.
-		/// </summary>
-		/// <param name="other">The other Vec4 to multiply</param>
-		/// <returns>The multiplied Vec4</returns>
-		Vec4& operator*=(const Vec4& other);
-
-		/// <summary>
-		/// Multiplication operator override.
-		/// </summary>
-		/// <param name="scalar">The scalar to multiply</param>
-		/// <returns>The multiplied Vec4</returns>
-		Vec4& operator*=(const float& scalar);
-
-		/// <summary>
-		/// Division operator override.
-		/// </summary>
-		/// <param name="other">The other Vec4 to divide</param>
-		/// <returns>The divided Vec4</returns>
-		Vec4& operator/=(const Vec4& other);
-
-		/// <summary>
-		/// Division operator override.
-		/// </summary>
-		/// <param name="scalar">The scalar to divide</param>
-		/// <returns>The divided Vec4</returns>
-		Vec4& operator/=(const float& scalar);
-
-		/// <summary>
-		/// Equality operator override.
-		/// </summary>
-		/// <param name="comparison">The other object to compare to</param>
-		/// <returns>Whether they are are equal</returns>
-		bool operator==(const Vec4& other) const;
-
-		/// <summary>
-		/// Inequality operator override.
-		/// </summary>
-		/// <param name="comparison">The other object to compare to</param>
-		/// <returns>Whether they are are inequal</returns>
-		bool operator!=(const Vec4& other) const;
-	
-		/// <summary>
-		/// Calculates the dot product with the passed vector.
-		/// </summary>
-		/// <param name="other">The vector to calculate the dot</param>
-		/// <returns>The dot product of the two vectors</returns>
-		float Dot(const Vec4& other) const;
-
-		/// <summary>
-		/// Calculates the euclidean distance to the passed vector.
-		/// </summary>
-		/// <param name="other">The other vector to calculate to</param>
-		/// <returns>The euclidean distance to the passed vector</returns>
-		float DistanceTo(const Vec4& other) const;
-
-		/// <summary>
-		/// Calculates the manhatten distance to the passed vector.
-		/// </summary>
-		/// <param name="other">The other vector to calculate to</param>
-		/// <returns>The manhatten distance to the passed vector</returns>
-		float ManhattenDistanceTo(const Vec4& other) const;
-
-		/// <summary>
-		/// Calculates the magnitude of the vector.
-		/// </summary>
-		/// <returns>The magnitude</returns>
-		float Magnitude() const;
-	
-		/// <summary>
-		/// Normalizes the vector.
-		/// </summary>
 		void Normalize();
+		Vec4 Normalized() const;
+		bool IsNormalized() const;
 
-		/// <summary>
-		/// Calculates the direction to the passed vector.
-		/// </summary>
-		/// <param name="other">The other vector to calculate to</param>
-		/// <returns></returns>
-		float DirectionTo(const Vec4& other) const;
+		float Length() const;
+		float LengthSquared() const;
 
-		/// <summary>
-		/// Overloads the stream operator retrieving the Vec4's string.
-		/// </summary>
-		/// <param name="stream">The stream to append to</param>
-		/// <param name="other">The Vec4 to convert</param>
-		/// <returns>The modified stream</returns>
+		void SetAxis(int axis, float val);
+		float GetAxis(int axis) const;
+
+		int MinAxis() const;
+		int MaxAxis() const;
+
+		Vec4 Clamped(const float val) const;
+
+		float DistanceTo(const Vec4& r_val) const;
+		float DistanceSquaredTo(const Vec4& r_val) const;
+
+		float AngleTo(const Vec4& r_val) const;
+
+		Vec4 DirectionTo(const Vec4& r_val) const;
+
+		float Dot(const Vec4& r_val) const;
+		Vec4 Cross(const Vec4& r_val) const;
+
+		Vec4 PosMod(const Vec4& r_val) const;
+		Vec4 PosMod(const float r_val) const;
+		Vec4 Project(const Vec4& r_val) const;
+		Vec4 PlaneProject(const float val, const Vec4& r_val) const;
+
+		bool IsEqualApprox(const Vec4& val) const;
+
+		#define TOSTRING4(x, y, z, w) "(" #x ", " #y ", " #z ", " #w ")"
+		inline std::string ToString() const { return TOSTRING4(x, y, z, w); }
+
+		inline Vec3 ToVec3() const { return Vec3(x, y, z); }
+		inline operator Vec3() const { return Vec3(x, y, z); }
+
 		friend std::ostream& operator<<(std::ostream& stream, const Vec4& other)
 		{
-			stream << "(" << other.x << ", " << other.y << ", " << other.z << ", " << other.w << ")";
+			stream << other.ToString();
 			return stream;
 		}
 	};
+
+	inline Vec4 operator*(float scalar, const Vec4& vec) 
+	{
+		return vec * scalar;
+	}
+
+	inline Vec4 operator*(double scalar, const Vec4& vec) 
+	{
+		return vec * scalar;
+	}
+
+	inline Vec4 operator*(int scalar, const Vec4& vec) 
+	{
+		return vec * scalar;
+	}
 }
