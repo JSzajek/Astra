@@ -51,12 +51,12 @@ namespace Astra::Graphics
 	
 	const Math::Vec3 ConeParticleSystem::GenerateRandomUnitVectorInCone(const Math::Vec3& coneDir, float angle) const
 	{
-		float cosAngle = cos(angle);
+		float cosAngle = cosf(angle);
 		float theta = Math::Random() * 2.0f * PI;
-		float z = cosAngle + (Math::Random() * (1 - cosAngle));
-		float rootOneMinusZSquared = sqrtf(1 - z * z);
-		float x = rootOneMinusZSquared * cos(theta);
-		float y = rootOneMinusZSquared * sin(theta);
+		float z = cosAngle + (Math::Random() * (1.0f - cosAngle));
+		float rootOneMinusZSquared = sqrtf(1.0f - z * z);
+		float x = rootOneMinusZSquared * cosf(theta);
+		float y = rootOneMinusZSquared * sinf(theta);
 		Math::Vec3 direction(x, y, z);
 		if (coneDir.x != 0 || coneDir.y != 0 || (coneDir.z != 1 && coneDir.z != -1))
 		{
@@ -77,10 +77,10 @@ namespace Astra::Graphics
 	const Math::Vec3 ConeParticleSystem::GenerateRandomUnitVector() const
 	{
 		float theta = Math::Random() * 2.0f * PI;
-		float z = (Math::Random() * 2) - 1;
-		float rootOneMinusZSquared = sqrtf(1 - (z * z));
-		float x = rootOneMinusZSquared * cos(theta);
-		float y = rootOneMinusZSquared * sin(theta);
+		float z = (Math::Random() * 2.0f) - 1.0f;
+		float rootOneMinusZSquared = sqrtf(1.0f - (z * z));
+		float x = rootOneMinusZSquared * cosf(theta);
+		float y = rootOneMinusZSquared * sinf(theta);
 		return Math::Vec3(x, y, z);
 	}
 }
