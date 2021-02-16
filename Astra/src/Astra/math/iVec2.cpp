@@ -4,14 +4,10 @@
 
 namespace Astra::Math
 {
-	const iVec2 iVec2::X_Axis = iVec2(1, 0);
-	const iVec2 iVec2::Y_Axis = iVec2(0, 1);
-	const iVec2 iVec2::Zero = iVec2(0);
-	const iVec2 iVec2::One = iVec2(1);
-	const iVec2 iVec2::Left = iVec2(-1, 0);
-	const iVec2 iVec2::Right = iVec2(1, 0);
-	const iVec2 iVec2::Up = iVec2(0, -1);
-	const iVec2 iVec2::Down = iVec2(0, 1);
+	const iVec2 iVec2::X_Axis	= iVec2(1,  0);
+	const iVec2 iVec2::Y_Axis	= iVec2(0,  1);
+	const iVec2 iVec2::Zero		= iVec2(0);
+	const iVec2 iVec2::One		= iVec2(1);
 
 	iVec2::iVec2()
 		: x(0), y(0)
@@ -35,155 +31,99 @@ namespace Astra::Math
 
 	int& iVec2::operator[](int index)
 	{
-		return index == 0 ? x : y;
+		ASTRA_ASSERT(index < 2, "Vec2: Out Of Index Axis Access.");
+		return index ? y : x;
 	}
 
-	iVec2& iVec2::Add(const iVec2& other)
+	const int iVec2::operator[](int index) const
 	{
-		x += other.x;
-		y += other.y;
-		return *this;
+		ASTRA_ASSERT(index < 2, "Vec2: Out Of Index Axis Access.");
+		return index ? y : x;
 	}
 
-	iVec2& iVec2::Subtract(const iVec2& other)
+	iVec2 iVec2::operator+(const iVec2& r_val) const
 	{
-		x -= other.x;
-		y -= other.y;
-		return *this;
+		return iVec2(x + r_val.x, y + r_val.y);
 	}
 
-	iVec2 iVec2::Multiply(const iVec2& other)
+	void iVec2::operator+=(const iVec2& r_val)
 	{
-		return iVec2(x * other.x, y * other.y);
+		x += r_val.x;
+		y += r_val.y;
 	}
 
-	iVec2& iVec2::Multiply(int scalar)
+	iVec2 iVec2::operator-(const iVec2& r_val) const
 	{
-		x *= scalar;
-		y *= scalar;
-		return *this;
+		return iVec2(x - r_val.x, y - r_val.y);
 	}
 
-	iVec2& iVec2::Divide(const iVec2& other)
+	void iVec2::operator-=(const iVec2& r_val)
 	{
-		x /= other.x;
-		y /= other.y;
-		return *this;
+		x -= r_val.x;
+		y -= r_val.y;
 	}
 
-	iVec2& iVec2::Divide(int scalar)
+	iVec2 iVec2::operator*(const iVec2& r_val) const
 	{
-		x /= scalar;
-		y /= scalar;
-		return *this;
+		return iVec2(x * r_val.x, y * r_val.y);
 	}
 
-	iVec2& operator+(iVec2 left, const iVec2& right)
+	iVec2 iVec2::operator*(const int r_val) const
 	{
-		return left.Add(right);
+		return iVec2(x * r_val, y * r_val);
 	}
 
-	iVec2& operator-(iVec2 left, const iVec2& right)
+	void iVec2::operator*=(const iVec2& r_val)
 	{
-		return left.Subtract(right);
+		x *= r_val.x;
+		y *= r_val.y;
 	}
 
-	iVec2 operator*(iVec2 left, const iVec2& right)
+	void iVec2::operator*=(const int r_val)
 	{
-		return left.Multiply(right);
+		x *= r_val;
+		y *= r_val;
 	}
 
-	iVec2& operator*(iVec2 left, int scalar)
+	iVec2 iVec2::operator/(const iVec2& r_val) const
 	{
-		return left.Multiply(scalar);
+		return iVec2(x / r_val.x, y / r_val.y);
 	}
 
-	iVec2& operator/(iVec2 left, const iVec2& right)
+	iVec2 iVec2::operator/(const int r_val) const
 	{
-		return left.Divide(right);
+		return iVec2(x / r_val, y / r_val);
 	}
 
-	iVec2& operator/(iVec2 left, int scalar)
+	void iVec2::operator/=(const iVec2& r_val)
 	{
-		return left.Divide(scalar);
+		x /= r_val.x;
+		y /= r_val.y;
 	}
 
-	iVec2& iVec2::operator+=(const iVec2& other)
+	void iVec2::operator/=(const int r_val)
 	{
-		return Add(other);
+		x /= r_val;
+		y /= r_val;
 	}
 
-	iVec2& iVec2::operator-=(const iVec2& other)
+	iVec2 iVec2::operator-() const
 	{
-		return Subtract(other);
+		return iVec2(-x, -y);
 	}
 
-	iVec2 iVec2::operator*=(const iVec2& other)
+	bool iVec2::operator==(const iVec2& r_val) const
 	{
-		return Multiply(other);
+		return x == r_val.x && y == r_val.y;
 	}
 
-	iVec2& iVec2::operator*=(int scalar)
+	bool iVec2::operator!=(const iVec2& r_val) const
 	{
-		return Multiply(scalar);
+		return x != r_val.x || y != r_val.y;
 	}
 
-	iVec2& iVec2::operator/=(const iVec2& other)
+	float iVec2::Angle() const
 	{
-		return Divide(other);
-	}
-
-	iVec2& iVec2::operator/=(int scalar)
-	{
-		return Divide(scalar);
-	}
-
-	bool iVec2::operator==(const iVec2& other) const
-	{
-		return abs(x - other.x) < FLT_EPSILON &&
-			abs(y - other.y) < FLT_EPSILON;
-	}
-
-	bool iVec2::operator!=(const iVec2& other) const
-	{
-		return !(*this == other);
-	}
-
-	int iVec2::Dot(const iVec2& other) const
-	{
-		return (x * other.x) + (y * other.y);
-	}
-
-	float iVec2::DistanceTo(const iVec2& other) const
-	{
-		return static_cast<float>(sqrt(pow(other.x - x, 2) + pow(other.y - y, 2)));
-	}
-
-	int iVec2::ManhattenDistanceTo(const iVec2& other) const
-	{
-		return abs(x - other.x) + abs(y - other.y);
-	}
-
-	float iVec2::Magnitude() const
-	{
-		return static_cast<float>(sqrt((x * x) + (y * y)));
-	}
-
-	void iVec2::Normalize()
-	{
-		float norm = Magnitude();
-		if (norm <= 0) { return; }
-		x = static_cast<int>(x / norm);
-		y = static_cast<int>(y / norm);
-	}
-
-	float iVec2::DirectionTo(const iVec2& other)
-	{
-		float norm = Magnitude() * other.Magnitude();
-		if (norm <= 0)
-		{
-			return FLT_EPSILON;
-		}
-		return acosf(Dot(other) / norm);
+		return static_cast<float>(std::atan2(y, x));
 	}
 }

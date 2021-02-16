@@ -35,11 +35,10 @@ namespace Astra::Graphics
 	bool Particle::Update(float delta, const Math::Vec3& cameraPosition)
 	{
 		m_velocity.y += GRAVITY * (float)m_gravity * delta;
-		Math::Vec3 change(m_velocity);
-		change *= delta;
+		auto change = m_velocity * delta;
 		Position += change;
 		m_elapsedTime += delta;
-		m_distance = (cameraPosition - Position).MagnitudeSquared();
+		m_distance = (cameraPosition - Position).LengthSquared();
 		UpdateTextureCoordInfo();
 		return m_elapsedTime < m_lifeSpan;
 	}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "MathsFuncs.h"
 #include "Vec2.h"
 
 namespace Astra::Math
@@ -23,258 +24,135 @@ namespace Astra::Math
 		static const Vec3 Forward;
 		static const Vec3 Back;
 	public:
-		float x, y, z;
+		union
+		{
+			struct
+			{
+				float x, y, z;
+			};
+			float m_data[3];
+		};
 	public:
-	
-		/// <summary>
-		/// Initializes a empty instance of the <see cref="Vec3"/> class.
-		/// </summary>
 		Vec3();
-	
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Vec3"/> class.
-		/// </summary>
-		/// <param name="_x">The x value</param>
-		/// <param name="_y">The y value</param>
-		/// <param name="_z">The z value</param>
 		Vec3(const float& _x, const float& _y, const float& _z);
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Vec3"/> class.
-		/// </summary>
-		/// <param name="_other">The vector containing the x and y values</param>
-		/// <param name="_z">The z value</param>
 		Vec3(const Vec2& _other, const float& _z);
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Vec3"/> class.
-		/// </summary>
-		/// <param name="_value">The value across the Vec3</param>
 		Vec3(const float& _value);
-	
-		/// <summary>
-		/// Copy constructor of the <see cref="Vec3"/> class.
-		/// </summary>
-		/// <param name="other"></param>
 		Vec3(const Vec3& other);
 
-		/// <summary>
-		/// Element access operator override.
-		/// </summary>
-		/// <param name="index">The index of the element to access</param>
-		/// <returns></returns>
 		float& operator[](int index);
+		const float operator[](int index) const;
 
-		/// <summary>
-		/// Adds the passed vector.
-		/// </summary>
-		/// <param name="other">The other Vec3 to add</param>
-		/// <returns>The summation Vec3</returns>
-		Vec3& Add(const Vec3& other);
+		Vec3 operator+(const Vec3& r_val) const;
+		void operator+=(const Vec3& r_val);
 
-		/// <summary>
-		/// Subtracts the passed vector.
-		/// </summary>
-		/// <param name="other">The other Vec3 to subtract</param>
-		/// <returns>The subtracted Vec3</returns>
-		Vec3& Subtract(const Vec3& other);
+		Vec3 operator-(const Vec3& r_val) const;
+		void operator-=(const Vec3& r_val);
 
-		/// <summary>
-		/// Multiplies the passed vector.
-		/// </summary>
-		/// <param name="other">The other Vec3 to multiply</param>
-		/// <returns>The multiplied Vec3</returns>
-		Vec3& Multiply(const Vec3& other);
+		Vec3 operator*(const Vec3& r_val) const;
+		Vec3 operator*(const float r_val) const;
+		Vec3 operator*(const double r_val) const;
+		Vec3 operator*(const int r_val) const;
 
-		/// <summary>
-		/// Multiplies the passed vector.
-		/// </summary>
-		/// <param name="other">The scalar to multiply</param>
-		/// <returns>The multiplied Vec3</returns>
-		Vec3& Multiply(const float& scalar);
+		void operator*=(const Vec3& r_val);
+		void operator*=(const float r_val);
+		void operator*=(const double r_val);
+		void operator*=(const int r_val);
 
-		/// <summary>
-		/// Divides the passed vector.
-		/// </summary>
-		/// <param name="other">The other Vec3 to divide</param>
-		/// <returns>The divided Vec3</returns>
-		Vec3& Divide(const Vec3& other);
+		Vec3 operator/(const Vec3& r_val) const;
+		Vec3 operator/(const float r_val) const;
 
-		/// <summary>
-		/// Divides the passed vector.
-		/// </summary>
-		/// <param name="other">The scalar to divide</param>
-		/// <returns>The divided Vec3</returns>
-		Vec3& Divide(const float& scalar);
+		void operator/=(const Vec3& r_val);
+		void operator/=(const float r_val);
 
-		/// <summary>
-		/// Addition operator override.
-		/// </summary>
-		/// <param name="other">The other Vec3 to add</param>
-		/// <returns>The summation Vec3</returns>
-		friend Vec3 operator+(Vec3 left, const Vec3& right);
+		Vec3 operator-() const;
 
-		/// <summary>
-		/// Subtraction operator override.
-		/// </summary>
-		/// <param name="other">The other Vec3 to subtract</param>
-		/// <returns>The subtracted Vec3</returns>
-		friend Vec3 operator-(Vec3 left, const Vec3& right);
+		bool operator==(const Vec3& r_val) const;
+		bool operator!=(const Vec3& r_val) const;
 
-		/// <summary>
-		/// Multiplication operator override.
-		/// </summary>
-		/// <param name="other">The other Vec3 to multiply</param>
-		/// <returns>The multiplied Vec3</returns>
-		friend Vec3 operator*(Vec3 left, const Vec3& right);
+		inline bool operator<(const Vec3& r_val) const;
+		inline bool operator>(const Vec3& r_val) const;
+		inline bool operator<=(const Vec3& r_val) const;
+		inline bool operator>=(const Vec3& r_val) const;
 
-		/// <summary>
-		/// Multiplication operator override.
-		/// </summary>
-		/// <param name="scalar">The scalar to multiply</param>
-		/// <returns>The multiplied Vec3</returns>
-		friend Vec3 operator*(Vec3 left, const float& scalar);
+		inline Vec3 Abs() const { return Vec3(std::abs(x), std::abs(y), std::abs(z)); }
 
-		/// <summary>
-		/// Division operator override.
-		/// </summary>
-		/// <param name="other">The other Vec3 to divide</param>
-		/// <returns>The divided Vec3</returns>
-		friend Vec3 operator/(Vec3 left, const Vec3& right);
+		void Rotate(const Vec3& axis, const float val);
+		Vec3 Rotated(const Vec3& axis, const float val) const;
 
-		/// <summary>
-		/// Division operator override.
-		/// </summary>
-		/// <param name="scalar">The scalar to divide</param>
-		/// <returns>The divided Vec3</returns>
-		friend Vec3 operator/(Vec3 left, const float& scalar);
-
-		/// <summary>
-		/// Addition operator override.
-		/// </summary>
-		/// <param name="other">The other Vec3 to add</param>
-		/// <returns>The summation Vec3</returns>
-		Vec3& operator+=(const Vec3& other);
-
-		/// <summary>
-		/// Subtraction operator override.
-		/// </summary>
-		/// <param name="other">The other Vec3 to subtract</param>
-		/// <returns>The subtracted Vec3</returns>
-		Vec3& operator-=(const Vec3& other);
-
-		/// <summary>
-		/// Multiplication operator override.
-		/// </summary>
-		/// <param name="other">The other Vec3 to multiply</param>
-		/// <returns>The multiplied Vec3</returns>
-		Vec3& operator*=(const Vec3& other);
-
-		/// <summary>
-		/// Multiplication operator override.
-		/// </summary>
-		/// <param name="scalar">The scalar to multiply</param>
-		/// <returns>The multiplied Vec3</returns>
-		Vec3& operator*=(const float& scalar);
-
-		/// <summary>
-		/// Division operator override.
-		/// </summary>
-		/// <param name="other">The other Vec3 to divide</param>
-		/// <returns>The divided Vec3</returns>
-		Vec3& operator/=(const Vec3& other);
-
-		/// <summary>
-		/// Division operator override.
-		/// </summary>
-		/// <param name="scalar">The scalar to divide</param>
-		/// <returns>The divided Vec3</returns>
-		Vec3& operator/=(const float& scalar);
-
-		/// <summary>
-		/// Equality operator override.
-		/// </summary>
-		/// <param name="comparison">The other object to compare to</param>
-		/// <returns>Whether they are are equal</returns>
-		bool operator==(const Vec3& other) const;
-
-		/// <summary>
-		/// Inequality operator override.
-		/// </summary>
-		/// <param name="comparison">The other object to compare to</param>
-		/// <returns>Whether they are are inequal</returns>
-		bool operator!=(const Vec3& other) const;
-	
-		/// <summary>
-		/// Calculates the dot product with the passed vector.
-		/// </summary>
-		/// <param name="other">The vector to calculate the dot</param>
-		/// <returns>The dot product of the two vectors</returns>
-		float Dot(const Vec3& other) const;
-
-		float DistanceToSquared(const Vec3& other) const;
+		Vec3 Sign() const;
+		Vec3 Floor() const;
+		Vec3 Ceil() const;
+		Vec3 Round() const;
 		
-		/// <summary>
-		/// Calculates the euclidean distance to the passed vector.
-		/// </summary>
-		/// <param name="other">The other vector to calculate to</param>
-		/// <returns>The euclidean distance to the passed vector</returns>
-		float DistanceTo(const Vec3& other) const;
+		void Snap(const Vec3& r_val);
+		Vec3 Snapped(const Vec3& r_val) const;
 
-		/// <summary>
-		/// Calculates the manhatten distance to the passed vector.
-		/// </summary>
-		/// <param name="other">The other vector to calculate to</param>
-		/// <returns>The manhatten distance to the passed vector</returns>
-		float ManhattenDistanceTo(const Vec3& other) const;
-
-		/// <summary>
-		/// Calculates the magnitude of the vector.
-		/// </summary>
-		/// <returns>The magnitude</returns>
-		float MagnitudeSquared() const;
-
-		/// <summary>
-		/// Calculates the magnitude of the vector.
-		/// </summary>
-		/// <returns>The magnitude</returns>
-		float Magnitude() const;
-	
-		/// <summary>
-		/// Normalizes the vector.
-		/// </summary>
 		void Normalize();
+		Vec3 Normalized() const;
+		bool IsNormalized() const;
 
-		/// <summary>
-		/// Calculates the direction to the passed vector.
-		/// </summary>
-		/// <param name="other">The other vector to calculate to</param>
-		/// <returns>The direction to the passed vector</returns>
-		float DirectionTo(const Vec3& other) const;
+		float Length() const;
+		float LengthSquared() const;
 
-		/// <summary>
-		/// Calculates the cross product to the passed vector.
-		/// </summary>
-		/// <param name="other">The other vector to calculate to</param>
-		/// <returns>The cross product</returns>
-		Vec3 Cross(const Vec3& other) const;
+		void SetAxis(int axis, float val);
+		float GetAxis(int axis) const;
 
-		/// <summary>
-		/// Converts the vector into a 2-dimensional vector.
-		/// </summary>
-		/// <returns>The 2-dimensional vector</returns>
-		Vec2 ToVec2() const;
+		int MinAxis() const;
+		int MaxAxis() const;
 
-		/// <summary>
-		/// Overloads the stream operator retrieving the vec3's string.
-		/// </summary>
-		/// <param name="stream">The stream to append to</param>
-		/// <param name="other">The vec3 to convert</param>
-		/// <returns>The modified stream</returns>
+		Vec3 Clamped(const float val) const;
+
+		float DistanceTo(const Vec3& r_val) const;
+		float DistanceSquaredTo(const Vec3& r_val) const;
+
+		float AngleTo(const Vec3& r_val) const;
+
+		Vec3 DirectionTo(const Vec3& r_val) const;
+
+		float Dot(const Vec3& r_val) const;
+		Vec3 Cross(const Vec3& r_val) const;
+
+		Vec3 PosMod(const Vec3& r_val) const;
+		Vec3 PosMod(const float r_val) const;
+		Vec3 Project(const Vec3& r_val) const;
+
+		Vec3 PlaneProject(const float val, const Vec3& r_val) const;
+		Vec3 Lerp(const Vec3& r_val, const float weight) const;
+		Vec3 Slerp(const Vec3& r_val, const float weight) const;
+		Vec3 CubicInterpolate(const Vec3& val, const Vec3& pre, const Vec3& pos_val, const float weight) const;
+		Vec3 MoveToward(const Vec3& val, const float delta) const;
+
+		Vec3 Slide(const Vec3& norm) const;
+		Vec3 Bounce(const Vec3& norm) const;
+		Vec3 Reflect(const Vec3& norm) const;
+
+		bool IsEqualApprox(const Vec3& val) const;
+
+		#define TOSTRING3(x, y, z) "(" #x ", " #y ", " #z ")"
+		inline std::string ToString() const { return TOSTRING3(x, y, z); }
+
+		inline Vec2 ToVec2() const { return Vec2(x, z); }
+		inline operator Vec2() const { return Vec2(x, z); }
+
 		friend std::ostream& operator<<(std::ostream& stream, const Vec3& other)
 		{
-			stream << "(" << other.x << ", " << other.y << ", " << other.z << ")";
+			stream << other.ToString();
 			return stream;
 		}
 	};
+
+	inline Vec3 operator*(float scalar, const Vec3& vec) 
+	{
+		return vec * scalar;
+	}
+
+	inline Vec3 operator*(double scalar, const Vec3& vec) 
+	{
+		return vec * scalar;
+	}
+
+	inline Vec3 operator*(int scalar, const Vec3& vec) 
+	{
+		return vec * scalar;
+	}
 }

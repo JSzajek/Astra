@@ -19,7 +19,7 @@ namespace Astra::Graphics
 
 	void ConeParticleSystem::EmitParticle() const
 	{
-		Math::Vec3 velocity = m_direction.Magnitude() != 0 ? GenerateRandomUnitVectorInCone(m_direction, m_directionDeviation) 
+		Math::Vec3 velocity = m_direction.Length() != 0 ? GenerateRandomUnitVectorInCone(m_direction, m_directionDeviation) 
 																: GenerateRandomUnitVector();
 		velocity.Normalize();
 		velocity *= GenerateValue(m_speed, m_speedError);

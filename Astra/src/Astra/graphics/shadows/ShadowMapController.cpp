@@ -48,7 +48,7 @@ namespace Astra::Graphics
 	{
 		direction.Normalize();
 		m_lightViewMatrix.SetIdentity();
-		float pitch = Math::ToDegrees(acosf(Math::Vec2(direction.x, direction.z).Magnitude()));
+		float pitch = Math::ToDegrees(acosf(Math::Vec2(direction.x, direction.z).Length()));
 		m_lightViewMatrix.Rotate(pitch, Math::Vec3::X_Axis);
 		float yaw = Math::ToDegrees(atanf(direction.x / direction.z));
 		yaw = direction.z > 0 ? yaw - 180 : yaw;
