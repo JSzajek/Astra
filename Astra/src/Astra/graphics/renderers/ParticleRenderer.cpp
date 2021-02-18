@@ -36,13 +36,13 @@ namespace Astra::Graphics
 		}
 	}
 
-	void ParticleRenderer::Clear()
-	{
-		for (auto& particles : m_particles)
-		{
-			particles.clear();
-		}
-	}
+	//void ParticleRenderer::Clear()
+	//{
+	//	for (auto& particles : m_particles)
+	//	{
+	//		particles.clear();
+	//	}
+	//}
 
 	void ParticleRenderer::AddParticle(Particle* particle)
 	{

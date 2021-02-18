@@ -36,11 +36,11 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
-	inline void TerrainRenderer::Clear() 
-	{ 
-		m_terrains.clear();
-		m_lights.clear();
-	}
+	//inline void TerrainRenderer::Clear() 
+	//{ 
+	//	m_terrains.clear();
+	//	m_lights.clear();
+	//}
 
 	void TerrainRenderer::Draw(float delta, const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{

@@ -72,10 +72,10 @@ namespace Astra::Graphics
 		SkyboxRenderer(Shader* shader, const Color* fogColor);
 		~SkyboxRenderer();
 
-		inline void Clear() override { m_material = NULL; }
+		//inline void Clear() override { m_material = NULL; }
 		inline void SetSkyBox(const SkyboxMaterial* material) { m_material = material; }
 
-		void Draw(float delta = 0, const Math::Mat4* viewMatrix = NULL, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
+		void Draw(float delta = 0, const Math::Mat4* viewMatrix = NULL, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane);
 	private:
 		void BindTextures();
 	};

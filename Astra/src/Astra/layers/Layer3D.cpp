@@ -1,26 +1,31 @@
 #include "astra_pch.h"
 
 #include "Layer3D.h"
+
 #include "Astra/Application.h"
+
 #include "Astra/graphics/loaders/Loader.h"
 
 #include "Astra/graphics/shaders/EntityShader.h"
+#include "Astra/graphics/shaders/NormalEntityShader.h"
 #include "Astra/graphics/shaders/TerrainShader.h"
 #include "Astra/graphics/shaders/SkyboxShader.h"
 #include "Astra/graphics/shaders/WaterShader.h"
-#include "Astra/graphics/shaders/NormalEntityShader.h"
 #include "Astra/graphics/shaders/GizmoShader.h"
 
 namespace Astra
 {
 	Layer3D::Layer3D()
 		: m_reflectionClipPlane(Math::Vec4(0, 1, 0, 0)), m_refractionClipPlane(Math::Vec4(0, -1, 0, 0)),
-			projectionMatrix(new Math::Mat4(1)), m_toShadowMapMatrix(new Math::Mat4(1)),
+			m_projectionMatrix(new Math::Mat4(1)), m_toShadowMapMatrix(new Math::Mat4(1)),
 			m_fogColor(new Graphics::Color(0.5f, 0.6f, 0.6f, 1.0f)), 
-			viewMatrix(NULL), m_mainCamera(NULL), m_skybox(NULL), m_mainLight(NULL)
+			m_viewMatrix(NULL), m_mainCamera(NULL), m_skybox(NULL), m_mainLight(NULL)
 
 	{
+		Init();
+
 		m_postProcessor = new Graphics::PostProcessor();
+		m_selectionRenderer = new Graphics::SelectionRenderer();
 		m_shadowMapController = new Graphics::ShadowMapController(FieldOfView, NearPlane, FarPlane);
 
 		m_skyboxRenderer = new Graphics::SkyboxRenderer(new Graphics::SkyboxShader(), m_fogColor);
@@ -43,13 +48,14 @@ namespace Astra
 	{
 		delete m_entityRenderer;
 		delete m_terrainRenderer;
+		delete m_selectionRenderer;
 		delete m_skyboxRenderer;
 		delete m_waterRenderer;
 		delete m_normalEntityRenderer;
 		delete m_shadowMapController;
 		delete m_postProcessor;
 
-		delete projectionMatrix;
+		delete m_projectionMatrix;
 		delete m_toShadowMapMatrix;
 
 		delete m_waterBuffer;
@@ -59,18 +65,17 @@ namespace Astra
 	{
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
-		glEnable(GL_STENCIL_TEST);
 		glDisable(GL_BLEND);
+		glEnable(GL_STENCIL_TEST);
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-
 	#if FULL_SELECTION
 		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	#else
 		glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
 	#endif
 		glClearColor(m_fogColor->GetR(), m_fogColor->GetG(), m_fogColor->GetB(), m_fogColor->GetA());
-		glEnable(GL_CLIP_DISTANCE0);
+		//glEnable(GL_CLIP_DISTANCE0); - Causes issues with the skybox rendering, determine whether this is required
 	}
 
 	void Layer3D::OnAttach()
@@ -82,14 +87,9 @@ namespace Astra
 		m_terrainRenderer->SetShader(new Graphics::TerrainShader(numOfLights));
 		m_waterRenderer->SetShader(new Graphics::WaterShader(numOfLights));
 
-		SetSelectionColor(Graphics::Color(0.5f, 0.25f, 0, 1.0f)); // Default Selection Color
-
-		// Clear Renderers?
-		//Clear();
-
 		// Pass new Scene information
 		m_shadowMapController->SetCamera(m_mainCamera);
-		viewMatrix = m_mainCamera->GetViewMatrix();
+		m_viewMatrix = m_mainCamera->GetViewMatrix();
 
 		m_skyboxRenderer->SetSkyBox(m_skybox);
 
@@ -115,18 +115,6 @@ namespace Astra
 			m_waterRenderer->AddTile(tile);
 		}
 
-		for (auto* entity : m_entities)
-		{
-			if (entity->material->IsNormalMapped() || entity->material->IsParallaxMapped())
-			{
-				m_normalEntityRenderer->AddEntity(entity);
-			}
-			else
-			{
-				m_entityRenderer->AddEntity(entity);
-			}
-			m_shadowMapController->AddEntity(entity);
-		}
 		for (auto* light : m_pointlights)
 		{
 			m_entityRenderer->AddLight(light);
@@ -174,49 +162,73 @@ namespace Astra
 			// Reflection Rendering
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetReflectionBuffer()->GetId(), 320, 180);
 			m_mainCamera->InvertPitch(-distance); // Updates the view matrix
-			Render(delta, viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_reflectionClipPlane);
+			Render(delta, m_viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_reflectionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 
 			// Refraction Rendering
 			m_mainCamera->InvertPitch(distance); // Updates the view matrix
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetRefractionBuffer()->GetId(), 1280, 720);
-			Render(delta, viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_refractionClipPlane);
+			Render(delta, m_viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_refractionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 		}
-
-		Math::Vec4 inverseView = viewMatrix->Inverse() * Math::Vec4::W_Axis;
+		Math::Vec4 inverseView = m_viewMatrix->Inverse() * Math::Vec4::W_Axis;
+		
 		PrepareRender(delta);
-		Render(delta, inverseView, false);
+		
+		// Renders entities and to stencil buffer when selected
+		Render(delta, inverseView, false); 
 
-		Graphics::ParticleController::Render(viewMatrix);
+		// Renders outline based on stencil buffer
+		glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		m_selectionRenderer->Draw(0, m_entities[EntityType::Selected], m_viewMatrix);
 
+		Graphics::ParticleController::Render(m_viewMatrix);
+		
 		// Perform Post Processing Effects
 		m_postProcessor->Detach();
 		m_postProcessor->Draw();
 
 	#if ASTRA_DEBUG
-		Graphics::GizmoController::Render(viewMatrix);
+		Graphics::GizmoController::Render(m_viewMatrix);
 	#endif
 	}
 
 	void Layer3D::SetSelectionColor(const Graphics::Color& color)
 	{
-		m_entityRenderer->SetSelectionColor(color);
-		m_normalEntityRenderer->SetSelectionColor(color);
+		m_selectionRenderer->SetSelectionColor(color);
+	}
+
+	void Layer3D::AddEntity(const Graphics::Entity* entity)
+	{
+		if (entity->material->IsNormalMapped() || entity->material->IsParallaxMapped())
+		{
+			EmplaceEntity(EntityType::NormalMapped, entity);
+		}
+		else
+		{
+			EmplaceEntity(EntityType::Default, entity);
+		}
+
+		if (entity->IsSelected())
+		{
+			EmplaceEntity(EntityType::Selected, entity);
+		}
+		m_shadowMapController->AddEntity(entity);
 	}
 
 	void Layer3D::UpdateScreen(unsigned int width, unsigned int height)
 	{
-		*projectionMatrix = Math::Mat4::Perspective(static_cast<float>(width), static_cast<float>(height), FieldOfView, NearPlane, FarPlane);
-		m_terrainRenderer->UpdateProjectionMatrix(projectionMatrix);
-		m_entityRenderer->UpdateProjectionMatrix(projectionMatrix);
-		m_normalEntityRenderer->UpdateProjectionMatrix(projectionMatrix);
-		m_skyboxRenderer->UpdateProjectionMatrix(projectionMatrix);
-		m_waterRenderer->UpdateProjectionMatrix(projectionMatrix);
+		*m_projectionMatrix = Math::Mat4::Perspective(static_cast<float>(width), static_cast<float>(height), FieldOfView, NearPlane, FarPlane);
+		m_terrainRenderer->UpdateProjectionMatrix(m_projectionMatrix);
+		m_entityRenderer->UpdateProjectionMatrix(m_projectionMatrix);
+		m_normalEntityRenderer->UpdateProjectionMatrix(m_projectionMatrix);
+		m_selectionRenderer->UpdateProjectionMatrix(m_projectionMatrix);
+		m_skyboxRenderer->UpdateProjectionMatrix(m_projectionMatrix);
+		m_waterRenderer->UpdateProjectionMatrix(m_projectionMatrix);
 		m_postProcessor->UpdateScreenRatio(width, height);
-		Graphics::ParticleController::UpdateProjectionMatrix(projectionMatrix);
+		Graphics::ParticleController::UpdateProjectionMatrix(m_projectionMatrix);
 	#if ASTRA_DEBUG
-		Graphics::GizmoController::UpdateProjectionMatrix(projectionMatrix);
+		Graphics::GizmoController::UpdateProjectionMatrix(m_projectionMatrix);
 	#endif
 	}
 
@@ -224,6 +236,7 @@ namespace Astra
 	{
 		Graphics::ParticleController::Update(delta, m_mainCamera->GetTranslation());
 
+		// Connect Post Processing Buffer
 		m_postProcessor->Attach();
 
 		glActiveTexture(GL_TEXTURE6);
@@ -236,24 +249,35 @@ namespace Astra
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		m_terrainRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
+		m_terrainRenderer->Draw(delta, m_viewMatrix, inverseViewVector, clipPlane);
 
 		if (!waterPass)
 		{
-			m_skyboxRenderer->Draw(delta, viewMatrix, NULL);
-			m_waterRenderer->Draw(delta, viewMatrix, inverseViewVector);
+			m_skyboxRenderer->Draw(delta, m_viewMatrix, NULL);
+			m_waterRenderer->Draw(delta, m_viewMatrix, inverseViewVector);
 
-			m_entityRenderer->FlagSelectionDraw();
-			m_normalEntityRenderer->FlagSelectionDraw();
-
-			m_entityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
-			m_normalEntityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
+			m_entityRenderer->Draw(delta, m_entities[EntityType::Default], m_viewMatrix, inverseViewVector, clipPlane);
+			m_normalEntityRenderer->Draw(delta, m_entities[EntityType::NormalMapped], m_viewMatrix, inverseViewVector, clipPlane);
 		}
 		else
 		{
-			m_entityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
-			m_normalEntityRenderer->Draw(delta, viewMatrix, inverseViewVector, clipPlane);
-			m_skyboxRenderer->Draw(delta, viewMatrix, NULL);
+			m_entityRenderer->Draw(delta, m_entities[EntityType::Default], m_viewMatrix, inverseViewVector, clipPlane);
+			m_normalEntityRenderer->Draw(delta, m_entities[EntityType::NormalMapped], m_viewMatrix, inverseViewVector, clipPlane);
+			m_skyboxRenderer->Draw(delta, m_viewMatrix, NULL);
+		}
+	}
+
+	void Layer3D::EmplaceEntity(unsigned int listIndex, const Graphics::Entity* entity)
+	{
+		auto temp = m_entities[listIndex].find(entity->vertexArray->vaoId);
+		if (temp != m_entities[listIndex].end())
+		{
+			temp->second.emplace_back(entity);
+		}
+		else
+		{
+			m_entities[listIndex][entity->vertexArray->vaoId] = std::vector<const Graphics::Entity*>();
+			m_entities[listIndex][entity->vertexArray->vaoId].emplace_back(entity);
 		}
 	}
 

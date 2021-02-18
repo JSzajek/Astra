@@ -30,9 +30,9 @@ namespace Astra::Graphics
 		m_gizmoRenderer->AddGizmo(gizmo);
 	}
 
-	void GizmoController::ClearImpl()
-	{
-		m_gizmoRenderer->Clear();
-	}
+	//void GizmoController::ClearImpl()
+	//{
+	//	m_gizmoRenderer->Clear();
+	//}
 #endif
 }

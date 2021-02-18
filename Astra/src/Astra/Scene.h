@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Astra/Application.h"
+
 #include "Astra/layers/Layer3D.h"
 #include "Astra/layers/Layer2D.h"
 

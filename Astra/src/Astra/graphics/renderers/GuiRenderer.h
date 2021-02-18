@@ -79,7 +79,7 @@ namespace Astra::Graphics
 		void AddGui(Gui* gui, int layer);
 		
 		//inline void Clear() override { m_guis.clear(); m_buffers.clear(); }
-		void Draw(float delta = 0, const Math::Mat4* viewMatrix = NULL, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane) override;
+		void Draw(float delta = 0, const Math::Mat4* viewMatrix = NULL, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane);
 	private:
 		void Flush(std::unordered_map<unsigned int, unsigned int>& mapping, size_t& offset);
 

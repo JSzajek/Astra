@@ -20,7 +20,7 @@ namespace Astra::Graphics
 		m_screenBuffer = Loader::LoadFrameBuffer(width, height, false, DepthBufferType::Render);
 	#endif
 	#if BLOOM
-		effects.push_back(new BloomEffect(width, height));
+		//effects.push_back(new BloomEffect(width, height));
 	#endif
 	#if HDR
 		effects.push_back(new HDREffect(true, 1));

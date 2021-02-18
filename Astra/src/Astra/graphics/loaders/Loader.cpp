@@ -301,7 +301,7 @@ namespace Astra::Graphics
 		}
 		else if (depthType == DepthBufferType::Texture)
 		{
-			CreateDepthTextureAttachment(buffer->DepthAttachment(), width, height, GL_DEPTH_COMPONENT24);
+			CreateDepthTextureAttachment(buffer->DepthAttachment(), width, height, GL_DEPTH24_STENCIL8);
 		}
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -366,7 +366,7 @@ namespace Astra::Graphics
 			if (buffer->GetDepthAttachment() != 0)
 			{
 				glBindTexture(GL_TEXTURE_2D, buffer->GetDepthAttachment());
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 				glBindTexture(GL_TEXTURE_2D, 0);
 			}
 		}
