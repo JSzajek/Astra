@@ -56,24 +56,15 @@ namespace Astra::Graphics
 		}
 	#endif
 
-		//glStencilFunc(GL_ALWAYS, 1, 0xFF);
-
 		for (const auto& directory : entities)
 		{
 			PrepareEntity(directory.second.front());
 			for (const Entity* entity : directory.second)
 			{
-				/*if (entity->IsSelected())
-				{
-					glStencilMask(0xFF);
-				}*/
-
 				m_shader->SetUniform2f(OFFSET_TAG, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
 				m_shader->SetUniformMat4(NORMAL_MATRIX_TAG, entity->GetNormalMatrix());
 				m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, entity->GetModelMatrix());
 				glDrawElements(entity->vertexArray->drawType, entity->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
-
-				//glStencilMask(0x00);
 			}
 			UnbindVertexArray();
 		}

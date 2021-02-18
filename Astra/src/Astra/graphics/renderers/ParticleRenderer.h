@@ -36,7 +36,6 @@ namespace Astra::Graphics
 		
 		inline std::vector<Particle*>& GetParticles(unsigned int index) { return m_particles[index]; }
 		
-		//void Clear() override;
 		void AddParticle(Particle* particle);
 		void Draw(float delta = 0, const Math::Mat4* viewMatrix = NULL, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane);
 	private:

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Renderer.h"
-#include "../guis/Guis.h"
 
-#include "../shaders/FontShader.h"
+#include "Astra/graphics/guis/Guis.h"
+#include "Astra/graphics/shaders/FontShader.h"
 
 namespace Astra::Graphics
 {
@@ -21,8 +21,6 @@ namespace Astra::Graphics
 		std::vector<Gui*> m_textures;
 		std::vector<Gui*> m_customTextures;
 		std::vector<TextBox*> m_texts;
-
-		//std::unordered_map<const FontType*, std::vector<GuiText*>> m_texts;
 	public:
 		GuiLayer(int level) 
 			: m_level(level)
@@ -35,8 +33,6 @@ namespace Astra::Graphics
 		inline const std::vector<Gui*> GetDefaultGuis() const { return m_textures; }
 		inline const std::vector<Gui*> GetCustomGuis() const { return m_customTextures; }
 		inline const std::vector<TextBox*> GetTexts() const { return m_texts; }
-
-		//inline const std::unordered_map<const FontType*, std::vector<GuiText*>> GetTexts() const { return m_texts; }
 	};
 
 	struct GuiBuffer

@@ -21,7 +21,6 @@ namespace Astra::Graphics
 		GizmoRenderer(GizmoShader* shader);
 		~GizmoRenderer();
 
-		//inline void Clear() override { m_gizmos.clear(); }
 		inline std::unordered_map<unsigned int, std::vector<const Gizmo*>>& GetGizmos() { return m_gizmos; }
 
 		void AddGizmo(const Gizmo* gizmo);

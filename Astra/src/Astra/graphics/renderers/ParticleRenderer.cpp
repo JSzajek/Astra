@@ -1,8 +1,8 @@
 #include "astra_pch.h"
 
 #include "ParticleRenderer.h"
-#include "../../math/Mat4Utils.h"
-#include "../loaders/Loader.h"
+#include "Astra/math/Mat4Utils.h"
+#include "Astra/graphics/loaders/Loader.h"
 
 namespace Astra::Graphics
 {
@@ -35,14 +35,6 @@ namespace Astra::Graphics
 			}
 		}
 	}
-
-	//void ParticleRenderer::Clear()
-	//{
-	//	for (auto& particles : m_particles)
-	//	{
-	//		particles.clear();
-	//	}
-	//}
 
 	void ParticleRenderer::AddParticle(Particle* particle)
 	{
