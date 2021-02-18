@@ -9,8 +9,9 @@
 #include <unordered_map>
 #include <tuple>
 
-#include "../../math/Maths.h"
-#include "../../utils/FileUtils.h"
+#include "Astra/Core.h"
+#include "Astra/math/Maths.h"
+#include "Astra/utils/FileUtils.h"
 
 namespace Astra::Graphics
 {

@@ -281,7 +281,7 @@ namespace Astra::Math
 
 	void Vec4::Normalize()
 	{
-		float len = x * x + y * y;
+		float len = x * x + y * y + z * z + w * w;
 		if (len != 0)
 		{
 			len = std::sqrtf(len);

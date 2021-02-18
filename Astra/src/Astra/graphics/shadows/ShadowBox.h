@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../entities/Camera.h"
-#include "../../math/Maths.h"
+#include "Astra/graphics/entities/Camera.h"
+#include "Astra/math/Maths.h"
 
 namespace Astra::Graphics
 {

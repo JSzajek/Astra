@@ -34,10 +34,10 @@ namespace Astra::Graphics
 			Get().RenderImpl(viewMatrix);
 		}
 
-		static void Clear()
-		{
-			Get().ClearImpl();
-		}
+		//static void Clear()
+		//{
+		//	Get().ClearImpl();
+		//}
 
 	private:
 		GizmoController();
@@ -46,7 +46,7 @@ namespace Astra::Graphics
 		void UpdateProjectionMatrixImpl(const Math::Mat4* projectionMatrix);
 		void RenderImpl(const Math::Mat4* viewMatrix);
 		void AddGizmoImpl(const Gizmo* gizmo);
-		void ClearImpl();
+		//void ClearImpl();
 	};
 #endif
 }

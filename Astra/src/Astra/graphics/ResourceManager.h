@@ -2,19 +2,20 @@
 
 #include <unordered_map>
 
-#include "buffers/VertexArray.h"
-#include "materials/ImageMaterial.h"
-#include "materials/GuiMaterial.h"
-#include "materials/ParticleMaterial.h"
-#include "materials/SkyboxMaterial.h"
-#include "materials/TerrainMaterial.h"
-#include "materials/WaterMaterial.h"
+#include "Astra/graphics/buffers/FrameBuffer.h"
+#include "Astra/graphics/buffers/VertexArray.h"
+#include "Astra/graphics/buffers/Texture.h"
 
-#include "guis/utility/FontAtlas.h"
+#include "Astra/graphics/materials/ParticleMaterial.h"
+#include "Astra/graphics/materials/TerrainMaterial.h"
+#include "Astra/graphics/materials/SkyboxMaterial.h"
+#include "Astra/graphics/materials/WaterMaterial.h"
+#include "Astra/graphics/materials/ImageMaterial.h"
+#include "Astra/graphics/materials/GuiMaterial.h"
 
-#include "buffers/FrameBuffer.h"
-#include "buffers/Texture.h"
-#include "entities/Entity.h"
+#include "Astra/graphics/entities/Entity.h"
+
+#include "Astra/graphics/guis/utility/FontAtlas.h"
 
 namespace Astra::Graphics
 {

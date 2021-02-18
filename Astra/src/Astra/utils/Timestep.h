@@ -1,7 +1,7 @@
 #pragma once
 
-namespace Astra {
-
+namespace Astra 
+{
 	class Timestep
 	{
 	private:

@@ -21,21 +21,21 @@ private:
     Astra::Scene* scene;
     Player* m_player;
     TextBox* m_textbox;
+    DirectionalLight* dir_light;
+    PointLight* light3;
+    PointLight* light4;
+    Entity* barrelModel;
+    SkyboxMaterial* skybox;
+    AudioSource* audioSource;
+    Vec3* particleCenter;
+    std::vector<const Entity*> entities;
+    
     const float InGameTimeSpeed = 0.005f;
     short timeDir = 1;
 
     Timer timer;
     float elapsedTime = 0;
     unsigned int frames = 0;
-    
-    DirectionalLight* dir_light;
-    PointLight* light3;
-    PointLight* light4;
-    Entity* barrelModel;
-    SkyboxMaterial* skybox;
-    std::vector<const Entity*> entities;
-    AudioSource* audioSource;
-    Vec3* particleCenter;
 public:
     TestGame()
         : Application()
@@ -191,16 +191,14 @@ public:
             auto* fern = ResourceManager::LoadEntity("res/fern.obj", rand() % 4, Vec3(static_cast<float>(x), y, static_cast<float>(z)), Vec3::Zero, Vec3(Math::Random() * 1.5f));
             fern->SetMaterial(fernMat);
             entities.emplace_back(fern);
-            scene->AddEntity(fern);
             fern->SetSelected(Math::RandomRange(0, 10) > 5);
+            scene->AddEntity(fern);
         }
-
         scene->Enable();
     }
 
     virtual void OnUpdate(float delta) override
     {
-        //ASTRA_INFO("Updating with delta {0}", delta);
         m_player->Update(delta);
 
         barrelModel->operator()(ROTATION, SUM_EQ, Y_POS, 0.5f);
