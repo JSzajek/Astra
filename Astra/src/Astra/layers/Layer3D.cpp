@@ -24,6 +24,9 @@ namespace Astra
 	{
 		Init();
 
+		Assimp::Importer importer;
+		const aiScene* scenea = importer.ReadFile("res/barrel.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
+
 		m_postProcessor = new Graphics::PostProcessor();
 		m_selectionRenderer = new Graphics::SelectionRenderer();
 		m_shadowMapController = new Graphics::ShadowMapController(FieldOfView, NearPlane, FarPlane);

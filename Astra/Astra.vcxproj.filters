@@ -312,6 +312,9 @@
     <ClInclude Include="src\Astra\graphics\renderers\Renderer.h">
       <Filter>src\Astra\graphics\renderers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Astra\graphics\renderers\SelectionRenderer.h">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClInclude>
     <ClInclude Include="src\Astra\graphics\renderers\ShadowMapRenderer.h">
       <Filter>src\Astra\graphics\renderers</Filter>
     </ClInclude>
@@ -323,6 +326,9 @@
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\renderers\WaterRenderer.h">
       <Filter>src\Astra\graphics\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\shaders\BasicEntityShader.h">
+      <Filter>src\Astra\graphics\shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\shaders\BloomShader.h">
       <Filter>src\Astra\graphics\shaders</Filter>
@@ -411,6 +417,12 @@
     <ClInclude Include="src\Astra\math\Maths.h">
       <Filter>src\Astra\math</Filter>
     </ClInclude>
+    <ClInclude Include="src\Astra\math\MathsDefines.h">
+      <Filter>src\Astra\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\math\MathsFuncs.h">
+      <Filter>src\Astra\math</Filter>
+    </ClInclude>
     <ClInclude Include="src\Astra\math\MathsUtils.h">
       <Filter>src\Astra\math</Filter>
     </ClInclude>
@@ -465,10 +477,6 @@
     <ClInclude Include="vendor\stb_image\stb_image\stb_image.h">
       <Filter>vendor\stb_image\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astra\math\MathsDefines.h" />
-    <ClInclude Include="src\Astra\math\MathsFuncs.h" />
-    <ClInclude Include="src\Astra\graphics\renderers\SelectionRenderer.h" />
-    <ClInclude Include="src\Astra\graphics\shaders\BasicEntityShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astra\Application.cpp">
@@ -609,6 +617,9 @@
     <ClCompile Include="src\Astra\graphics\renderers\Renderer.cpp">
       <Filter>src\Astra\graphics\renderers</Filter>
     </ClCompile>
+    <ClCompile Include="src\Astra\graphics\renderers\SelectionRenderer.cpp">
+      <Filter>src\Astra\graphics\renderers</Filter>
+    </ClCompile>
     <ClCompile Include="src\Astra\graphics\renderers\ShadowMapRenderer.cpp">
       <Filter>src\Astra\graphics\renderers</Filter>
     </ClCompile>
@@ -675,11 +686,13 @@
     <ClCompile Include="vendor\stb_image\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Astra\graphics\renderers\SelectionRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\fonts\calibri.ttf">
       <Filter>res\fonts</Filter>
+    </None>
+    <None Include="res\shaders\BasicEntity.shader">
+      <Filter>res\shaders</Filter>
     </None>
     <None Include="res\shaders\Bloom.shader">
       <Filter>res\shaders</Filter>
@@ -735,7 +748,6 @@
     <None Include="vendor\dr_lib\dr_lib\README.md">
       <Filter>vendor\dr_lib\dr_lib</Filter>
     </None>
-    <None Include="res\shaders\BasicEntity.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\Color_Palette.png">

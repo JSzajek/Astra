@@ -44,6 +44,7 @@ project "Astra"
 		"%{prj.name}/vendor/GLFW/include",
 		"%{prj.name}/vendor/OpenALSoft/include",
 		"%{prj.name}/vendor/FreeType/include",
+		"%{prj.name}/vendor/Assimp/include",
 		
 		-- Header Only
 		"%{prj.name}/vendor/stb_image",
@@ -57,6 +58,7 @@ project "Astra"
 		"%{prj.name}/vendor/GLFW/lib",
 		"%{prj.name}/vendor/OpenALSoft/lib",
 		"%{prj.name}/vendor/FreeType/lib",
+		"%{prj.name}/vendor/Assimp/lib",
 	}
 	
 	links
@@ -137,6 +139,7 @@ project "TestGame"
 		"Astra/vendor/GLFW/include",
 		"Astra/vendor/OpenALSoft/include",
 		"Astra/vendor/FreeType/include",
+		"Astra/vendor/Assimp/include",
 		
 		-- Header Only
 		"Astra/vendor/spdlog/include",
@@ -151,6 +154,7 @@ project "TestGame"
 		"Astra/vendor/GLFW/lib",
 		"Astra/vendor/OpenALSoft/lib",
 		"Astra/vendor/FreeType/lib",
+		"Astra/vendor/Assimp/lib",
 	}
 
 	links
@@ -160,7 +164,8 @@ project "TestGame"
 		"opengl32",
 		"glew32s",
 		"OpenAL32.lib",
-		"freetype28MT.lib"
+		"freetype28MT.lib",
+		"assimp-vc142-mt.lib"
 	}
 
 	filter "system:windows"
@@ -176,7 +181,8 @@ project "TestGame"
 		postbuildcommands
 		{
 			-- Post build copy of required OpenAL dll
-			("{COPY} ../Astra/vendor/OpenALSoft/lib/OpenAL32.dll ../bin/" .. outputdir .."/TestGame")
+			("{COPY} ../Astra/vendor/OpenALSoft/lib/OpenAL32.dll ../bin/" .. outputdir .."/TestGame"),
+			("{COPY} ../Astra/vendor/Assimp/lib/assimp-vc142-mt.dll ../bin/" .. outputdir .."/TestGame")
 		}
 
 	filter "configurations:Debug"

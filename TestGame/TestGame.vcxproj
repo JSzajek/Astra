@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ASTRA_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;ASTRA_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Astra\src;..\Astra\vendor\GLEW\include;..\Astra\vendor\GLFW\include;..\Astra\vendor\OpenALSoft\include;..\Astra\vendor\FreeType\include;..\Astra\vendor\spdlog\include;..\Astra\vendor\stb_image;..\Astra\vendor\dr_lib;..\Astra\vendor\rectpack2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Astra\src;..\Astra\vendor\GLEW\include;..\Astra\vendor\GLFW\include;..\Astra\vendor\OpenALSoft\include;..\Astra\vendor\FreeType\include;..\Astra\vendor\Assimp\include;..\Astra\vendor\spdlog\include;..\Astra\vendor\stb_image;..\Astra\vendor\dr_lib;..\Astra\vendor\rectpack2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -88,11 +88,12 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\Astra\vendor\GLEW\lib;..\Astra\vendor\GLFW\lib;..\Astra\vendor\OpenALSoft\lib;..\Astra\vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Astra\vendor\GLEW\lib;..\Astra\vendor\GLFW\lib;..\Astra\vendor\OpenALSoft\lib;..\Astra\vendor\FreeType\lib;..\Astra\vendor\Assimp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Debug-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Debug-x86\TestGame &gt; nul)</Command>
+      <Command>IF EXIST ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Debug-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Debug-x86\TestGame &gt; nul)
+IF EXIST ..\Astra\vendor\Assimp\lib\assimp-vc142-mt.dll\ (xcopy /Q /E /Y /I ..\Astra\vendor\Assimp\lib\assimp-vc142-mt.dll ..\bin\windows-Debug-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ..\Astra\vendor\Assimp\lib\assimp-vc142-mt.dll ..\bin\windows-Debug-x86\TestGame &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -100,7 +101,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ASTRA_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;ASTRA_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Astra\src;..\Astra\vendor\GLEW\include;..\Astra\vendor\GLFW\include;..\Astra\vendor\OpenALSoft\include;..\Astra\vendor\FreeType\include;..\Astra\vendor\spdlog\include;..\Astra\vendor\stb_image;..\Astra\vendor\dr_lib;..\Astra\vendor\rectpack2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Astra\src;..\Astra\vendor\GLEW\include;..\Astra\vendor\GLFW\include;..\Astra\vendor\OpenALSoft\include;..\Astra\vendor\FreeType\include;..\Astra\vendor\Assimp\include;..\Astra\vendor\spdlog\include;..\Astra\vendor\stb_image;..\Astra\vendor\dr_lib;..\Astra\vendor\rectpack2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -113,11 +114,12 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\Astra\vendor\GLEW\lib;..\Astra\vendor\GLFW\lib;..\Astra\vendor\OpenALSoft\lib;..\Astra\vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Astra\vendor\GLEW\lib;..\Astra\vendor\GLFW\lib;..\Astra\vendor\OpenALSoft\lib;..\Astra\vendor\FreeType\lib;..\Astra\vendor\Assimp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul)</Command>
+      <Command>IF EXIST ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Release-x86\TestGame &gt; nul)
+IF EXIST ..\Astra\vendor\Assimp\lib\assimp-vc142-mt.dll\ (xcopy /Q /E /Y /I ..\Astra\vendor\Assimp\lib\assimp-vc142-mt.dll ..\bin\windows-Release-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ..\Astra\vendor\Assimp\lib\assimp-vc142-mt.dll ..\bin\windows-Release-x86\TestGame &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
@@ -125,7 +127,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ASTRA_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;ASTRA_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Astra\src;..\Astra\vendor\GLEW\include;..\Astra\vendor\GLFW\include;..\Astra\vendor\OpenALSoft\include;..\Astra\vendor\FreeType\include;..\Astra\vendor\spdlog\include;..\Astra\vendor\stb_image;..\Astra\vendor\dr_lib;..\Astra\vendor\rectpack2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Astra\src;..\Astra\vendor\GLEW\include;..\Astra\vendor\GLFW\include;..\Astra\vendor\OpenALSoft\include;..\Astra\vendor\FreeType\include;..\Astra\vendor\Assimp\include;..\Astra\vendor\spdlog\include;..\Astra\vendor\stb_image;..\Astra\vendor\dr_lib;..\Astra\vendor\rectpack2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -138,8 +140,8 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\Astra\vendor\GLEW\lib;..\Astra\vendor\GLFW\lib;..\Astra\vendor\OpenALSoft\lib;..\Astra\vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Astra\vendor\GLEW\lib;..\Astra\vendor\GLFW\lib;..\Astra\vendor\OpenALSoft\lib;..\Astra\vendor\FreeType\lib;..\Astra\vendor\Assimp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>IF EXIST res\**.obj\ (xcopy /Q /E /Y /I res\**.obj ..\bin\windows-Dist-x86\TestGame\res &gt; nul) ELSE (xcopy /Q /Y /I res\**.obj ..\bin\windows-Dist-x86\TestGame\res &gt; nul)
@@ -151,7 +153,8 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
 IF EXIST res\audio\**.wav\ (xcopy /Q /E /Y /I res\audio\**.wav ..\bin\windows-Dist-x86\TestGame\res\audio &gt; nul) ELSE (xcopy /Q /Y /I res\audio\**.wav ..\bin\windows-Dist-x86\TestGame\res\audio &gt; nul)</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>IF EXIST ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul)</Command>
+      <Command>IF EXIST ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll\ (xcopy /Q /E /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ..\Astra\vendor\OpenALSoft\lib\OpenAL32.dll ..\bin\windows-Dist-x86\TestGame &gt; nul)
+IF EXIST ..\Astra\vendor\Assimp\lib\assimp-vc142-mt.dll\ (xcopy /Q /E /Y /I ..\Astra\vendor\Assimp\lib\assimp-vc142-mt.dll ..\bin\windows-Dist-x86\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ..\Astra\vendor\Assimp\lib\assimp-vc142-mt.dll ..\bin\windows-Dist-x86\TestGame &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
