@@ -30,7 +30,7 @@ namespace Astra::Graphics
 		
 		void Render();
 		void SetDirectionalLight(const Light* light);
-		inline void Clear() { m_renderer->Clear(); }
+		//inline void Clear() { m_renderer->Clear(); }
 
 		inline void SetCamera(Camera* camera) { m_box->SetCamera(camera); }
 		inline void AddEntity(const Entity* entity) { m_renderer->AddEntity(entity); }

@@ -75,8 +75,8 @@ namespace Astra::Graphics
 		}
 	}
 
-	void ParticleController::ClearImpl()
-	{
-		m_particleRenderer->Clear();
-	}
+	//void ParticleController::ClearImpl()
+	//{
+	//	m_particleRenderer->Clear();
+	//}
 }
