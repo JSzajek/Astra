@@ -13,6 +13,8 @@
 #include "Astra/graphics/shaders/WaterShader.h"
 #include "Astra/graphics/shaders/GizmoShader.h"
 
+#include "Astra/graphics/entities/utility/Model.h"
+
 namespace Astra
 {
 	Layer3D::Layer3D()
@@ -23,9 +25,6 @@ namespace Astra
 
 	{
 		Init();
-
-		Assimp::Importer importer;
-		const aiScene* scenea = importer.ReadFile("res/barrel.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
 
 		m_postProcessor = new Graphics::PostProcessor();
 		m_selectionRenderer = new Graphics::SelectionRenderer();

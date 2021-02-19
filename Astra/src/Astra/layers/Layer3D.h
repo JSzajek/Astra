@@ -29,11 +29,6 @@
 
 #include "Astra/graphics/gizmos/GizmoController.h"
 
-
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 namespace Astra
 {
 	#define FULL_SELECTION		1
