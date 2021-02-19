@@ -30,7 +30,7 @@ private:
     Image* image;
     Vec3* particleCenter;
     ToggleButton* vsycnToggle;
-    ToggleButton* multisamplingToggle;
+    Button* multisamplingButton;
     ToggleButton* bloomToggle;
     ToggleButton* hdrToggle;
     ToggleButton* reflectionToggle;
@@ -45,7 +45,7 @@ private:
 public:
     void OnButtonPress()
     {
-        /*image->operator()(ROTATION, SUM_EQ, 5);*/
+        image->operator()(ROTATION, SUM_EQ, 5);
     }
 
     void ToggleVsync(bool enabled)
@@ -54,10 +54,14 @@ public:
         GetWindow().SetVSync(enabled);
     }
 
-    void ToggleMultiSampling(bool enabled)
+    void ToggleMultiSampling()
     {
-        multisamplingToggle->SetText(enabled ? "Multi: 4" : "Multi: 0");
-        GetWindow().SetMultisampling(enabled ? 4 : 0);
+        static int multisampling = 0;
+        multisampling += 1;
+        multisampling %= 5; // Current Max multi sampling 4 - check:   glGetInteger64v(GL_MAX_SAMPLES) for maximum sampling?
+        std::string text = "Multi: " + std::to_string(multisampling);
+        multisamplingButton->SetText(text);
+        GetWindow().SetMultisampling(multisampling);
     }
 
     void ToggleBloomSampling(bool enabled)
@@ -129,12 +133,12 @@ public:
         scene->AddGui(vsycnToggle, 1);
         vsycnToggle->SetOnToggled(std::bind(&TestGame::ToggleVsync, this, std::placeholders::_1));
 
-        multisamplingToggle = new ToggleButton(buttonMat, Vec2(850, 50), Vec2(1));
-        multisamplingToggle->SetHoverColor(Color::Red);
-        multisamplingToggle->SetToggledColor(Color::Green);
-        multisamplingToggle->SetText("Multi: 0");
-        scene->AddGui(multisamplingToggle, 1);
-        multisamplingToggle->SetOnToggled(std::bind(&TestGame::ToggleMultiSampling, this, std::placeholders::_1));
+        multisamplingButton = new Button(buttonMat, Vec2(850, 50), Vec2(1));
+        multisamplingButton->SetHoverColor(Color::Red);
+        multisamplingButton->SetPressedColor(Color::Green);
+        multisamplingButton->SetText("Multi: 0");
+        scene->AddGui(multisamplingButton, 1);
+        multisamplingButton->SetOnPressed(std::bind(&TestGame::ToggleMultiSampling, this));
 
         bloomToggle = new ToggleButton(buttonMat, Vec2(850, 90), Vec2(1));
         bloomToggle->SetHoverColor(Color::Red);
