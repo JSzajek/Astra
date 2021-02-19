@@ -19,12 +19,12 @@ namespace Astra
 		: m_reflectionClipPlane(Math::Vec4(0, 1, 0, 0)), m_refractionClipPlane(Math::Vec4(0, -1, 0, 0)),
 			m_projectionMatrix(new Math::Mat4(1)), m_toShadowMapMatrix(new Math::Mat4(1)),
 			m_fogColor(new Graphics::Color(0.5f, 0.6f, 0.6f, 1.0f)), 
-			m_viewMatrix(NULL), m_mainCamera(NULL), m_skybox(NULL), m_mainLight(NULL)
+			m_viewMatrix(NULL), m_mainCamera(NULL), m_skybox(NULL), m_mainLight(NULL),
+			m_postProcessor(NULL), m_waterBuffer(NULL)
 
 	{
 		Init();
 
-		m_postProcessor = new Graphics::PostProcessor();
 		m_selectionRenderer = new Graphics::SelectionRenderer();
 		m_shadowMapController = new Graphics::ShadowMapController(FieldOfView, NearPlane, FarPlane);
 
@@ -33,10 +33,6 @@ namespace Astra
 		m_terrainRenderer = new Graphics::TerrainRenderer(m_fogColor);
 		m_normalEntityRenderer = new Graphics::NormalEntity3dRenderer(m_fogColor);
 		m_waterRenderer = new Graphics::WaterRenderer(NearPlane, FarPlane);
-
-		m_waterBuffer = Graphics::Loader::LoadWaterFrameBuffer(DefaultReflectionWidth, DefaultReflectionHeight,
-																DefaultRefractionWidth, DefaultRefractionHeight);
-		m_waterRenderer->SetFrameBuffer(m_waterBuffer);
 
 		m_terrainRenderer->SetShadowMatrix(m_toShadowMapMatrix);
 		m_entityRenderer->SetShadowMatrix(m_toShadowMapMatrix);
@@ -136,6 +132,12 @@ namespace Astra
 		auto [width, height] = Application::Get().GetWindow().GetSize();
 		UpdateScreen(width, height);
 
+		// TODO: Load from app settings
+		SetMultisampling(Application::Get().GetWindow().IsMultisampling());
+		SetHDR(Application::Get().GetWindow().IsHDR());
+		SetBloom(Application::Get().GetWindow().IsBloom());
+		SetReflections(Application::Get().GetWindow().IsReflecting());
+
 		m_attached = true;
 	}
 
@@ -171,26 +173,11 @@ namespace Astra
 			Render(delta, m_viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_refractionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 		}
+		
+		PreRender(delta);
 		Math::Vec4 inverseView = m_viewMatrix->Inverse() * Math::Vec4::W_Axis;
-		
-		PrepareRender(delta);
-		
-		// Renders entities and to stencil buffer when selected
-		Render(delta, inverseView, false); 
-
-		// Renders outline based on stencil buffer
-		glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-		m_selectionRenderer->Draw(0, m_entities[EntityType::Selected], m_viewMatrix);
-
-		Graphics::ParticleController::Render(m_viewMatrix);
-		
-		// Perform Post Processing Effects
-		m_postProcessor->Detach();
-		m_postProcessor->Draw();
-
-	#if ASTRA_DEBUG
-		Graphics::GizmoController::Render(m_viewMatrix);
-	#endif
+		Render(delta, inverseView, false); // Renders entities and to stencil buffer when selected
+		PostRender();
 	}
 
 	void Layer3D::SetSelectionColor(const Graphics::Color& color)
@@ -225,19 +212,25 @@ namespace Astra
 		m_selectionRenderer->UpdateProjectionMatrix(m_projectionMatrix);
 		m_skyboxRenderer->UpdateProjectionMatrix(m_projectionMatrix);
 		m_waterRenderer->UpdateProjectionMatrix(m_projectionMatrix);
-		m_postProcessor->UpdateScreenRatio(width, height);
+		if (m_postProcessor) 
+		{
+			m_postProcessor->UpdateScreenRatio(width, height);
+		}
 		Graphics::ParticleController::UpdateProjectionMatrix(m_projectionMatrix);
 	#if ASTRA_DEBUG
 		Graphics::GizmoController::UpdateProjectionMatrix(m_projectionMatrix);
 	#endif
 	}
 
-	void Layer3D::PrepareRender(float delta)
+	void Layer3D::PreRender(float delta)
 	{
 		Graphics::ParticleController::Update(delta, m_mainCamera->GetTranslation());
 
 		// Connect Post Processing Buffer
-		m_postProcessor->Attach();
+		if (m_postProcessor)
+		{
+			m_postProcessor->Attach();
+		}
 
 		glActiveTexture(GL_TEXTURE6);
 		glBindTexture(GL_TEXTURE_2D, m_shadowMapController->GetShadowMap());
@@ -265,6 +258,26 @@ namespace Astra
 			m_normalEntityRenderer->Draw(delta, m_entities[EntityType::NormalMapped], m_viewMatrix, inverseViewVector, clipPlane);
 			m_skyboxRenderer->Draw(delta, m_viewMatrix, NULL);
 		}
+	}
+
+	void Layer3D::PostRender()
+	{
+		// Renders outline based on stencil buffer
+		glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		m_selectionRenderer->Draw(0, m_entities[EntityType::Selected], m_viewMatrix);
+
+		Graphics::ParticleController::Render(m_viewMatrix);
+
+		// Perform Post Processing Effects
+		if (m_postProcessor)
+		{
+			m_postProcessor->Detach();
+			m_postProcessor->Draw();
+		}
+
+	#if ASTRA_DEBUG
+		Graphics::GizmoController::Render(m_viewMatrix);
+	#endif
 	}
 
 	void Layer3D::EmplaceEntity(unsigned int listIndex, const Graphics::Entity* entity)
@@ -304,4 +317,122 @@ namespace Astra
 		}
 	}
 #endif
+
+	void Layer3D::SetMultisampling(unsigned int sampleSize)
+	{
+		if (sampleSize > 0)
+		{
+			if (!m_postProcessor)
+			{
+				m_postProcessor = new Graphics::PostProcessor();
+				auto [width, height] = Application::Get().GetWindow().GetSize();
+				m_postProcessor->UpdateScreenRatio(width, height);
+			}
+			else
+			{
+				m_postProcessor->SetMultisampling(sampleSize);
+			}
+		}
+		else
+		{
+			if (m_postProcessor)
+			{
+				m_postProcessor->SetMultisampling(sampleSize);
+				if (m_postProcessor->IsEmpty())
+				{
+					delete m_postProcessor;
+					m_postProcessor = NULL;
+				}
+			}
+		}
+	}
+
+	void Layer3D::SetBloom(bool enabled)
+	{
+		if (enabled)
+		{
+			if (!m_postProcessor)
+			{
+				m_postProcessor = new Graphics::PostProcessor();
+				auto [width, height] = Application::Get().GetWindow().GetSize();
+				m_postProcessor->UpdateScreenRatio(width, height);
+			}
+			else
+			{
+				m_postProcessor->SetBloomEffect(enabled);
+			}
+		}
+		else
+		{
+			if (m_postProcessor)
+			{
+				m_postProcessor->SetBloomEffect(enabled);
+				if (m_postProcessor->IsEmpty())
+				{
+					delete m_postProcessor;
+					m_postProcessor = NULL;
+				}
+			}
+		}
+	}
+
+	void Layer3D::SetHDR(bool enabled)
+	{
+		if (enabled)
+		{
+			if (!m_postProcessor)
+			{
+				m_postProcessor = new Graphics::PostProcessor();
+				auto [width, height] = Application::Get().GetWindow().GetSize();
+				m_postProcessor->UpdateScreenRatio(width, height);
+			}
+			else
+			{
+				m_postProcessor->SetHDR(enabled);
+			}
+
+			if (m_waterBuffer)
+			{
+				Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetReflectionBuffer(), DefaultReflectionWidth, DefaultReflectionHeight, enabled, false);
+				Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetRefractionBuffer(), DefaultRefractionWidth, DefaultRefractionHeight, enabled, false);
+			}
+		}
+		else
+		{
+			if (m_postProcessor)
+			{
+				m_postProcessor->SetHDR(enabled);
+				if (m_postProcessor->IsEmpty())
+				{
+					delete m_postProcessor;
+					m_postProcessor = NULL;
+				}
+			}
+
+			if (m_waterBuffer)
+			{
+				Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetReflectionBuffer(), DefaultReflectionWidth, DefaultReflectionHeight, enabled, false);
+				Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetRefractionBuffer(), DefaultRefractionWidth, DefaultRefractionHeight, enabled, false);
+			}
+		}
+	}
+
+	void Layer3D::SetReflections(bool enabled)
+	{
+		if (enabled && !m_waterBuffer)
+		{
+			m_waterBuffer = Graphics::Loader::LoadWaterFrameBuffer(DefaultReflectionWidth, DefaultReflectionHeight,
+																	DefaultRefractionWidth, DefaultRefractionHeight);
+		}
+		else
+		{
+			if (m_waterBuffer)
+			{
+				delete m_waterBuffer;
+				m_waterBuffer = NULL;
+			}
+		}
+		m_waterRenderer->SetFrameBuffer(m_waterBuffer);
+		m_waterRenderer->SetReflection(enabled);
+	}
 }

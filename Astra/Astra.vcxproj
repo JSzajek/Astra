@@ -153,6 +153,7 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\Application.h" />
     <ClInclude Include="src\Astra\Core.h" />
     <ClInclude Include="src\Astra\EntryPoint.h" />
+    <ClInclude Include="src\Astra\graphics\guis\ToggleButton.h" />
     <ClInclude Include="src\Astra\graphics\renderers\SelectionRenderer.h" />
     <ClInclude Include="src\Astra\graphics\shaders\BasicEntityShader.h" />
     <ClInclude Include="src\Astra\Log.h" />
@@ -211,7 +212,6 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\graphics\particles\ParticleController.h" />
     <ClInclude Include="src\Astra\graphics\particles\ParticleSystem.h" />
     <ClInclude Include="src\Astra\graphics\post_processing\BloomEffect.h" />
-    <ClInclude Include="src\Astra\graphics\post_processing\ContrastEffect.h" />
     <ClInclude Include="src\Astra\graphics\post_processing\HDREffect.h" />
     <ClInclude Include="src\Astra\graphics\post_processing\HorizontalBlurEffect.h" />
     <ClInclude Include="src\Astra\graphics\post_processing\ImageEffect.h" />
@@ -228,7 +228,6 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\graphics\renderers\TerrainRenderer.h" />
     <ClInclude Include="src\Astra\graphics\renderers\WaterRenderer.h" />
     <ClInclude Include="src\Astra\graphics\shaders\BloomShader.h" />
-    <ClInclude Include="src\Astra\graphics\shaders\ContrastShader.h" />
     <ClInclude Include="src\Astra\graphics\shaders\EntityShader.h" />
     <ClInclude Include="src\Astra\graphics\shaders\FontShader.h" />
     <ClInclude Include="src\Astra\graphics\shaders\GizmoShader.h" />
@@ -352,7 +351,6 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <None Include="res\fonts\calibri.ttf" />
     <None Include="res\shaders\BasicEntity.shader" />
     <None Include="res\shaders\Bloom.shader" />
-    <None Include="res\shaders\Contrast.shader" />
     <None Include="res\shaders\Entity.shader" />
     <None Include="res\shaders\FinalBloom.shader" />
     <None Include="res\shaders\Font.shader" />

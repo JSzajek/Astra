@@ -135,6 +135,13 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
+	void WaterRenderer::SetReflection(bool enabled)
+	{
+		m_shader->Start();
+		m_shader->SetUniform1i(REFLECTION_TAG, (int)enabled);
+		m_shader->Stop();
+	}
+
 	void WaterRenderer::PrepareRender()
 	{
 		glBindVertexArray(m_defaultQuad->vaoId);

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ImageEffect.h"
-#include "../shaders/HorizontalBlurShader.h"
+#include "Astra/graphics/shaders/HorizontalBlurShader.h"
 
 namespace Astra::Graphics
 {
@@ -13,6 +13,8 @@ namespace Astra::Graphics
 		HorizontalBlurEffect(int width, int height, unsigned int squeezeRatio)
 			: ImageEffect(new HorizontalBlurShader(), width, height, 1, true, GL_CLAMP_TO_EDGE), m_squeezeRatio(squeezeRatio)
 		{
+			m_type = EffectType::Blur;
+
 			m_shader->Start();
 			m_shader->SetUniform1f(TARGET_WIDTH_TAG, static_cast<float>(width));
 			m_shader->Stop();

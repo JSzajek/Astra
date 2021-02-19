@@ -1,8 +1,8 @@
 #include "astra_pch.h"
 
 #include "ParticleMaterial.h"
-#include "../loaders/Loader.h"
-#include "../ResourceManager.h"
+#include "Astra/graphics/loaders/Loader.h"
+#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -13,6 +13,11 @@ namespace Astra::Graphics
 
 	ParticleMaterial::~ParticleMaterial()
 	{
-		ResourceManager::Unload(m_texture);
+		RESOURCE_UNLOAD(m_texture);
+	}
+
+	void ParticleMaterial::UpdateDiffuseMap(bool hdr)
+	{
+		Loader::UpdateDiffuseTexture(m_texture, hdr);
 	}
 }

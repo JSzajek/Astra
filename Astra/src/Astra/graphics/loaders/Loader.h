@@ -47,14 +47,14 @@ namespace Astra::Graphics
 			return Get().LoadImpl(drawType, vertices, textureCoords);
 		}
 
-		static const Texture* LoadTexture(const char* const filepath, bool diffuse = true, GLint clippingOption = GL_REPEAT, bool flip = true, bool invert = false)
+		static Texture* LoadTexture(const char* const filepath, bool diffuse = true, GLint clippingOption = GL_REPEAT, bool flip = true, bool invert = false)
 		{
 			return Get().LoadTextureImpl(filepath, diffuse, clippingOption, flip, invert);
 		}
 
-		static const Texture* LoadAtlasTexture(const char* const filepath)
+		static void UpdateDiffuseTexture(Texture* texture, bool hdrEnabled)
 		{
-			return Get().LoadAtlasTextureImpl(filepath);
+			return Get().UpdateDiffuseTextureImpl(texture, hdrEnabled);
 		}
 
 		static const Texture* LoadFontAtlasTexture(const char* const filepath, unsigned int fontSize, const std::vector<unsigned char>& data, unsigned int width, unsigned int height)
@@ -62,9 +62,14 @@ namespace Astra::Graphics
 			return Get().LoadFontAtlasTextureImpl(filepath, fontSize, data, width, height);
 		}
 
-		static const CubeMapTexture* LoadCubeMap(const std::vector<const char*>& filepaths)
+		static CubeMapTexture* LoadCubeMap(const std::vector<const char*>& filepaths)
 		{
 			return Get().LoadCubeMapImpl(filepaths);
+		}
+
+		static void UpdateCubeMap(CubeMapTexture* texture, bool hdrEnabled)
+		{
+			return Get().UpdateCubeMapImpl(texture, hdrEnabled);
 		}
 
 		static WaterFrameBuffer* LoadWaterFrameBuffer(unsigned int reflectionWidth, unsigned int reflectionHeight,
@@ -78,7 +83,7 @@ namespace Astra::Graphics
 			return Get().LoadShadowFrameBufferImpl(width, height);
 		}
 
-		static FrameBuffer* LoadFrameBuffer(unsigned int width, unsigned int height, bool multisampled = false, DepthBufferType depthType = DepthBufferType::None, bool floating = false, unsigned int wrapping = GL_REPEAT)
+		static FrameBuffer* LoadFrameBuffer(unsigned int width, unsigned int height, unsigned int multisampled = 0, DepthBufferType depthType = DepthBufferType::None, bool floating = false, unsigned int wrapping = GL_REPEAT)
 		{
 			return Get().LoadFrameBufferImpl(width, height, multisampled, depthType, floating, wrapping);
 		}
@@ -88,7 +93,7 @@ namespace Astra::Graphics
 			return Get().LoadMultiTargetFrameBufferImpl(width, height, colorAttachments, depthAttachments, floating);
 		}
 
-		static void UpdateFrameBuffer(FrameBuffer* buffer, unsigned int width, unsigned int height, bool floating, bool multisampled)
+		static void UpdateFrameBuffer(FrameBuffer* buffer, unsigned int width, unsigned int height, bool floating, unsigned int multisampled)
 		{
 			return Get().UpdateFrameBufferImpl(buffer, width, height, floating, multisampled);
 		}
@@ -107,26 +112,27 @@ namespace Astra::Graphics
 		const VertexArray* LoadImpl(unsigned int drawType, const std::vector<float>& vertices, unsigned int dimensions);
 		const GLuint LoadImpl(unsigned int drawType, const std::vector<float>& vertices, const std::vector<float>& textureCoords);
 		
-		const Texture* LoadAtlasTextureImpl(const char* const filepath);
 		const Texture* LoadFontAtlasTextureImpl(const char* const filepath, unsigned int fontSize, const std::vector<unsigned char>& data, unsigned int width, unsigned int height);
-		const Texture* LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert);
-		
-		const CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);
+		Texture* LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert);
+		void UpdateDiffuseTextureImpl(Texture* texture, bool hdrEnabled);
+
+		CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);
+		void UpdateCubeMapImpl(CubeMapTexture* texture, bool hdrEnabled);
 
 		WaterFrameBuffer* LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
 												   unsigned int refractionWidth, unsigned int refractionHeight);
 		ShadowFrameBuffer* LoadShadowFrameBufferImpl(unsigned int width, unsigned int height);
-		FrameBuffer* LoadFrameBufferImpl(unsigned int width, unsigned int height, bool multisampled, DepthBufferType depthType, bool floating, unsigned int component);
+		FrameBuffer* LoadFrameBufferImpl(unsigned int width, unsigned int height, unsigned int multisampled, DepthBufferType depthType, bool floating, unsigned int component);
 		FrameBuffer* LoadMultiTargetFrameBufferImpl(unsigned int width, unsigned int height, size_t colorAttachments, size_t depthAttachments, bool floating);
 
 
-		void UpdateFrameBufferImpl(FrameBuffer* buffer, unsigned int width, unsigned int height, bool floating, bool multisampled);
+		void UpdateFrameBufferImpl(FrameBuffer* buffer, unsigned int width, unsigned int height, bool floating, unsigned int multisampled);
 
 		FrameBuffer* CreateFrameBuffer(DepthBufferType type, bool multisampled = false, int drawAttachment = GL_NONE, int readAttachment = GL_NONE);
 		void CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height, bool floating, unsigned int wrapping = GL_REPEAT, size_t offset = 0);
 		GLuint CreateDepthTextureAttachment(GLuint& id, unsigned int width, unsigned int height, int component = GL_DEPTH24_STENCIL8, int filter = GL_LINEAR, int wrap = GL_REPEAT);
-		void CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height, bool multisampled = false, bool floating = false);
-		void CreateColorBufferAttachment(GLuint& id, unsigned int width, unsigned int height, bool multisampled = false, bool floating = false);
+		void CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height, unsigned int multisampled = 0, bool floating = false);
+		void CreateColorBufferAttachment(GLuint& id, unsigned int width, unsigned int height, unsigned int multisampled = 0, bool floating = false);
 		GLuint BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage = GL_STATIC_DRAW, GLboolean normalized = GL_FALSE);
 		GLuint BindIndicesBuffer(const std::vector<int>& data, GLenum usage = GL_STATIC_DRAW);
 

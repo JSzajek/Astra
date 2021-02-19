@@ -58,6 +58,9 @@ namespace Astra::Graphics
 		Color Multiply(const Color& other);
 		friend Color operator*(Color left, const Color& right);
 
+		Color Add(const Color& other);
+		friend Color operator+(Color left, const Color& right);
+
 		inline float GetR() const { return m_data.x; }
 		inline float GetG() const { return m_data.y; }
 		inline float GetB() const { return m_data.z; }

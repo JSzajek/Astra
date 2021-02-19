@@ -22,10 +22,13 @@ namespace Astra::Graphics
 		Texture** m_faces;
 	public:
 		unsigned int id;
+		bool hdr;
 	public:
 		CubeMapTexture(const std::vector<const char*>& filepaths);
 		~CubeMapTexture();
 
 		Texture* operator[](int index); 
+
+		inline const std::vector<const char*>& GetFiles() const { return m_filepaths; }
 	};
 }

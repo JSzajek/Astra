@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <unordered_map>
 
 #include "Astra/graphics/buffers/FrameBuffer.h"
@@ -22,13 +23,22 @@ namespace Astra::Graphics
 	class ResourceManager
 	{
 	
-	#define RESOURCE_UNLOAD(resource, ...) { if (resource != NULL) ResourceManager::Unload(resource, __VA_ARGS__); }
+	#define RESOURCE_UNLOAD(resource, ...) { if (resource != NULL) { ResourceManager::Unload(resource, __VA_ARGS__); resource = NULL; } }
+
+	#define LIST_UNLOAD(list, obj)	for (auto it = list.begin(); it != list.end(); it++)   \
+									{ if (it->second == obj) { list.erase(it); delete obj; break; } }
 
 	private:
 		std::unordered_map<size_t, ImageMaterial*> m_loadedImageMaterials;
 		std::unordered_map<size_t, GuiMaterial*> m_loadedGuiMaterials;
 		std::unordered_map<size_t, FontAtlas*> m_loadedFontAtlases;
+		std::unordered_map<size_t, TerrainMaterial*> m_loadedTerrainMaterials;
+		std::unordered_map<size_t, TerrainMaterialPack*> m_loadedTerrainMaterialPacks;
+		std::unordered_map<size_t, SkyboxMaterial*> m_loadedSkyboxMaterials;
+		std::unordered_map<size_t, WaterMaterial*> m_loadedWaterMaterials;
+		std::unordered_map<size_t, ParticleMaterial*> m_loadedParticleMaterials;
 		std::unordered_map<size_t, Texture*> m_textureDirectory;
+		std::unordered_map<size_t, CubeMapTexture*> m_cubeMapTextureDirectory;
 		std::unordered_map<const void*, unsigned int> m_loaded;
 	public:
 		ResourceManager(const ResourceManager&) = delete;
@@ -43,6 +53,11 @@ namespace Astra::Graphics
 		static bool QueryTexture(const char* filepath, Texture** texture)
 		{
 			return Get().QueryTextureImpl(filepath, texture);
+		}
+
+		static bool QueryTexture(const std::vector<const char*>& filepaths, CubeMapTexture** texture)
+		{
+			return Get().QueryTextureImpl(filepaths, texture);
 		}
 
 		static bool QueryFontAtlasTexture(const char* filepath, unsigned int fontSize, Texture** texture)
@@ -65,25 +80,57 @@ namespace Astra::Graphics
 			return Get().LoadMaterialImpl(diffuse, specular, normalMap, parallaxMap, heightOffset, emission, rowCount, reflectivity, transparent);
 		}
 
+		static TerrainMaterial* LoadTerrainMaterial(const char* filepath)
+		{
+			return Get().LoadTerrainMaterialImpl(filepath);
+		}
+
+		static TerrainMaterialPack* LoadTerrainMaterialPack(const char* background, const char* red, const char* blue, const char* green)
+		{
+			return Get().LoadTerrainMaterialPackImpl(background, red, blue, green);
+		}
+
+		static SkyboxMaterial* LoadSkyboxMaterial(std::vector<const char*> first, std::vector<const char*> second)
+		{
+			return Get().LoadSkyboxMaterialImpl(first, second);
+		}
+
+		static WaterMaterial* LoadWaterMaterial(const char* diffuse = WaterMaterial::DefaultDiffuseMap, 
+												const char* dudvMap = WaterMaterial::DefaultDuDvMap, 
+												const char* normalMap = WaterMaterial::DefaultNormalMap)
+		{
+			return Get().LoadWaterMaterialImpl(diffuse, dudvMap, normalMap);
+		}
+
+		static ParticleMaterial* LoadParticleMaterial(const char* filepath, unsigned int rowCount)
+		{
+			return Get().LoadParticleMaterialImpl(filepath, rowCount);
+		}
+
 		static FontAtlas* LoadFontAtlas(const char* filepath, unsigned int fontSize)
 		{
 			return Get().LoadFontAtlasImpl(filepath, fontSize);
 		}
 
 		static Entity* LoadNormalEntity(const char* filepath, int textureIndex = 0,
-			const Math::Vec3& position = Math::Vec3::Zero,
-			const Math::Vec3& rotation = Math::Vec3::Zero,
-			const Math::Vec3& scale = Math::Vec3::One)
+										const Math::Vec3& position = Math::Vec3::Zero,
+										const Math::Vec3& rotation = Math::Vec3::Zero,
+										const Math::Vec3& scale = Math::Vec3::One)
 		{
 			return Get().LoadEntityImpl(filepath, true, textureIndex, position, rotation, scale);
 		}
 
 		static Entity* LoadEntity(const char* filepath, int textureIndex = 0,
-			const Math::Vec3& position = Math::Vec3::Zero,
-			const Math::Vec3& rotation = Math::Vec3::Zero,
-			const Math::Vec3& scale = Math::Vec3::One)
+								  const Math::Vec3& position = Math::Vec3::Zero,
+								  const Math::Vec3& rotation = Math::Vec3::Zero,
+								  const Math::Vec3& scale = Math::Vec3::One)
 		{
 			return Get().LoadEntityImpl(filepath, false, textureIndex, position, rotation, scale);
+		}
+
+		static void ToggleHDRTextures(bool enabled)
+		{
+			Get().ToggleHDRTexturesImpl(enabled);
 		}
 
 		template <typename T>
@@ -107,6 +154,15 @@ namespace Astra::Graphics
 			if (Get().UnloadResource((void*)ptr))
 			{
 				Get().UnloadTexture(ptr);
+			}
+		}
+
+		/* Template Override */
+		static void Unload(const CubeMapTexture* ptr)
+		{
+			if (Get().UnloadResource((void*)ptr))
+			{
+				Get().UnloadCubeMapTexture(ptr);
 			}
 		}
 
@@ -146,6 +202,51 @@ namespace Astra::Graphics
 			}
 		}
 
+		/* Template Override */
+		static void Unload(const TerrainMaterial* ptr)
+		{
+			if (Get().UnloadResource((void*)ptr))
+			{
+				Get().UnloadTerrainMaterial(ptr);
+			}
+		}
+
+		/* Template Override */
+		static void Unload(const TerrainMaterialPack* ptr)
+		{
+			if (Get().UnloadResource((void*)ptr))
+			{
+				Get().UnloadTerrainMaterialPack(ptr);
+			}
+		}
+
+		/* Template Override */
+		static void Unload(const SkyboxMaterial* ptr)
+		{
+			if (Get().UnloadResource((void*)ptr))
+			{
+				Get().UnloadSkyboxMaterial(ptr);
+			}
+		}
+
+		/* Template Override */
+		static void Unload(const WaterMaterial* ptr)
+		{
+			if (Get().UnloadResource((void*)ptr))
+			{
+				Get().UnloadWaterMaterial(ptr);
+			}
+		}
+
+		/* Template Override */
+		static void Unload(const ParticleMaterial* ptr)
+		{
+			if (Get().UnloadResource((void*)ptr))
+			{
+				Get().UnloadParticleMaterial(ptr);
+			}
+		}
+
 		template <typename T>
 		static void Unload(const T* ptr)
 		{
@@ -160,6 +261,7 @@ namespace Astra::Graphics
 		~ResourceManager();
 		
 		bool QueryTextureImpl(const char* filepath, Texture** texture);
+		bool QueryTextureImpl(const std::vector<const char*>& filepaths, CubeMapTexture** texture);
 		bool QueryFontAtlasTextureImpl(const char* filepath, unsigned int fontSize, Texture** texture);
 
 		Entity* LoadEntityImpl(const char* filepath, bool calcTangents, int textureIndex, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale);
@@ -167,12 +269,28 @@ namespace Astra::Graphics
 		ImageMaterial* LoadMaterialImpl(const char* diffuse, const char* specular, const char* normalMap, const char* parallaxMap, float heightOffset, const char* emission, size_t rowCount, float reflectivity, bool transparent);
 		GuiMaterial* LoadGuiMaterialImpl(const char* filepath, size_t rowCount);
 		FontAtlas* LoadFontAtlasImpl(const char* filepath, unsigned int fontSize);
+	
+		TerrainMaterial* LoadTerrainMaterialImpl(const char* filepath);
+		TerrainMaterialPack* LoadTerrainMaterialPackImpl(const char* background, const char* red, const char* blue, const char* green);
+
+		SkyboxMaterial* LoadSkyboxMaterialImpl(std::vector<const char*> first, std::vector<const char*> second);
+		WaterMaterial* LoadWaterMaterialImpl(const char* diffuse, const char* dudvMap, const char* normalMap);
+
+		ParticleMaterial* LoadParticleMaterialImpl(const char* filepath, unsigned int rowCount);
 	private:
 		void UnloadTexture(const Texture* texture);
+		void UnloadCubeMapTexture(const CubeMapTexture* texture);
 		void UnloadTexture(const Texture* atlas, unsigned int fontSize);
 		void UnloadImageMaterial(const ImageMaterial* material);
 		void UnloadGuiMaterial(const GuiMaterial* material);
 		void UnloadFontAtlas(const FontAtlas* atlas);
+		void UnloadTerrainMaterial(const TerrainMaterial* material);
+		void UnloadTerrainMaterialPack(const TerrainMaterialPack* material);
+		void UnloadSkyboxMaterial(const SkyboxMaterial* material);
+		void UnloadWaterMaterial(const WaterMaterial* material);
+		void UnloadParticleMaterial(const ParticleMaterial* material);
 		bool UnloadResource(void* ptr);
+
+		void ToggleHDRTexturesImpl(bool enabled);
 	};
 }
