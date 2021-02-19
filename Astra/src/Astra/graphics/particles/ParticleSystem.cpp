@@ -2,7 +2,7 @@
 
 #include "ParticleSystem.h"
 #include "ParticleController.h"
-#include "../ResourceManager.h"
+#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -17,7 +17,7 @@ namespace Astra::Graphics
 
 	ParticleSystem::~ParticleSystem()
 	{
-		ResourceManager::Unload(m_material);
+		RESOURCE_UNLOAD(m_material);
 #if ASTRA_DEBUG
 		delete m_gizmo;
 #endif

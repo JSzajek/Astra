@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../buffers/Texture.h"
-#include "../../math/Vec3.h"
+#include "Astra/graphics/buffers/Texture.h"
 
 namespace Astra::Graphics
 {

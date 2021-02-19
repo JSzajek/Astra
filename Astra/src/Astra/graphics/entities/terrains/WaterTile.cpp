@@ -1,30 +1,28 @@
 #include "astra_pch.h"
 
 #include "WaterTile.h"
-#include "../../ResourceManager.h"
+#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {
-	WaterTile::WaterTile(float xCenter, float zCenter, float height, WaterMaterial* const material)
-		: Spatial(), m_size(DefaultSize)
+	WaterTile::WaterTile(float xCenter, float zCenter, float height, float size)
+		: m_size(size), material(ResourceManager::LoadWaterMaterial())
 	{
 		m_rows[0].x = xCenter;
 		m_rows[0].y = height;
 		m_rows[0].z = zCenter;
 		m_rows[2] = m_size;
 		UpdateMatrices();
-		this->material = ResourceManager::Track(material);
 	}
 
-	WaterTile::WaterTile(float xCenter, float zCenter, float height, float size, WaterMaterial* const material)
-		: m_size(size)
+	WaterTile::WaterTile(WaterMaterial* material, float xCenter, float zCenter, float height, float size)
+		: material(material)
 	{
 		m_rows[0].x = xCenter;
 		m_rows[0].y = height;
 		m_rows[0].z = zCenter;
 		m_rows[2] = m_size;
 		UpdateMatrices();
-		this->material = ResourceManager::Track(material);
 	}
 
 	WaterTile::WaterTile(const WaterTile& other)
@@ -35,6 +33,6 @@ namespace Astra::Graphics
 
 	WaterTile::~WaterTile()
 	{
-		ResourceManager::Unload(material);
+		RESOURCE_UNLOAD(material);
 	}
 }

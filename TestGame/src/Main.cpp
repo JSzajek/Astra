@@ -79,14 +79,8 @@ public:
         scene = new Astra::Scene();
         SetCurrentScene(scene);
 
-        TerrainMaterial* grassTerrainMat = new TerrainMaterial("res/textures/grass.jpg");
-        //TerrainMaterial* flowerTerrainMat = new TerrainMaterial("res/textures/grassFlowers.png");
-        TerrainMaterial* mudTerrainMat = new TerrainMaterial("res/textures/mud.png");
-        //TerrainMaterial* pathTerrainMat = new TerrainMaterial("res/textures/path.png");
-
-        //TerrainMaterialPack pack(grassTerrainMat, flowerTerrainMat, mudTerrainMat, pathTerrainMat);
-        TerrainMaterialPack* pack = new TerrainMaterialPack(grassTerrainMat, grassTerrainMat, mudTerrainMat, grassTerrainMat);
-        TerrainMaterial* blendMap = new TerrainMaterial("res/textures/blendMap.png");
+        auto* blendMap = ResourceManager::LoadTerrainMaterial("res/textures/blendMap.png");
+        auto* pack = ResourceManager::LoadTerrainMaterialPack("res/textures/grass.jpg", "res/textures/grass.jpg", "res/textures/mud.png", "res/textures/grass.jpg");
 
         //Terrain terrain = Terrain(0, 0, "res/textures/meteorcrater_heightmap.png", &pack, blendMap);
         Terrain* terrain = new Terrain(0, 0, 40, 4, 0.01f, 4862, pack, blendMap);
@@ -174,7 +168,7 @@ public:
             "res/textures/Default_Night_Skybox/front.png",
         };
 
-        skybox = new SkyboxMaterial(m_textureFiles, m_nightTextureFiles);
+        skybox = ResourceManager::LoadSkyboxMaterial(m_textureFiles, m_nightTextureFiles);
         scene->SetSkyBox(skybox);
 
         Vec3 light_pos = Astra::Math::Vec3(-55, terrain->GetHeightOfTerrain(-55, 55) + 7, 55);
@@ -225,7 +219,7 @@ public:
         entities.emplace_back(container);
         scene->AddEntity(container);
 
-        ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);
+        ParticleMaterial* partMaterial = ResourceManager::LoadParticleMaterial("res/textures/particleAtlas.png", 4);
         particleCenter = new Vec3(-80, terrain->GetHeightOfTerrain(-80, 80) + 5, 80);
 
         ConeParticleSystem* partSystem =  new ConeParticleSystem(partMaterial, particleCenter, 15, 5, -0.1f, 1.5f, 2, true);

@@ -19,7 +19,7 @@ namespace Astra::Graphics
 		WaterFrameBuffer(const WaterFrameBuffer& other);
 		~WaterFrameBuffer();
 
-		const FrameBuffer* GetReflectionBuffer() const { return m_reflectionBuffer; }
-		const FrameBuffer* GetRefractionBuffer() const { return m_refractionBuffer; }
+		FrameBuffer* GetReflectionBuffer() const { return m_reflectionBuffer; }
+		FrameBuffer* GetRefractionBuffer() const { return m_refractionBuffer; }
 	};
 }

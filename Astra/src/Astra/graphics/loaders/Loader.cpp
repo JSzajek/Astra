@@ -1,10 +1,11 @@
 #include "astra_pch.h"
 
-#include "Loader.h"
-#include "Astra/Application.h"
-#include "../ResourceManager.h"
 #include <stb_image/stb_image.h>
 #include <GLFW\glfw3.h>
+
+#include "Loader.h"
+#include "Astra/Application.h"
+#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 { 
@@ -215,34 +216,88 @@ namespace Astra::Graphics
 		stbi_image_free(buffer);
 	}
 
-	const CubeMapTexture* Loader::LoadCubeMapImpl(const std::vector<const char*>& filepaths)
+	CubeMapTexture* Loader::LoadCubeMapImpl(const std::vector<const char*>& filepaths)
 	{
 		static int m_bpp;
 		static unsigned char* buffer;
 
-		CubeMapTexture* resultTexture = new CubeMapTexture(filepaths);
-
-		glGenTextures(1, &resultTexture->id);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, resultTexture->id);
-		stbi_set_flip_vertically_on_load(0); // Don't flip?
-
-		for (size_t i = 0; i < filepaths.size(); i++)
+		CubeMapTexture* texture = NULL;
+		if (ResourceManager::QueryTexture(filepaths, &texture))
 		{
-			auto* texture = (*resultTexture)[i];
-			buffer = stbi_load(std::string(texture->m_filePath).c_str(), &texture->width, &texture->height, &m_bpp, 4);
-			if (buffer)
+			return texture;
+		}
+		else if (texture)
+		{
+			glGenTextures(1, &texture->id);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, texture->id);
+			stbi_set_flip_vertically_on_load(0); // Don't flip?
+			
+			auto hdr = Application::Get().GetWindow().IsHDR();
+
+			for (size_t i = 0; i < filepaths.size(); i++)
 			{
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-				stbi_image_free(buffer);
+				auto* tex = (*texture)[i];
+				buffer = stbi_load(std::string(tex->m_filePath).c_str(), &tex->width, &tex->height, &m_bpp, 4);
+				if (!buffer)
+				{
+					ASTRA_CORE_WARN("Cube Map Texture {0} Did Not Load Correctly.", tex->m_filePath);
+					return NULL;
+				}
+
+				if (buffer)
+				{
+					glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, hdr ? GL_SRGB8_ALPHA8 : GL_RGBA8, tex->width, tex->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+					stbi_image_free(buffer);
+				}
 			}
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+			return texture;
+		}
+		ASTRA_CORE_ERROR("Loader Error in Cube Map Texture Initialization.");
+		return NULL;
+	}
+
+	void Loader::UpdateCubeMapImpl(CubeMapTexture* texture, bool hdrEnabled)
+	{
+		static int m_bpp;
+		static unsigned char* buffer;
+
+		if (texture->hdr == hdrEnabled)
+		{
+			return;
+		}
+
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texture->id);
+		stbi_set_flip_vertically_on_load(false); // Don't flip?
+
+		auto hdr = Application::Get().GetWindow().IsHDR();
+
+		for (size_t i = 0; i < texture->GetFiles().size(); i++)
+		{
+			auto* tex = (*texture)[i];
+			buffer = stbi_load(std::string(tex->m_filePath).c_str(), &tex->width, &tex->height, &m_bpp, 4);
+			if (!buffer)
+			{
+				ASTRA_CORE_WARN("Cube Map Texture {0} Did Not Load Correctly.", tex->m_filePath);
+				return;
+			}
+
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, hdr ? GL_SRGB8_ALPHA8 : GL_RGBA8, tex->width, tex->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+			stbi_image_free(buffer);
 		}
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		return resultTexture;
+
+		texture->hdr = hdrEnabled;
 	}
 
 	WaterFrameBuffer* Loader::LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,

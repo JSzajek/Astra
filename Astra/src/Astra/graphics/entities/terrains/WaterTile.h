@@ -1,21 +1,19 @@
 #pragma once
 
-#include "../Spatial.h"
-#include "../../materials/WaterMaterial.h"
+#include "Astra/graphics/entities/Spatial.h"
+#include "Astra/graphics/materials/WaterMaterial.h"
 
 namespace Astra::Graphics
 {
 	class WaterTile : public Spatial
 	{
 	private:
-		static const constexpr float DefaultSize = 60;
-	private:
 		float m_size;
 	public:
 		WaterMaterial* material;
 	public:
-		WaterTile(float xCenter, float zCenter, float height, WaterMaterial* const material = new WaterMaterial());
-		WaterTile(float xCenter, float zCenter, float height, float size, WaterMaterial* const material = new WaterMaterial());
+		WaterTile(float xCenter, float zCenter, float height, float size);
+		WaterTile(WaterMaterial* material, float xCenter, float zCenter, float height, float size);
 		WaterTile(const WaterTile& other);
 		~WaterTile();
 	};

@@ -62,9 +62,14 @@ namespace Astra::Graphics
 			return Get().LoadFontAtlasTextureImpl(filepath, fontSize, data, width, height);
 		}
 
-		static const CubeMapTexture* LoadCubeMap(const std::vector<const char*>& filepaths)
+		static CubeMapTexture* LoadCubeMap(const std::vector<const char*>& filepaths)
 		{
 			return Get().LoadCubeMapImpl(filepaths);
+		}
+
+		static void UpdateCubeMap(CubeMapTexture* texture, bool hdrEnabled)
+		{
+			return Get().UpdateCubeMapImpl(texture, hdrEnabled);
 		}
 
 		static WaterFrameBuffer* LoadWaterFrameBuffer(unsigned int reflectionWidth, unsigned int reflectionHeight,
@@ -111,7 +116,8 @@ namespace Astra::Graphics
 		Texture* LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert);
 		void UpdateDiffuseTextureImpl(Texture* texture, bool hdrEnabled);
 
-		const CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);
+		CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);
+		void UpdateCubeMapImpl(CubeMapTexture* texture, bool hdrEnabled);
 
 		WaterFrameBuffer* LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
 												   unsigned int refractionWidth, unsigned int refractionHeight);

@@ -391,6 +391,8 @@ namespace Astra
 			{
 				m_postProcessor->SetHDR(enabled);
 			}
+			Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetReflectionBuffer(), DefaultReflectionWidth, DefaultReflectionHeight, enabled, false);
+			Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetRefractionBuffer(), DefaultRefractionWidth, DefaultRefractionHeight, enabled, false);
 		}
 		else
 		{
@@ -403,6 +405,8 @@ namespace Astra
 					m_postProcessor = NULL;
 				}
 			}
+			Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetReflectionBuffer(), DefaultReflectionWidth, DefaultReflectionHeight, enabled, false);
+			Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetRefractionBuffer(), DefaultRefractionWidth, DefaultRefractionHeight, enabled, false);
 		}
 	}
 }

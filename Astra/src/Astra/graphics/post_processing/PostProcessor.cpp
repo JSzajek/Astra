@@ -63,7 +63,7 @@ namespace Astra::Graphics
 		if (sampleSize == 0)
 		{
 			// Turn off multisampling
-			m_screenBuffer = Loader::LoadFrameBuffer(width, height, false, DepthBufferType::Render);
+			m_screenBuffer = Loader::LoadFrameBuffer(width, height, false, DepthBufferType::Render, hdr);
 		}
 		else 
 		{
@@ -103,25 +103,14 @@ namespace Astra::Graphics
 
 	void PostProcessor::SetHDR(bool enabled)
 	{
-		auto hdreffect = (HDREffect*)*(effects.size() == 1 ? effects.begin() : effects.end());
-		if (hdreffect->GetType() == EffectType::Hdr)
-		{
-			((HDREffect*)hdreffect)->SetActive(enabled);
-		}
+		((HDREffect*)*(--effects.end()))->SetActive(enabled);
 
 		// Update loaded diffuse textures
 		ResourceManager::ToggleHDRTextures(enabled);
 
 		// Update framebuffer for hdr - Including ones inside effects
 		auto [width, height] = Application::Get().GetWindow().GetSize();
-		if (m_multisampledBuffer)
-		{
-			Loader::UpdateFrameBuffer(m_multisampledBuffer, width, height, enabled, Application::Get().GetWindow().IsMultisampling());
-		}
-		Loader::UpdateFrameBuffer(m_screenBuffer, width, height, enabled, false);
-		
-		// Image Effect Framebuffers
-
+		UpdateScreenRatio(width, height);
 	}
 
 	bool PostProcessor::IsEmpty()
@@ -132,15 +121,13 @@ namespace Astra::Graphics
 		}
 		if (effects.size() == 1)
 		{
-			return !((HDREffect*)*(effects.size() == 1 ? effects.begin() : effects.end()))->GetActive();
+			return !((HDREffect*)*(--effects.end()))->GetActive();
 		}
 		return false;
 	}
 
 	void PostProcessor::Attach()
 	{
-		if (effects.size() == 0) { return; } // No effects so don't process
-
 		if (m_multisampledBuffer)
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, m_multisampledBuffer->GetId());
@@ -160,8 +147,6 @@ namespace Astra::Graphics
 
 	void PostProcessor::Detach()
 	{
-		if (effects.size() == 0) { return; } // No effects so don't process
-
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		auto [width, height] = Application::Get().GetWindow().GetSize();
 		glViewport(0, 0, width, height);
@@ -169,8 +154,6 @@ namespace Astra::Graphics
 
 	void PostProcessor::Draw()
 	{
-		if (effects.size() == 0) { return; } // No effects so don't process
-
 		glBindVertexArray(m_defaultQuad->vaoId);
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glDisable(GL_DEPTH_TEST);

@@ -10,11 +10,6 @@ int main(int argc, char** argv); // Global entry point definition
 
 namespace Astra
 {
-	#define MULTI_SAMPLE		1
-	#define MULTI_SAMPLE_SIZE	4
-	#define BLOOM				1
-	#define HDR					1
-
 	class ASTRA_API Application
 	{
 	private:

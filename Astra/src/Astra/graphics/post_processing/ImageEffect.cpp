@@ -57,7 +57,7 @@ namespace Astra::Graphics
 		{
 			m_width = width;
 			m_height = height;
-			Loader::UpdateFrameBuffer(m_buffer, width, height, HDR, false);
+			Loader::UpdateFrameBuffer(m_buffer, width, height, Application::Get().GetWindow().IsHDR(), false);
 		}
 	}
 

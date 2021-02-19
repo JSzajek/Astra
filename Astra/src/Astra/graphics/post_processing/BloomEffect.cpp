@@ -101,7 +101,7 @@ namespace Astra::Graphics
 	void BloomEffect::UpdateAspectRatio(unsigned int width, unsigned int height)
 	{
 		ImageEffect::UpdateAspectRatio(width, height);
-		Loader::UpdateFrameBuffer(m_secondBuffer, width, height, HDR, false);
+		Loader::UpdateFrameBuffer(m_secondBuffer, width, height, Application::Get().GetWindow().IsHDR(), false);
 
 		for (auto* blur : m_blurs)
 		{
