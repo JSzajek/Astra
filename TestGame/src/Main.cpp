@@ -33,6 +33,7 @@ private:
     ToggleButton* multisamplingToggle;
     ToggleButton* bloomToggle;
     ToggleButton* hdrToggle;
+    ToggleButton* reflectionToggle;
     std::vector<const Entity*> entities;
     
     const float InGameTimeSpeed = 0.005f;
@@ -47,28 +48,34 @@ public:
         /*image->operator()(ROTATION, SUM_EQ, 5);*/
     }
 
-    void ToggleVsync()
+    void ToggleVsync(bool enabled)
     {
-        vsycnToggle->SetText(vsycnToggle->IsToggled() ? "Vsync: 1" : "Vsync: 0");
-        GetWindow().SetVSync(vsycnToggle->IsToggled());
+        vsycnToggle->SetText(enabled ? "Vsync: 1" : "Vsync: 0");
+        GetWindow().SetVSync(enabled);
     }
 
-    void ToggleMultiSampling()
+    void ToggleMultiSampling(bool enabled)
     {
-        multisamplingToggle->SetText(multisamplingToggle->IsToggled() ? "Multi: 4" : "Multi: 0");
-        GetWindow().SetMultisampling(multisamplingToggle->IsToggled() ? 4 : 0);
+        multisamplingToggle->SetText(enabled ? "Multi: 4" : "Multi: 0");
+        GetWindow().SetMultisampling(enabled ? 4 : 0);
     }
 
-    void ToggleBloomSampling()
+    void ToggleBloomSampling(bool enabled)
     {
-        bloomToggle->SetText(bloomToggle->IsToggled() ? "Bloom: 1" : "Bloom: 0");
-        GetWindow().SetBloom(bloomToggle->IsToggled());
+        bloomToggle->SetText(enabled ? "Bloom: 1" : "Bloom: 0");
+        GetWindow().SetBloom(enabled);
     }
 
-    void ToggleHDR()
+    void ToggleHDR(bool enabled)
     {
-        hdrToggle->SetText(hdrToggle->IsToggled() ? "HDR: 1" : "HDR: 0");
-        GetWindow().SetHDR(hdrToggle->IsToggled());
+        hdrToggle->SetText(enabled ? "HDR: 1" : "HDR: 0");
+        GetWindow().SetHDR(enabled);
+    }
+
+    void ToggleReflection(bool enabled)
+    {
+        reflectionToggle->SetText(enabled ? "Refl: 1" : "Refl: 0");
+        GetWindow().SetReflections(enabled);
     }
 
     TestGame()
@@ -120,28 +127,35 @@ public:
         vsycnToggle->SetToggledColor(Color::Green);
         vsycnToggle->SetText("Vsync: 0");
         scene->AddGui(vsycnToggle, 1);
-        vsycnToggle->SetOnPressed(std::bind(&TestGame::ToggleVsync, this));
+        vsycnToggle->SetOnToggled(std::bind(&TestGame::ToggleVsync, this, std::placeholders::_1));
 
         multisamplingToggle = new ToggleButton(buttonMat, Vec2(850, 50), Vec2(1));
         multisamplingToggle->SetHoverColor(Color::Red);
         multisamplingToggle->SetToggledColor(Color::Green);
         multisamplingToggle->SetText("Multi: 0");
         scene->AddGui(multisamplingToggle, 1);
-        multisamplingToggle->SetOnPressed(std::bind(&TestGame::ToggleMultiSampling, this));
+        multisamplingToggle->SetOnToggled(std::bind(&TestGame::ToggleMultiSampling, this, std::placeholders::_1));
 
         bloomToggle = new ToggleButton(buttonMat, Vec2(850, 90), Vec2(1));
         bloomToggle->SetHoverColor(Color::Red);
         bloomToggle->SetToggledColor(Color::Green);
         bloomToggle->SetText("Bloom: 0");
         scene->AddGui(bloomToggle, 1);
-        bloomToggle->SetOnPressed(std::bind(&TestGame::ToggleBloomSampling, this));
+        bloomToggle->SetOnToggled(std::bind(&TestGame::ToggleBloomSampling, this, std::placeholders::_1));
 
         hdrToggle = new ToggleButton(buttonMat, Vec2(850, 130), Vec2(1));
         hdrToggle->SetHoverColor(Color::Red);
         hdrToggle->SetToggledColor(Color::Green);
         hdrToggle->SetText("HDR: 0");
         scene->AddGui(hdrToggle, 1);
-        hdrToggle->SetOnPressed(std::bind(&TestGame::ToggleHDR, this));
+        hdrToggle->SetOnToggled(std::bind(&TestGame::ToggleHDR, this, std::placeholders::_1));
+
+        reflectionToggle = new ToggleButton(buttonMat, Vec2(850, 170), Vec2(1));
+        reflectionToggle->SetHoverColor(Color::Red);
+        reflectionToggle->SetToggledColor(Color::Green);
+        reflectionToggle->SetText("Refl: 0");
+        scene->AddGui(reflectionToggle, 1);
+        reflectionToggle->SetOnToggled(std::bind(&TestGame::ToggleReflection, this, std::placeholders::_1));
 
         auto* panelMat = ResourceManager::LoadGuiMaterial("res/textures/Panel.png");
         Panel* panel = new Panel(panelMat, Vec2(100, 200), Vec2(1));

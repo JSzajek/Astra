@@ -37,6 +37,8 @@ namespace Astra::Graphics
 		inline void SetFrameBuffer(WaterFrameBuffer* frameBuffer) { m_buffer = frameBuffer; }
 		void AddLight(Light* light);
 		void UpdateLight(const Light* light);
+		
+		void SetReflection(bool enabled);
 	protected:
 		void UnbindVertexArray() override;
 	private:

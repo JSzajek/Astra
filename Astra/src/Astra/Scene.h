@@ -86,5 +86,13 @@ namespace Astra
 				m_3dLayer->SetHDR(enabled);
 			}
 		}
+
+		inline void SetReflections(bool enabled)
+		{
+			if (m_3dLayer)
+			{
+				m_3dLayer->SetReflections(enabled);
+			}
+		}
 	};
 }

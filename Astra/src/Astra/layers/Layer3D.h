@@ -107,6 +107,7 @@ namespace Astra
 		void SetMultisampling(unsigned int sampleSize);
 		void SetBloom(bool enabled);
 		void SetHDR(bool enabled);
+		void SetReflections(bool enabled);
 	public:
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;

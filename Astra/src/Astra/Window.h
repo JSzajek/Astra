@@ -33,6 +33,9 @@ namespace Astra
 		unsigned int m_multisampled;
 		bool m_bloom;
 		bool m_hdr;
+
+		// Quality Effects
+		bool m_reflections;
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
 
@@ -51,11 +54,13 @@ namespace Astra
 		virtual void SetMultisampling(unsigned int sampleSize) = 0;
 		virtual void SetHDR(bool enabled) = 0;
 		virtual void SetBloom(bool enabled) = 0;
+		virtual void SetReflections(bool enabled) = 0;
 
 		inline bool IsVSync() const { return m_vsync; }
 		inline unsigned int IsMultisampling() const { return m_multisampled; }
 		inline bool IsHDR() const { return m_hdr; }
 		inline bool IsBloom() const { return m_bloom; }
+		inline bool IsReflecting() const { return m_reflections; }
 
 		virtual void* GetNativeWindow() const = 0;
 

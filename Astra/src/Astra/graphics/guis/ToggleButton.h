@@ -8,6 +8,8 @@ namespace Astra::Graphics
 	class ToggleButton : public Gui
 	{
 	private:
+		std::function<void(bool enabled)> m_onToggled;
+	private:
 		TextBox m_text;
 		Color m_outputColor;
 		Color m_hoverColor;
@@ -17,7 +19,7 @@ namespace Astra::Graphics
 		bool m_toggled;
 	public:
 		ToggleButton(const GuiMaterial* material, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
-			: Gui(material, position, rotation, scale), m_hoverColor(), m_toggledColor(), m_hovering(0), m_pressing(0), m_text("", position, rotation, scale)
+			: Gui(material, position, rotation, scale), m_hoverColor(), m_toggledColor(), m_hovering(0), m_pressing(0), m_toggled(0), m_text("", position, rotation, scale)
 		{
 			m_rect.SetSize(Math::iVec2(static_cast<int>(m_rows[1].x * Material->GetSize().x), static_cast<int>(m_rows[1].y * Material->GetSize().y)));
 			SetType(GuiType::Toggle);
@@ -29,10 +31,24 @@ namespace Astra::Graphics
 		{
 		}
 
+		inline void SetOnToggled(std::function<void(bool)> func) { m_onToggled = func; }
+
+		inline void OnToggled(bool enabled) 
+		{ 
+			if (m_onToggled)
+			{
+				m_onToggled(enabled);
+			}
+		};
+
 		inline void OnHover() override
 		{
 			Gui::OnHover();
-			if (!m_pressing)
+			if (m_toggled)
+			{
+				m_outputColor = m_modulate * m_toggledColor * m_hoverColor;
+			}
+			else if (!m_pressing)
 			{
 				m_outputColor = m_modulate * m_hoverColor;
 			}
@@ -41,7 +57,11 @@ namespace Astra::Graphics
 		inline void OnExit() override
 		{
 			Gui::OnExit();
-			if (!m_pressing)
+			if (m_toggled)
+			{
+				m_outputColor = m_modulate * m_toggledColor;
+			}
+			else if (!m_pressing)
 			{
 				m_outputColor = m_modulate;
 			}
@@ -50,7 +70,9 @@ namespace Astra::Graphics
 		inline void OnPressed() override
 		{
 			Gui::OnPressed();
-			SetToggled(!m_toggled);
+			m_pressing = true;
+			m_toggled = !m_toggled;
+			OnToggled(m_toggled);
 		}
 
 		inline void OnReleased(bool hovering) override
@@ -59,7 +81,7 @@ namespace Astra::Graphics
 			m_pressing = false;
 			if (!hovering)
 			{
-				m_outputColor = m_toggled ? m_toggledColor : m_modulate;
+				m_outputColor = m_toggled ? m_modulate * m_toggledColor : m_modulate;
 			}
 			else
 			{
@@ -74,18 +96,6 @@ namespace Astra::Graphics
 			}
 		}
 
-		void SetToggled(bool enabled) 
-		{ 
-			m_toggled = enabled;
-			if (m_toggled)
-			{
-				m_outputColor = m_modulate * m_toggledColor;
-			}
-			else
-			{
-				m_outputColor = m_modulate;
-			}
-		}
 		inline bool IsToggled() const { return m_toggled; }
 
 		inline const Color& GetModulate() const override { return m_outputColor; }

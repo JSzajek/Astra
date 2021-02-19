@@ -32,6 +32,7 @@ namespace Astra
 		m_multisampled = 0; 
 		m_bloom = false;
 		m_hdr = false;
+		m_reflections = false;
 
 		Init(properties);
 	}
@@ -202,5 +203,13 @@ namespace Astra
 		auto* scene = Application::Get().GetCurrentScene();
 		if (scene)
 			((Astra::Scene*)scene)->SetBloom(m_bloom);
+	}
+
+	void WindowsWindow::SetReflections(bool enabled)
+	{
+		m_reflections = enabled;
+		auto* scene = Application::Get().GetCurrentScene();
+		if (scene)
+			((Astra::Scene*)scene)->SetReflections(m_reflections);
 	}
 }

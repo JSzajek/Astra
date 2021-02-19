@@ -20,13 +20,10 @@ namespace Astra
 			m_projectionMatrix(new Math::Mat4(1)), m_toShadowMapMatrix(new Math::Mat4(1)),
 			m_fogColor(new Graphics::Color(0.5f, 0.6f, 0.6f, 1.0f)), 
 			m_viewMatrix(NULL), m_mainCamera(NULL), m_skybox(NULL), m_mainLight(NULL),
-			m_postProcessor(NULL)
+			m_postProcessor(NULL), m_waterBuffer(NULL)
 
 	{
 		Init();
-
-		// TODO: Load from app settings
-		SetMultisampling(Application::Get().GetWindow().IsMultisampling());
 
 		m_selectionRenderer = new Graphics::SelectionRenderer();
 		m_shadowMapController = new Graphics::ShadowMapController(FieldOfView, NearPlane, FarPlane);
@@ -36,10 +33,6 @@ namespace Astra
 		m_terrainRenderer = new Graphics::TerrainRenderer(m_fogColor);
 		m_normalEntityRenderer = new Graphics::NormalEntity3dRenderer(m_fogColor);
 		m_waterRenderer = new Graphics::WaterRenderer(NearPlane, FarPlane);
-
-		m_waterBuffer = Graphics::Loader::LoadWaterFrameBuffer(DefaultReflectionWidth, DefaultReflectionHeight,
-																DefaultRefractionWidth, DefaultRefractionHeight);
-		m_waterRenderer->SetFrameBuffer(m_waterBuffer);
 
 		m_terrainRenderer->SetShadowMatrix(m_toShadowMapMatrix);
 		m_entityRenderer->SetShadowMatrix(m_toShadowMapMatrix);
@@ -138,6 +131,12 @@ namespace Astra
 		// Update Projection Matrix
 		auto [width, height] = Application::Get().GetWindow().GetSize();
 		UpdateScreen(width, height);
+
+		// TODO: Load from app settings
+		SetMultisampling(Application::Get().GetWindow().IsMultisampling());
+		SetHDR(Application::Get().GetWindow().IsHDR());
+		SetBloom(Application::Get().GetWindow().IsBloom());
+		SetReflections(Application::Get().GetWindow().IsReflecting());
 
 		m_attached = true;
 	}
@@ -391,8 +390,12 @@ namespace Astra
 			{
 				m_postProcessor->SetHDR(enabled);
 			}
-			Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetReflectionBuffer(), DefaultReflectionWidth, DefaultReflectionHeight, enabled, false);
-			Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetRefractionBuffer(), DefaultRefractionWidth, DefaultRefractionHeight, enabled, false);
+
+			if (m_waterBuffer)
+			{
+				Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetReflectionBuffer(), DefaultReflectionWidth, DefaultReflectionHeight, enabled, false);
+				Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetRefractionBuffer(), DefaultRefractionWidth, DefaultRefractionHeight, enabled, false);
+			}
 		}
 		else
 		{
@@ -405,8 +408,31 @@ namespace Astra
 					m_postProcessor = NULL;
 				}
 			}
-			Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetReflectionBuffer(), DefaultReflectionWidth, DefaultReflectionHeight, enabled, false);
-			Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetRefractionBuffer(), DefaultRefractionWidth, DefaultRefractionHeight, enabled, false);
+
+			if (m_waterBuffer)
+			{
+				Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetReflectionBuffer(), DefaultReflectionWidth, DefaultReflectionHeight, enabled, false);
+				Graphics::Loader::UpdateFrameBuffer(m_waterBuffer->GetRefractionBuffer(), DefaultRefractionWidth, DefaultRefractionHeight, enabled, false);
+			}
 		}
+	}
+
+	void Layer3D::SetReflections(bool enabled)
+	{
+		if (enabled && !m_waterBuffer)
+		{
+			m_waterBuffer = Graphics::Loader::LoadWaterFrameBuffer(DefaultReflectionWidth, DefaultReflectionHeight,
+																	DefaultRefractionWidth, DefaultRefractionHeight);
+		}
+		else
+		{
+			if (m_waterBuffer)
+			{
+				delete m_waterBuffer;
+				m_waterBuffer = NULL;
+			}
+		}
+		m_waterRenderer->SetFrameBuffer(m_waterBuffer);
+		m_waterRenderer->SetReflection(enabled);
 	}
 }

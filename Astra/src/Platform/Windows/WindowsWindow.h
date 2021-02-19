@@ -36,6 +36,7 @@ namespace Astra
 		virtual void SetMultisampling(unsigned int sampleSize) override;
 		virtual void SetHDR(bool enabled) override;
 		virtual void SetBloom(bool enabled) override;
+		virtual void SetReflections(bool enabled) override;
 
 		virtual inline void* GetNativeWindow() const override { return m_window; }
 	private:

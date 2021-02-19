@@ -17,6 +17,8 @@ namespace Astra::Graphics
 	#define MOVE_FACTOR					"moveFactor"
 	#define WAVE_STRENGTH				"waveStrength"
 
+	#define REFLECTION_TAG				"reflectionFlag"
+
 	class WaterShader : public Shader
 	{
 	public:

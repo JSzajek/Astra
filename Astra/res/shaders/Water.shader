@@ -123,72 +123,85 @@ uniform float farPlane;
 uniform float moveFactor;
 uniform float waveStrength;
 
+uniform int reflectionFlag;
+
 vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor);
 
 void main()
 {
-	vec3 viewDir = normalize(v_viewVector);
-
-	vec2 normDeviceSpace = (v_ClipSpace.xy / v_ClipSpace.w) / 2.0 + 0.5;
-	vec2 reflectTexCoords = vec2(normDeviceSpace.x, -normDeviceSpace.y);
-
-	// water depth = floor distance - water distance
-	float waterDepth = (2.0 * nearPlane * farPlane / (farPlane + nearPlane - (2.0 * texture(material.depthMap, normDeviceSpace.xy).r - 1.0) * (farPlane - nearPlane)))
-						- (2.0 * nearPlane * farPlane / (farPlane + nearPlane - (2.0 * gl_FragCoord.z - 1.0) * (farPlane - nearPlane)));
-
-	vec2 distortedTexCoords = texture(material.dudvMap, vec2(v_TexCoordinates.x + moveFactor, v_TexCoordinates.y)).rg * 0.1;
-	distortedTexCoords = v_TexCoordinates + vec2(distortedTexCoords.x, distortedTexCoords.y + moveFactor);
-	vec2 totalDistortion = (texture(material.dudvMap, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength * clamp(waterDepth / 10.0, 0, 1);
-
-	normDeviceSpace += totalDistortion;
-	normDeviceSpace = clamp(normDeviceSpace, 0.001, 0.999);
-
-	reflectTexCoords += totalDistortion;
-	reflectTexCoords.x = clamp(reflectTexCoords.x, 0.001, 0.999);
-	reflectTexCoords.y = clamp(reflectTexCoords.y, -0.999, -0.001);
-
-	vec4 refractColor = texture(material.refractionTexture, normDeviceSpace);
-	vec4 reflectColor = texture(material.reflectionTexture, reflectTexCoords);
-
-	vec4 normalMapColor = texture(material.normalMap, distortedTexCoords);
-	vec3 normal = normalize(vec3(normalMapColor.r * 2.0 - 1.0, normalMapColor.b * 3.0, normalMapColor.g * 2.0 - 1.0));
-
-	float refractiveFactor = dot(viewDir, normal);
-	refractiveFactor = pow(refractiveFactor, 2); // High - Higher reflectivity, Low - Lower reflectivity
-
-	vec3 color = reflectColor.rgb;
-	vec3 specColor = texture(material.specularMap, v_TexCoordinates).rgb;
-
-	float texelSize = 1.0 / mapSize;
-	float total = 0.0;
-	for (int x = -pcfCount; x <= pcfCount; x++)
+	if (reflectionFlag < 1)
 	{
-		for (int y = -pcfCount; y <= pcfCount; y++)
+		// No Reflection so low quality water
+
+		out_Color = texture(material.diffuseMap, v_TexCoordinates);
+		out_Color.a = 0.5f;
+		out_Color.a = min(out_Color.a, v_Visibility);
+	}
+	else
+	{
+		vec3 viewDir = normalize(v_viewVector);
+
+		vec2 normDeviceSpace = (v_ClipSpace.xy / v_ClipSpace.w) / 2.0 + 0.5;
+		vec2 reflectTexCoords = vec2(normDeviceSpace.x, -normDeviceSpace.y);
+
+		// water depth = floor distance - water distance
+		float waterDepth = (2.0 * nearPlane * farPlane / (farPlane + nearPlane - (2.0 * texture(material.depthMap, normDeviceSpace.xy).r - 1.0) * (farPlane - nearPlane)))
+			- (2.0 * nearPlane * farPlane / (farPlane + nearPlane - (2.0 * gl_FragCoord.z - 1.0) * (farPlane - nearPlane)));
+
+		vec2 distortedTexCoords = texture(material.dudvMap, vec2(v_TexCoordinates.x + moveFactor, v_TexCoordinates.y)).rg * 0.1;
+		distortedTexCoords = v_TexCoordinates + vec2(distortedTexCoords.x, distortedTexCoords.y + moveFactor);
+		vec2 totalDistortion = (texture(material.dudvMap, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength * clamp(waterDepth / 10.0, 0, 1);
+
+		normDeviceSpace += totalDistortion;
+		normDeviceSpace = clamp(normDeviceSpace, 0.001, 0.999);
+
+		reflectTexCoords += totalDistortion;
+		reflectTexCoords.x = clamp(reflectTexCoords.x, 0.001, 0.999);
+		reflectTexCoords.y = clamp(reflectTexCoords.y, -0.999, -0.001);
+
+		vec4 refractColor = texture(material.refractionTexture, normDeviceSpace);
+		vec4 reflectColor = texture(material.reflectionTexture, reflectTexCoords);
+
+		vec4 normalMapColor = texture(material.normalMap, distortedTexCoords);
+		vec3 normal = normalize(vec3(normalMapColor.r * 2.0 - 1.0, normalMapColor.b * 3.0, normalMapColor.g * 2.0 - 1.0));
+
+		float refractiveFactor = dot(viewDir, normal);
+		refractiveFactor = pow(refractiveFactor, 2); // High - Higher reflectivity, Low - Lower reflectivity
+
+		vec3 color = reflectColor.rgb;
+		vec3 specColor = texture(material.specularMap, v_TexCoordinates).rgb;
+
+		float texelSize = 1.0 / mapSize;
+		float total = 0.0;
+		for (int x = -pcfCount; x <= pcfCount; x++)
 		{
-			if (v_ShadowCoords.z > texture(material.shadowMap, v_ShadowCoords.xy + vec2(x, y) * texelSize).r + 0.002)
+			for (int y = -pcfCount; y <= pcfCount; y++)
 			{
-				total += 1.0;
+				if (v_ShadowCoords.z > texture(material.shadowMap, v_ShadowCoords.xy + vec2(x, y) * texelSize).r + 0.002)
+				{
+					total += 1.0;
+				}
 			}
 		}
-	}
 
-	total /= (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);;
-	float lightFactor = 1.0 - (total * v_ShadowCoords.w);
-	
-	vec3 totalReflective = CalcDirLight(directionalLight, normal, specColor, viewDir, waterDepth, lightFactor);
-	for (int i = 0; i < NR_POINT_LIGHTS; i++)
-	{
-		totalReflective += CalcPointLight(pointLights[i], normal, specColor, viewDir, waterDepth, lightFactor);
-	}
-	totalReflective += CalcSpotLight(spotLight, normal, specColor, viewDir, waterDepth, lightFactor);
-	totalReflective *= color;
+		total /= (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);;
+		float lightFactor = 1.0 - (total * v_ShadowCoords.w);
 
-	out_Color = mix(vec4(totalReflective, reflectColor.a), refractColor, refractiveFactor);
-	out_Color = mix(out_Color, texture(material.diffuseMap, vec2(0)), 0.25);
-	out_Color.a = clamp(waterDepth / 5.0, 0, 1);
-	out_Color.a = min(out_Color.a, v_Visibility);
+		vec3 totalReflective = CalcDirLight(directionalLight, normal, specColor, viewDir, waterDepth, lightFactor);
+		for (int i = 0; i < NR_POINT_LIGHTS; i++)
+		{
+			totalReflective += CalcPointLight(pointLights[i], normal, specColor, viewDir, waterDepth, lightFactor);
+		}
+		totalReflective += CalcSpotLight(spotLight, normal, specColor, viewDir, waterDepth, lightFactor);
+		totalReflective *= color;
+
+		out_Color = mix(vec4(totalReflective, reflectColor.a), refractColor, refractiveFactor);
+		out_Color = mix(out_Color, texture(material.diffuseMap, vec2(0)), 0.25);
+		out_Color.a = clamp(waterDepth / 5.0, 0, 1);
+		out_Color.a = min(out_Color.a, v_Visibility);
+	}
 }
 
 vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 specColor, vec3 viewDir, float waterDepth, float lightFactor)
