@@ -5,12 +5,21 @@
 
 namespace Astra::Graphics
 {
+	enum EffectType
+	{
+		Default,
+		Bloom,
+		Hdr,
+		Blur
+	};
+
 	class ImageEffect
 	{
 	private:
 		size_t m_totalSteps;
 		bool m_floating;
 	protected:
+		EffectType m_type;
 		size_t m_step;
 		int m_width, m_height;
 		FrameBuffer* m_buffer;
@@ -19,6 +28,9 @@ namespace Astra::Graphics
 		ImageEffect(Shader* shader, size_t totalSteps = 1);
 		ImageEffect(Shader* shader, int width, int height, size_t totalSteps = 1, bool floating = false, unsigned int clamping = GL_LINEAR);
 		virtual ~ImageEffect();
+
+		inline EffectType GetType() const { return m_type; }
+
 		virtual void Start(unsigned int* attachment);
 		virtual void Stop();
 		virtual void UpdateAspectRatio(unsigned int width, unsigned int height);

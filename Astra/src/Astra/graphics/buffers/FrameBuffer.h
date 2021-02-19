@@ -31,7 +31,7 @@ namespace Astra::Graphics
 
 		~FrameBuffer()
 		{
-			glDeleteFramebuffers(1, &m_data[0]);
+			glDeleteFramebuffersEXT(1, &m_data[0]);
 			for (size_t i = 0; i < m_colorAttachmentOffset; i++)
 			{
 				glDeleteTextures(m_colorAttachmentOffset, &GetColorAttachment(i));
@@ -45,7 +45,7 @@ namespace Astra::Graphics
 				}
 				else
 				{
-					glDeleteFramebuffers(1, &GetDepthAttachment(i));
+					glDeleteRenderbuffersEXT(1, &GetDepthAttachment(i));
 				}
 			}
 		}

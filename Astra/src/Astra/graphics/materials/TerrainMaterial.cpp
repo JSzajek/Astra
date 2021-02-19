@@ -1,8 +1,8 @@
 #include "astra_pch.h"
 
 #include "TerrainMaterial.h"
-#include "../loaders/Loader.h"
-#include "../ResourceManager.h"
+#include "Astra/graphics/loaders/Loader.h"
+#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -23,15 +23,20 @@ namespace Astra::Graphics
 
 	TerrainMaterial::~TerrainMaterial()
 	{
-		ResourceManager::Unload(m_texture);
+		RESOURCE_UNLOAD(m_texture);
 	}
 
 	TerrainMaterialPack::~TerrainMaterialPack()
 	{
-		ResourceManager::Unload(backgroundTexture);
-		ResourceManager::Unload(rTexture);
-		ResourceManager::Unload(gTexture);
-		ResourceManager::Unload(bTexture);
-		ResourceManager::Unload(specularTexture);
+		RESOURCE_UNLOAD(backgroundTexture);
+		RESOURCE_UNLOAD(rTexture);
+		RESOURCE_UNLOAD(gTexture);
+		RESOURCE_UNLOAD(bTexture);
+		RESOURCE_UNLOAD(specularTexture);
+	}
+
+	void TerrainMaterial::UpdateDiffuseMap(bool hdr)
+	{
+		Loader::UpdateDiffuseTexture(m_texture, hdr);
 	}
 }

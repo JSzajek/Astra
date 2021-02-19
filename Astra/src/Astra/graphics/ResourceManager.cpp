@@ -29,6 +29,28 @@ namespace Astra::Graphics
 		return false;
 	}
 	
+	bool ResourceManager::QueryTextureImpl(const std::vector<const char*>& filepaths, CubeMapTexture** texture)
+	{
+		std::string combinded;
+		for (const auto* file : filepaths)
+		{
+			combinded += file;
+		}
+		size_t hash = std::hash<std::string>{}(combinded);
+
+		auto found = m_cubeMapTextureDirectory.find(hash);
+		if (found != m_cubeMapTextureDirectory.end())
+		{
+			*texture = found->second;
+			ResourceManager::Track(*texture);
+			return true;
+		}
+		*texture = new CubeMapTexture(filepaths);
+		ResourceManager::Track(*texture);
+		m_cubeMapTextureDirectory[hash] = *texture;
+		return false;
+	}
+
 	bool ResourceManager::QueryFontAtlasTextureImpl(const char* filepath, unsigned int fontSize, Texture** texture)
 	{
 		size_t hash = std::hash<std::string>{}(std::string(filepath));
@@ -122,10 +144,121 @@ namespace Astra::Graphics
 		return material;
 	}
 
+	TerrainMaterial* ResourceManager::LoadTerrainMaterialImpl(const char* filepath)
+	{
+		size_t hash = std::hash<std::string>{}(std::string(filepath));
+
+		auto found = m_loadedTerrainMaterials.find(hash);
+		if (found != m_loadedTerrainMaterials.end())
+		{
+			Track(found->second);
+			return found->second;
+		}
+
+		auto* material = new TerrainMaterial(filepath);
+		Track(material);
+		m_loadedTerrainMaterials[hash] = material;
+		return material;
+	}
+
+	TerrainMaterialPack* ResourceManager::LoadTerrainMaterialPackImpl(const char* background, const char* red, const char* blue, const char* green)
+	{
+		size_t hash = std::hash<std::string>{}(std::string(background) + red + blue + green);
+
+		auto found = m_loadedTerrainMaterialPacks.find(hash);
+		if (found != m_loadedTerrainMaterialPacks.end())
+		{
+			Track(found->second);
+			return found->second;
+		}
+
+		auto* _back = LoadTerrainMaterialImpl(background);
+		auto* _red = LoadTerrainMaterialImpl(red);
+		auto* _blue = LoadTerrainMaterialImpl(blue);
+		auto* _green = LoadTerrainMaterialImpl(green);
+
+		auto* material = new TerrainMaterialPack(_back, _red, _blue, _green);
+		Track(material);
+		m_loadedTerrainMaterialPacks[hash] = material;
+		return material;
+	}
+
+	SkyboxMaterial* ResourceManager::LoadSkyboxMaterialImpl(std::vector<const char*> first, std::vector<const char*> second)
+	{
+		std::string combined = std::string(first[0]);
+		for (size_t i = 1; i < first.size(); i++)
+		{
+			combined += first[i];
+		}
+		for (const auto* file : second)
+		{
+			combined += file;
+		}
+		size_t hash = std::hash<std::string>{}(combined);
+
+		auto found = m_loadedSkyboxMaterials.find(hash);
+		if (found != m_loadedSkyboxMaterials.end())
+		{
+			Track(found->second);
+			return found->second;
+		}
+
+		auto* material = new SkyboxMaterial(first, second);
+		Track(material);
+		m_loadedSkyboxMaterials[hash] = material;
+		return material;
+	}
+
+	WaterMaterial* ResourceManager::LoadWaterMaterialImpl(const char* diffuse, const char* dudvMap, const char* normalMap)
+	{
+		size_t hash = std::hash<std::string>{}(std::string(diffuse) + dudvMap + normalMap);
+
+		auto found = m_loadedWaterMaterials.find(hash);
+		if (found != m_loadedWaterMaterials.end())
+		{
+			Track(found->second);
+			return found->second;
+		}
+
+		auto* material = new WaterMaterial(diffuse, dudvMap, normalMap);
+		Track(material);
+		m_loadedWaterMaterials[hash] = material;
+		return material;
+	}
+
+	ParticleMaterial* ResourceManager::LoadParticleMaterialImpl(const char* filepath, unsigned int rowCount)
+	{
+		size_t hash = std::hash<std::string>{}(filepath);
+
+		auto found = m_loadedParticleMaterials.find(hash);
+		if (found != m_loadedParticleMaterials.end())
+		{
+			Track(found->second);
+			return found->second;
+		}
+
+		auto* material = new ParticleMaterial(filepath, rowCount);
+		Track(material);
+		m_loadedParticleMaterials[hash] = material;
+		return material;
+	}
+
 	void ResourceManager::UnloadTexture(const Texture* texture)
 	{
 		size_t hash = std::hash<std::string>{}(std::string(texture->m_filePath));
 		m_textureDirectory.erase(m_textureDirectory.find(hash));
+		delete texture;
+	}
+
+	void ResourceManager::UnloadCubeMapTexture(const CubeMapTexture* texture)
+	{
+		std::string combinded;
+		for (const auto* file : texture->GetFiles())
+		{
+			combinded += file;
+		}
+		size_t hash = std::hash<std::string>{}(combinded);
+		m_cubeMapTextureDirectory.erase(m_cubeMapTextureDirectory.find(hash));
 		delete texture;
 	}
 	
@@ -139,41 +272,42 @@ namespace Astra::Graphics
 
 	void ResourceManager::UnloadImageMaterial(const ImageMaterial* material)
 	{
-		for (auto it = m_loadedImageMaterials.begin(); it != m_loadedImageMaterials.end(); it++)
-		{
-			if (it->second == material)
-			{
-				m_loadedImageMaterials.erase(it);
-				delete material;
-				break;
-			}
-		}
+		LIST_UNLOAD(m_loadedImageMaterials, material);
 	}
 
 	void ResourceManager::UnloadGuiMaterial(const GuiMaterial* material)
 	{
-		for (auto it = m_loadedGuiMaterials.begin(); it != m_loadedGuiMaterials.end(); it++)
-		{
-			if (it->second == material)
-			{
-				m_loadedGuiMaterials.erase(it);
-				delete material;
-				break;
-			}
-		}
+		LIST_UNLOAD(m_loadedGuiMaterials, material);
 	}
 
 	void ResourceManager::UnloadFontAtlas(const FontAtlas* atlas)
 	{
-		for (auto it = m_loadedFontAtlases.begin(); it != m_loadedFontAtlases.end(); it++)
-		{
-			if (it->second == atlas)
-			{
-				m_loadedFontAtlases.erase(it);
-				delete atlas;
-				break;
-			}
-		}
+		LIST_UNLOAD(m_loadedFontAtlases, atlas);
+	}
+
+	void ResourceManager::UnloadTerrainMaterial(const TerrainMaterial* material)
+	{
+		LIST_UNLOAD(m_loadedTerrainMaterials, material);
+	}
+
+	void ResourceManager::UnloadTerrainMaterialPack(const TerrainMaterialPack* material)
+	{
+		LIST_UNLOAD(m_loadedTerrainMaterialPacks, material);
+	}
+
+	void ResourceManager::UnloadSkyboxMaterial(const SkyboxMaterial* material)
+	{
+		LIST_UNLOAD(m_loadedSkyboxMaterials, material);
+	}
+
+	void ResourceManager::UnloadWaterMaterial(const WaterMaterial* material)
+	{
+		LIST_UNLOAD(m_loadedWaterMaterials, material);
+	}
+
+	void ResourceManager::UnloadParticleMaterial(const ParticleMaterial* material)
+	{
+		LIST_UNLOAD(m_loadedParticleMaterials, material);
 	}
 
 	bool ResourceManager::UnloadResource(void* ptr)
@@ -190,5 +324,29 @@ namespace Astra::Graphics
 			}
 		}
 		return false;
+	}
+
+	void ResourceManager::ToggleHDRTexturesImpl(bool enabled)
+	{
+		for (const auto& image : m_loadedImageMaterials)
+		{
+			image.second->UpdateDiffuseMap(enabled);
+		}
+		for (const auto& terrain : m_loadedTerrainMaterials)
+		{
+			terrain.second->UpdateDiffuseMap(enabled);
+		}
+		for (const auto& water : m_loadedWaterMaterials)
+		{
+			water.second->UpdateDiffuseMap(enabled);
+		}
+		for (const auto& sky : m_loadedSkyboxMaterials)
+		{
+			sky.second->UpdateDiffuseMap(enabled);
+		}
+		for (const auto& particle : m_loadedParticleMaterials)
+		{
+			particle.second->UpdateDiffuseMap(enabled);
+		}
 	}
 }

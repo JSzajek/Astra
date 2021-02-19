@@ -18,6 +18,7 @@ namespace Astra::Graphics
 		Panel,
 		Label,
 		Button,
+		Toggle,
 		Image,
 		TextBox
 	};

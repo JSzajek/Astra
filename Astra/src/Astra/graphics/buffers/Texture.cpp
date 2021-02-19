@@ -9,17 +9,17 @@ namespace Astra::Graphics
 	const char* const Texture::DefaultSpecular = RESOURCE("res/textures/DefaultSpecular.jpg");
 
 	Texture::Texture()
-		: id(0), width(0), height(0), m_filePath(DefaultTexture)
+		: id(0), width(0), height(0), m_filePath(DefaultTexture), hdr(0)
 	{
 	}
 
 	Texture::Texture(const char* const filepath)
-		: id(0), width(0), height(0), m_filePath(filepath)
+		: id(0), width(0), height(0), m_filePath(filepath), hdr(0)
 	{
 	}
 
 	Texture::Texture(unsigned int id, const char* const filepath)
-		: id(id), width(0), height(0), m_filePath(filepath)
+		: id(id), width(0), height(0), m_filePath(filepath), hdr(0)
 	{
 	}
 

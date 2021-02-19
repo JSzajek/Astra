@@ -9,6 +9,7 @@
 #include <GL/glew.h>
 
 #include "Astra/Application.h" // For vsync define - move?
+#include "Astra/Scene.h"
 
 namespace Astra
 {
@@ -27,6 +28,12 @@ namespace Astra
 
 	WindowsWindow::WindowsWindow(const WindowProperties& properties)
 	{
+		m_vsync = false;
+		m_multisampled = 0; 
+		m_bloom = false;
+		m_hdr = false;
+		m_reflections = false;
+
 		Init(properties);
 	}
 
@@ -62,12 +69,8 @@ namespace Astra
 		glfwMakeContextCurrent(m_window);
 		glfwSetWindowUserPointer(m_window, &m_data);
 
-	#if MULTI_SAMPLE
-		glEnable(GL_MULTISAMPLE);
-	#else
-		glDisable(GL_MULTISAMPLE);
-	#endif
-		SetVSync(V_SYNC);
+		SetMultisampling(m_multisampled);
+		SetVSync(m_vsync);
 
 		if (!GLEWInitialized)
 		{
@@ -165,19 +168,48 @@ namespace Astra
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
-		if (enabled)
+		m_vsync = enabled;
+		glfwSwapInterval(m_vsync);
+	}
+
+	void WindowsWindow::SetMultisampling(unsigned int sampleSize)
+	{
+		m_multisampled = sampleSize;
+		if (m_multisampled > 0)
 		{
-			glfwSwapInterval(1);
+			glEnable(GL_MULTISAMPLE);
 		}
 		else
 		{
-			glfwSwapInterval(0);
+			glDisable(GL_MULTISAMPLE);
 		}
-		m_data.VSync = enabled;
+
+		auto* scene = Application::Get().GetCurrentScene();
+		if (scene)
+			((Astra::Scene*)scene)->SetMultisampling(m_multisampled);
 	}
 
-	bool WindowsWindow::IsVSync() const
+	void WindowsWindow::SetHDR(bool enabled)
 	{
-		return m_data.VSync;
+		m_hdr = enabled;
+		auto* scene = Application::Get().GetCurrentScene();
+		if (scene)
+			((Astra::Scene*)scene)->SetHDR(m_hdr);
+	}
+
+	void WindowsWindow::SetBloom(bool enabled)
+	{
+		m_bloom = enabled;
+		auto* scene = Application::Get().GetCurrentScene();
+		if (scene)
+			((Astra::Scene*)scene)->SetBloom(m_bloom);
+	}
+
+	void WindowsWindow::SetReflections(bool enabled)
+	{
+		m_reflections = enabled;
+		auto* scene = Application::Get().GetCurrentScene();
+		if (scene)
+			((Astra::Scene*)scene)->SetReflections(m_reflections);
 	}
 }

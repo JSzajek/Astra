@@ -3,8 +3,8 @@
 #include "PostProcessor.h"
 
 #include "Astra/Application.h"
-#include "../loaders/Loader.h"
-#include "../ResourceManager.h"
+#include "Astra/graphics/loaders/Loader.h"
+#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -12,30 +12,24 @@ namespace Astra::Graphics
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLE_STRIP, { -1, 1, -1, -1, 1, 1, 1, -1 }, 2);
 		auto [width, height] = Application::Get().GetWindow().GetSize();
-	#if MULTI_SAMPLE
-		m_multisampledBuffer = Loader::LoadFrameBuffer(width, height, true, DepthBufferType::Render, HDR);
-		m_screenBuffer = Loader::LoadFrameBuffer(width, height, false, DepthBufferType::Texture, HDR);
-	#else
-		m_multisampledBuffer = NULL;
-		m_screenBuffer = Loader::LoadFrameBuffer(width, height, false, DepthBufferType::Render);
-	#endif
-	#if BLOOM
-		effects.push_back(new BloomEffect(width, height));
-	#endif
-	#if HDR
-		effects.push_back(new HDREffect(true, 1));
-	#else	
-		effects.push_back(new ContrastEffect());
-	#endif
+		auto hdr = Application::Get().GetWindow().IsHDR();
+
+		SetMultisampling(Application::Get().GetWindow().IsMultisampling());
+		
+		if (Application::Get().GetWindow().IsBloom())
+		{
+			effects.push_front(new BloomEffect(width, height));
+		}
+
+		effects.push_back(new HDREffect(hdr, 1));
+		ResourceManager::ToggleHDRTextures(hdr);
 	}
 
 	PostProcessor::~PostProcessor()
 	{
-		ResourceManager::Unload(m_defaultQuad);
-		ResourceManager::Unload(m_screenBuffer);
-	#if MULTI_SAMPLE
-		ResourceManager::Unload(m_multisampledBuffer);
-	#endif
+		RESOURCE_UNLOAD(m_defaultQuad);
+		RESOURCE_UNLOAD(m_screenBuffer);
+		RESOURCE_UNLOAD(m_multisampledBuffer);
 
 		for (const auto* effect : effects)
 		{
@@ -45,23 +39,104 @@ namespace Astra::Graphics
 
 	void PostProcessor::UpdateScreenRatio(unsigned int width, unsigned int height)
 	{
-	#if MULTI_SAMPLE
-		Loader::UpdateFrameBuffer(m_multisampledBuffer, width, height, HDR, true);
-	#endif
-		Loader::UpdateFrameBuffer(m_screenBuffer, width, height, HDR, false);
+		bool hdr = Application::Get().GetWindow().IsHDR();
+
+		if (m_multisampledBuffer)
+		{
+			Loader::UpdateFrameBuffer(m_multisampledBuffer, width, height, hdr, Application::Get().GetWindow().IsMultisampling());
+		}
+		Loader::UpdateFrameBuffer(m_screenBuffer, width, height, hdr, false);
 		for (auto* effect : effects)
 		{
 			effect->UpdateAspectRatio(width, height);
 		}
 	}
 
+	void PostProcessor::SetMultisampling(unsigned int sampleSize)
+	{
+		auto [width, height] = Application::Get().GetWindow().GetSize();
+		bool hdr = Application::Get().GetWindow().IsHDR();
+
+		RESOURCE_UNLOAD(m_screenBuffer);
+		RESOURCE_UNLOAD(m_multisampledBuffer);
+
+		if (sampleSize == 0)
+		{
+			// Turn off multisampling
+			m_screenBuffer = Loader::LoadFrameBuffer(width, height, false, DepthBufferType::Render, hdr);
+		}
+		else 
+		{
+			if (!m_multisampledBuffer)
+			{
+				// Turn on multisample framebuffer
+				m_multisampledBuffer = Loader::LoadFrameBuffer(width, height, sampleSize, DepthBufferType::Render, hdr);
+				m_screenBuffer = Loader::LoadFrameBuffer(width, height, false, DepthBufferType::Texture, hdr);
+			}
+			else
+			{
+				// Resize multisample framebuffer
+				Loader::UpdateFrameBuffer(m_multisampledBuffer, width, height, hdr, sampleSize);
+			}
+		}
+	}
+
+	void PostProcessor::SetBloomEffect(bool enabled)
+	{
+		if (!enabled)
+		{
+			for (auto iter = effects.begin(); iter != effects.end(); iter++)
+			{
+				if ((*iter)->GetType() == EffectType::Bloom)
+				{
+					effects.erase(iter);
+					break;
+				}
+			}
+		}
+		else
+		{
+			auto [width, height] = Application::Get().GetWindow().GetSize();
+			effects.push_front(new BloomEffect(width, height));
+		}
+	}
+
+	void PostProcessor::SetHDR(bool enabled)
+	{
+		((HDREffect*)*(--effects.end()))->SetActive(enabled);
+
+		// Update loaded diffuse textures
+		ResourceManager::ToggleHDRTextures(enabled);
+
+		// Update framebuffer for hdr - Including ones inside effects
+		auto [width, height] = Application::Get().GetWindow().GetSize();
+		UpdateScreenRatio(width, height);
+	}
+
+	bool PostProcessor::IsEmpty()
+	{
+		if (m_multisampledBuffer)
+		{
+			return false;
+		}
+		if (effects.size() == 1)
+		{
+			return !((HDREffect*)*(--effects.end()))->GetActive();
+		}
+		return false;
+	}
+
 	void PostProcessor::Attach()
 	{
-	#if MULTI_SAMPLE
-		glBindFramebuffer(GL_FRAMEBUFFER, m_multisampledBuffer->GetId());
-	#else
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_screenBuffer->GetId());
-	#endif
+		if (m_multisampledBuffer)
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, m_multisampledBuffer->GetId());
+		}
+		else
+		{
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_screenBuffer->GetId());
+		}
+		
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
 			ASTRA_CORE_ERROR("Post Processing Frame Buffer Did Not Attach Correctly.");
@@ -83,31 +158,28 @@ namespace Astra::Graphics
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glDisable(GL_DEPTH_TEST);
 
-	#if MULTI_SAMPLE
-		auto [width, height] = Application::Get().GetWindow().GetSize();
-		ResolveFrameBuffer(m_multisampledBuffer->GetId(), m_screenBuffer->GetId(), width, height, width, height);
-		unsigned int attachment = m_screenBuffer->GetColorAttachment();
-	#else
-		unsigned int attachment = m_screenBuffer->GetColorAttachment();
-	#endif
-		if (effects.size() == 0)
+		unsigned int attachment = 0;
+		if (m_multisampledBuffer)
 		{
-			glClear(GL_COLOR_BUFFER_BIT);
-			glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
+			auto [width, height] = Application::Get().GetWindow().GetSize();
+			ResolveFrameBuffer(m_multisampledBuffer->GetId(), m_screenBuffer->GetId(), width, height, width, height);
+			attachment = m_screenBuffer->GetColorAttachment();
 		}
 		else
 		{
-			for (auto iter = effects.begin(); iter != effects.end();) 
+			attachment = m_screenBuffer->GetColorAttachment();
+		}
+
+		for (auto iter = effects.begin(); iter != effects.end();) 
+		{
+			(*iter)->Start(&attachment);
+			glClear(GL_COLOR_BUFFER_BIT);
+			glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
+			(*iter)->Stop();
+			if ((*iter)->Finished())
 			{
-				(*iter)->Start(&attachment);
-				glClear(GL_COLOR_BUFFER_BIT);
-				glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
-				(*iter)->Stop();
-				if ((*iter)->Finished())
-				{
-					(*iter)->Reset();
-					iter++;
-				}
+				(*iter)->Reset();
+				iter++;
 			}
 		}
 		glEnable(GL_DEPTH_TEST);

@@ -1,8 +1,8 @@
 #include "astra_pch.h"
 
 #include "WaterMaterial.h"
-#include "../loaders/Loader.h"
-#include "../ResourceManager.h"
+#include "Astra/graphics/loaders/Loader.h"
+#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -18,9 +18,9 @@ namespace Astra::Graphics
 		m_specular = Loader::LoadTexture(Texture::DefaultSpecular, false);
 	}
 
-	WaterMaterial::WaterMaterial(const char* const dudvMapFilePath, const char* const normalMapFilePath)
+	WaterMaterial::WaterMaterial(const char* const diffuseFilePath, const char* const dudvMapFilePath, const char* const normalMapFilePath)
 		: waveStrength(DefaultWaveStrength), waveSpeed(DefaultWaveSpeed), shineDampener(DefaultShineDampener),
-			reflectivity(DefaultReflectivity), diffuseTexture(Loader::LoadTexture(DefaultDiffuseMap)), m_currentWaveSpeed(0),
+			reflectivity(DefaultReflectivity), diffuseTexture(Loader::LoadTexture(diffuseFilePath)), m_currentWaveSpeed(0),
 			dudvTexture(Loader::LoadTexture(dudvMapFilePath, false)), normalTexture(Loader::LoadTexture(normalMapFilePath, false))
 	{
 		m_specular = Loader::LoadTexture(Texture::DefaultSpecular, false);
@@ -34,9 +34,14 @@ namespace Astra::Graphics
 
 	WaterMaterial::~WaterMaterial()
 	{
-		ResourceManager::Unload(m_specular);
-		ResourceManager::Unload(diffuseTexture);
-		ResourceManager::Unload(dudvTexture);
-		ResourceManager::Unload(normalTexture);
+		RESOURCE_UNLOAD(m_specular);
+		RESOURCE_UNLOAD(diffuseTexture);
+		RESOURCE_UNLOAD(dudvTexture);
+		RESOURCE_UNLOAD(normalTexture);
+	}
+
+	void WaterMaterial::UpdateDiffuseMap(bool hdr)
+	{
+		Loader::UpdateDiffuseTexture(diffuseTexture, hdr);
 	}
 }

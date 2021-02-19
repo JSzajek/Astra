@@ -27,4 +27,18 @@ namespace Astra::Graphics
 	{
 		return left.Multiply(right);
 	}
+
+	Color Color::Add(const Color& other)
+	{
+		m_data.x += other.GetR();
+		m_data.y += other.GetG();
+		m_data.z += other.GetB();
+		m_data.w += other.GetA();
+		return *this;
+	}
+
+	Color operator+(Color left, const Color& right)
+	{
+		return left.Add(right);
+	}
 }

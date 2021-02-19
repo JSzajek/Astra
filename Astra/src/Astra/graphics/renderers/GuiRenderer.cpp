@@ -55,6 +55,11 @@ namespace Astra::Graphics
 			m_texts.emplace_back(static_cast<Button*>(gui)->GetTextBox());
 			m_textures.emplace_back(gui);
 		}
+		else if (gui->GetType() == GuiType::Toggle)
+		{
+			m_texts.emplace_back(static_cast<ToggleButton*>(gui)->GetTextBox());
+			m_textures.emplace_back(gui);
+		}
 		else if (gui->GetType() == GuiType::TextBox)
 		{
 			m_texts.emplace_back(static_cast<TextBox*>(gui));

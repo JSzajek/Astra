@@ -276,9 +276,6 @@
     <ClInclude Include="src\Astra\graphics\post_processing\BloomEffect.h">
       <Filter>src\Astra\graphics\post_processing</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astra\graphics\post_processing\ContrastEffect.h">
-      <Filter>src\Astra\graphics\post_processing</Filter>
-    </ClInclude>
     <ClInclude Include="src\Astra\graphics\post_processing\HDREffect.h">
       <Filter>src\Astra\graphics\post_processing</Filter>
     </ClInclude>
@@ -331,9 +328,6 @@
       <Filter>src\Astra\graphics\shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\shaders\BloomShader.h">
-      <Filter>src\Astra\graphics\shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Astra\graphics\shaders\ContrastShader.h">
       <Filter>src\Astra\graphics\shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\shaders\EntityShader.h">
@@ -477,6 +471,11 @@
     <ClInclude Include="vendor\stb_image\stb_image\stb_image.h">
       <Filter>vendor\stb_image\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="src\Astra\math\MathsDefines.h" />
+    <ClInclude Include="src\Astra\math\MathsFuncs.h" />
+    <ClInclude Include="src\Astra\graphics\renderers\SelectionRenderer.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\BasicEntityShader.h" />
+    <ClInclude Include="src\Astra\graphics\guis\ToggleButton.h" />
     <ClInclude Include="src\Astra\graphics\entities\utility\Mesh.h" />
     <ClInclude Include="src\Astra\graphics\entities\utility\Model.h" />
   </ItemGroup>
@@ -699,9 +698,6 @@
       <Filter>res\shaders</Filter>
     </None>
     <None Include="res\shaders\Bloom.shader">
-      <Filter>res\shaders</Filter>
-    </None>
-    <None Include="res\shaders\Contrast.shader">
       <Filter>res\shaders</Filter>
     </None>
     <None Include="res\shaders\Entity.shader">
