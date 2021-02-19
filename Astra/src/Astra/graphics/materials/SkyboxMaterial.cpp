@@ -2,7 +2,8 @@
 
 #include "Astra/Log.h"
 #include "SkyboxMaterial.h"
-#include "../loaders/Loader.h"
+#include "Astra/graphics/loaders/Loader.h"
+#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -21,8 +22,8 @@ namespace Astra::Graphics
 
 	SkyboxMaterial::~SkyboxMaterial()
 	{
-		delete m_primaryTexture;
-		delete m_secondaryTexture;
+		RESOURCE_UNLOAD(m_primaryTexture);
+		RESOURCE_UNLOAD(m_secondaryTexture);
 	}
 
 	const unsigned int SkyboxMaterial::GetFirstTextureId() const
@@ -43,5 +44,14 @@ namespace Astra::Graphics
 		}
 		ASTRA_CORE_WARN("SkyboxMaterial: Skybox Secondary Texture Not Set.");
 		return m_primaryTexture->id;
+	}
+
+	void SkyboxMaterial::UpdateDiffuseMap(bool hdr)
+	{
+		Loader::UpdateCubeMap(m_primaryTexture, hdr);
+		if (m_secondaryTexture)
+		{
+			Loader::UpdateCubeMap(m_secondaryTexture, hdr);
+		}
 	}
 }

@@ -27,7 +27,13 @@ private:
     Entity* barrelModel;
     SkyboxMaterial* skybox;
     AudioSource* audioSource;
+    Image* image;
     Vec3* particleCenter;
+    ToggleButton* vsycnToggle;
+    Button* multisamplingButton;
+    ToggleButton* bloomToggle;
+    ToggleButton* hdrToggle;
+    ToggleButton* reflectionToggle;
     std::vector<const Entity*> entities;
     
     const float InGameTimeSpeed = 0.005f;
@@ -37,21 +43,55 @@ private:
     float elapsedTime = 0;
     unsigned int frames = 0;
 public:
+    void OnButtonPress()
+    {
+        image->operator()(ROTATION, SUM_EQ, 5);
+    }
+
+    void ToggleVsync(bool enabled)
+    {
+        vsycnToggle->SetText(enabled ? "Vsync: 1" : "Vsync: 0");
+        GetWindow().SetVSync(enabled);
+    }
+
+    void ToggleMultiSampling()
+    {
+        static int multisampling = 0;
+        multisampling += 1;
+        multisampling %= 5; // Current Max multi sampling 4 - check:   glGetInteger64v(GL_MAX_SAMPLES) for maximum sampling?
+        std::string text = "Multi: " + std::to_string(multisampling);
+        multisamplingButton->SetText(text);
+        GetWindow().SetMultisampling(multisampling);
+    }
+
+    void ToggleBloomSampling(bool enabled)
+    {
+        bloomToggle->SetText(enabled ? "Bloom: 1" : "Bloom: 0");
+        GetWindow().SetBloom(enabled);
+    }
+
+    void ToggleHDR(bool enabled)
+    {
+        hdrToggle->SetText(enabled ? "HDR: 1" : "HDR: 0");
+        GetWindow().SetHDR(enabled);
+    }
+
+    void ToggleReflection(bool enabled)
+    {
+        reflectionToggle->SetText(enabled ? "Refl: 1" : "Refl: 0");
+        GetWindow().SetReflections(enabled);
+    }
+
     TestGame()
         : Application()
     {
-        srand((unsigned)time(0)); 
+        srand((unsigned)time(0));
 
         scene = new Astra::Scene();
+        SetCurrentScene(scene);
 
-        TerrainMaterial* grassTerrainMat = new TerrainMaterial("res/textures/grass.jpg");
-        //TerrainMaterial* flowerTerrainMat = new TerrainMaterial("res/textures/grassFlowers.png");
-        TerrainMaterial* mudTerrainMat = new TerrainMaterial("res/textures/mud.png");
-        //TerrainMaterial* pathTerrainMat = new TerrainMaterial("res/textures/path.png");
-
-        //TerrainMaterialPack pack(grassTerrainMat, flowerTerrainMat, mudTerrainMat, pathTerrainMat);
-        TerrainMaterialPack* pack = new TerrainMaterialPack(grassTerrainMat, grassTerrainMat, mudTerrainMat, grassTerrainMat);
-        TerrainMaterial* blendMap = new TerrainMaterial("res/textures/blendMap.png");
+        auto* blendMap = ResourceManager::LoadTerrainMaterial("res/textures/blendMap.png");
+        auto* pack = ResourceManager::LoadTerrainMaterialPack("res/textures/grass.jpg", "res/textures/grass.jpg", "res/textures/mud.png", "res/textures/grass.jpg");
 
         //Terrain terrain = Terrain(0, 0, "res/textures/meteorcrater_heightmap.png", &pack, blendMap);
         Terrain* terrain = new Terrain(0, 0, 40, 4, 0.01f, 4862, pack, blendMap);
@@ -68,7 +108,7 @@ public:
 
         //const Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
         auto* guiMat = ResourceManager::LoadGuiMaterial("res/textures/grassTexture.png");
-        Image* image = new Image(guiMat, Vec2(10, 200), Vec2(1), 1);
+        image = new Image(guiMat, Vec2(10, 200), Vec2(1), 1);
         image->SetModulate(Color::White);
         scene->AddGui(image, 0);
 
@@ -84,9 +124,42 @@ public:
         button->SetText("button");
         scene->AddGui(button, 2);
 
-        /*button->SetOnPressed([&] {
-            image->operator()(ROTATION, SUM_EQ, 5);
-        });*/
+        button->SetOnPressed(std::bind(&TestGame::OnButtonPress, this));
+
+        vsycnToggle = new ToggleButton(buttonMat, Vec2(850, 10), Vec2(1));
+        vsycnToggle->SetHoverColor(Color::Red);
+        vsycnToggle->SetToggledColor(Color::Green);
+        vsycnToggle->SetText("Vsync: 0");
+        scene->AddGui(vsycnToggle, 1);
+        vsycnToggle->SetOnToggled(std::bind(&TestGame::ToggleVsync, this, std::placeholders::_1));
+
+        multisamplingButton = new Button(buttonMat, Vec2(850, 50), Vec2(1));
+        multisamplingButton->SetHoverColor(Color::Red);
+        multisamplingButton->SetPressedColor(Color::Green);
+        multisamplingButton->SetText("Multi: 0");
+        scene->AddGui(multisamplingButton, 1);
+        multisamplingButton->SetOnPressed(std::bind(&TestGame::ToggleMultiSampling, this));
+
+        bloomToggle = new ToggleButton(buttonMat, Vec2(850, 90), Vec2(1));
+        bloomToggle->SetHoverColor(Color::Red);
+        bloomToggle->SetToggledColor(Color::Green);
+        bloomToggle->SetText("Bloom: 0");
+        scene->AddGui(bloomToggle, 1);
+        bloomToggle->SetOnToggled(std::bind(&TestGame::ToggleBloomSampling, this, std::placeholders::_1));
+
+        hdrToggle = new ToggleButton(buttonMat, Vec2(850, 130), Vec2(1));
+        hdrToggle->SetHoverColor(Color::Red);
+        hdrToggle->SetToggledColor(Color::Green);
+        hdrToggle->SetText("HDR: 0");
+        scene->AddGui(hdrToggle, 1);
+        hdrToggle->SetOnToggled(std::bind(&TestGame::ToggleHDR, this, std::placeholders::_1));
+
+        reflectionToggle = new ToggleButton(buttonMat, Vec2(850, 170), Vec2(1));
+        reflectionToggle->SetHoverColor(Color::Red);
+        reflectionToggle->SetToggledColor(Color::Green);
+        reflectionToggle->SetText("Refl: 0");
+        scene->AddGui(reflectionToggle, 1);
+        reflectionToggle->SetOnToggled(std::bind(&TestGame::ToggleReflection, this, std::placeholders::_1));
 
         auto* panelMat = ResourceManager::LoadGuiMaterial("res/textures/Panel.png");
         Panel* panel = new Panel(panelMat, Vec2(100, 200), Vec2(1));
@@ -113,7 +186,7 @@ public:
             "res/textures/Default_Night_Skybox/front.png",
         };
 
-        skybox = new SkyboxMaterial(m_textureFiles, m_nightTextureFiles);
+        skybox = ResourceManager::LoadSkyboxMaterial(m_textureFiles, m_nightTextureFiles);
         scene->SetSkyBox(skybox);
 
         Vec3 light_pos = Astra::Math::Vec3(-55, terrain->GetHeightOfTerrain(-55, 55) + 7, 55);
@@ -164,7 +237,7 @@ public:
         entities.emplace_back(container);
         scene->AddEntity(container);
 
-        ParticleMaterial* partMaterial = new ParticleMaterial("res/textures/particleAtlas.png", 4);
+        ParticleMaterial* partMaterial = ResourceManager::LoadParticleMaterial("res/textures/particleAtlas.png", 4);
         particleCenter = new Vec3(-80, terrain->GetHeightOfTerrain(-80, 80) + 5, 80);
 
         ConeParticleSystem* partSystem =  new ConeParticleSystem(partMaterial, particleCenter, 15, 5, -0.1f, 1.5f, 2, true);

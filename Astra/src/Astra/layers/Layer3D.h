@@ -103,7 +103,11 @@ namespace Astra
 		inline void AddTerrain(const Graphics::Terrain* terrain) { m_terrains.emplace_back(terrain); }
 		inline void AddWaterTile(const Graphics::WaterTile* tile) { m_tiles.emplace_back(tile); }
 		inline void AddPointLight(Graphics::PointLight* light) { m_pointlights.emplace_back(light); }
-
+		
+		void SetMultisampling(unsigned int sampleSize);
+		void SetBloom(bool enabled);
+		void SetHDR(bool enabled);
+		void SetReflections(bool enabled);
 	public:
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
@@ -115,8 +119,9 @@ namespace Astra
 	#endif
 	private:
 		void Init();
-		void PrepareRender(float delta);
+		void PreRender(float delta);
 		void Render(float delta, const Math::Vec4& inverseViewVector, bool waterPass, const Math::Vec4& clipPlane = Graphics::Renderer::DefaultClipPlane);
+		void PostRender();
 		void EmplaceEntity(unsigned int listIndex, const Graphics::Entity* entity);
 	};
 }

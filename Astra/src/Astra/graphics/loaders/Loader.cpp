@@ -1,10 +1,11 @@
 #include "astra_pch.h"
 
-#include "Loader.h"
-#include "Astra/Application.h"
-#include "../ResourceManager.h"
 #include <stb_image/stb_image.h>
 #include <GLFW\glfw3.h>
+
+#include "Loader.h"
+#include "Astra/Application.h"
+#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 { 
@@ -78,47 +79,6 @@ namespace Astra::Graphics
 		return id;
 	}
 
-	// TODO: Clean up or reutilize
-	const Texture* Loader::LoadAtlasTextureImpl(const char* const filepath)
-	{
-		static int m_bpp;
-		static unsigned char* buffer;
-
-		Texture* texture = NULL;
-		if (ResourceManager::QueryTexture(filepath, &texture))
-		{
-			return texture;
-		}
-		else if (texture)
-		{
-			stbi_set_flip_vertically_on_load(0);
-			buffer = stbi_load(std::string(filepath).c_str(), &texture->width, &texture->height, &m_bpp, 4);
-
-			if (!buffer)
-			{
-				ASTRA_CORE_WARN("Texture {0} Did Not Load Correctly.", filepath);
-				return NULL;
-			}
-
-			glGenTextures(1, &texture->id);
-			glBindTexture(GL_TEXTURE_2D, texture->id);
-
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-			glBindTexture(GL_TEXTURE_2D, 0);
-			stbi_image_free(buffer);
-
-			return texture;
-		}
-		ASTRA_CORE_ERROR("Loader Error in Texture Initialization.");
-		return NULL;
-	}
-
 	const Texture* Loader::LoadFontAtlasTextureImpl(const char* const filepath, unsigned int fontSize, const std::vector<unsigned char>& data, unsigned int width, unsigned int height)
 	{
 		Texture* texture = NULL;
@@ -153,8 +113,7 @@ namespace Astra::Graphics
 		return NULL;
 	}
 
-
-	const Texture* Loader::LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert)
+	Texture* Loader::LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert)
 	{
 		static int m_bpp;
 		static unsigned char* buffer;
@@ -174,20 +133,18 @@ namespace Astra::Graphics
 				ASTRA_CORE_WARN("Texture {0} Did Not Load Correctly.", filepath);
 				return NULL;
 			}
+			auto hdr = Application::Get().GetWindow().IsHDR();
+
 			glGenTextures(1, &texture->id);
 			glBindTexture(GL_TEXTURE_2D, texture->id);
-		#if HDR
-			glTexImage2D(GL_TEXTURE_2D, 0, diffuse ? GL_SRGB8_ALPHA8 : GL_RGBA8, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-		#else
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-		#endif
+			glTexImage2D(GL_TEXTURE_2D, 0, hdr && diffuse ? GL_SRGB8_ALPHA8 : GL_RGBA8, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 			glGenerateMipmap(GL_TEXTURE_2D);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clippingOption);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clippingOption);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, diffuse ? GL_LINEAR : GL_NEAREST);
-			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			texture->hdr = hdr;
 
 			if (glfwExtensionSupported("GL_EXT_texture_filter_anisotropic"))
 			{
@@ -208,45 +165,148 @@ namespace Astra::Graphics
 
 			return texture;
 		}
-		ASTRA_CORE_ERROR("Loader Error in Font Atlas Texture Initialization.");
+		ASTRA_CORE_ERROR("Loader Error in Texture Initialization.");
 		return NULL;
 	}
 
-	const CubeMapTexture* Loader::LoadCubeMapImpl(const std::vector<const char*>& filepaths)
+	void Loader::UpdateDiffuseTextureImpl(Texture* texture, bool hdrEnabled)
 	{
 		static int m_bpp;
 		static unsigned char* buffer;
 
-		CubeMapTexture* resultTexture = new CubeMapTexture(filepaths);
+		if (texture->hdr == hdrEnabled) 
+		{ 
+			return; 
+		}
 
-		glGenTextures(1, &resultTexture->id);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, resultTexture->id);
-		stbi_set_flip_vertically_on_load(0); // Don't flip?
+		stbi_set_flip_vertically_on_load(true);
+		buffer = stbi_load(std::string(texture->m_filePath).c_str(), &texture->width, &texture->height, &m_bpp, 4);
 
-		for (size_t i = 0; i < filepaths.size(); i++)
+		if (!buffer)
 		{
-			auto* texture = (*resultTexture)[i];
-			buffer = stbi_load(std::string(texture->m_filePath).c_str(), &texture->width, &texture->height, &m_bpp, 4);
-			if (buffer)
+			ASTRA_CORE_WARN("Texture {0} Did Not Load Correctly.", texture->m_filePath);
+			return;
+		}
+
+		glBindTexture(GL_TEXTURE_2D, texture->id);
+		glTexImage2D(GL_TEXTURE_2D, 0, hdrEnabled ? GL_SRGB8_ALPHA8 : GL_RGBA8, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		texture->hdr = hdrEnabled;
+
+		if (glfwExtensionSupported("GL_EXT_texture_filter_anisotropic"))
+		{
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0);
+			float maxValue;
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxValue);
+			float amount = fminf(4.0f, maxValue);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
+		}
+		else
+		{
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.2f);
+			ASTRA_CORE_WARN("Anisotropic Filtering Not Supported");
+		}
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		stbi_image_free(buffer);
+	}
+
+	CubeMapTexture* Loader::LoadCubeMapImpl(const std::vector<const char*>& filepaths)
+	{
+		static int m_bpp;
+		static unsigned char* buffer;
+
+		CubeMapTexture* texture = NULL;
+		if (ResourceManager::QueryTexture(filepaths, &texture))
+		{
+			return texture;
+		}
+		else if (texture)
+		{
+			glGenTextures(1, &texture->id);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, texture->id);
+			stbi_set_flip_vertically_on_load(0); // Don't flip?
+			
+			auto hdr = Application::Get().GetWindow().IsHDR();
+
+			for (size_t i = 0; i < filepaths.size(); i++)
 			{
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-				stbi_image_free(buffer);
+				auto* tex = (*texture)[i];
+				buffer = stbi_load(std::string(tex->m_filePath).c_str(), &tex->width, &tex->height, &m_bpp, 4);
+				if (!buffer)
+				{
+					ASTRA_CORE_WARN("Cube Map Texture {0} Did Not Load Correctly.", tex->m_filePath);
+					return NULL;
+				}
+
+				if (buffer)
+				{
+					glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, hdr ? GL_SRGB8_ALPHA8 : GL_RGBA8, tex->width, tex->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+					stbi_image_free(buffer);
+				}
 			}
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+			return texture;
+		}
+		ASTRA_CORE_ERROR("Loader Error in Cube Map Texture Initialization.");
+		return NULL;
+	}
+
+	void Loader::UpdateCubeMapImpl(CubeMapTexture* texture, bool hdrEnabled)
+	{
+		static int m_bpp;
+		static unsigned char* buffer;
+
+		if (texture->hdr == hdrEnabled)
+		{
+			return;
+		}
+
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texture->id);
+		stbi_set_flip_vertically_on_load(false); // Don't flip?
+
+		auto hdr = Application::Get().GetWindow().IsHDR();
+
+		for (size_t i = 0; i < texture->GetFiles().size(); i++)
+		{
+			auto* tex = (*texture)[i];
+			buffer = stbi_load(std::string(tex->m_filePath).c_str(), &tex->width, &tex->height, &m_bpp, 4);
+			if (!buffer)
+			{
+				ASTRA_CORE_WARN("Cube Map Texture {0} Did Not Load Correctly.", tex->m_filePath);
+				return;
+			}
+
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, hdr ? GL_SRGB8_ALPHA8 : GL_RGBA8, tex->width, tex->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+			stbi_image_free(buffer);
 		}
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		return resultTexture;
+
+		texture->hdr = hdrEnabled;
 	}
 
 	WaterFrameBuffer* Loader::LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
 															  unsigned int refractionWidth, unsigned int refractionHeight)
 	{
+		auto hdr = Application::Get().GetWindow().IsHDR();
+
 		FrameBuffer* reflection = CreateFrameBuffer(DepthBufferType::None, false, GL_COLOR_ATTACHMENT0);
-		CreateTextureAttachment(reflection->ColorAttachment(), reflectionWidth, reflectionHeight, HDR);
+		CreateTextureAttachment(reflection->ColorAttachment(), reflectionWidth, reflectionHeight, hdr);
 		CreateDepthBufferAttachment(reflection->DepthAttachment(), reflectionWidth, reflectionHeight);
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
@@ -255,7 +315,7 @@ namespace Astra::Graphics
 		UnbindFrameBuffer();
 
 		FrameBuffer* refraction = CreateFrameBuffer(DepthBufferType::None, false, GL_COLOR_ATTACHMENT0);
-		CreateTextureAttachment(refraction->ColorAttachment(), refractionWidth, refractionHeight, HDR);
+		CreateTextureAttachment(refraction->ColorAttachment(), refractionWidth, refractionHeight, hdr);
 		static_cast<void>(CreateDepthTextureAttachment(refraction->DepthAttachment(), refractionWidth, refractionHeight));
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
@@ -283,7 +343,7 @@ namespace Astra::Graphics
 		return shadowFrameBuffer;
 	}
 
-	FrameBuffer* Loader::LoadFrameBufferImpl(unsigned int width, unsigned int height, bool multisampled, DepthBufferType depthType, bool floating, unsigned int wrapping)
+	FrameBuffer* Loader::LoadFrameBufferImpl(unsigned int width, unsigned int height, unsigned int multisampled, DepthBufferType depthType, bool floating, unsigned int wrapping)
 	{
 		FrameBuffer* buffer = CreateFrameBuffer(depthType, multisampled, GL_COLOR_ATTACHMENT0, multisampled ? GL_COLOR_ATTACHMENT0 : GL_NONE);
 		if (!multisampled)
@@ -337,14 +397,14 @@ namespace Astra::Graphics
 		return buffer;
 	}
 
-	void Loader::UpdateFrameBufferImpl(FrameBuffer* buffer, unsigned int width, unsigned int height, bool floating, bool multisampled)
+	void Loader::UpdateFrameBufferImpl(FrameBuffer* buffer, unsigned int width, unsigned int height, bool floating, unsigned int multisampled)
 	{
 		if (buffer->GetColorAttachment() != 0)
 		{
 			if (multisampled)
 			{
 				glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, buffer->GetColorAttachment());
-				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, MULTI_SAMPLE_SIZE, floating ? GL_RGBA16F : GL_RGBA, width, height, GL_TRUE);
+				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, multisampled, floating ? GL_RGBA16F : GL_RGBA, width, height, GL_TRUE);
 				glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 			}
 			else
@@ -352,11 +412,7 @@ namespace Astra::Graphics
 				for (size_t i = 0; i < buffer->GetColorAttachmentCount(); i++)
 				{
 					glBindTexture(GL_TEXTURE_2D, buffer->GetColorAttachment(i));
-				#if HDR
 					glTexImage2D(GL_TEXTURE_2D, 0, floating ? GL_RGBA16F : GL_RGBA, width, height, 0, GL_RGBA, floating ? GL_FLOAT : GL_UNSIGNED_BYTE, NULL);
-				#else
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, floating ? GL_FLOAT : GL_UNSIGNED_BYTE, NULL);
-				#endif
 					glBindTexture(GL_TEXTURE_2D, 0);
 				}
 			}
@@ -379,7 +435,7 @@ namespace Astra::Graphics
 			}
 			else
 			{
-				glRenderbufferStorageMultisample(GL_RENDERBUFFER, MULTI_SAMPLE_SIZE, GL_DEPTH24_STENCIL8, width, height);
+				glRenderbufferStorageMultisample(GL_RENDERBUFFER, multisampled, GL_DEPTH24_STENCIL8, width, height);
 			}
 			glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		}
@@ -400,11 +456,7 @@ namespace Astra::Graphics
 	{
 		glGenTextures(1, &id);
 		glBindTexture(GL_TEXTURE_2D, id);
-	#if HDR
 		glTexImage2D(GL_TEXTURE_2D, 0, floating ? GL_RGBA16F : GL_RGBA, width, height, 0, GL_RGBA, floating ? GL_FLOAT : GL_UNSIGNED_BYTE, NULL);
-	#else
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, floating ? GL_FLOAT : GL_UNSIGNED_BYTE, NULL);
-	#endif
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapping);
@@ -427,7 +479,7 @@ namespace Astra::Graphics
 		return id;
 	}
 
-	void Loader::CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height, bool multisampled, bool floating)
+	void Loader::CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height, unsigned int multisampled, bool floating)
 	{
 		glGenRenderbuffers(1, &id);
 		glBindRenderbuffer(GL_RENDERBUFFER, id);
@@ -437,21 +489,17 @@ namespace Astra::Graphics
 		}
 		else 
 		{
-			glRenderbufferStorageMultisample(GL_RENDERBUFFER, MULTI_SAMPLE_SIZE, GL_DEPTH24_STENCIL8, width, height);
+			glRenderbufferStorageMultisample(GL_RENDERBUFFER, multisampled, GL_DEPTH24_STENCIL8, width, height);
 		}
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, id);
 	}
 
-	void Loader::CreateColorBufferAttachment(GLuint& id, unsigned int width, unsigned int height, bool multisampled, bool floating)
+	void Loader::CreateColorBufferAttachment(GLuint& id, unsigned int width, unsigned int height, unsigned int multisampled, bool floating)
 	{
 		glGenTextures(1, &id);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, id);
-	#if HDR
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, MULTI_SAMPLE_SIZE, floating ? GL_RGBA16F : GL_RGBA, width, height, GL_TRUE);
-	#else
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, MULTI_SAMPLE_SIZE, GL_RGBA, width, height, GL_TRUE);
-	#endif
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, multisampled, floating ? GL_RGBA16F : GL_RGBA, width, height, GL_TRUE);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, id, 0);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 	}

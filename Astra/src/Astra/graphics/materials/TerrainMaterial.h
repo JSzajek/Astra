@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../buffers/Texture.h"
+#include "Astra/graphics/buffers/Texture.h"
 
 namespace Astra::Graphics
 {
 	class TerrainMaterial
 	{
 	private:
-		const Texture* m_texture;
+		Texture* m_texture;
 	public:
 		float shineDampener, reflectivity;
 	public:
@@ -15,6 +15,8 @@ namespace Astra::Graphics
 		~TerrainMaterial();
 
 		inline unsigned int GetId() const { return m_texture->id; }
+	public:
+		void UpdateDiffuseMap(bool hdr);
 	};
 	
 	struct TerrainMaterialPack

@@ -9,6 +9,7 @@ namespace Astra
 	Application* Application::s_instance = NULL;
 
 	Application::Application()
+		: m_currentScene(NULL)
 	{
 		ASTRA_CORE_ASSERT(!s_instance, "Application already exists.");
 

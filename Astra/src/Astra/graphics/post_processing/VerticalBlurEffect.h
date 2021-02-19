@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ImageEffect.h"
-#include "../shaders/VerticalBlurShader.h"
+#include "Astra/graphics/shaders/VerticalBlurShader.h"
 
 namespace Astra::Graphics
 {
@@ -13,6 +13,8 @@ namespace Astra::Graphics
 		VerticalBlurEffect(int width, int height, unsigned int squeezeRatio)
 			: ImageEffect(new VerticalBlurShader(), width, height, 1, true, GL_CLAMP_TO_EDGE), m_squeezeRatio(squeezeRatio)
 		{
+			m_type = EffectType::Blur;
+
 			m_shader->Start();
 			m_shader->SetUniform1f(TARGET_HEIGHT_TAG, static_cast<float>(height));
 			m_shader->Stop();

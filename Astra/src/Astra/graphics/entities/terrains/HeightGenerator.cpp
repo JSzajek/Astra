@@ -44,11 +44,11 @@ namespace Astra::Graphics
 	float HeightGenerator::GenerateHeight(int x, int z)
 	{
 		float total = 0;
-		float d = pow(2.0f, m_octaves - 1);
+		float d = powf(2.0f, m_octaves - 1);
 		for (int i = 0; i < m_octaves; i++)
 		{
-			float freq = pow(2.0f, i) / d;
-			float ampl = pow(m_persistence, i) * m_amplitude;
+			float freq = powf(2.0f, i) / d;
+			float ampl = powf(m_persistence, i) * m_amplitude;
 			total += GetInterpolatedNoise(x * freq, z * freq, (m_primeIndex + i) % MaxPrimals) * ampl;
 		}
 		return total;
