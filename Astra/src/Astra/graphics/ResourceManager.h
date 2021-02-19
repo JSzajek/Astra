@@ -22,7 +22,7 @@ namespace Astra::Graphics
 	class ResourceManager
 	{
 	
-	#define RESOURCE_UNLOAD(resource, ...) { if (resource != NULL) ResourceManager::Unload(resource, __VA_ARGS__); }
+	#define RESOURCE_UNLOAD(resource, ...) { if (resource != NULL) { ResourceManager::Unload(resource, __VA_ARGS__); resource = NULL; } }
 
 	private:
 		std::unordered_map<size_t, ImageMaterial*> m_loadedImageMaterials;
@@ -84,6 +84,11 @@ namespace Astra::Graphics
 			const Math::Vec3& scale = Math::Vec3::One)
 		{
 			return Get().LoadEntityImpl(filepath, false, textureIndex, position, rotation, scale);
+		}
+
+		static void ToggleHDRTextures(bool enabled)
+		{
+			Get().ToggleHDRTexturesImpl(enabled);
 		}
 
 		template <typename T>
@@ -174,5 +179,7 @@ namespace Astra::Graphics
 		void UnloadGuiMaterial(const GuiMaterial* material);
 		void UnloadFontAtlas(const FontAtlas* atlas);
 		bool UnloadResource(void* ptr);
+
+		void ToggleHDRTexturesImpl(bool enabled);
 	};
 }

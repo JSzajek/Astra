@@ -30,4 +30,9 @@ namespace Astra::Graphics
 		RESOURCE_UNLOAD(m_normalMap);
 		RESOURCE_UNLOAD(m_parallaxMap);
 	}
+
+	void ImageMaterial::UpdateDiffuseMap(bool hdr)
+	{
+		Loader::UpdateDiffuseTexture(m_diffuse, hdr);
+	}
 }

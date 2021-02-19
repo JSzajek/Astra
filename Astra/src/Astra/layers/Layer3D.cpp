@@ -25,7 +25,9 @@ namespace Astra
 	{
 		Init();
 
-		SetPostProcessing(Application::Get().GetWindow().IsPostProcessing());
+		// TODO: Load from app settings
+		SetMultisampling(Application::Get().GetWindow().IsMultisampling());
+
 		m_selectionRenderer = new Graphics::SelectionRenderer();
 		m_shadowMapController = new Graphics::ShadowMapController(FieldOfView, NearPlane, FarPlane);
 
@@ -319,24 +321,88 @@ namespace Astra
 
 	void Layer3D::SetMultisampling(unsigned int sampleSize)
 	{
-
-	}
-
-	void Layer3D::SetPostProcessing(bool enabled)
-	{
-		if (!enabled)
+		if (sampleSize > 0)
 		{
-			if (m_postProcessor)
+			if (!m_postProcessor)
 			{
-				delete m_postProcessor;
-				m_postProcessor = NULL;
+				m_postProcessor = new Graphics::PostProcessor();
+				auto [width, height] = Application::Get().GetWindow().GetSize();
+				m_postProcessor->UpdateScreenRatio(width, height);
+			}
+			else
+			{
+				m_postProcessor->SetMultisampling(sampleSize);
 			}
 		}
 		else
 		{
-			m_postProcessor = new Graphics::PostProcessor();
-			auto [width, height] = Application::Get().GetWindow().GetSize();
-			m_postProcessor->UpdateScreenRatio(width, height);
+			if (m_postProcessor)
+			{
+				m_postProcessor->SetMultisampling(sampleSize);
+				if (m_postProcessor->IsEmpty())
+				{
+					delete m_postProcessor;
+					m_postProcessor = NULL;
+				}
+			}
+		}
+	}
+
+	void Layer3D::SetBloom(bool enabled)
+	{
+		if (enabled)
+		{
+			if (!m_postProcessor)
+			{
+				m_postProcessor = new Graphics::PostProcessor();
+				auto [width, height] = Application::Get().GetWindow().GetSize();
+				m_postProcessor->UpdateScreenRatio(width, height);
+			}
+			else
+			{
+				m_postProcessor->SetBloomEffect(enabled);
+			}
+		}
+		else
+		{
+			if (m_postProcessor)
+			{
+				m_postProcessor->SetBloomEffect(enabled);
+				if (m_postProcessor->IsEmpty())
+				{
+					delete m_postProcessor;
+					m_postProcessor = NULL;
+				}
+			}
+		}
+	}
+
+	void Layer3D::SetHDR(bool enabled)
+	{
+		if (enabled)
+		{
+			if (!m_postProcessor)
+			{
+				m_postProcessor = new Graphics::PostProcessor();
+				auto [width, height] = Application::Get().GetWindow().GetSize();
+				m_postProcessor->UpdateScreenRatio(width, height);
+			}
+			else
+			{
+				m_postProcessor->SetHDR(enabled);
+			}
+		}
+		else
+		{
+			if (m_postProcessor)
+			{
+				m_postProcessor->SetHDR(enabled);
+				if (m_postProcessor->IsEmpty())
+				{
+					delete m_postProcessor;
+					m_postProcessor = NULL;
+				}
+			}
 		}
 	}
 }

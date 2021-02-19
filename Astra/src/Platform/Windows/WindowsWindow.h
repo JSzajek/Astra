@@ -33,7 +33,6 @@ namespace Astra
 		virtual void SetEventCallback(const EventCallbackFn& callback) override { m_data.EventCallback = callback; };
 		virtual void SetVSync(bool enabled) override;
 
-		virtual void SetPostProcessing(bool enabled) override;
 		virtual void SetMultisampling(unsigned int sampleSize) override;
 		virtual void SetHDR(bool enabled) override;
 		virtual void SetBloom(bool enabled) override;

@@ -66,13 +66,25 @@ namespace Astra
 		inline void SetMultisampling(unsigned int sampleSize)
 		{
 			if (m_3dLayer)
+			{
 				m_3dLayer->SetMultisampling(sampleSize);
+			}
 		}
 
-		inline void SetPostProcessing(bool enabled)
+		inline void SetBloom(bool enabled)
 		{
 			if (m_3dLayer)
-				m_3dLayer->SetPostProcessing(enabled);
+			{
+				m_3dLayer->SetBloom(enabled);
+			}
+		}
+
+		inline void SetHDR(bool enabled)
+		{
+			if (m_3dLayer)
+			{
+				m_3dLayer->SetHDR(enabled);
+			}
 		}
 	};
 }

@@ -28,7 +28,8 @@ namespace Astra
 	{
 	protected:
 		bool m_vsync;
-		bool m_postProcessing;
+
+		// Post Processing Properties
 		unsigned int m_multisampled;
 		bool m_bloom;
 		bool m_hdr;
@@ -47,13 +48,11 @@ namespace Astra
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 		virtual void SetVSync(bool enabled) = 0;
 
-		virtual void SetPostProcessing(bool enabled) = 0;
 		virtual void SetMultisampling(unsigned int sampleSize) = 0;
 		virtual void SetHDR(bool enabled) = 0;
 		virtual void SetBloom(bool enabled) = 0;
 
 		inline bool IsVSync() const { return m_vsync; }
-		inline bool IsPostProcessing() const { return m_postProcessing; }
 		inline unsigned int IsMultisampling() const { return m_multisampled; }
 		inline bool IsHDR() const { return m_hdr; }
 		inline bool IsBloom() const { return m_bloom; }

@@ -105,7 +105,8 @@ namespace Astra
 		inline void AddPointLight(Graphics::PointLight* light) { m_pointlights.emplace_back(light); }
 		
 		void SetMultisampling(unsigned int sampleSize);
-		void SetPostProcessing(bool enabled);
+		void SetBloom(bool enabled);
+		void SetHDR(bool enabled);
 	public:
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;

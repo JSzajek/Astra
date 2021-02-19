@@ -191,4 +191,12 @@ namespace Astra::Graphics
 		}
 		return false;
 	}
+
+	void ResourceManager::ToggleHDRTexturesImpl(bool enabled)
+	{
+		for (auto image : m_loadedImageMaterials)
+		{
+			image.second->UpdateDiffuseMap(enabled);
+		}
+	}
 }

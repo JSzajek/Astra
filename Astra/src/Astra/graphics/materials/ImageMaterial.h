@@ -10,7 +10,7 @@ namespace Astra::Graphics
 	private:
 		size_t m_rowCount;
 
-		const Texture* m_diffuse;
+		Texture* m_diffuse;
 		const Texture* m_specular;
 		const Texture* m_emission;
 
@@ -52,5 +52,7 @@ namespace Astra::Graphics
 		inline unsigned int GetNormalMapId() const { return m_normalMap->id; }
 		inline unsigned int GetParallaxMapId() const { return m_parallaxMap->id; }
 		inline float GetHeightOffset() const { return m_height; }
+	public:
+		void UpdateDiffuseMap(bool hdr);
 	};
 }

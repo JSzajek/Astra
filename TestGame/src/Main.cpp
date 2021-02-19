@@ -29,7 +29,10 @@ private:
     AudioSource* audioSource;
     Image* image;
     Vec3* particleCenter;
-    ToggleButton* postProcessingToggle;
+    ToggleButton* vsycnToggle;
+    ToggleButton* multisamplingToggle;
+    ToggleButton* bloomToggle;
+    ToggleButton* hdrToggle;
     std::vector<const Entity*> entities;
     
     const float InGameTimeSpeed = 0.005f;
@@ -44,10 +47,28 @@ public:
         /*image->operator()(ROTATION, SUM_EQ, 5);*/
     }
 
-    void TogglePostProcess()
+    void ToggleVsync()
     {
-        postProcessingToggle->SetText(postProcessingToggle->IsToggled() ? "PostP: 1" : "PostP: 0");
-        GetWindow().SetPostProcessing(postProcessingToggle->IsToggled());
+        vsycnToggle->SetText(vsycnToggle->IsToggled() ? "Vsync: 1" : "Vsync: 0");
+        GetWindow().SetVSync(vsycnToggle->IsToggled());
+    }
+
+    void ToggleMultiSampling()
+    {
+        multisamplingToggle->SetText(multisamplingToggle->IsToggled() ? "Multi: 4" : "Multi: 0");
+        GetWindow().SetMultisampling(multisamplingToggle->IsToggled() ? 4 : 0);
+    }
+
+    void ToggleBloomSampling()
+    {
+        bloomToggle->SetText(bloomToggle->IsToggled() ? "Bloom: 1" : "Bloom: 0");
+        GetWindow().SetBloom(bloomToggle->IsToggled());
+    }
+
+    void ToggleHDR()
+    {
+        hdrToggle->SetText(hdrToggle->IsToggled() ? "HDR: 1" : "HDR: 0");
+        GetWindow().SetHDR(hdrToggle->IsToggled());
     }
 
     TestGame()
@@ -99,14 +120,34 @@ public:
         scene->AddGui(button, 2);
 
         button->SetOnPressed(std::bind(&TestGame::OnButtonPress, this));
-        
-        postProcessingToggle = new ToggleButton(buttonMat, Vec2(500, 10), Vec2(1));
-        postProcessingToggle->SetHoverColor(Color::Red);
-        postProcessingToggle->SetToggledColor(Color::Green);
-        postProcessingToggle->SetText("PostP: 0");
-        scene->AddGui(postProcessingToggle, 1);
 
-        postProcessingToggle->SetOnPressed(std::bind(&TestGame::TogglePostProcess, this));
+        vsycnToggle = new ToggleButton(buttonMat, Vec2(850, 10), Vec2(1));
+        vsycnToggle->SetHoverColor(Color::Red);
+        vsycnToggle->SetToggledColor(Color::Green);
+        vsycnToggle->SetText("Vsync: 0");
+        scene->AddGui(vsycnToggle, 1);
+        vsycnToggle->SetOnPressed(std::bind(&TestGame::ToggleVsync, this));
+
+        multisamplingToggle = new ToggleButton(buttonMat, Vec2(850, 50), Vec2(1));
+        multisamplingToggle->SetHoverColor(Color::Red);
+        multisamplingToggle->SetToggledColor(Color::Green);
+        multisamplingToggle->SetText("Multi: 0");
+        scene->AddGui(multisamplingToggle, 1);
+        multisamplingToggle->SetOnPressed(std::bind(&TestGame::ToggleMultiSampling, this));
+
+        bloomToggle = new ToggleButton(buttonMat, Vec2(850, 90), Vec2(1));
+        bloomToggle->SetHoverColor(Color::Red);
+        bloomToggle->SetToggledColor(Color::Green);
+        bloomToggle->SetText("Bloom: 0");
+        scene->AddGui(bloomToggle, 1);
+        bloomToggle->SetOnPressed(std::bind(&TestGame::ToggleBloomSampling, this));
+
+        hdrToggle = new ToggleButton(buttonMat, Vec2(850, 130), Vec2(1));
+        hdrToggle->SetHoverColor(Color::Red);
+        hdrToggle->SetToggledColor(Color::Green);
+        hdrToggle->SetText("HDR: 0");
+        scene->AddGui(hdrToggle, 1);
+        hdrToggle->SetOnPressed(std::bind(&TestGame::ToggleHDR, this));
 
         auto* panelMat = ResourceManager::LoadGuiMaterial("res/textures/Panel.png");
         Panel* panel = new Panel(panelMat, Vec2(100, 200), Vec2(1));

@@ -10,6 +10,8 @@ namespace Astra::Graphics
 	BloomEffect::BloomEffect(int width, int height)
 		: ImageEffect(new SplitBloomShader(), 2 + (BLUR_STEPS * 2)), m_brightTexture(0)
 	{
+		m_type = EffectType::Bloom;
+
 		// Multiple render target buffer
 		m_buffer = Loader::LoadMultiTargetFrameBuffer(width, height, 2, 0, true); 
 		m_width = width;

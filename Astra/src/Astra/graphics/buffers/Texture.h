@@ -11,6 +11,7 @@ namespace Astra::Graphics
 		unsigned int id;
 		int width, height;
 		const char* m_filePath;
+		bool hdr;
 	public:
 		Texture();
 		Texture(const char* const filepath);

@@ -29,7 +29,6 @@ namespace Astra
 	WindowsWindow::WindowsWindow(const WindowProperties& properties)
 	{
 		m_vsync = false;
-		m_postProcessing = false;
 		m_multisampled = 0; 
 		m_bloom = false;
 		m_hdr = false;
@@ -169,21 +168,7 @@ namespace Astra
 	void WindowsWindow::SetVSync(bool enabled)
 	{
 		m_vsync = enabled;
-		if (m_vsync)
-		{
-			glfwSwapInterval(1);
-		}
-		else
-		{
-			glfwSwapInterval(0);
-		}
-	}
-
-	void WindowsWindow::SetPostProcessing(bool enabled)
-	{
-		m_postProcessing = enabled;
-		// TODO connect to current renderers
-		((Astra::Scene*)Application::Get().GetCurrentScene())->SetPostProcessing(m_postProcessing);
+		glfwSwapInterval(m_vsync);
 	}
 
 	void WindowsWindow::SetMultisampling(unsigned int sampleSize)
@@ -197,20 +182,25 @@ namespace Astra
 		{
 			glDisable(GL_MULTISAMPLE);
 		}
+
 		auto* scene = Application::Get().GetCurrentScene();
 		if (scene)
-			((Astra::Scene*)scene)->SetMultisampling(sampleSize);
+			((Astra::Scene*)scene)->SetMultisampling(m_multisampled);
 	}
 
 	void WindowsWindow::SetHDR(bool enabled)
 	{
 		m_hdr = enabled;
-		// TODO connect to current renderers
+		auto* scene = Application::Get().GetCurrentScene();
+		if (scene)
+			((Astra::Scene*)scene)->SetHDR(m_hdr);
 	}
 
 	void WindowsWindow::SetBloom(bool enabled)
 	{
 		m_bloom = enabled;
-		// TODO connect to current renderers
+		auto* scene = Application::Get().GetCurrentScene();
+		if (scene)
+			((Astra::Scene*)scene)->SetBloom(m_bloom);
 	}
 }
