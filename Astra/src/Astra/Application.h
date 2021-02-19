@@ -10,7 +10,6 @@ int main(int argc, char** argv); // Global entry point definition
 
 namespace Astra
 {
-	#define V_SYNC				0	
 	#define MULTI_SAMPLE		1
 	#define MULTI_SAMPLE_SIZE	4
 	#define BLOOM				1
@@ -20,6 +19,8 @@ namespace Astra
 	{
 	private:
 		static Application* s_instance;
+	private:
+		void* m_currentScene;
 	private:
 		std::unique_ptr<Window> m_window;
 		bool m_running = true;
@@ -42,8 +43,12 @@ namespace Astra
 
 		static Application& Get() { return *s_instance; }
 		inline Window& GetWindow() { return *m_window; }
+
+		inline void SetCurrentScene(void* pointer) { m_currentScene = pointer; }
+		inline void* GetCurrentScene() const { return m_currentScene; }
 	private:
 		void Run();
+
 		bool OnWindowClose(WindowCloseEvent& _event);
 		bool OnWindowResize(WindowResizeEvent& _event);
 

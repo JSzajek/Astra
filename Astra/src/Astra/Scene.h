@@ -62,5 +62,17 @@ namespace Astra
 			wireframe = (wireframe + 1) % 3;
 		}
 	#endif
+
+		inline void SetMultisampling(unsigned int sampleSize)
+		{
+			if (m_3dLayer)
+				m_3dLayer->SetMultisampling(sampleSize);
+		}
+
+		inline void SetPostProcessing(bool enabled)
+		{
+			if (m_3dLayer)
+				m_3dLayer->SetPostProcessing(enabled);
+		}
 	};
 }

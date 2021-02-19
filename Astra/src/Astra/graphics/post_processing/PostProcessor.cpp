@@ -12,30 +12,32 @@ namespace Astra::Graphics
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLE_STRIP, { -1, 1, -1, -1, 1, 1, 1, -1 }, 2);
 		auto [width, height] = Application::Get().GetWindow().GetSize();
-	#if MULTI_SAMPLE
-		m_multisampledBuffer = Loader::LoadFrameBuffer(width, height, true, DepthBufferType::Render, HDR);
-		m_screenBuffer = Loader::LoadFrameBuffer(width, height, false, DepthBufferType::Texture, HDR);
-	#else
-		m_multisampledBuffer = NULL;
-		m_screenBuffer = Loader::LoadFrameBuffer(width, height, false, DepthBufferType::Render);
-	#endif
+		auto multisample = Application::Get().GetWindow().IsMultisampling();
+
+		#if MULTI_SAMPLE
+		/*if (multisample > 0)
+		{*/
+			m_multisampledBuffer = Loader::LoadFrameBuffer(width, height, true, DepthBufferType::Render, HDR);
+			m_screenBuffer = Loader::LoadFrameBuffer(width, height, false, DepthBufferType::Texture, HDR);
+		/*}
+		else
+		{*/
+		#else
+			m_multisampledBuffer = NULL;
+			m_screenBuffer = Loader::LoadFrameBuffer(width, height, false, DepthBufferType::Render);
+		//}
+		#endif
 	#if BLOOM
 		effects.push_back(new BloomEffect(width, height));
 	#endif
-	#if HDR
 		effects.push_back(new HDREffect(true, 1));
-	#else	
-		effects.push_back(new ContrastEffect());
-	#endif
 	}
 
 	PostProcessor::~PostProcessor()
 	{
-		ResourceManager::Unload(m_defaultQuad);
-		ResourceManager::Unload(m_screenBuffer);
-	#if MULTI_SAMPLE
-		ResourceManager::Unload(m_multisampledBuffer);
-	#endif
+		RESOURCE_UNLOAD(m_defaultQuad);
+		RESOURCE_UNLOAD(m_screenBuffer);
+		RESOURCE_UNLOAD(m_multisampledBuffer);
 
 		for (const auto* effect : effects)
 		{

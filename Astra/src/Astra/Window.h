@@ -26,6 +26,12 @@ namespace Astra
 
 	class ASTRA_API Window
 	{
+	protected:
+		bool m_vsync;
+		bool m_postProcessing;
+		unsigned int m_multisampled;
+		bool m_bloom;
+		bool m_hdr;
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
 
@@ -40,7 +46,17 @@ namespace Astra
 
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 		virtual void SetVSync(bool enabled) = 0;
-		virtual bool IsVSync() const = 0;
+
+		virtual void SetPostProcessing(bool enabled) = 0;
+		virtual void SetMultisampling(unsigned int sampleSize) = 0;
+		virtual void SetHDR(bool enabled) = 0;
+		virtual void SetBloom(bool enabled) = 0;
+
+		inline bool IsVSync() const { return m_vsync; }
+		inline bool IsPostProcessing() const { return m_postProcessing; }
+		inline unsigned int IsMultisampling() const { return m_multisampled; }
+		inline bool IsHDR() const { return m_hdr; }
+		inline bool IsBloom() const { return m_bloom; }
 
 		virtual void* GetNativeWindow() const = 0;
 

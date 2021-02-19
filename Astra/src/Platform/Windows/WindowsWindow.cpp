@@ -9,6 +9,7 @@
 #include <GL/glew.h>
 
 #include "Astra/Application.h" // For vsync define - move?
+#include "Astra/Scene.h"
 
 namespace Astra
 {
@@ -27,6 +28,12 @@ namespace Astra
 
 	WindowsWindow::WindowsWindow(const WindowProperties& properties)
 	{
+		m_vsync = false;
+		m_postProcessing = false;
+		m_multisampled = 0; 
+		m_bloom = false;
+		m_hdr = false;
+
 		Init(properties);
 	}
 
@@ -62,12 +69,8 @@ namespace Astra
 		glfwMakeContextCurrent(m_window);
 		glfwSetWindowUserPointer(m_window, &m_data);
 
-	#if MULTI_SAMPLE
-		glEnable(GL_MULTISAMPLE);
-	#else
-		glDisable(GL_MULTISAMPLE);
-	#endif
-		SetVSync(V_SYNC);
+		SetMultisampling(m_multisampled);
+		SetVSync(m_vsync);
 
 		if (!GLEWInitialized)
 		{
@@ -165,7 +168,8 @@ namespace Astra
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
-		if (enabled)
+		m_vsync = enabled;
+		if (m_vsync)
 		{
 			glfwSwapInterval(1);
 		}
@@ -173,11 +177,40 @@ namespace Astra
 		{
 			glfwSwapInterval(0);
 		}
-		m_data.VSync = enabled;
 	}
 
-	bool WindowsWindow::IsVSync() const
+	void WindowsWindow::SetPostProcessing(bool enabled)
 	{
-		return m_data.VSync;
+		m_postProcessing = enabled;
+		// TODO connect to current renderers
+		((Astra::Scene*)Application::Get().GetCurrentScene())->SetPostProcessing(m_postProcessing);
+	}
+
+	void WindowsWindow::SetMultisampling(unsigned int sampleSize)
+	{
+		m_multisampled = sampleSize;
+		if (m_multisampled > 0)
+		{
+			glEnable(GL_MULTISAMPLE);
+		}
+		else
+		{
+			glDisable(GL_MULTISAMPLE);
+		}
+		auto* scene = Application::Get().GetCurrentScene();
+		if (scene)
+			((Astra::Scene*)scene)->SetMultisampling(sampleSize);
+	}
+
+	void WindowsWindow::SetHDR(bool enabled)
+	{
+		m_hdr = enabled;
+		// TODO connect to current renderers
+	}
+
+	void WindowsWindow::SetBloom(bool enabled)
+	{
+		m_bloom = enabled;
+		// TODO connect to current renderers
 	}
 }

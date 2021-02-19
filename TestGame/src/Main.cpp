@@ -27,7 +27,9 @@ private:
     Entity* barrelModel;
     SkyboxMaterial* skybox;
     AudioSource* audioSource;
+    Image* image;
     Vec3* particleCenter;
+    ToggleButton* postProcessingToggle;
     std::vector<const Entity*> entities;
     
     const float InGameTimeSpeed = 0.005f;
@@ -37,12 +39,24 @@ private:
     float elapsedTime = 0;
     unsigned int frames = 0;
 public:
+    void OnButtonPress()
+    {
+        /*image->operator()(ROTATION, SUM_EQ, 5);*/
+    }
+
+    void TogglePostProcess()
+    {
+        postProcessingToggle->SetText(postProcessingToggle->IsToggled() ? "PostP: 1" : "PostP: 0");
+        GetWindow().SetPostProcessing(postProcessingToggle->IsToggled());
+    }
+
     TestGame()
         : Application()
     {
-        srand((unsigned)time(0)); 
+        srand((unsigned)time(0));
 
         scene = new Astra::Scene();
+        SetCurrentScene(scene);
 
         TerrainMaterial* grassTerrainMat = new TerrainMaterial("res/textures/grass.jpg");
         //TerrainMaterial* flowerTerrainMat = new TerrainMaterial("res/textures/grassFlowers.png");
@@ -68,7 +82,7 @@ public:
 
         //const Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
         auto* guiMat = ResourceManager::LoadGuiMaterial("res/textures/grassTexture.png");
-        Image* image = new Image(guiMat, Vec2(10, 200), Vec2(1), 1);
+        image = new Image(guiMat, Vec2(10, 200), Vec2(1), 1);
         image->SetModulate(Color::White);
         scene->AddGui(image, 0);
 
@@ -84,9 +98,15 @@ public:
         button->SetText("button");
         scene->AddGui(button, 2);
 
-        /*button->SetOnPressed([&] {
-            image->operator()(ROTATION, SUM_EQ, 5);
-        });*/
+        button->SetOnPressed(std::bind(&TestGame::OnButtonPress, this));
+        
+        postProcessingToggle = new ToggleButton(buttonMat, Vec2(500, 10), Vec2(1));
+        postProcessingToggle->SetHoverColor(Color::Red);
+        postProcessingToggle->SetToggledColor(Color::Green);
+        postProcessingToggle->SetText("PostP: 0");
+        scene->AddGui(postProcessingToggle, 1);
+
+        postProcessingToggle->SetOnPressed(std::bind(&TestGame::TogglePostProcess, this));
 
         auto* panelMat = ResourceManager::LoadGuiMaterial("res/textures/Panel.png");
         Panel* panel = new Panel(panelMat, Vec2(100, 200), Vec2(1));

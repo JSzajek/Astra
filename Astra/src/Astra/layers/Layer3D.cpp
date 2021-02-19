@@ -19,12 +19,13 @@ namespace Astra
 		: m_reflectionClipPlane(Math::Vec4(0, 1, 0, 0)), m_refractionClipPlane(Math::Vec4(0, -1, 0, 0)),
 			m_projectionMatrix(new Math::Mat4(1)), m_toShadowMapMatrix(new Math::Mat4(1)),
 			m_fogColor(new Graphics::Color(0.5f, 0.6f, 0.6f, 1.0f)), 
-			m_viewMatrix(NULL), m_mainCamera(NULL), m_skybox(NULL), m_mainLight(NULL)
+			m_viewMatrix(NULL), m_mainCamera(NULL), m_skybox(NULL), m_mainLight(NULL),
+			m_postProcessor(NULL)
 
 	{
 		Init();
 
-		m_postProcessor = new Graphics::PostProcessor();
+		SetPostProcessing(Application::Get().GetWindow().IsPostProcessing());
 		m_selectionRenderer = new Graphics::SelectionRenderer();
 		m_shadowMapController = new Graphics::ShadowMapController(FieldOfView, NearPlane, FarPlane);
 
@@ -171,26 +172,11 @@ namespace Astra
 			Render(delta, m_viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_refractionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 		}
+		
+		PreRender(delta);
 		Math::Vec4 inverseView = m_viewMatrix->Inverse() * Math::Vec4::W_Axis;
-		
-		PrepareRender(delta);
-		
-		// Renders entities and to stencil buffer when selected
-		Render(delta, inverseView, false); 
-
-		// Renders outline based on stencil buffer
-		glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-		m_selectionRenderer->Draw(0, m_entities[EntityType::Selected], m_viewMatrix);
-
-		Graphics::ParticleController::Render(m_viewMatrix);
-		
-		// Perform Post Processing Effects
-		m_postProcessor->Detach();
-		m_postProcessor->Draw();
-
-	#if ASTRA_DEBUG
-		Graphics::GizmoController::Render(m_viewMatrix);
-	#endif
+		Render(delta, inverseView, false); // Renders entities and to stencil buffer when selected
+		PostRender();
 	}
 
 	void Layer3D::SetSelectionColor(const Graphics::Color& color)
@@ -225,19 +211,25 @@ namespace Astra
 		m_selectionRenderer->UpdateProjectionMatrix(m_projectionMatrix);
 		m_skyboxRenderer->UpdateProjectionMatrix(m_projectionMatrix);
 		m_waterRenderer->UpdateProjectionMatrix(m_projectionMatrix);
-		m_postProcessor->UpdateScreenRatio(width, height);
+		if (m_postProcessor) 
+		{
+			m_postProcessor->UpdateScreenRatio(width, height);
+		}
 		Graphics::ParticleController::UpdateProjectionMatrix(m_projectionMatrix);
 	#if ASTRA_DEBUG
 		Graphics::GizmoController::UpdateProjectionMatrix(m_projectionMatrix);
 	#endif
 	}
 
-	void Layer3D::PrepareRender(float delta)
+	void Layer3D::PreRender(float delta)
 	{
 		Graphics::ParticleController::Update(delta, m_mainCamera->GetTranslation());
 
 		// Connect Post Processing Buffer
-		m_postProcessor->Attach();
+		if (m_postProcessor)
+		{
+			m_postProcessor->Attach();
+		}
 
 		glActiveTexture(GL_TEXTURE6);
 		glBindTexture(GL_TEXTURE_2D, m_shadowMapController->GetShadowMap());
@@ -265,6 +257,26 @@ namespace Astra
 			m_normalEntityRenderer->Draw(delta, m_entities[EntityType::NormalMapped], m_viewMatrix, inverseViewVector, clipPlane);
 			m_skyboxRenderer->Draw(delta, m_viewMatrix, NULL);
 		}
+	}
+
+	void Layer3D::PostRender()
+	{
+		// Renders outline based on stencil buffer
+		glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		m_selectionRenderer->Draw(0, m_entities[EntityType::Selected], m_viewMatrix);
+
+		Graphics::ParticleController::Render(m_viewMatrix);
+
+		// Perform Post Processing Effects
+		if (m_postProcessor)
+		{
+			m_postProcessor->Detach();
+			m_postProcessor->Draw();
+		}
+
+	#if ASTRA_DEBUG
+		Graphics::GizmoController::Render(m_viewMatrix);
+	#endif
 	}
 
 	void Layer3D::EmplaceEntity(unsigned int listIndex, const Graphics::Entity* entity)
@@ -304,4 +316,27 @@ namespace Astra
 		}
 	}
 #endif
+
+	void Layer3D::SetMultisampling(unsigned int sampleSize)
+	{
+
+	}
+
+	void Layer3D::SetPostProcessing(bool enabled)
+	{
+		if (!enabled)
+		{
+			if (m_postProcessor)
+			{
+				delete m_postProcessor;
+				m_postProcessor = NULL;
+			}
+		}
+		else
+		{
+			m_postProcessor = new Graphics::PostProcessor();
+			auto [width, height] = Application::Get().GetWindow().GetSize();
+			m_postProcessor->UpdateScreenRatio(width, height);
+		}
+	}
 }

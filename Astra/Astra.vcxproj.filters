@@ -469,6 +469,7 @@
     <ClInclude Include="src\Astra\math\MathsFuncs.h" />
     <ClInclude Include="src\Astra\graphics\renderers\SelectionRenderer.h" />
     <ClInclude Include="src\Astra\graphics\shaders\BasicEntityShader.h" />
+    <ClInclude Include="src\Astra\graphics\guis\ToggleButton.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astra\Application.cpp">

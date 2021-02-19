@@ -153,6 +153,7 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\Application.h" />
     <ClInclude Include="src\Astra\Core.h" />
     <ClInclude Include="src\Astra\EntryPoint.h" />
+    <ClInclude Include="src\Astra\graphics\guis\ToggleButton.h" />
     <ClInclude Include="src\Astra\graphics\renderers\SelectionRenderer.h" />
     <ClInclude Include="src\Astra\graphics\shaders\BasicEntityShader.h" />
     <ClInclude Include="src\Astra\Log.h" />

@@ -12,7 +12,6 @@ namespace Astra
 		{
 			std::string Title;
 			unsigned int Width, Height;
-			bool VSync;
 
 			EventCallbackFn EventCallback;
 		};
@@ -33,7 +32,11 @@ namespace Astra
 
 		virtual void SetEventCallback(const EventCallbackFn& callback) override { m_data.EventCallback = callback; };
 		virtual void SetVSync(bool enabled) override;
-		virtual bool IsVSync() const override;
+
+		virtual void SetPostProcessing(bool enabled) override;
+		virtual void SetMultisampling(unsigned int sampleSize) override;
+		virtual void SetHDR(bool enabled) override;
+		virtual void SetBloom(bool enabled) override;
 
 		virtual inline void* GetNativeWindow() const override { return m_window; }
 	private:
