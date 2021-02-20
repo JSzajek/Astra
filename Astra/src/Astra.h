@@ -16,7 +16,8 @@
 
 #include "Astra/graphics/ResourceManager.h"
 
-#include "Astra/graphics/entities/Entity.h"
+//#include "Astra/graphics/entities/Entity.h"
+#include "Astra/graphics/entities/utility/Model.h"
 #include "Astra/graphics/entities/Camera.h"
 #include "Astra/graphics/entities/DirectionalLight.h"
 #include "Astra/graphics/entities/PointLight.h"

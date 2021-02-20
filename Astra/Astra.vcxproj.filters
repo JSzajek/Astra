@@ -37,6 +37,9 @@
     <Filter Include="src\Astra\graphics\entities\terrains">
       <UniqueIdentifier>{22892AFA-0E70-ECF1-B7C0-520FA3866558}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Astra\graphics\entities\utility">
+      <UniqueIdentifier>{AE49E676-1A03-5121-A362-6BFB0F1B0791}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Astra\graphics\gizmos">
       <UniqueIdentifier>{7F2B12B6-EBED-4540-349E-D4CCA09F1E1E}</UniqueIdentifier>
     </Filter>
@@ -171,9 +174,6 @@
     <ClInclude Include="src\Astra\graphics\entities\DirectionalLight.h">
       <Filter>src\Astra\graphics\entities</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astra\graphics\entities\Entity.h">
-      <Filter>src\Astra\graphics\entities</Filter>
-    </ClInclude>
     <ClInclude Include="src\Astra\graphics\entities\Light.h">
       <Filter>src\Astra\graphics\entities</Filter>
     </ClInclude>
@@ -194,6 +194,12 @@
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\entities\terrains\WaterTile.h">
       <Filter>src\Astra\graphics\entities\terrains</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\utility\Mesh.h">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\utility\Model.h">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\gizmos\Gizmo.h">
       <Filter>src\Astra\graphics\gizmos</Filter>
@@ -223,6 +229,9 @@
       <Filter>src\Astra\graphics\guis</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\guis\TextBox.h">
+      <Filter>src\Astra\graphics\guis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\guis\ToggleButton.h">
       <Filter>src\Astra\graphics\guis</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\guis\utility\FontAtlas.h">
@@ -450,6 +459,9 @@
     <ClInclude Include="src\Astra\utils\Timestep.h">
       <Filter>src\Astra\utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\Astra\utils\Unique.h">
+      <Filter>src\Astra\utils</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsInput.h">
       <Filter>src\Platform\Windows</Filter>
     </ClInclude>
@@ -471,13 +483,9 @@
     <ClInclude Include="vendor\stb_image\stb_image\stb_image.h">
       <Filter>vendor\stb_image\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astra\math\MathsDefines.h" />
-    <ClInclude Include="src\Astra\math\MathsFuncs.h" />
-    <ClInclude Include="src\Astra\graphics\renderers\SelectionRenderer.h" />
-    <ClInclude Include="src\Astra\graphics\shaders\BasicEntityShader.h" />
-    <ClInclude Include="src\Astra\graphics\guis\ToggleButton.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\Mesh.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\Model.h" />
+    <ClInclude Include="vendor\stb_image\stb_image\stb_image_write.h">
+      <Filter>vendor\stb_image\stb_image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astra\Application.cpp">
@@ -516,9 +524,6 @@
     <ClCompile Include="src\Astra\graphics\entities\Camera.cpp">
       <Filter>src\Astra\graphics\entities</Filter>
     </ClCompile>
-    <ClCompile Include="src\Astra\graphics\entities\Entity.cpp">
-      <Filter>src\Astra\graphics\entities</Filter>
-    </ClCompile>
     <ClCompile Include="src\Astra\graphics\entities\Light.cpp">
       <Filter>src\Astra\graphics\entities</Filter>
     </ClCompile>
@@ -533,6 +538,12 @@
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\entities\terrains\WaterTile.cpp">
       <Filter>src\Astra\graphics\entities\terrains</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\utility\Mesh.cpp">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\utility\Model.cpp">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\gizmos\Gizmo.cpp">
       <Filter>src\Astra\graphics\gizmos</Filter>
@@ -687,8 +698,6 @@
     <ClCompile Include="vendor\stb_image\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Astra\graphics\entities\utility\Mesh.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\utility\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\fonts\calibri.ttf">

@@ -46,9 +46,8 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
-	void SelectionRenderer::Draw(float delta, const std::unordered_map<unsigned int, std::vector<const Entity*>>& entities,
-		const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector,
-		const Math::Vec4& clipPlane)
+	void SelectionRenderer::Draw(float delta, const std::unordered_map<unsigned int, std::vector<const Model*>>& models,
+									const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		// Disable drawing to color and depth buffer.
 		glColorMask(false, false, false, false);
@@ -60,16 +59,19 @@ namespace Astra::Graphics
 		glStencilMask(0xFF);
 
 		m_entityShader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
-		for (const auto& directory : entities)
+		for (const auto& directory : models)
 		{
-			PrepareEntity(m_entityShader, directory.second.front());
-			for (const Entity* entity : directory.second)
+			for (const auto& mesh : directory.second.front()->GetMeshes())
 			{
-				m_entityShader->SetUniform2f(OFFSET_TAG, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
-				m_entityShader->SetUniformMat4(TRANSFORM_MATRIX_TAG, entity->GetModelMatrix());
-				glDrawElements(entity->vertexArray->drawType, entity->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
+				PrepareMesh(mesh);
+				for (const auto* model : directory.second)
+				{
+					m_entityShader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(model->GetRowCount()));
+					m_entityShader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
+					m_entityShader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetSelectedModelMatrix());
+					glDrawElements(GL_TRIANGLES, mesh.GetVertexCount(), GL_UNSIGNED_INT, NULL);
+				}
 			}
-			UnbindVertexArray();
 		}
 		m_entityShader->Stop();
 
@@ -82,65 +84,50 @@ namespace Astra::Graphics
 		// Re-enable drawing to color and depth buffer before drawing outline.
 		glColorMask(true, true, true, true);
 		glDepthMask(true);
-		DrawSelected(entities, viewMatrix);
+
+		//DrawSelected(models, viewMatrix);
 	}
 
-	void SelectionRenderer::PrepareEntity(Shader* shader, const Entity* entity)
+	void SelectionRenderer::PrepareMesh(const Mesh& mesh)
 	{
-		glBindVertexArray(entity->vertexArray->vaoId);
+		glBindVertexArray(mesh.GetVAO());
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
 
-		const auto* material = entity->material;
-
-		if (material != NULL)
+		if (const auto* material = mesh.GetMaterial())
 		{
-			if (material->Transparent)
+			if (material->GetTransparency())
 			{
 				glDisable(GL_CULL_FACE);
 			}
-			m_entityShader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(material->GetRowCount()));
 
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, material->GetId());
+			glBindTexture(GL_TEXTURE_2D, material->GetTextureId(TextureType::DiffuseMap));
 		}
 	}
 
-	void SelectionRenderer::DrawSelected(const std::unordered_map<unsigned int, std::vector<const Entity*>>& entities, const Math::Mat4* viewMatrix)
+	void SelectionRenderer::DrawSelected(const std::unordered_map<unsigned int, std::vector<const Model*>>& models, 
+											const Math::Mat4* viewMatrix)
 	{
 		m_shader->Start();
-		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 		glStencilMask(0x00);
 		glDisable(GL_DEPTH_TEST);
 
-		for (const auto& directory : entities)
+		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
+		for (const auto& directory : models)
 		{
-			const Entity* first = directory.second.front();
-			const auto* material = first->material;
-
-			glBindVertexArray(first->vertexArray->vaoId);
-			glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
-			glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
-
-			if (material != NULL)
+			for (const auto& mesh : directory.second.front()->GetMeshes())
 			{
-				if (material->Transparent)
+				PrepareMesh(mesh);
+				for (const auto* model : directory.second)
 				{
-					glDisable(GL_CULL_FACE);
+					m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(model->GetRowCount()));
+					m_shader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
+					m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetSelectedModelMatrix());
+					glDrawElements(GL_TRIANGLES, mesh.GetVertexCount(), GL_UNSIGNED_INT, NULL);
 				}
-				m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(material->GetRowCount()));
-
-				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, material->GetId());
-			}
-
-			for (const Entity* entity : directory.second)
-			{
-				m_shader->SetUniform2f(OFFSET_TAG, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
-				m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, entity->GetSelectedModelMatrix());
-				glDrawElements(entity->vertexArray->drawType, entity->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
 			}
 		}
 

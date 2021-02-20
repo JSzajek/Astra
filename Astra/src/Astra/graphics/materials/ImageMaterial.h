@@ -1,56 +1,44 @@
 #pragma once
 
 #include "Astra/graphics/buffers/Texture.h"
+#include "Astra/Core.h"
 
 namespace Astra::Graphics
 {
 	class ImageMaterial
 	{
 	private:
-		size_t m_rowCount;
-
-		Texture* m_diffuse;
-		const Texture* m_specular;
-		const Texture* m_emission;
-
-		const Texture* m_normalMap;
-		const Texture* m_parallaxMap;
+		// Data
+		Texture* m_textures[5];
+		unsigned char m_flags;
+	private:
+		// Properties
 		float m_height;
-	public:
-		float Reflectivity;
-		bool Transparent;
-		bool FakeLight;
+		float m_reflectivity;
+		bool m_transparent;
+		bool m_fakeLight;
 	public:		
-		ImageMaterial(const char* diffuse,
-					  const char* specular,
-					  const char* emission,
-					  size_t rowCount, float reflectivity,
-					  bool transparent);
-
-		ImageMaterial(const char* diffuse, 
-					  const char* specular, 
-					  const char* normalMap, 
-					  const char* parallaxMap,
-					  float heightOffset,
-					  const char* emission, 
-					  size_t rowCount, 
-					  float reflectivity, 
-					  bool transparent);
-
+		ImageMaterial(const std::vector<Texture*>& textures);
 		~ImageMaterial();
 
-		inline bool IsNormalMapped() const { return m_normalMap != NULL; }
-		inline bool IsParallaxMapped() const { return m_parallaxMap != NULL; }
-		inline bool HasGlow() const { return m_emission != NULL; }
+		inline unsigned int GetTextureId(TextureType type) const 
+		{
+			ASTRA_CORE_ASSERT(HasTexture(type), "ImageMaterial: Attempted to Retrieve Uninitialized Texture");
+			return m_textures[type]->id;
+		}
+		inline bool HasTexture(TextureType type) const { return m_flags & BIT(static_cast<unsigned char>(type)); }
 
-		inline size_t GetRowCount() const { return m_rowCount; }
-		inline unsigned int GetId() const { return m_diffuse->id; }
-		inline unsigned int GetSpecularId() const { return m_specular->id; }
-		inline unsigned int GetEmissionId() const { return m_emission == NULL ? 0 :m_emission->id; }
-		
-		inline unsigned int GetNormalMapId() const { return m_normalMap->id; }
-		inline unsigned int GetParallaxMapId() const { return m_parallaxMap->id; }
 		inline float GetHeightOffset() const { return m_height; }
+		inline float GetReflectivity() const { return m_reflectivity; }
+		inline bool GetTransparency() const { return m_transparent; }
+		inline bool GetFakeLighting() const { return m_fakeLight; }
+
+		inline void SetHeightOffset(float value) { m_height = value; }
+		inline void SetReflectivity(float value) { m_reflectivity = value; }
+		inline void SetTransparency(bool enabled) { m_transparent = enabled; }
+		inline void SetFakeLighting(bool enabled) { m_fakeLight = enabled; }
+		
+		void AddTexture(Texture* texture);
 	public:
 		void UpdateDiffuseMap(bool hdr);
 	};

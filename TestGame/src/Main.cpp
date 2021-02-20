@@ -24,7 +24,11 @@ private:
     DirectionalLight* dir_light;
     PointLight* light3;
     PointLight* light4;
-    Entity* barrelModel;
+    Model* cubeModel;
+    Model* cubeModel2;
+    Model* cubeModel3;
+    Model* barrelModel;
+    Model* brickModel;
     SkyboxMaterial* skybox;
     AudioSource* audioSource;
     Image* image;
@@ -34,7 +38,7 @@ private:
     ToggleButton* bloomToggle;
     ToggleButton* hdrToggle;
     ToggleButton* reflectionToggle;
-    std::vector<const Entity*> entities;
+    std::vector<const Model*> models;
     
     const float InGameTimeSpeed = 0.005f;
     short timeDir = 1;
@@ -101,7 +105,7 @@ public:
         
         m_player = new Player(Vec3(-25, 50, -100), terrain);
         scene->SetMainCamera(m_player->GetCamera());
-        scene->AddEntity(m_player->GetRendering());
+        //scene->AddEntity(m_player->GetRendering());
 
         WaterTile* tile1 = new WaterTile(0, 0, -2.5f, 128);
         scene->AddWaterTile(tile1);
@@ -189,8 +193,8 @@ public:
         skybox = ResourceManager::LoadSkyboxMaterial(m_textureFiles, m_nightTextureFiles);
         scene->SetSkyBox(skybox);
 
-        Vec3 light_pos = Astra::Math::Vec3(-55, terrain->GetHeightOfTerrain(-55, 55) + 7, 55);
-        dir_light = new DirectionalLight(Vec3(0), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0));
+        Vec3 light_pos = Astra::Math::Vec3(20, terrain->GetHeightOfTerrain(-55, 55) + 7, 5);
+        dir_light = new DirectionalLight(Vec3(25), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0));
         light4 = new PointLight(Vec3(-28.75f, 0, -65.5f), Vec3(3, 1.5f, 0), Vec3(1), Vec3(5), 1, 0.22f, 0.20f);
         light3 = new PointLight(light_pos, Vec3(3, 1.5f, 0), Vec3(1), Vec3(25));
 
@@ -198,44 +202,77 @@ public:
         scene->AddPointLight(light4);
         scene->SetDirectionalLight(dir_light);
 
-        auto* barrelMat = ResourceManager::LoadMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.jpg", "res/textures/barrelNormal.png", NULL, 0, NULL, 1, 32);
-        barrelModel = ResourceManager::LoadNormalEntity("res/barrel.obj", 0, Vec3(-40, terrain->GetHeightOfTerrain(-40, 55) + 5, 55), Vec3(0), Vec3(1));
-        barrelModel->SetMaterial(barrelMat);
-        barrelModel->SetSelected(true);
-        entities.emplace_back(barrelModel);
-        scene->AddEntity(barrelModel);
+        cubeModel = ResourceManager::LoadModel("res/cube.fbx");
+        cubeModel->SetScale(Math::Vec3(1));
+        cubeModel->SetTranslation(Math::Vec3(0, 0, 20));
+        models.emplace_back(cubeModel);
+        scene->AddModel(cubeModel);
 
-        auto* brickMat = ResourceManager::LoadMaterial("res/textures/bricks.jpg", "res/textures/bricks_specular.jpg", "res/textures/bricks_normal.jpg", "res/textures/bricks_heightmap.jpg", 0.1f, NULL, 1, 16);
-        auto* brick = ResourceManager::LoadNormalEntity("res/plane.obj", 0, Vec3(-50, terrain->GetHeightOfTerrain(-50, 50) + 5, 50), Vec3(90, 0, 0), Vec3(5, 1, 5));
-        brick->SetMaterial(brickMat);
-        entities.emplace_back(brick);
-        scene->AddEntity(brick);
+        // Example of loaded already loaded model and deleting pointer but not source
+        cubeModel2 = ResourceManager::LoadModel("res/cube.fbx");
+        RESOURCE_UNLOAD(cubeModel2);
 
-        auto* runestoneMat = ResourceManager::LoadMaterial("res/textures/rock1_basecolor.png", "res/textures/rock1_roughness.png", "res/textures/rock1_normal.png", NULL, 0, "res/textures/rock1_emissive.png", 1, 32);
-        auto* runestone = ResourceManager::LoadNormalEntity("res/runestone_1.obj", 0, Vec3(-60, terrain->GetHeightOfTerrain(-60, 60) + 2, 60), Vec3::Zero, Vec3(2));
-        runestone->SetMaterial(runestoneMat);
-        entities.emplace_back(runestone);
-        scene->AddEntity(runestone);
+        cubeModel3 = ResourceManager::LoadModel("res/cube.fbx");
+        cubeModel3->SetScale(Math::Vec3(1));
+        cubeModel3->SetTranslation(Math::Vec3(20, 0, 20));
+        models.emplace_back(cubeModel3);
+        scene->AddModel(cubeModel3);
 
-        auto* lampMat = ResourceManager::LoadMaterial("res/textures/Lamp_UV_Layout.png", "res/textures/Lamp_Specular.png", "res/textures/Lamp_Emission.png", 1, 32);
-        auto* lamp = ResourceManager::LoadEntity("res/Lamp.obj", 0, Vec3(-28.75f, -1.25f, -65.5f), Vec3::Zero, Vec3(1.5f));
-        lamp->SetMaterial(lampMat);
-        entities.emplace_back(lamp);
-        scene->AddEntity(lamp);
+        barrelModel = ResourceManager::LoadModel("res/barrel_2.fbx", true);
+        barrelModel->SetScale(Math::Vec3(3));
+        models.emplace_back(barrelModel);
+        scene->AddModel(barrelModel);
 
-        auto* mushroomMat = ResourceManager::LoadMaterial("res/textures/Boxing_Shroom_UV_Layout.png", "res/textures/Boxing_Shroom_Specular.png", NULL, 1, 8);
-        auto* mushroom = ResourceManager::LoadEntity("res/Boxing_Shroom.obj", 0, Vec3(-25, terrain->GetHeightOfTerrain(-25, -65), -65), Vec3(0, 180, 0), Vec3(2));
-        mushroom->SetMaterial(mushroomMat);
-        entities.emplace_back(mushroom);
-        scene->AddEntity(mushroom);
+        // FBX doesn't export displacement map- Work Around
+        auto* heightMap = Loader::LoadTexture("res/textures/bricks_heightmap.jpg", false, GL_REPEAT, false);
+        heightMap->type = TextureType::HeightMap;
+        brickModel = ResourceManager::LoadModel("res/bricks.fbx", true);
+        brickModel->GetMesh(0).GetMaterial()->AddTexture(heightMap);
+        brickModel->GetMesh(0).GetMaterial()->SetHeightOffset(0.1f);
+        brickModel->SetScale(Math::Vec3(10));
+        brickModel->SetRotation(Math::Vec3(0, 0, -90));
+        brickModel->SetTranslation(Math::Vec3(-10, 0, -10));
+        models.emplace_back(brickModel);
+        scene->AddModel(brickModel);
 
-        // Example of duplicate usage of vertex array object (duplicate of player)
-        auto* containerMat = ResourceManager::LoadMaterial("res/textures/container.png", "res/textures/container_specular.png", NULL, 1, 32);
-        auto* container = ResourceManager::LoadEntity("res/cube.obj", 0, Vec3(-25, 3000, 1000), Vec3(0), Vec3(2));
-        container->SetMaterial(containerMat);
-        container->SetSelected(true);
-        entities.emplace_back(container);
-        scene->AddEntity(container);
+        //auto* barrelMat = ResourceManager::LoadMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.jpg", "res/textures/barrelNormal.png", NULL, 0, NULL, 1, 32);
+        //barrelModel = ResourceManager::LoadNormalEntity("res/barrel.obj", 0, Vec3(-40, terrain->GetHeightOfTerrain(-40, 55) + 5, 55), Vec3(0), Vec3(1));
+        //barrelModel->SetMaterial(barrelMat);
+        //barrelModel->SetSelected(true);
+        //entities.emplace_back(barrelModel);
+        //scene->AddEntity(barrelModel);
+
+        //auto* brickMat = ResourceManager::LoadMaterial("res/textures/bricks.jpg", "res/textures/bricks_specular.jpg", "res/textures/bricks_normal.jpg", "res/textures/bricks_heightmap.jpg", 0.1f, NULL, 1, 16);
+        //auto* brick = ResourceManager::LoadNormalEntity("res/plane.obj", 0, Vec3(-50, terrain->GetHeightOfTerrain(-50, 50) + 5, 50), Vec3(90, 0, 0), Vec3(5, 1, 5));
+        //brick->SetMaterial(brickMat);
+        //entities.emplace_back(brick);
+        //scene->AddEntity(brick);
+
+        //auto* runestoneMat = ResourceManager::LoadMaterial("res/textures/rock1_basecolor.png", "res/textures/rock1_roughness.png", "res/textures/rock1_normal.png", NULL, 0, "res/textures/rock1_emissive.png", 1, 32);
+        //auto* runestone = ResourceManager::LoadNormalEntity("res/runestone_1.obj", 0, Vec3(-60, terrain->GetHeightOfTerrain(-60, 60) + 2, 60), Vec3::Zero, Vec3(2));
+        //runestone->SetMaterial(runestoneMat);
+        //entities.emplace_back(runestone);
+        //scene->AddEntity(runestone);
+
+        //auto* lampMat = ResourceManager::LoadMaterial("res/textures/Lamp_UV_Layout.png", "res/textures/Lamp_Specular.png", "res/textures/Lamp_Emission.png", 1, 32);
+        //auto* lamp = ResourceManager::LoadEntity("res/Lamp.obj", 0, Vec3(-28.75f, -1.25f, -65.5f), Vec3::Zero, Vec3(1.5f));
+        //lamp->SetMaterial(lampMat);
+        //entities.emplace_back(lamp);
+        //scene->AddEntity(lamp);
+
+        //auto* mushroomMat = ResourceManager::LoadMaterial("res/textures/Boxing_Shroom_UV_Layout.png", "res/textures/Boxing_Shroom_Specular.png", NULL, 1, 8);
+        //auto* mushroom = ResourceManager::LoadEntity("res/Boxing_Shroom.obj", 0, Vec3(-25, terrain->GetHeightOfTerrain(-25, -65), -65), Vec3(0, 180, 0), Vec3(2));
+        //mushroom->SetMaterial(mushroomMat);
+        //entities.emplace_back(mushroom);
+        //scene->AddEntity(mushroom);
+
+        //// Example of duplicate usage of vertex array object (duplicate of player)
+        //auto* containerMat = ResourceManager::LoadMaterial("res/textures/container.png", "res/textures/container_specular.png", NULL, 1, 32);
+        //auto* container = ResourceManager::LoadEntity("res/cube.obj", 0, Vec3(-25, 3000, 1000), Vec3(0), Vec3(2));
+        //container->SetMaterial(containerMat);
+        //container->SetSelected(true);
+        //entities.emplace_back(container);
+        //scene->AddEntity(container);
 
         ParticleMaterial* partMaterial = ResourceManager::LoadParticleMaterial("res/textures/particleAtlas.png", 4);
         particleCenter = new Vec3(-80, terrain->GetHeightOfTerrain(-80, 80) + 5, 80);
@@ -254,7 +291,7 @@ public:
         audioSource->SetLooping(true);
         audioSource->Play(tempSound);
 
-        auto* fernMat = ResourceManager::LoadMaterial("res/textures/fernAtlas.png", Texture::DefaultSpecular, NULL, 2, 0.25f, true);
+        /*auto* fernMat = ResourceManager::LoadMaterial("res/textures/fernAtlas.png", Texture::DefaultSpecular, NULL, 2, 0.25f, true);
         fernMat->FakeLight = true;
         for (int i = 0; i < 12; i++)
         {
@@ -266,7 +303,7 @@ public:
             entities.emplace_back(fern);
             fern->SetSelected(Math::RandomRange(0, 10) > 5);
             scene->AddEntity(fern);
-        }
+        }*/
         scene->Enable();
     }
 
@@ -311,7 +348,7 @@ public:
         delete audioSource;
 
         // Clean up entities
-        for (const auto* entity : entities)
+        for (const auto* entity : models)
         {
             delete entity;
         }

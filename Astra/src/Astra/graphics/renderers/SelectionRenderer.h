@@ -5,7 +5,8 @@
 #include "Astra/graphics/Color.h"
 #include "Astra/graphics/loaders/Loader.h"
 
-#include "Astra/graphics/entities/Entity.h"
+#include "Astra/graphics/entities/utility/Model.h"
+//#include "Astra/graphics/entities/Entity.h" 
 
 namespace Astra::Graphics
 {
@@ -22,12 +23,13 @@ namespace Astra::Graphics
 		void UpdateProjectionMatrix(const Math::Mat4* projectionMatrix) override;
 
 		void Draw(float delta,
-				  const std::unordered_map<unsigned int, std::vector<const Entity*>>& entities,
+				  const std::unordered_map<unsigned int, std::vector<const Model*>>& models,
 				  const Math::Mat4* viewMatrix = NULL,
 				  const Math::Vec4& inverseViewVector = NULL,
 				  const Math::Vec4& clipPlane = DefaultClipPlane);
-		void DrawSelected(const std::unordered_map<unsigned int, std::vector<const Entity*>>& entities, const Math::Mat4* viewMatrix);
+		void DrawSelected(const std::unordered_map<unsigned int, std::vector<const Model*>>& models, 
+						  const Math::Mat4* viewMatrix);
 	private:
-		void PrepareEntity(Shader* shader, const Entity* entity);
+		void PrepareMesh(const Mesh& mesh);
 	};
 }

@@ -1,9 +1,10 @@
 #pragma once
 
 #include "ShadowBox.h"
-#include "../entities/Light.h"
-#include "../buffers/ShadowFrameBuffer.h"
-#include "../renderers/ShadowMapRenderer.h"
+#include "Astra/graphics/entities/utility/Model.h"
+#include "Astra/graphics/entities/Light.h"
+#include "Astra/graphics/buffers/ShadowFrameBuffer.h"
+#include "Astra/graphics/renderers/ShadowMapRenderer.h"
 
 namespace Astra::Graphics
 {
@@ -30,10 +31,9 @@ namespace Astra::Graphics
 		
 		void Render();
 		void SetDirectionalLight(const Light* light);
-		//inline void Clear() { m_renderer->Clear(); }
 
 		inline void SetCamera(Camera* camera) { m_box->SetCamera(camera); }
-		inline void AddEntity(const Entity* entity) { m_renderer->AddEntity(entity); }
+		inline void AddEntity(const Model* entity) { m_renderer->AddEntity(entity); }
 
 		inline Math::Mat4 GetToShadowMapSpaceMatrix() const { return m_offset * m_projectionViewMatrix; }
 		inline const unsigned int GetShadowMap() const { return m_buffer->GetShadowMap(); }

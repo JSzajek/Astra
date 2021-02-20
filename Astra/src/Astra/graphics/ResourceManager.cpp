@@ -23,7 +23,11 @@ namespace Astra::Graphics
 			ResourceManager::Track(*texture);
 			return true;
 		}
+	#if ASTRA_DEBUG
 		*texture = new Texture(filepath);
+	#else
+		*texture = new Texture();
+	#endif
 		ResourceManager::Track(*texture);
 		m_textureDirectory[hash] = *texture;
 		return false;
@@ -68,12 +72,43 @@ namespace Astra::Graphics
 		return false;
 	}
 
-	Entity* ResourceManager::LoadEntityImpl(const char* filepath, bool calcTangents, int textureIndex, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale)
+	Model* ResourceManager::LoadModelImpl(const char* const filepath, bool calcTangents)
 	{
-		return new Entity(filepath, calcTangents, textureIndex, position, rotation, scale);
+		size_t hash = std::hash<std::string>{}(filepath);
+
+		auto found = m_loadedModels.find(hash);
+		if (found != m_loadedModels.end())
+		{
+			Track(found->second);
+			return new Model(*found->second); // Return copy of loaded data
+		}
+		auto* material = new Model(filepath, calcTangents);
+		Track(material);
+		m_loadedModels[hash] = material;
+		return material;
 	}
 
-	ImageMaterial* ResourceManager::LoadMaterialImpl(const char* diffuse, const char* specular, const char* emission, size_t rowCount, float reflectivity, bool transparent)
+	/*Entity* ResourceManager::LoadEntityImpl(const char* filepath, bool calcTangents, int textureIndex, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale)
+	{
+		return new Entity(filepath, calcTangents, textureIndex, position, rotation, scale);
+	}*/
+
+	ImageMaterial* ResourceManager::LoadMaterialImpl(const std::vector<Texture*>& textures, size_t hash)
+	{
+		auto found = m_loadedImageMaterials.find(hash);
+		if (found != m_loadedImageMaterials.end())
+		{
+			Track(found->second);
+			return found->second;
+		}
+
+		auto* material = new ImageMaterial(textures);
+		Track(material);
+		m_loadedImageMaterials[hash] = material;
+		return material;
+	}
+
+	/*ImageMaterial* ResourceManager::LoadMaterialImpl(const char* diffuse, const char* specular, const char* emission, size_t rowCount, float reflectivity, bool transparent)
 	{
 		size_t hash = std::hash<std::string>{}(std::string(diffuse) + std::string(specular) + std::string(emission ? emission : ""));
 		hash += rowCount + std::hash<float>{}(reflectivity)+std::hash<bool>{}(transparent);
@@ -107,7 +142,7 @@ namespace Astra::Graphics
 		Track(material);
 		m_loadedImageMaterials[hash] = material;
 		return material;
-	}
+	}*/
 
 	GuiMaterial* ResourceManager::LoadGuiMaterialImpl(const char* filepath, size_t rowCount)
 	{
@@ -268,6 +303,30 @@ namespace Astra::Graphics
 		hash += fontSize;
 		m_textureDirectory.erase(m_textureDirectory.find(hash));
 		delete atlas;
+	}
+
+	void ResourceManager::UnloadModel(const Model* model)
+	{
+		auto source = m_loadedModels.find(model->GetUID());
+		auto last = UnloadResource(source->second);
+		if (last) // Last reference to model - can clean up vao, vbos, ebos, etc.
+		{
+			for (auto it = m_loadedModels.begin(); it != m_loadedModels.end(); it++)
+			{
+				if (it->second == source->second) 
+				{ 
+					m_loadedModels.erase(it);
+					for (auto mesh : source->second->GetMeshes())
+					{
+						mesh.Unload();
+					}
+					delete source->second; 
+					break; 
+				}
+			}
+		}
+		UnloadResource((void*)model);
+		delete model;
 	}
 
 	void ResourceManager::UnloadImageMaterial(const ImageMaterial* material)

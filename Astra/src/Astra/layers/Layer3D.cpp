@@ -178,7 +178,7 @@ namespace Astra
 		
 		PreRender(delta);
 		Math::Vec4 inverseView = m_viewMatrix->Inverse() * Math::Vec4::W_Axis;
-		Render(delta, inverseView, false); // Renders entities and to stencil buffer when selected
+		Render(delta, inverseView, false); // Renders entities 
 		PostRender();
 	}
 
@@ -187,22 +187,22 @@ namespace Astra
 		m_selectionRenderer->SetSelectionColor(color);
 	}
 
-	void Layer3D::AddEntity(const Graphics::Entity* entity)
+	void Layer3D::AddModel(const Graphics::Model* model)
 	{
-		if (entity->material->IsNormalMapped() || entity->material->IsParallaxMapped())
+		if (model->HasNormals())
 		{
-			EmplaceEntity(EntityType::NormalMapped, entity);
+			EmplaceModel(EntityType::NormalMapped, model);
 		}
 		else
 		{
-			EmplaceEntity(EntityType::Default, entity);
+			EmplaceModel(EntityType::Default, model);
 		}
 
-		if (entity->IsSelected())
+		if (model->IsSelected())
 		{
-			EmplaceEntity(EntityType::Selected, entity);
+			EmplaceModel(EntityType::Selected, model);
 		}
-		m_shadowMapController->AddEntity(entity);
+		m_shadowMapController->AddEntity(model);
 	}
 
 	void Layer3D::UpdateScreen(unsigned int width, unsigned int height)
@@ -249,10 +249,10 @@ namespace Astra
 		if (!waterPass)
 		{
 			m_skyboxRenderer->Draw(delta, m_viewMatrix, NULL);
-			m_waterRenderer->Draw(delta, m_viewMatrix, inverseViewVector);
 
 			m_entityRenderer->Draw(delta, m_entities[EntityType::Default], m_viewMatrix, inverseViewVector, clipPlane);
 			m_normalEntityRenderer->Draw(delta, m_entities[EntityType::NormalMapped], m_viewMatrix, inverseViewVector, clipPlane);
+			m_waterRenderer->Draw(delta, m_viewMatrix, inverseViewVector);
 		}
 		else
 		{
@@ -282,17 +282,18 @@ namespace Astra
 	#endif
 	}
 
-	void Layer3D::EmplaceEntity(unsigned int listIndex, const Graphics::Entity* entity)
+	void Layer3D::EmplaceModel(unsigned int listIndex, const Graphics::Model* model)
 	{
-		auto temp = m_entities[listIndex].find(entity->vertexArray->vaoId);
+		auto uid = model->GetUID();
+		auto temp = m_entities[listIndex].find(uid);
 		if (temp != m_entities[listIndex].end())
 		{
-			temp->second.emplace_back(entity);
+			temp->second.emplace_back(model);
 		}
 		else
 		{
-			m_entities[listIndex][entity->vertexArray->vaoId] = std::vector<const Graphics::Entity*>();
-			m_entities[listIndex][entity->vertexArray->vaoId].emplace_back(entity);
+			m_entities[listIndex][uid] = std::vector<const Graphics::Model*>();
+			m_entities[listIndex][uid].emplace_back(model);
 		}
 	}
 

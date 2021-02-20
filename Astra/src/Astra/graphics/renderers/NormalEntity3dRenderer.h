@@ -8,7 +8,8 @@
 #include "Astra/graphics/Color.h"
 #include "Astra/graphics/loaders/Loader.h"
 
-#include "Astra/graphics/entities/Entity.h"
+//#include "Astra/graphics/entities/Entity.h"
+#include "Astra/graphics/entities/utility/Model.h"
 #include "Astra/graphics/entities/Light.h"
 
 namespace Astra::Graphics
@@ -35,10 +36,14 @@ namespace Astra::Graphics
 		void SetShader(Shader* shader) override;
 		inline void SetShadowMatrix(const Math::Mat4* shadowMatrix) { m_toShadowSpaceMatrix = shadowMatrix; }
 
-		void Draw(float delta, const std::unordered_map<unsigned int, std::vector<const Entity*>>& entities, const Math::Mat4* viewMatrix = NULL, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane);
+		void Draw(float delta, 
+				  const std::unordered_map<unsigned int, std::vector<const Model*>>& models, 
+				  const Math::Mat4* viewMatrix = NULL, 
+				  const Math::Vec4& inverseViewVector = NULL, 
+				  const Math::Vec4& clipPlane = DefaultClipPlane);
 		void AddLight(Light* light);
 		void UpdateLight(const Light* light);
 	private:
-		void PrepareEntity(const Entity* entity);
+		void PrepareMesh(const Mesh& mesh);
 	};
 }
