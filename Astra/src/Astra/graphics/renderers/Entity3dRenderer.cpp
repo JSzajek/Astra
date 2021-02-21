@@ -69,7 +69,7 @@ namespace Astra::Graphics
 					glDrawElements(GL_TRIANGLES, mesh.GetVertexCount(), GL_UNSIGNED_INT, NULL);
 				}
 				glBindVertexArray(0);
-				//UnbindVertexArray();
+				glEnable(GL_CULL_FACE);
 			}
 		}
 
@@ -88,9 +88,6 @@ namespace Astra::Graphics
 	void Entity3dRenderer::PrepareMesh(const Mesh& mesh)
 	{
 		glBindVertexArray(mesh.GetVAO());
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
 
 		if (const auto* material = mesh.GetMaterial())
 		{

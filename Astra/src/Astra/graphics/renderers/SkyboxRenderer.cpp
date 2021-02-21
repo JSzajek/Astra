@@ -1,8 +1,7 @@
 #include "astra_pch.h"
 
 #include "SkyboxRenderer.h"
-
-#include "../ResourceManager.h"
+#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -21,8 +20,8 @@ namespace Astra::Graphics
 
 	SkyboxRenderer::~SkyboxRenderer()
 	{
-		ResourceManager::Unload(m_cube);
-		delete m_material;
+		RESOURCE_UNLOAD(m_cube);
+		RESOURCE_UNLOAD(m_material);
 	}
 
 	void SkyboxRenderer::Draw(float delta, const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
@@ -41,11 +40,9 @@ namespace Astra::Graphics
 	
 		glBindVertexArray(m_cube->vaoId);
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-		glEnableVertexAttribArray(0);
 		BindTextures();
 		glDrawArrays(m_cube->drawType, 0, m_cube->vertexCount);
 		glDepthFunc(GL_LESS); // set depth function back to default
-		glDisableVertexAttribArray(0);
 		glBindVertexArray(0);
 		m_shader->Stop();
 	#if ASTRA_DEBUG

@@ -54,11 +54,11 @@ namespace Astra::Graphics
 		glDepthMask(false);
 		
 		m_entityShader->Start();
+		m_entityShader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
 
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glStencilMask(0xFF);
 
-		m_entityShader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
 		for (const auto& directory : models)
 		{
 			for (const auto& mesh : directory.second.front()->GetMeshes())
@@ -68,9 +68,11 @@ namespace Astra::Graphics
 				{
 					m_entityShader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(model->GetRowCount()));
 					m_entityShader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
-					m_entityShader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetSelectedModelMatrix());
+					m_entityShader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetModelMatrix());
+					
 					glDrawElements(GL_TRIANGLES, mesh.GetVertexCount(), GL_UNSIGNED_INT, NULL);
 				}
+				glBindVertexArray(0);
 			}
 		}
 		m_entityShader->Stop();
@@ -85,14 +87,12 @@ namespace Astra::Graphics
 		glColorMask(true, true, true, true);
 		glDepthMask(true);
 
-		//DrawSelected(models, viewMatrix);
+		DrawSelected(models, viewMatrix);
 	}
 
 	void SelectionRenderer::PrepareMesh(const Mesh& mesh)
 	{
 		glBindVertexArray(mesh.GetVAO());
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
 
 		if (const auto* material = mesh.GetMaterial())
 		{
@@ -110,12 +110,12 @@ namespace Astra::Graphics
 											const Math::Mat4* viewMatrix)
 	{
 		m_shader->Start();
+		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 		glStencilMask(0x00);
 		glDisable(GL_DEPTH_TEST);
 
-		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
 		for (const auto& directory : models)
 		{
 			for (const auto& mesh : directory.second.front()->GetMeshes())
@@ -128,13 +128,13 @@ namespace Astra::Graphics
 					m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetSelectedModelMatrix());
 					glDrawElements(GL_TRIANGLES, mesh.GetVertexCount(), GL_UNSIGNED_INT, NULL);
 				}
+				glBindVertexArray(0);
 			}
 		}
 
 		glStencilFunc(GL_ALWAYS, 0, 0xFF);
 		glStencilMask(0xFF);
 		
-		UnbindVertexArray();
 		m_shader->Stop();
 	#if ASTRA_DEBUG
 		glCheckError();

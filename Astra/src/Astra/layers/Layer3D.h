@@ -14,8 +14,7 @@
 #include "Astra/graphics/renderers/SkyboxRenderer.h"
 #include "Astra/graphics/renderers/WaterRenderer.h"
 
-//#include "Astra/graphics/entities/Entity.h"
-#include "Astra/graphics/entities/utility/Model.h"
+#include "Astra/graphics/entities/Model.h"
 #include "Astra/graphics/entities/PointLight.h"
 #include "Astra/graphics/entities/DirectionalLight.h"
 #include "Astra/graphics/entities/terrains/Terrain.h"
@@ -32,7 +31,7 @@
 
 namespace Astra
 {
-	#define FULL_SELECTION		1
+	#define FULL_SELECTION		0
 
 	enum EntityType : unsigned char
 	{

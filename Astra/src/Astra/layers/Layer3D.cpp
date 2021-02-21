@@ -13,7 +13,7 @@
 #include "Astra/graphics/shaders/WaterShader.h"
 #include "Astra/graphics/shaders/GizmoShader.h"
 
-#include "Astra/graphics/entities/utility/Model.h"
+#include "Astra/graphics/entities/Model.h"
 
 namespace Astra
 {
@@ -166,12 +166,14 @@ namespace Astra
 			// Reflection Rendering
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetReflectionBuffer()->GetId(), 320, 180);
 			m_mainCamera->InvertPitch(-distance); // Updates the view matrix
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			Render(delta, m_viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_reflectionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 
 			// Refraction Rendering
 			m_mainCamera->InvertPitch(distance); // Updates the view matrix
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetRefractionBuffer()->GetId(), 1280, 720);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			Render(delta, m_viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_refractionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 		}
@@ -242,8 +244,6 @@ namespace Astra
 
 	void Layer3D::Render(float delta, const Math::Vec4& inverseViewVector, bool waterPass, const Math::Vec4& clipPlane)
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
 		m_terrainRenderer->Draw(delta, m_viewMatrix, inverseViewVector, clipPlane);
 
 		if (!waterPass)
@@ -253,6 +253,7 @@ namespace Astra
 			m_entityRenderer->Draw(delta, m_entities[EntityType::Default], m_viewMatrix, inverseViewVector, clipPlane);
 			m_normalEntityRenderer->Draw(delta, m_entities[EntityType::NormalMapped], m_viewMatrix, inverseViewVector, clipPlane);
 			m_waterRenderer->Draw(delta, m_viewMatrix, inverseViewVector);
+			
 		}
 		else
 		{
@@ -265,9 +266,18 @@ namespace Astra
 	void Layer3D::PostRender()
 	{
 		// Renders outline based on stencil buffer
-		glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-		m_selectionRenderer->Draw(0, m_entities[EntityType::Selected], m_viewMatrix);
+		if (m_entities[EntityType::Selected].size() > 0)
+		{
+			glClear(GL_STENCIL_BUFFER_BIT);
+			m_selectionRenderer->Draw(0, m_entities[EntityType::Selected], m_viewMatrix);
+		}
+		else
+		{
+			glStencilFunc(GL_ALWAYS, 0, 0xFF);
+			glStencilMask(0xFF);
+		}
 
+		// Render particles after thus on top - Investigate Better Order Placement and Cost
 		Graphics::ParticleController::Render(m_viewMatrix);
 
 		// Perform Post Processing Effects

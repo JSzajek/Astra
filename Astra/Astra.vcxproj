@@ -180,7 +180,7 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\graphics\entities\terrains\Terrain.h" />
     <ClInclude Include="src\Astra\graphics\entities\terrains\WaterTile.h" />
     <ClInclude Include="src\Astra\graphics\entities\utility\Mesh.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\Model.h" />
+    <ClInclude Include="src\Astra\graphics\entities\Model.h" />
     <ClInclude Include="src\Astra\graphics\gizmos\Gizmo.h" />
     <ClInclude Include="src\Astra\graphics\gizmos\GizmoController.h" />
     <ClInclude Include="src\Astra\graphics\guis\Button.h" />
@@ -296,7 +296,7 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClCompile Include="src\Astra\graphics\entities\terrains\Terrain.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\terrains\WaterTile.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\utility\Mesh.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\utility\Model.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\Model.cpp" />
     <ClCompile Include="src\Astra\graphics\gizmos\Gizmo.cpp" />
     <ClCompile Include="src\Astra\graphics\gizmos\GizmoController.cpp" />
     <ClCompile Include="src\Astra\graphics\guis\Gui.cpp" />

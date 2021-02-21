@@ -8,8 +8,7 @@
 #include "Astra/graphics/Color.h"
 #include "Astra/graphics/loaders/Loader.h"
 
-//#include "Astra/graphics/entities/Entity.h"
-#include "Astra/graphics/entities/utility/Model.h"
+#include "Astra/graphics/entities/Model.h"
 #include "Astra/graphics/entities/Light.h"
 
 namespace Astra::Graphics

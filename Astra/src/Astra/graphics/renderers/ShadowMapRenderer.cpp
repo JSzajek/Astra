@@ -32,9 +32,9 @@ namespace Astra::Graphics
 					
 					glDrawElements(GL_TRIANGLES, mesh.GetVertexCount(), GL_UNSIGNED_INT, NULL);
 				}
+				glBindVertexArray(0);
 			}
 		}
-		UnbindVertexArray();
 		UnbindFrameBuffer();
 		m_shader->Stop();
 	#if ASTRA_DEBUG
@@ -60,8 +60,6 @@ namespace Astra::Graphics
 	void ShadowMapRenderer::PrepareMesh(const Mesh& mesh)
 	{
 		glBindVertexArray(mesh.GetVAO());
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
 
 		if (const auto* material = mesh.GetMaterial())
 		{

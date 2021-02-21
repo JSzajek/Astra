@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ShadowBox.h"
-#include "Astra/graphics/entities/utility/Model.h"
+#include "Astra/graphics/entities/Model.h"
 #include "Astra/graphics/entities/Light.h"
 #include "Astra/graphics/buffers/ShadowFrameBuffer.h"
 #include "Astra/graphics/renderers/ShadowMapRenderer.h"

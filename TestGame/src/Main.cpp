@@ -105,7 +105,7 @@ public:
         
         m_player = new Player(Vec3(-25, 50, -100), terrain);
         scene->SetMainCamera(m_player->GetCamera());
-        //scene->AddEntity(m_player->GetRendering());
+        scene->AddModel(m_player->GetBody());
 
         WaterTile* tile1 = new WaterTile(0, 0, -2.5f, 128);
         scene->AddWaterTile(tile1);
@@ -220,6 +220,7 @@ public:
 
         barrelModel = ResourceManager::LoadModel("res/barrel_2.fbx", true);
         barrelModel->SetScale(Math::Vec3(3));
+        barrelModel->SetSelected(true);
         models.emplace_back(barrelModel);
         scene->AddModel(barrelModel);
 
@@ -347,10 +348,10 @@ public:
 
         delete audioSource;
 
-        // Clean up entities
-        for (const auto* entity : models)
+        // Clean up models
+        for (const auto* model : models)
         {
-            delete entity;
+            delete model;
         }
 
         delete particleCenter;

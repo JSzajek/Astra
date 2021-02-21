@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Renderer.h"
-#include "Astra/graphics/entities/utility/Model.h"
+#include "Astra/graphics/entities/Model.h"
 #include "Astra/graphics/buffers/ShadowFrameBuffer.h"
 #include "Astra/graphics/shaders/ShadowShader.h"
 

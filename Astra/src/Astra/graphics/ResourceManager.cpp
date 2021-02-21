@@ -88,11 +88,6 @@ namespace Astra::Graphics
 		return material;
 	}
 
-	/*Entity* ResourceManager::LoadEntityImpl(const char* filepath, bool calcTangents, int textureIndex, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale)
-	{
-		return new Entity(filepath, calcTangents, textureIndex, position, rotation, scale);
-	}*/
-
 	ImageMaterial* ResourceManager::LoadMaterialImpl(const std::vector<Texture*>& textures, size_t hash)
 	{
 		auto found = m_loadedImageMaterials.find(hash);
@@ -107,42 +102,6 @@ namespace Astra::Graphics
 		m_loadedImageMaterials[hash] = material;
 		return material;
 	}
-
-	/*ImageMaterial* ResourceManager::LoadMaterialImpl(const char* diffuse, const char* specular, const char* emission, size_t rowCount, float reflectivity, bool transparent)
-	{
-		size_t hash = std::hash<std::string>{}(std::string(diffuse) + std::string(specular) + std::string(emission ? emission : ""));
-		hash += rowCount + std::hash<float>{}(reflectivity)+std::hash<bool>{}(transparent);
-
-		auto found = m_loadedImageMaterials.find(hash);
-		if (found != m_loadedImageMaterials.end())
-		{
-			Track(found->second);
-			return found->second;
-		}
-
-		auto* material = new ImageMaterial(diffuse, specular, emission, rowCount, reflectivity, transparent);
-		Track(material);
-		m_loadedImageMaterials[hash] = material;
-		return material;
-	}
-
-	ImageMaterial* ResourceManager::LoadMaterialImpl(const char* diffuse, const char* specular, const char* normalMap, const char* parallaxMap, float heightOffset, const char* emission, size_t rowCount, float reflectivity, bool transparent)
-	{
-		size_t hash = std::hash<std::string>{}(std::string(diffuse) + std::string(specular) + std::string(normalMap) + std::string(parallaxMap ? parallaxMap : "") + std::string(emission ? emission : ""));
-		hash += rowCount + std::hash<float>{}(reflectivity)+std::hash<bool>{}(transparent);
-
-		auto found = m_loadedImageMaterials.find(hash);
-		if (found != m_loadedImageMaterials.end())
-		{
-			Track(found->second);
-			return found->second;
-		}
-
-		auto* material = new ImageMaterial(diffuse, specular, normalMap, parallaxMap, heightOffset, emission, rowCount, reflectivity, transparent);
-		Track(material);
-		m_loadedImageMaterials[hash] = material;
-		return material;
-	}*/
 
 	GuiMaterial* ResourceManager::LoadGuiMaterialImpl(const char* filepath, size_t rowCount)
 	{

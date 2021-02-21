@@ -513,6 +513,7 @@ namespace Astra::Graphics
 		GLuint id = GenerateVboId();
 		glBindBuffer(GL_ARRAY_BUFFER, id);
 		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], usage);
+		glEnableVertexAttribArray(index);
 		glVertexAttribPointer(index, strideSize, GL_FLOAT, normalized, 0, NULL);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		return id;

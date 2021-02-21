@@ -3,7 +3,6 @@
 #include "Model.h"
 
 #include "Astra/Application.h"
-//#include "Astra/utils/Unique.h"
 #include "Astra/graphics/loaders/Loader.h"
 #include "Astra/graphics/ResourceManager.h"
 #include "Astra/math/Mat4Utils.h"
@@ -11,13 +10,12 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <stb_image/stb_image.h>
-//#include <stb_image/stb_image_write.h>
 #include <GL/glew.h>
 
 namespace Astra::Graphics
 {
 	Model::Model(const char* const filepath, bool calcTangents)
-		: m_normals(false), m_uid(std::hash<std::string>{}(filepath)),
+		: m_normals(false), m_uid(std::hash<std::string>{}(filepath)), // Currently using filepath as UID - Investigate better method
 			selectedModelMatrix(new Math::Mat4()),
 			m_textureIndex(0), m_rowCount(1),
 			m_selected(0)
@@ -202,7 +200,7 @@ namespace Astra::Graphics
 				}
 				else
 				{
-					//// Read Texture from Filepath - External Texture
+					// Read Texture from Filepath - External Texture
 					auto filename = m_directory + '/' + std::string(string.C_Str());
 					data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 				}
@@ -210,20 +208,6 @@ namespace Astra::Graphics
 				Loader::LoadTexture(texture, data, width, height, nrComponents, texType == TextureType::DiffuseMap);
 				stbi_image_free(data);
 				
-				//glBindTexture(GL_TEXTURE_2D, texture->id);
-				//glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
-				//glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
-				//
-				//GLenum format = nrComponents == 1 ? GL_RED : nrComponents == 3 ? GL_RGB : GL_RGBA;
-
-				//void* pixels = malloc(sizeof(float) * width * height * nrComponents /*RGBA*/); // Allocate Enough Space For Image
-
-				//// Gathers Image Data from Texture Buffer based on ID and re-buffers with new internal format
-				//glGetTexImage(GL_TEXTURE_2D, 0, format, GL_UNSIGNED_BYTE, pixels);
-				//glBindTexture(GL_TEXTURE_2D, 0);
-				//stbi_write_jpg("res/test.jpg", width, height, nrComponents, pixels, 80);
-				//free(pixels);
-
 				textures.push_back(texture);
 			}
 		}

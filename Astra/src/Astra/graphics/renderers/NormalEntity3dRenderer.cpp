@@ -71,7 +71,8 @@ namespace Astra::Graphics
 					m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetModelMatrix());
 					glDrawElements(GL_TRIANGLES, mesh.GetVertexCount(), GL_UNSIGNED_INT, NULL);
 				}
-				UnbindVertexArray();
+				glBindVertexArray(0);
+				glEnable(GL_CULL_FACE);
 			}
 		}
 
@@ -90,10 +91,6 @@ namespace Astra::Graphics
 	void NormalEntity3dRenderer::PrepareMesh(const Mesh& mesh)
 	{
 		glBindVertexArray(mesh.GetVAO());
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Tangents));
 		
 		if (const auto* material = mesh.GetMaterial())
 		{
