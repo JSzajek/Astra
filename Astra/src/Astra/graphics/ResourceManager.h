@@ -14,7 +14,7 @@
 #include "Astra/graphics/materials/ImageMaterial.h"
 #include "Astra/graphics/materials/GuiMaterial.h"
 
-#include "Astra/graphics/entities/Entity.h"
+#include "Astra/graphics/entities/Model.h"
 
 #include "Astra/graphics/guis/utility/FontAtlas.h"
 
@@ -29,6 +29,7 @@ namespace Astra::Graphics
 									{ if (it->second == obj) { list.erase(it); delete obj; break; } }
 
 	private:
+		std::unordered_map<size_t, Model*> m_loadedModels;
 		std::unordered_map<size_t, ImageMaterial*> m_loadedImageMaterials;
 		std::unordered_map<size_t, GuiMaterial*> m_loadedGuiMaterials;
 		std::unordered_map<size_t, FontAtlas*> m_loadedFontAtlases;
@@ -70,14 +71,9 @@ namespace Astra::Graphics
 			return Get().LoadGuiMaterialImpl(filepath, rowCount);
 		}
 
-		static ImageMaterial* LoadMaterial(const char* diffuse, const char* specular, const char* emission = NULL, size_t rowCount = 1, float reflectivity = 16.f, bool transparent = false)
+		static ImageMaterial* LoadMaterial(const std::vector<Texture*>& textures, size_t hash)
 		{
-			return Get().LoadMaterialImpl(diffuse, specular, emission, rowCount, reflectivity, transparent);
-		}
-
-		static ImageMaterial* LoadMaterial(const char* diffuse, const char* specular, const char* normalMap, const char* parallaxMap = NULL, float heightOffset = 0.f, const char* emission = NULL, size_t rowCount = 1, float reflectivity = 16.f, bool transparent = false)
-		{
-			return Get().LoadMaterialImpl(diffuse, specular, normalMap, parallaxMap, heightOffset, emission, rowCount, reflectivity, transparent);
+			return Get().LoadMaterialImpl(textures, hash);
 		}
 
 		static TerrainMaterial* LoadTerrainMaterial(const char* filepath)
@@ -112,20 +108,9 @@ namespace Astra::Graphics
 			return Get().LoadFontAtlasImpl(filepath, fontSize);
 		}
 
-		static Entity* LoadNormalEntity(const char* filepath, int textureIndex = 0,
-										const Math::Vec3& position = Math::Vec3::Zero,
-										const Math::Vec3& rotation = Math::Vec3::Zero,
-										const Math::Vec3& scale = Math::Vec3::One)
+		static Model* LoadModel(const char* const filepath, bool calcNormals = false)
 		{
-			return Get().LoadEntityImpl(filepath, true, textureIndex, position, rotation, scale);
-		}
-
-		static Entity* LoadEntity(const char* filepath, int textureIndex = 0,
-								  const Math::Vec3& position = Math::Vec3::Zero,
-								  const Math::Vec3& rotation = Math::Vec3::Zero,
-								  const Math::Vec3& scale = Math::Vec3::One)
-		{
-			return Get().LoadEntityImpl(filepath, false, textureIndex, position, rotation, scale);
+			return Get().LoadModelImpl(filepath, calcNormals);
 		}
 
 		static void ToggleHDRTextures(bool enabled)
@@ -155,6 +140,12 @@ namespace Astra::Graphics
 			{
 				Get().UnloadTexture(ptr);
 			}
+		}
+
+		/* Template Override */
+		static void Unload(const Model* ptr)
+		{
+			Get().UnloadModel(ptr); // Models are unique pointers
 		}
 
 		/* Template Override */
@@ -264,9 +255,8 @@ namespace Astra::Graphics
 		bool QueryTextureImpl(const std::vector<const char*>& filepaths, CubeMapTexture** texture);
 		bool QueryFontAtlasTextureImpl(const char* filepath, unsigned int fontSize, Texture** texture);
 
-		Entity* LoadEntityImpl(const char* filepath, bool calcTangents, int textureIndex, const Math::Vec3& position, const Math::Vec3& rotation, const Math::Vec3& scale);
-		ImageMaterial* LoadMaterialImpl(const char* diffuse, const char* specular, const char* emission, size_t rowCount, float reflectivity, bool transparent);
-		ImageMaterial* LoadMaterialImpl(const char* diffuse, const char* specular, const char* normalMap, const char* parallaxMap, float heightOffset, const char* emission, size_t rowCount, float reflectivity, bool transparent);
+		Model* LoadModelImpl(const char* const filepath, bool calcTangents);
+		ImageMaterial* LoadMaterialImpl(const std::vector<Texture*>& textures, size_t hash);
 		GuiMaterial* LoadGuiMaterialImpl(const char* filepath, size_t rowCount);
 		FontAtlas* LoadFontAtlasImpl(const char* filepath, unsigned int fontSize);
 	
@@ -279,6 +269,7 @@ namespace Astra::Graphics
 		ParticleMaterial* LoadParticleMaterialImpl(const char* filepath, unsigned int rowCount);
 	private:
 		void UnloadTexture(const Texture* texture);
+		void UnloadModel(const Model* model);
 		void UnloadCubeMapTexture(const CubeMapTexture* texture);
 		void UnloadTexture(const Texture* atlas, unsigned int fontSize);
 		void UnloadImageMaterial(const ImageMaterial* material);

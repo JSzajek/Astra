@@ -45,7 +45,7 @@ namespace Astra
 		inline void SetSkyBox(const Graphics::SkyboxMaterial* material) { m_3dLayer->SetSkyBox(material); }
 		inline void SetFogColor(const Graphics::Color& color) { m_3dLayer->SetFogColor(color); }
 
-		inline void AddEntity(const Graphics::Entity* entity) { m_3dLayer->AddEntity(entity); }
+		inline void AddModel(const Graphics::Model* model) { m_3dLayer->AddModel(model); }
 		inline void AddParticleSystem(const Graphics::ParticleSystem* system) { m_3dLayer->AddParticleSystem(system); }
 		inline void AddTerrain(const Graphics::Terrain* terrain) { m_3dLayer->AddTerrain(terrain); }
 		inline void AddWaterTile(const Graphics::WaterTile* tile) { m_3dLayer->AddWaterTile(tile); }

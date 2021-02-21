@@ -37,7 +37,7 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
-	void Entity3dRenderer::Draw(float delta, const std::unordered_map<unsigned int, std::vector<const Entity*>>& m_entities, 
+	void Entity3dRenderer::Draw(float delta, const std::unordered_map<unsigned int, std::vector<const Model*>>& models,
 								const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
@@ -55,17 +55,22 @@ namespace Astra::Graphics
 		}
 	#endif
 
-		for (const auto& directory : m_entities)
+		for (const auto& directory : models)
 		{
-			PrepareEntity(directory.second.front());
-			for (const Entity* entity : directory.second)
+			for (const auto& mesh : directory.second.front()->GetMeshes())
 			{
-				m_shader->SetUniform2f(OFFSET_TAG, entity->GetMaterialXOffset(), entity->GetMaterialYOffset());
-				m_shader->SetUniformMat4(NORMAL_MATRIX_TAG, entity->GetNormalMatrix());
-				m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, entity->GetModelMatrix());
-				glDrawElements(entity->vertexArray->drawType, entity->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
+				PrepareMesh(mesh);
+				for (const auto* model : directory.second)
+				{
+					m_shader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
+					m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(model->GetRowCount()));
+					m_shader->SetUniformMat4(NORMAL_MATRIX_TAG, model->GetNormalMatrix());
+					m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetModelMatrix());
+					glDrawElements(GL_TRIANGLES, mesh.GetVertexCount(), GL_UNSIGNED_INT, NULL);
+				}
+				glBindVertexArray(0);
+				glEnable(GL_CULL_FACE);
 			}
-			UnbindVertexArray();
 		}
 
 	#if ASTRA_DEBUG
@@ -80,34 +85,31 @@ namespace Astra::Graphics
 	#endif 
 	}
 
-	void Entity3dRenderer::PrepareEntity(const Entity* entity)
+	void Entity3dRenderer::PrepareMesh(const Mesh& mesh)
 	{
-		glBindVertexArray(entity->vertexArray->vaoId);
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
+		glBindVertexArray(mesh.GetVAO());
 
-		m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(entity->material->GetRowCount()));
-
-		if (entity->material->Transparent)
+		if (const auto* material = mesh.GetMaterial())
 		{
-			glDisable(GL_CULL_FACE);
-		}
+			if (material->GetTransparency())
+			{
+				glDisable(GL_CULL_FACE);
+			}
 
-		if (entity->material != NULL)
-		{
-			m_shader->SetUniform1i(FAKE_LIGHT, entity->material->FakeLight);
-			m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, entity->material->Reflectivity);
-			m_shader->SetUniform1i(GLOWING, entity->material->HasGlow());
+			m_shader->SetUniform1i(FAKE_LIGHT, material->GetFakeLighting());
+			m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, material->GetReflectivity());
 
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, entity->material->GetId());
+			glBindTexture(GL_TEXTURE_2D, material->GetTextureId(TextureType::DiffuseMap));
 			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, entity->material->GetSpecularId());
-			if (entity->material->HasGlow())
+			glBindTexture(GL_TEXTURE_2D, material->GetTextureId(TextureType::SpecularMap));
+			
+			auto hasGlow = material->HasTexture(TextureType::EmissionMap);
+			m_shader->SetUniform1i(GLOWING, hasGlow);
+			if (hasGlow)
 			{
 				glActiveTexture(GL_TEXTURE2);
-				glBindTexture(GL_TEXTURE_2D, entity->material->GetEmissionId());
+				glBindTexture(GL_TEXTURE_2D, material->GetTextureId(TextureType::EmissionMap));
 			}
 		}
 	}

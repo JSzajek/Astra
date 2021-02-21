@@ -42,6 +42,8 @@ namespace Astra::Graphics
 		inline const Math::Mat4* const GetNormalMatrix() const { return m_normalMatrix; }
 
 		virtual void SetTranslation(const Math::Vec3& translation);
+		virtual void SetRotation(const Math::Vec3& rotation);
+		virtual void SetScale(const Math::Vec3& scale);
 		virtual void operator()(unsigned int _type, unsigned int _op, unsigned int _index, float _val);
 	protected:
 		float& operator()(const unsigned int& row, const unsigned int& column);

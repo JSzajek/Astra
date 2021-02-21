@@ -57,6 +57,7 @@ void main()
 
 	mat4 modelViewMatrix = viewMatrix * transformMatrix;
 
+	//Gram-Schmidt process to re-orthogonalize TBN
 	vec3 T = normalize((normalMatrix * vec4(tangent, 0.0)).xyz);
 	vec3 N = normalize((normalMatrix * vec4(normal, 0.0)).xyz);
 	vec3 B = cross(N, T);
@@ -168,6 +169,8 @@ void main()
 	vec4 textureColor = texture(material.diffuseMap, texCoords);
 	if (textureColor.a < 0.5) { discard; }
 	
+	out_Color = textureColor;
+
 	vec3 color = textureColor.rgb;
 	vec3 specColor = texture(material.specularMap, texCoords).rgb;
 	vec3 glowingColor = !(glowing > 0) ? vec3(0) : texture(material.emissionMap, texCoords).rgb;

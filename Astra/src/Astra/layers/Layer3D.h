@@ -14,7 +14,7 @@
 #include "Astra/graphics/renderers/SkyboxRenderer.h"
 #include "Astra/graphics/renderers/WaterRenderer.h"
 
-#include "Astra/graphics/entities/Entity.h"
+#include "Astra/graphics/entities/Model.h"
 #include "Astra/graphics/entities/PointLight.h"
 #include "Astra/graphics/entities/DirectionalLight.h"
 #include "Astra/graphics/entities/terrains/Terrain.h"
@@ -31,7 +31,7 @@
 
 namespace Astra
 {
-	#define FULL_SELECTION		1
+	#define FULL_SELECTION		0
 
 	enum EntityType : unsigned char
 	{
@@ -76,7 +76,7 @@ namespace Astra
 		std::vector<const Graphics::WaterTile*> m_tiles;
 
 		// Entities - 1: regular, 2: normal-mapped, 3: selected
-		std::unordered_map<unsigned int, std::vector<const Graphics::Entity*>> m_entities[3];
+		std::unordered_map<unsigned int, std::vector<const Graphics::Model*>> m_entities[3];
 		std::vector<const Graphics::ParticleSystem*> m_particles;
 
 		// Lighting
@@ -98,7 +98,7 @@ namespace Astra
 		inline void SetCamera(Graphics::Camera* camera) { m_mainCamera = camera; }
 		void SetSelectionColor(const Graphics::Color& color);
 
-		void AddEntity(const Graphics::Entity* entity);
+		void AddModel(const Graphics::Model* entity);
 		inline void AddParticleSystem(const Graphics::ParticleSystem* system) { m_particles.emplace_back(system); }
 		inline void AddTerrain(const Graphics::Terrain* terrain) { m_terrains.emplace_back(terrain); }
 		inline void AddWaterTile(const Graphics::WaterTile* tile) { m_tiles.emplace_back(tile); }
@@ -122,6 +122,6 @@ namespace Astra
 		void PreRender(float delta);
 		void Render(float delta, const Math::Vec4& inverseViewVector, bool waterPass, const Math::Vec4& clipPlane = Graphics::Renderer::DefaultClipPlane);
 		void PostRender();
-		void EmplaceEntity(unsigned int listIndex, const Graphics::Entity* entity);
+		void EmplaceModel(unsigned int listIndex, const Graphics::Model* model);
 	};
 }

@@ -1,14 +1,12 @@
 #include "astra_pch.h"
 
 #include "WaterRenderer.h"
-#include "../../math/Mat4Utils.h"
-#include "../loaders/Loader.h"
+#include "Astra/math/Mat4Utils.h"
+#include "Astra/graphics/loaders/Loader.h"
+#include "Astra/graphics/ResourceManager.h"
 
-#include "../entities/PointLight.h"
-#include "../entities/SpotLight.h"
-#include "../shadows/ShadowMapController.h"
-
-#include "../ResourceManager.h"
+#include "Astra/graphics/entities/PointLight.h"
+#include "Astra/graphics/shadows/ShadowMapController.h"
 
 namespace Astra::Graphics
 {
@@ -80,7 +78,9 @@ namespace Astra::Graphics
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 	#endif
-		UnbindVertexArray();
+		glBindVertexArray(0);
+		glDisable(GL_BLEND);
+
 		m_shader->Stop();
 	#if ASTRA_DEBUG
 		glCheckError();
@@ -145,7 +145,7 @@ namespace Astra::Graphics
 	void WaterRenderer::PrepareRender()
 	{
 		glBindVertexArray(m_defaultQuad->vaoId);
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
+
 		if (m_buffer)
 		{
 			glActiveTexture(GL_TEXTURE1);
