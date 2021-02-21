@@ -166,14 +166,12 @@ namespace Astra
 			// Reflection Rendering
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetReflectionBuffer()->GetId(), 320, 180);
 			m_mainCamera->InvertPitch(-distance); // Updates the view matrix
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			Render(delta, m_viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_reflectionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 
 			// Refraction Rendering
 			m_mainCamera->InvertPitch(distance); // Updates the view matrix
 			m_waterRenderer->BindFrameBuffer(m_waterBuffer->GetRefractionBuffer()->GetId(), 1280, 720);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			Render(delta, m_viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_refractionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 		}
@@ -244,6 +242,8 @@ namespace Astra
 
 	void Layer3D::Render(float delta, const Math::Vec4& inverseViewVector, bool waterPass, const Math::Vec4& clipPlane)
 	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		m_terrainRenderer->Draw(delta, m_viewMatrix, inverseViewVector, clipPlane);
 
 		if (!waterPass)

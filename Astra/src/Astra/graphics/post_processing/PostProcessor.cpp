@@ -155,7 +155,6 @@ namespace Astra::Graphics
 	void PostProcessor::Draw()
 	{
 		glBindVertexArray(m_defaultQuad->vaoId);
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glDisable(GL_DEPTH_TEST);
 
 		unsigned int attachment = 0;
@@ -173,7 +172,6 @@ namespace Astra::Graphics
 		for (auto iter = effects.begin(); iter != effects.end();) 
 		{
 			(*iter)->Start(&attachment);
-			glClear(GL_COLOR_BUFFER_BIT);
 			glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
 			(*iter)->Stop();
 			if ((*iter)->Finished())
@@ -183,7 +181,6 @@ namespace Astra::Graphics
 			}
 		}
 		glEnable(GL_DEPTH_TEST);
-		glDisableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glBindVertexArray(0);
 	}
 

@@ -28,6 +28,7 @@ private:
     Model* cubeModel2;
     Model* cubeModel3;
     Model* barrelModel;
+    Model* vampire;
     Model* brickModel;
     SkyboxMaterial* skybox;
     AudioSource* audioSource;
@@ -223,6 +224,12 @@ public:
         barrelModel->SetSelected(true);
         models.emplace_back(barrelModel);
         scene->AddModel(barrelModel);
+
+        vampire = ResourceManager::LoadModel("res/vampire/dancing_vampire.dae", true);
+        models.emplace_back(vampire);
+        vampire->SetScale(Math::Vec3(0.1f));
+        vampire->SetTranslation(Math::Vec3(50, terrain->GetHeightOfTerrain(50, 70), 70));
+        scene->AddModel(vampire);
 
         // FBX doesn't export displacement map- Work Around
         auto* heightMap = Loader::LoadTexture("res/textures/bricks_heightmap.jpg", false, GL_REPEAT, false);
