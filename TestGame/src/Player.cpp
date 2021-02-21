@@ -4,9 +4,7 @@ Player::Player(const Vec3& position, Terrain* terrain)
 	: m_camera(new Camera(20, 45, 0)), m_movement(Vec3(0)),
            m_rotating(false), m_oldPosition(Vec2(0,0)), m_terrain(terrain)
 {
-    auto* containerMat = ResourceManager::LoadMaterial("res/textures/container.png", "res/textures/container_specular.png", NULL, 1, 32);
-    m_body = ResourceManager::LoadEntity("res/cube.obj", 0, position, Vec3::Zero, Vec3::One);
-    m_body->SetMaterial(containerMat);
+    m_body = ResourceManager::LoadModel("res/cube.fbx");
 }
 
 void Player::Update(float delta)
@@ -112,6 +110,6 @@ void Player::CheckInput()
 
 Player::~Player()
 {
-    delete m_body;
+    RESOURCE_UNLOAD(m_body);
     delete m_camera;
 }

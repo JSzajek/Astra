@@ -4,16 +4,16 @@
 #include <vector>
 
 #include "Renderer.h"
-#include "../entities/Entity.h"
-#include "../buffers/ShadowFrameBuffer.h"
-#include "../shaders/ShadowShader.h"
+#include "Astra/graphics/entities/Model.h"
+#include "Astra/graphics/buffers/ShadowFrameBuffer.h"
+#include "Astra/graphics/shaders/ShadowShader.h"
 
 namespace Astra::Graphics
 {
 	class ShadowMapRenderer : public Renderer
 	{
 	private:
-		std::unordered_map<unsigned int, std::vector<const Entity*>> m_entities;
+		std::unordered_map<size_t, std::vector<const Model*>> m_models;
 		ShadowFrameBuffer* m_buffer;
 		Math::Mat4 projectionViewMatrix;
 	public:
@@ -21,10 +21,9 @@ namespace Astra::Graphics
 		
 		inline void SetProjectionViewMatrix(const Math::Mat4& matrix) { projectionViewMatrix = matrix; }
 
-		void AddEntity(const Entity* entity);
+		void AddEntity(const Model* entity);
 		void Draw(float delta = 0, const Math::Mat4* viewMatrix = NULL, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane);
 	private:
-		void PrepareEntity(const Entity* entity);
-		void InitializePerEntity(const Entity* entity);
+		void PrepareMesh(const Mesh& mesh);
 	};
 }

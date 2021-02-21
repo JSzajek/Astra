@@ -1,9 +1,8 @@
 #include "astra_pch.h"
 
 #include "GizmoRenderer.h"
-
-#include "../loaders/Loader.h"
-#include "../ResourceManager.h"
+#include "Astra/graphics/loaders/Loader.h"
+#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -43,7 +42,6 @@ namespace Astra::Graphics
 		m_shader->Start();
 		m_viewMatrix = viewMatrix;
 		glBindVertexArray(m_defaultQuad->vaoId);
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDepthMask(GL_FALSE);
@@ -61,7 +59,6 @@ namespace Astra::Graphics
 
 		glDepthMask(GL_TRUE);
 		glDisable(GL_BLEND);
-		glDisableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
 		glBindVertexArray(0);
 		m_shader->Stop();
 		glCheckError();

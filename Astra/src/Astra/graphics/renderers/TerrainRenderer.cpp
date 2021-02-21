@@ -1,11 +1,10 @@
 #include "astra_pch.h"
 
 #include "TerrainRenderer.h"
-#include "../../math/Mat4Utils.h"
+#include "Astra/math/Mat4Utils.h"
 
-#include "../entities/PointLight.h"
-#include "../entities/SpotLight.h"
-#include "../shadows/ShadowMapController.h"
+#include "Astra/graphics/entities/PointLight.h"
+#include "Astra/graphics/shadows/ShadowMapController.h"
 
 namespace Astra::Graphics
 {
@@ -69,7 +68,7 @@ namespace Astra::Graphics
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 	#endif
-		UnbindVertexArray();
+		glBindVertexArray(0);
 		m_shader->Stop();
 	#if ASTRA_DEBUG
 		glCheckError();
@@ -141,10 +140,6 @@ namespace Astra::Graphics
 	void TerrainRenderer::PrepareTerrain(const Terrain* terrain)
 	{
 		glBindVertexArray(terrain->vertexArray->vaoId);
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
-		glEnableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
-
 		BindTerrainTextures(terrain);
 	}
 

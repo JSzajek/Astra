@@ -1,7 +1,7 @@
 #include "astra_pch.h"
 
 #include "Spatial.h"
-#include "../../math/Mat4Utils.h"
+#include "Astra/math/Mat4Utils.h"
 
 namespace Astra::Graphics
 {
@@ -16,7 +16,7 @@ namespace Astra::Graphics
 	}
 
 	Spatial::Spatial(const Spatial& other)
-		: m_modelMatrix(other.m_modelMatrix), m_normalMatrix(other.m_normalMatrix)
+		: m_modelMatrix(new Math::Mat4(*other.m_modelMatrix)), m_normalMatrix(new Math::Mat4(*other.m_normalMatrix))
 	{
 		memcpy(m_data, other.m_data, sizeof(m_data));
 	}
@@ -66,6 +66,18 @@ namespace Astra::Graphics
 	void Spatial::SetTranslation(const Math::Vec3& translation) 
 	{
 		m_rows[0] = translation;
+		UpdateMatrices();
+	}
+
+	void Spatial::SetRotation(const Math::Vec3& rotation)
+	{
+		m_rows[1] = rotation;
+		UpdateMatrices();
+	}
+
+	void Spatial::SetScale(const Math::Vec3& scale)
+	{
+		m_rows[2] = scale;
 		UpdateMatrices();
 	}
 

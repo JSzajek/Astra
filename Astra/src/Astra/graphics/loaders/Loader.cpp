@@ -126,7 +126,8 @@ namespace Astra::Graphics
 		else if (texture)
 		{
 			stbi_set_flip_vertically_on_load(flip);
-			buffer = stbi_load(std::string(filepath).c_str(), &texture->width, &texture->height, &m_bpp, !invert ? 4 : 1);
+			int width, height;
+			buffer = stbi_load(std::string(filepath).c_str(), &width, &height, &m_bpp, !invert ? 4 : 1);
 
 			if (!buffer)
 			{
@@ -134,10 +135,12 @@ namespace Astra::Graphics
 				return NULL;
 			}
 			auto hdr = Application::Get().GetWindow().IsHDR();
+			texture->width = width;
+			texture->height = height;
 
 			glGenTextures(1, &texture->id);
 			glBindTexture(GL_TEXTURE_2D, texture->id);
-			glTexImage2D(GL_TEXTURE_2D, 0, hdr && diffuse ? GL_SRGB8_ALPHA8 : GL_RGBA8, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+			glTexImage2D(GL_TEXTURE_2D, 0, hdr && diffuse ? GL_SRGB8_ALPHA8 : GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 			glGenerateMipmap(GL_TEXTURE_2D);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clippingOption);
@@ -169,51 +172,49 @@ namespace Astra::Graphics
 		return NULL;
 	}
 
-	void Loader::UpdateDiffuseTextureImpl(Texture* texture, bool hdrEnabled)
+	void Loader::LoadTextureDataImpl(Texture* texture, unsigned char* data, int width, int height, int nrComponents, bool diffuse)
 	{
-		static int m_bpp;
-		static unsigned char* buffer;
+		ASTRA_CORE_ASSERT(data, "Model: Texture Data Failed to Load.");
 
-		if (texture->hdr == hdrEnabled) 
-		{ 
-			return; 
-		}
+		unsigned int textureId;
+		glGenTextures(1, &textureId);
+		auto hdr = Application::Get().GetWindow().IsHDR();
 
-		stbi_set_flip_vertically_on_load(true);
-		buffer = stbi_load(std::string(texture->m_filePath).c_str(), &texture->width, &texture->height, &m_bpp, 4);
+		GLenum format = nrComponents == 1 ? GL_RED : nrComponents == 3 ? GL_RGB : GL_RGBA;
 
-		if (!buffer)
-		{
-			ASTRA_CORE_WARN("Texture {0} Did Not Load Correctly.", texture->m_filePath);
-			return;
-		}
-
-		glBindTexture(GL_TEXTURE_2D, texture->id);
-		glTexImage2D(GL_TEXTURE_2D, 0, hdrEnabled ? GL_SRGB8_ALPHA8 : GL_RGBA8, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		glBindTexture(GL_TEXTURE_2D, textureId);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, diffuse ? GL_LINEAR : GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		texture->hdr = hdrEnabled;
-
-		if (glfwExtensionSupported("GL_EXT_texture_filter_anisotropic"))
-		{
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0);
-			float maxValue;
-			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxValue);
-			float amount = fminf(4.0f, maxValue);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
-		}
-		else
-		{
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.2f);
-			ASTRA_CORE_WARN("Anisotropic Filtering Not Supported");
-		}
-
+		
+		texture->id = textureId;
 		glBindTexture(GL_TEXTURE_2D, 0);
-		stbi_image_free(buffer);
+	}
+
+	void Loader::UpdateDiffuseTextureImpl(Texture* texture, bool hdrEnabled)
+	{
+		if (texture->hdr == hdrEnabled) { return; } // Already updated format
+
+		int width, height;
+		glBindTexture(GL_TEXTURE_2D, texture->id);
+		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+
+		void* data = malloc(sizeof(float) * width * height * 4 /*RGBA*/); // Allocate Enough Space For Image
+
+		// Gathers Image Data from Texture Buffer based on ID and re-buffers with new internal format
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, hdrEnabled ? GL_SRGB8_ALPHA8 : GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		texture->hdr = hdrEnabled; // Update hdr status
+
+		free(data); // Free Image Data
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	CubeMapTexture* Loader::LoadCubeMapImpl(const std::vector<const char*>& filepaths)
@@ -234,11 +235,12 @@ namespace Astra::Graphics
 			stbi_set_flip_vertically_on_load(0); // Don't flip?
 			
 			auto hdr = Application::Get().GetWindow().IsHDR();
-
+			
+			int width, height;
 			for (size_t i = 0; i < filepaths.size(); i++)
 			{
 				auto* tex = (*texture)[i];
-				buffer = stbi_load(std::string(tex->m_filePath).c_str(), &tex->width, &tex->height, &m_bpp, 4);
+				buffer = stbi_load(std::string(tex->m_filePath).c_str(), &width, &height, &m_bpp, 4);
 				if (!buffer)
 				{
 					ASTRA_CORE_WARN("Cube Map Texture {0} Did Not Load Correctly.", tex->m_filePath);
@@ -247,7 +249,7 @@ namespace Astra::Graphics
 
 				if (buffer)
 				{
-					glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, hdr ? GL_SRGB8_ALPHA8 : GL_RGBA8, tex->width, tex->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+					glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, hdr ? GL_SRGB8_ALPHA8 : GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 					stbi_image_free(buffer);
 				}
 			}
@@ -257,6 +259,7 @@ namespace Astra::Graphics
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
+			glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 			return texture;
 		}
 		ASTRA_CORE_ERROR("Loader Error in Cube Map Texture Initialization.");
@@ -265,6 +268,7 @@ namespace Astra::Graphics
 
 	void Loader::UpdateCubeMapImpl(CubeMapTexture* texture, bool hdrEnabled)
 	{
+		//glGetTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, GL_UNSIGNED_BYTE, data); // Only grabs one level of 3d texture - Investigate
 		static int m_bpp;
 		static unsigned char* buffer;
 
@@ -276,19 +280,18 @@ namespace Astra::Graphics
 		glBindTexture(GL_TEXTURE_CUBE_MAP, texture->id);
 		stbi_set_flip_vertically_on_load(false); // Don't flip?
 
-		auto hdr = Application::Get().GetWindow().IsHDR();
-
+		int width, height;
 		for (size_t i = 0; i < texture->GetFiles().size(); i++)
 		{
 			auto* tex = (*texture)[i];
-			buffer = stbi_load(std::string(tex->m_filePath).c_str(), &tex->width, &tex->height, &m_bpp, 4);
+			buffer = stbi_load(std::string(tex->m_filePath).c_str(), &width, &height, &m_bpp, 4);
 			if (!buffer)
 			{
 				ASTRA_CORE_WARN("Cube Map Texture {0} Did Not Load Correctly.", tex->m_filePath);
 				return;
 			}
 
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, hdr ? GL_SRGB8_ALPHA8 : GL_RGBA8, tex->width, tex->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, hdrEnabled ? GL_SRGB8_ALPHA8 : GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 			stbi_image_free(buffer);
 		}
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -298,6 +301,7 @@ namespace Astra::Graphics
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 		texture->hdr = hdrEnabled;
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
 
 	WaterFrameBuffer* Loader::LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
@@ -509,6 +513,7 @@ namespace Astra::Graphics
 		GLuint id = GenerateVboId();
 		glBindBuffer(GL_ARRAY_BUFFER, id);
 		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], usage);
+		glEnableVertexAttribArray(index);
 		glVertexAttribPointer(index, strideSize, GL_FLOAT, normalized, 0, NULL);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		return id;

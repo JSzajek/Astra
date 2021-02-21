@@ -1,38 +1,37 @@
 #include "astra_pch.h"
 
 #include "ImageMaterial.h"
-#include "../loaders/Loader.h"
-#include "../ResourceManager.h"
+#include "Astra/graphics/loaders/Loader.h"
+#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {
-	ImageMaterial::ImageMaterial(const char* diffuse, const char* specular, const char* emission, size_t rowCount, float reflectivity, bool transparent)
-		: m_diffuse(Loader::LoadTexture(diffuse)), m_rowCount(rowCount), Reflectivity(reflectivity), Transparent(transparent), FakeLight(false),
-			m_specular(Loader::LoadTexture(specular, false)), m_normalMap(NULL), m_parallaxMap(NULL), m_height(0)
+	ImageMaterial::ImageMaterial(const std::vector<Texture*>& textures)
+		: m_height(0), m_reflectivity(1), m_transparent(false), m_fakeLight(false),
+			m_flags(0)
 	{
-		m_emission = emission ? Loader::LoadTexture(emission) : NULL;
-	}
-
-	ImageMaterial::ImageMaterial(const char* diffuse, const char* specular, const char* normalMap, const char* parallaxMap, float heightOffset, const char* emission, size_t rowCount, float reflectivity, bool transparent)
-		: m_diffuse(Loader::LoadTexture(diffuse)), m_rowCount(rowCount), Reflectivity(reflectivity), Transparent(transparent), FakeLight(false),
-			m_specular(Loader::LoadTexture(specular, false)), m_normalMap(Loader::LoadTexture(normalMap, false))
-	{
-		m_parallaxMap = parallaxMap ? Loader::LoadTexture(parallaxMap) : NULL;
-		m_height = heightOffset;
-		m_emission = emission ? Loader::LoadTexture(emission) : NULL;
+		for (auto* texture : textures)
+		{
+			AddTexture(texture);
+		}
 	}
 
 	ImageMaterial::~ImageMaterial()
 	{
-		RESOURCE_UNLOAD(m_diffuse);
-		RESOURCE_UNLOAD(m_specular);
-		RESOURCE_UNLOAD(m_emission);
-		RESOURCE_UNLOAD(m_normalMap);
-		RESOURCE_UNLOAD(m_parallaxMap);
+		for (auto* texture : m_textures)
+		{
+			RESOURCE_UNLOAD(texture);
+		}
 	}
 
 	void ImageMaterial::UpdateDiffuseMap(bool hdr)
 	{
-		Loader::UpdateDiffuseTexture(m_diffuse, hdr);
+		Loader::UpdateDiffuseTexture(m_textures[TextureType::DiffuseMap], hdr);
+	}
+
+	void ImageMaterial::AddTexture(Texture* texture)
+	{
+		m_textures[texture->type] = texture; // Add Pointer
+		m_flags |= BIT(texture->type); // Mark as Added
 	}
 }

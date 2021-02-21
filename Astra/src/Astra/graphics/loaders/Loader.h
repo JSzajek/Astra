@@ -52,6 +52,11 @@ namespace Astra::Graphics
 			return Get().LoadTextureImpl(filepath, diffuse, clippingOption, flip, invert);
 		}
 
+		static void LoadTexture(Texture* texture, unsigned char* data, int width, int height, int nrComponents, bool diffuse)
+		{
+			return Get().LoadTextureDataImpl(texture, data, width, height, nrComponents, diffuse);
+		}
+
 		static void UpdateDiffuseTexture(Texture* texture, bool hdrEnabled)
 		{
 			return Get().UpdateDiffuseTextureImpl(texture, hdrEnabled);
@@ -114,6 +119,7 @@ namespace Astra::Graphics
 		
 		const Texture* LoadFontAtlasTextureImpl(const char* const filepath, unsigned int fontSize, const std::vector<unsigned char>& data, unsigned int width, unsigned int height);
 		Texture* LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert);
+		void LoadTextureDataImpl(Texture* texture, unsigned char* data, int width, int height, int nrComponents, bool diffuse);
 		void UpdateDiffuseTextureImpl(Texture* texture, bool hdrEnabled);
 
 		CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);

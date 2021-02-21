@@ -77,7 +77,7 @@
       <PrecompiledHeaderFile>astra_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ASTRA_PLATFORM_WINDOWS;ASTRA_BUILD_DLL;GLFW_INCLUDE_NONE;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;ASTRA_DEBUG;ASTRA_ENABLE_ASSERTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLEW\include;vendor\GLFW\include;vendor\OpenALSoft\include;vendor\FreeType\include;vendor\stb_image;vendor\dr_lib;vendor\rectpack2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLEW\include;vendor\GLFW\include;vendor\OpenALSoft\include;vendor\FreeType\include;vendor\Assimp\include;vendor\stb_image;vendor\dr_lib;vendor\rectpack2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -89,7 +89,7 @@
     </Link>
     <Lib>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;vendor\Assimp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -98,7 +98,7 @@
       <PrecompiledHeaderFile>astra_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ASTRA_PLATFORM_WINDOWS;ASTRA_BUILD_DLL;GLFW_INCLUDE_NONE;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;ASTRA_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLEW\include;vendor\GLFW\include;vendor\OpenALSoft\include;vendor\FreeType\include;vendor\stb_image;vendor\dr_lib;vendor\rectpack2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLEW\include;vendor\GLFW\include;vendor\OpenALSoft\include;vendor\FreeType\include;vendor\Assimp\include;vendor\stb_image;vendor\dr_lib;vendor\rectpack2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -114,7 +114,7 @@
     </Link>
     <Lib>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;vendor\Assimp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
@@ -123,7 +123,7 @@
       <PrecompiledHeaderFile>astra_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ASTRA_PLATFORM_WINDOWS;ASTRA_BUILD_DLL;GLFW_INCLUDE_NONE;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;ASTRA_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLEW\include;vendor\GLFW\include;vendor\OpenALSoft\include;vendor\FreeType\include;vendor\stb_image;vendor\dr_lib;vendor\rectpack2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLEW\include;vendor\GLFW\include;vendor\OpenALSoft\include;vendor\FreeType\include;vendor\Assimp\include;vendor\stb_image;vendor\dr_lib;vendor\rectpack2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -139,7 +139,7 @@
     </Link>
     <Lib>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;OpenAL32.lib;freetype28MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>vendor\GLEW\lib;vendor\GLFW\lib;vendor\OpenALSoft\lib;vendor\FreeType\lib;vendor\Assimp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PreBuildEvent>
       <Command>IF EXIST res\shaders\**.shader\ (xcopy /Q /E /Y /I res\shaders\**.shader ..\bin\windows-Dist-x86\TestGame\res\shaders &gt; nul) ELSE (xcopy /Q /Y /I res\shaders\**.shader ..\bin\windows-Dist-x86\TestGame\res\shaders &gt; nul)
@@ -153,12 +153,7 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\Application.h" />
     <ClInclude Include="src\Astra\Core.h" />
     <ClInclude Include="src\Astra\EntryPoint.h" />
-    <ClInclude Include="src\Astra\graphics\guis\ToggleButton.h" />
-    <ClInclude Include="src\Astra\graphics\renderers\SelectionRenderer.h" />
-    <ClInclude Include="src\Astra\graphics\shaders\BasicEntityShader.h" />
     <ClInclude Include="src\Astra\Log.h" />
-    <ClInclude Include="src\Astra\math\MathsDefines.h" />
-    <ClInclude Include="src\Astra\math\MathsFuncs.h" />
     <ClInclude Include="src\Astra\Scene.h" />
     <ClInclude Include="src\Astra\Window.h" />
     <ClInclude Include="src\Astra\audio\AudioController.h" />
@@ -177,7 +172,6 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\graphics\buffers\WaterFrameBuffer.h" />
     <ClInclude Include="src\Astra\graphics\entities\Camera.h" />
     <ClInclude Include="src\Astra\graphics\entities\DirectionalLight.h" />
-    <ClInclude Include="src\Astra\graphics\entities\Entity.h" />
     <ClInclude Include="src\Astra\graphics\entities\Light.h" />
     <ClInclude Include="src\Astra\graphics\entities\PointLight.h" />
     <ClInclude Include="src\Astra\graphics\entities\Spatial.h" />
@@ -185,6 +179,8 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\graphics\entities\terrains\HeightGenerator.h" />
     <ClInclude Include="src\Astra\graphics\entities\terrains\Terrain.h" />
     <ClInclude Include="src\Astra\graphics\entities\terrains\WaterTile.h" />
+    <ClInclude Include="src\Astra\graphics\entities\utility\Mesh.h" />
+    <ClInclude Include="src\Astra\graphics\entities\Model.h" />
     <ClInclude Include="src\Astra\graphics\gizmos\Gizmo.h" />
     <ClInclude Include="src\Astra\graphics\gizmos\GizmoController.h" />
     <ClInclude Include="src\Astra\graphics\guis\Button.h" />
@@ -195,6 +191,7 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\graphics\guis\Panel.h" />
     <ClInclude Include="src\Astra\graphics\guis\Spatial2D.h" />
     <ClInclude Include="src\Astra\graphics\guis\TextBox.h" />
+    <ClInclude Include="src\Astra\graphics\guis\ToggleButton.h" />
     <ClInclude Include="src\Astra\graphics\guis\utility\FontAtlas.h" />
     <ClInclude Include="src\Astra\graphics\guis\utility\FontStructs.h" />
     <ClInclude Include="src\Astra\graphics\guis\utility\Rect2.h" />
@@ -223,10 +220,12 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\graphics\renderers\NormalEntity3dRenderer.h" />
     <ClInclude Include="src\Astra\graphics\renderers\ParticleRenderer.h" />
     <ClInclude Include="src\Astra\graphics\renderers\Renderer.h" />
+    <ClInclude Include="src\Astra\graphics\renderers\SelectionRenderer.h" />
     <ClInclude Include="src\Astra\graphics\renderers\ShadowMapRenderer.h" />
     <ClInclude Include="src\Astra\graphics\renderers\SkyboxRenderer.h" />
     <ClInclude Include="src\Astra\graphics\renderers\TerrainRenderer.h" />
     <ClInclude Include="src\Astra\graphics\renderers\WaterRenderer.h" />
+    <ClInclude Include="src\Astra\graphics\shaders\BasicEntityShader.h" />
     <ClInclude Include="src\Astra\graphics\shaders\BloomShader.h" />
     <ClInclude Include="src\Astra\graphics\shaders\EntityShader.h" />
     <ClInclude Include="src\Astra\graphics\shaders\FontShader.h" />
@@ -255,6 +254,8 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\math\Mat4.h" />
     <ClInclude Include="src\Astra\math\Mat4Utils.h" />
     <ClInclude Include="src\Astra\math\Maths.h" />
+    <ClInclude Include="src\Astra\math\MathsDefines.h" />
+    <ClInclude Include="src\Astra\math\MathsFuncs.h" />
     <ClInclude Include="src\Astra\math\MathsUtils.h" />
     <ClInclude Include="src\Astra\math\Vec2.h" />
     <ClInclude Include="src\Astra\math\Vec3.h" />
@@ -266,6 +267,7 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\utils\StringUtils.h" />
     <ClInclude Include="src\Astra\utils\Timer.h" />
     <ClInclude Include="src\Astra\utils\Timestep.h" />
+    <ClInclude Include="src\Astra\utils\Unique.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\astra_pch.h" />
@@ -273,10 +275,10 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="vendor\dr_lib\dr_lib\dr_mp3.h" />
     <ClInclude Include="vendor\dr_lib\dr_lib\dr_wav.h" />
     <ClInclude Include="vendor\stb_image\stb_image\stb_image.h" />
+    <ClInclude Include="vendor\stb_image\stb_image\stb_image_write.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astra\Application.cpp" />
-    <ClCompile Include="src\Astra\graphics\renderers\SelectionRenderer.cpp" />
     <ClCompile Include="src\Astra\Log.cpp" />
     <ClCompile Include="src\Astra\audio\AudioController.cpp" />
     <ClCompile Include="src\Astra\audio\AudioSource.cpp" />
@@ -288,12 +290,13 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClCompile Include="src\Astra\graphics\buffers\VertexArray.cpp" />
     <ClCompile Include="src\Astra\graphics\buffers\WaterFrameBuffer.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\Camera.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\Entity.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\Light.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\Spatial.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\terrains\HeightGenerator.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\terrains\Terrain.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\terrains\WaterTile.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\utility\Mesh.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\Model.cpp" />
     <ClCompile Include="src\Astra\graphics\gizmos\Gizmo.cpp" />
     <ClCompile Include="src\Astra\graphics\gizmos\GizmoController.cpp" />
     <ClCompile Include="src\Astra\graphics\guis\Gui.cpp" />
@@ -322,6 +325,7 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClCompile Include="src\Astra\graphics\renderers\NormalEntity3dRenderer.cpp" />
     <ClCompile Include="src\Astra\graphics\renderers\ParticleRenderer.cpp" />
     <ClCompile Include="src\Astra\graphics\renderers\Renderer.cpp" />
+    <ClCompile Include="src\Astra\graphics\renderers\SelectionRenderer.cpp" />
     <ClCompile Include="src\Astra\graphics\renderers\ShadowMapRenderer.cpp" />
     <ClCompile Include="src\Astra\graphics\renderers\SkyboxRenderer.cpp" />
     <ClCompile Include="src\Astra\graphics\renderers\TerrainRenderer.cpp" />
