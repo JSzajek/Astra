@@ -2,6 +2,8 @@
 
 #include "Layer3D.h"
 
+#include <thread>
+
 #include "Astra/Application.h"
 
 #include "Astra/graphics/loaders/Loader.h"
@@ -148,22 +150,35 @@ namespace Astra
 		m_attached = false;
 	}
 
+	void Layer3D::LayerGenerateParticles(float delta)
+	{
+		for (auto* system : m_particles)
+		{
+			system->GenerateParticles(delta);
+		}
+	}
+
+	void Layer3D::LayerUpdateAnimations(float delta)
+	{
+		for (auto* animator : m_animators)
+		{
+			animator->UpdateAnimation(delta);
+		}
+	}
+
 	void Layer3D::OnUpdate(float delta)
 	{
 		if (!m_attached) { return; }
 
-		// Move to async thread
+		//std::thread particleWorker(&Layer3D::LayerGenerateParticles, this, delta);
+		std::thread animationWorker(&Layer3D::LayerUpdateAnimations, this, delta);
+		
 		for (auto* system : m_particles)
 		{
 			system->GenerateParticles(delta);
 		}
 
-		// Move to async thread
-		for (auto* animator : m_animators)
-		{
-			animator->UpdateAnimation(delta);
-		}
-		
+		animationWorker.join();
 		m_shadowMapController->Render();
 		
 		if (m_waterBuffer && m_mainCamera)
@@ -182,7 +197,10 @@ namespace Astra
 			Render(delta, m_viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_refractionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 		}
-		
+
+		//particleWorker.join();
+		Graphics::ParticleController::Update(delta, m_mainCamera->GetTranslation());
+
 		PreRender(delta);
 		Math::Vec4 inverseView = m_viewMatrix->Inverse() * Math::Vec4::W_Axis;
 		Render(delta, inverseView, false); // Renders entities 
@@ -238,8 +256,6 @@ namespace Astra
 
 	void Layer3D::PreRender(float delta)
 	{
-		Graphics::ParticleController::Update(delta, m_mainCamera->GetTranslation());
-
 		// Connect Post Processing Buffer
 		if (m_postProcessor)
 		{

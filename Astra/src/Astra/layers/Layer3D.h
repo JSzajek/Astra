@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <future>
 
 #include "Layer.h"
 
@@ -72,6 +73,8 @@ namespace Astra
 
 		Math::Mat4* m_projectionMatrix;
 		Math::Mat4* m_toShadowMapMatrix;
+
+		std::future<void> m_futures[2];
 	private:
 		// Terrains
 		std::vector<const Graphics::Terrain*> m_terrains;
@@ -111,6 +114,9 @@ namespace Astra
 		void SetBloom(bool enabled);
 		void SetHDR(bool enabled);
 		void SetReflections(bool enabled);
+	public:
+		void LayerGenerateParticles(float delta);
+		void LayerUpdateAnimations(float delta);
 	public:
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;

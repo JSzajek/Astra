@@ -46,11 +46,6 @@ namespace Astra::Graphics
 			Get().RenderImpl(viewMatrix);
 		}
 
-	/*	static void Clear()
-		{
-			Get().ClearImpl();
-		}*/
-
 	private:
 		ParticleController();
 		~ParticleController();
@@ -61,12 +56,12 @@ namespace Astra::Graphics
 		void AddParticleImpl(Particle* particle);
 		inline Particle* GetParticleImpl() 
 		{
-			if (m_leftovers.size() == 0) { return NULL; }
+			return NULL;
+			/*if (m_leftovers.size() == 0) { return NULL; }
 			auto* left = m_leftovers.top();
 			m_leftovers.pop();
-			return left; 
+			return left; */
 		}
-		//void ClearImpl();
 	private:
 		void InsertionSort(std::vector<Particle*>& particles);
 	};

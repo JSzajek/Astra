@@ -27,6 +27,10 @@ namespace Astra::Graphics
 		float scale = GenerateValue(m_scale, m_scaleError);
 		float rotation = GenerateRotation();
 		
+		/*float lifespan = m_lifeSpan;
+		float scale = m_scale;
+		float rotation = 0;*/
+
 		auto* particle = ParticleController::GetParticle();
 		if (particle == NULL)
 		{
