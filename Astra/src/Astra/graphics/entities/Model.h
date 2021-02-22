@@ -83,7 +83,10 @@ namespace Astra::Graphics
 		std::tuple<std::vector<Texture*>, size_t> LoadMaterialTextures(const aiScene* scene, aiMaterial* mat, aiTextureType type, TextureType texType);
 
 		// Animation Methods
+		template<class Vertex>
 		void SetVertexBoneData(Vertex& vertex, int id, float weight);
+
+		template<class Vertex>
 		void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
 	protected:
 		void UpdateMatrices() override;

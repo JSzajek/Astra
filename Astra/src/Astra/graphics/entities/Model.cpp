@@ -117,6 +117,13 @@ namespace Astra::Graphics
 					indices.push_back(face.mIndices[j]);
 				}
 			}
+
+			// Extract Animation Information
+			if (mesh->HasBones())
+			{
+				ExtractBoneWeightForVertices(vertices, mesh, scene);
+			}
+
 			return Mesh(vertices, indices, material);
 		}
 		else
@@ -229,6 +236,7 @@ namespace Astra::Graphics
 		return { textures, _hash };
 	}
 
+	template<class Vertex>
 	void Model::SetVertexBoneData(Vertex& vertex, int id, float weight)
 	{
 		for (unsigned int i = 0; i < MAX_BONE_INFLUENCE; ++i)
@@ -242,6 +250,7 @@ namespace Astra::Graphics
 		}
 	}
 
+	template<class Vertex>
 	void Model::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene)
 	{
 		for (unsigned int index = 0; index < mesh->mNumBones; ++index)

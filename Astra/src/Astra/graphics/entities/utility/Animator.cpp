@@ -6,7 +6,7 @@ namespace Astra::Graphics
 {
 	void Animator::UpdateAnimation(float delta)
 	{
-		if (m_current && m_playing)
+		if (m_playing && m_current)
 		{
 			m_currentTime += m_current->GetTicksPerSecond() * delta;
 			m_currentTime = fmodf(m_currentTime, m_current->GetDuration());
@@ -32,12 +32,8 @@ namespace Astra::Graphics
 	{
 		std::string nodeName = node->Name;
 		Bone* bone = m_current->FindBone(nodeName);
-		if (bone)
-		{
-			bone->Update(m_currentTime);
-		}
-		Math::Mat4 nodeTransform = bone ? bone->GetLocationTransform() : node->Transformation;
-		Math::Mat4 globalTransform = parentTransform * nodeTransform;
+		
+		Math::Mat4 globalTransform = parentTransform * (bone ? bone->Update(m_currentTime) : node->Transformation);
 
 		auto infoMap = m_current->GetBoneInfo();
 		if (infoMap.find(nodeName) != infoMap.end())

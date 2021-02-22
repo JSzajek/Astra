@@ -19,6 +19,7 @@ namespace Astra::Graphics
 		Animator() = default;
 
 		inline const std::vector<Math::Mat4>& GetOffsets() const { return m_finalBoneOffsets; }
+		inline const unsigned int GetCount() const { return m_finalBoneOffsets.size(); }
 
 		void UpdateAnimation(float delta);
 		inline void SetGlobalInverseTransform(const Math::Mat4& mat) {

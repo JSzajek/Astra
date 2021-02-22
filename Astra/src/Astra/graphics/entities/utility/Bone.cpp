@@ -7,13 +7,13 @@
 namespace Astra::Graphics
 {
 	Bone::Bone(const std::string& name, int id, const KeyFrameInfo& info)
-		: m_name(name), m_id(id), m_info(info), m_localTransform(1.0f)
+		: m_name(name), m_id(id), m_info(info)
 	{
 	}
 
-	void Bone::Update(float time)
+	Math::Mat4 Bone::Update(float time)
 	{
-		m_localTransform = Math::Mat4(InterpolatePosition(time), InterpolateRotation(time), InterpolateScaling(time));
+		return Math::Mat4(InterpolatePosition(time), InterpolateRotation(time), InterpolateScaling(time));
 	}
 
 	const int Bone::GetPositionIndex(float time)

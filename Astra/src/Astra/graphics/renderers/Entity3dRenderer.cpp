@@ -69,14 +69,17 @@ namespace Astra::Graphics
 
 					if (model->HasAnimator())
 					{
-						model->GetAnimator()->UpdateAnimation(delta); // TODO: Move
+						m_shader->SetUniform1i("animated", true);
 
-						const auto& transforms = model->GetAnimator()->GetOffsets();
-
-						for (unsigned int i = 0; i < transforms.size(); ++i)
+						const auto size = model->GetAnimator()->GetCount();
+						for (unsigned int i = 0; i < size; ++i)
 						{
-							m_shader->SetUniformMat4(Shader::GetBoneTransformTag(i), transforms[i]);
+							m_shader->SetUniformMat4(Shader::GetBoneTransformTag(i), model->GetAnimator()->GetOffsets()[i]);
 						}
+					}
+					else
+					{
+						m_shader->SetUniform1i("animated", false);
 					}
 
 					glDrawElements(GL_TRIANGLES, mesh.GetVertexCount(), GL_UNSIGNED_INT, NULL);

@@ -158,6 +158,11 @@ namespace Astra
 		{
 			system->GenerateParticles(delta);
 		}
+
+		for (auto* animator : m_animators)
+		{
+			animator->UpdateAnimation(delta);
+		}
 		
 		if (m_waterBuffer && m_mainCamera)
 		{
@@ -203,6 +208,11 @@ namespace Astra
 			EmplaceModel(EntityType::Selected, model);
 		}
 		m_shadowMapController->AddEntity(model);
+
+		if (model->HasAnimator())
+		{
+			m_animators.emplace_back(model->GetAnimator());
+		}
 	}
 
 	void Layer3D::UpdateScreen(unsigned int width, unsigned int height)

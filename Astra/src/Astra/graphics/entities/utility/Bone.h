@@ -23,9 +23,8 @@ namespace Astra::Graphics
 		Bone() = default;
 		Bone(const std::string& name, int id, const KeyFrameInfo& info);
 
-		void Update(float time);
+		Math::Mat4 Update(float time);
 
-		inline const Math::Mat4& GetLocationTransform() const { return m_localTransform; }
 		inline const std::string& GetName() const { return m_name; }
 		inline const int GetId() const { return m_id; }
 
