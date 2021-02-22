@@ -1,15 +1,22 @@
 #shader vertex
 #version 330
 
+#define MAX_BONES			100
+#define MAX_BONE_INFLUENCE	4
+
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 textureCoords;
 layout(location = 2) in vec3 normal;
+layout(location = 3) in ivec4 boneIds;
+layout(location = 4) in vec4 weights;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 transformMatrix;
 uniform mat4 normalMatrix;
 uniform mat4 toShadowMapSpace;
+
+uniform mat4 boneTransformation[MAX_BONES];
 
 uniform vec4 inverseViewVector;
 uniform int useFakeLighting;
@@ -31,7 +38,27 @@ const float gradient = 5.0;
 
 void main()
 {
-	vec4 worldPosition = transformMatrix * vec4(position, 1);
+	//vec4 worldPosition = transformMatrix * vec4(position, 1);
+	vec4 totalPosition = vec4(0);
+	vec4 totalNormal = vec4(0);
+	bool bones = false;
+	for (int i = 0; i < MAX_BONE_INFLUENCE; i++)
+	{
+		if (boneIds[i] < 0)
+			continue;
+		if (boneIds[i] >= MAX_BONES)
+		{
+			totalPosition = vec4(position, 1.0f);
+			break;
+		}
+		bones = true;
+		vec4 localPosition = boneTransformation[boneIds[i]] * vec4(position, 1.0f);
+		totalPosition += localPosition * weights[i];
+		vec4 localNormal = boneTransformation[boneIds[i]] * vec4(normal, 1.0f);
+		totalNormal += localNormal * weights[i];
+	}
+	vec4 worldPosition = transformMatrix * (bones ? totalPosition : vec4(position, 1.0f));
+
 	v_ShadowCoords = toShadowMapSpace * worldPosition;
 	vec4 positionRelativeToCam = viewMatrix * worldPosition;
 
@@ -39,7 +66,7 @@ void main()
 
 	v_TexCoordinates = (textureCoords / numberOfRows) + offset;
 
-	v_Normal = useFakeLighting > 0.5 ? vec3(0, 1, 0) : mat3(normalMatrix) * normal;
+	v_Normal = useFakeLighting > 0.5 ? vec3(0, 1, 0) : mat3(normalMatrix) * (bones ? totalNormal.xyz : normal);
 	v_FragPosition = worldPosition.xyz;
 	v_viewVector = inverseViewVector.xyz - v_FragPosition;
 

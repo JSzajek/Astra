@@ -8,19 +8,30 @@
 
 namespace Astra::Graphics
 {
+	#define MAX_BONE_INFLUENCE		4
+
 	struct Vertex
 	{
+		// Base Information
 		Math::Vec3 Position;
 		Math::Vec2 TextureCoords;
 		Math::Vec3 Normal;
+
+		// Animation Information
+		int BoneIds[MAX_BONE_INFLUENCE] = { -1, -1, -1, -1 };
+		float Weights[MAX_BONE_INFLUENCE] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	};
 
 	struct NormalVertex
 	{
+		// Base Information
 		Math::Vec3 Position;
 		Math::Vec2 TextureCoords;
 		Math::Vec3 Normal;
 		Math::Vec3 Tangent;
+
+		// Animation Information
+		// TODO: Add normal mapped animation support
 	};
 
 	class Mesh

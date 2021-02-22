@@ -90,6 +90,11 @@ public:
     TestGame()
         : Application()
     {
+
+        auto quat = Quat(0.98f, 0.205f, -0.0070f, 0.97f);
+        auto rotation = Math::Mat4::RotationMatrix(quat);
+
+
         srand((unsigned)time(0));
 
         scene = new Astra::Scene();
@@ -203,45 +208,48 @@ public:
         scene->AddPointLight(light4);
         scene->SetDirectionalLight(dir_light);
 
-        cubeModel = ResourceManager::LoadModel("res/cube.fbx");
-        cubeModel->SetScale(Math::Vec3(1));
-        cubeModel->SetTranslation(Math::Vec3(0, 0, 20));
-        models.emplace_back(cubeModel);
-        scene->AddModel(cubeModel);
+        //cubeModel = ResourceManager::LoadModel("res/cube.fbx");
+        //cubeModel->SetScale(Math::Vec3(1));
+        //cubeModel->SetTranslation(Math::Vec3(0, 0, 20));
+        //models.emplace_back(cubeModel);
+        //scene->AddModel(cubeModel);
 
-        // Example of loaded already loaded model and deleting pointer but not source
-        cubeModel2 = ResourceManager::LoadModel("res/cube.fbx");
-        RESOURCE_UNLOAD(cubeModel2);
+        //// Example of loaded already loaded model and deleting pointer but not source
+        //cubeModel2 = ResourceManager::LoadModel("res/cube.fbx");
+        //RESOURCE_UNLOAD(cubeModel2);
 
-        cubeModel3 = ResourceManager::LoadModel("res/cube.fbx");
-        cubeModel3->SetScale(Math::Vec3(1));
-        cubeModel3->SetTranslation(Math::Vec3(20, 0, 20));
-        models.emplace_back(cubeModel3);
-        scene->AddModel(cubeModel3);
+        //cubeModel3 = ResourceManager::LoadModel("res/cube.fbx");
+        //cubeModel3->SetScale(Math::Vec3(1));
+        //cubeModel3->SetTranslation(Math::Vec3(20, 0, 20));
+        //models.emplace_back(cubeModel3);
+        //scene->AddModel(cubeModel3);
 
-        barrelModel = ResourceManager::LoadModel("res/barrel_2.fbx", true);
-        barrelModel->SetScale(Math::Vec3(3));
-        barrelModel->SetSelected(true);
-        models.emplace_back(barrelModel);
-        scene->AddModel(barrelModel);
+        //barrelModel = ResourceManager::LoadModel("res/barrel_2.fbx", true);
+        //barrelModel->SetScale(Math::Vec3(3));
+        //barrelModel->SetSelected(true);
+        //models.emplace_back(barrelModel);
+        //scene->AddModel(barrelModel);
 
-        vampire = ResourceManager::LoadModel("res/vampire/dancing_vampire.dae", true);
+        //vampire = ResourceManager::LoadModel("res/abe.fbx", false);
+        vampire = ResourceManager::LoadModel("res/vampire/dancing_vampire.dae", false);
         models.emplace_back(vampire);
-        vampire->SetScale(Math::Vec3(0.1f));
+        vampire->SetScale(Math::Vec3(0.001f));
         vampire->SetTranslation(Math::Vec3(50, terrain->GetHeightOfTerrain(50, 70), 70));
+        vampire->SetAnimator(new Animator());
+        vampire->PlayAnimation("");
         scene->AddModel(vampire);
 
-        // FBX doesn't export displacement map- Work Around
-        auto* heightMap = Loader::LoadTexture("res/textures/bricks_heightmap.jpg", false, GL_REPEAT, false);
-        heightMap->type = TextureType::HeightMap;
-        brickModel = ResourceManager::LoadModel("res/bricks.fbx", true);
-        brickModel->GetMesh(0).GetMaterial()->AddTexture(heightMap);
-        brickModel->GetMesh(0).GetMaterial()->SetHeightOffset(0.1f);
-        brickModel->SetScale(Math::Vec3(10));
-        brickModel->SetRotation(Math::Vec3(0, 0, -90));
-        brickModel->SetTranslation(Math::Vec3(-10, 0, -10));
-        models.emplace_back(brickModel);
-        scene->AddModel(brickModel);
+        //// FBX doesn't export displacement map- Work Around
+        //auto* heightMap = Loader::LoadTexture("res/textures/bricks_heightmap.jpg", false, GL_REPEAT, false);
+        //heightMap->type = TextureType::HeightMap;
+        //brickModel = ResourceManager::LoadModel("res/bricks.fbx", true);
+        //brickModel->GetMesh(0).GetMaterial()->AddTexture(heightMap);
+        //brickModel->GetMesh(0).GetMaterial()->SetHeightOffset(0.1f);
+        //brickModel->SetScale(Math::Vec3(10));
+        //brickModel->SetRotation(Math::Vec3(0, 0, -90));
+        //brickModel->SetTranslation(Math::Vec3(-10, 0, -10));
+        //models.emplace_back(brickModel);
+        //scene->AddModel(brickModel);
 
         //auto* barrelMat = ResourceManager::LoadMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.jpg", "res/textures/barrelNormal.png", NULL, 0, NULL, 1, 32);
         //barrelModel = ResourceManager::LoadNormalEntity("res/barrel.obj", 0, Vec3(-40, terrain->GetHeightOfTerrain(-40, 55) + 5, 55), Vec3(0), Vec3(1));
@@ -319,7 +327,7 @@ public:
     {
         m_player->Update(delta);
 
-        barrelModel->operator()(ROTATION, SUM_EQ, Y_POS, 0.5f);
+        //barrelModel->operator()(ROTATION, SUM_EQ, Y_POS, 0.5f);
 
         skybox->BlendFactor() += InGameTimeSpeed * timeDir * delta;
         if (skybox->BlendFactor() >= 1)

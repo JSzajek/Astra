@@ -20,6 +20,38 @@ namespace Astra::Math
 		memcpy(data, other.data, 16 * sizeof(float));
 	}
 
+	Mat4::Mat4(const Vec3& translation, const Quat& rotation, const Vec3& scale)
+	{
+		// Convert Quaternion to Rotation Matrix
+		auto rot_a1 = (1.0f) - (2.0f) * (rotation.y * rotation.y + rotation.z * rotation.z);
+		auto rot_a2 = (2.0f) * (rotation.x * rotation.y - rotation.z * rotation.w);
+		auto rot_a3 = (2.0f) * (rotation.x * rotation.z + rotation.y * rotation.w);
+		auto rot_b1 = (2.0f) * (rotation.x * rotation.y + rotation.z * rotation.w);
+		auto rot_b2 = (1.0f) - (2.0f) * (rotation.x * rotation.x + rotation.z * rotation.z);
+		auto rot_b3 = (2.0f) * (rotation.y * rotation.z - rotation.x * rotation.w);
+		auto rot_c1 = (2.0f) * (rotation.x * rotation.z - rotation.y * rotation.w);
+		auto rot_c2 = (2.0f) * (rotation.y * rotation.z + rotation.x * rotation.w);
+		auto rot_c3 = (1.0f) - (2.0f) * (rotation.x * rotation.x + rotation.y * rotation.y);
+	
+		columns[0][0] = rot_a1 * scale.x; //a1
+		columns[1][0] = rot_a2 * scale.x; //a2
+		columns[2][0] = rot_a3 * scale.x; //a3
+		columns[3][0] = translation.x; //a4
+
+		columns[0][1] = rot_b1 * scale.y; //b1
+		columns[1][1] = rot_b2 * scale.y; //b2
+		columns[2][1] = rot_b3 * scale.y; //b3
+		columns[3][1] = translation.y; //b4
+
+		columns[0][2] = rot_c1 * scale.y; //c1
+		columns[1][2] = rot_c2 * scale.y; //c2
+		columns[2][2] = rot_c3 * scale.y; //c3
+		columns[3][2] = translation.z; //c4
+
+		columns[0][3] = columns[1][3] = columns[2][3] = 0.0f;
+		columns[3][3] = 1.0f;
+	}
+
 	void Mat4::operator=(const Mat4& other)
 	{
 		memcpy(data, other.data, 16 * sizeof(float));
@@ -341,6 +373,104 @@ namespace Astra::Math
 		result.columns[2][0] = temp[2] * normAxis[0] + s * normAxis[1];
 		result.columns[2][1] = temp[2] * normAxis[1] - s * normAxis[0];
 		result.columns[2][2] = c + temp[2] * normAxis[2];
+		return result;
+	}
+
+	Mat4 Mat4::RotationMatrix(const Quat& quat)
+	{
+		// Equations based on https://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
+		Mat4 result(1);
+		
+		/*float d = quat.LengthSquared();
+		float s = 2.0f / d;
+		float xs = quat.x * s, ys =  quat.y * s, zs =  quat.z * s;
+		float wx = quat.w * xs, wy = quat.w * ys, wz = quat.w * zs;
+		float xx = quat.x * xs, xy = quat.x * ys, xz = quat.x * zs;
+		float yy = quat.y * ys, yz = quat.y * zs, zz = quat.z * zs;
+		
+		result.columns[0][0] = 1.0f - (yy + zz);
+		result.columns[0][1] = xy - wz;
+		result.columns[0][2] = xz + wy;
+		
+		result.columns[1][0] = xy + wz;
+		result.columns[1][1] = 1.0f - (xx + zz);
+		result.columns[1][2] = yz - wx;
+		
+		result.columns[2][0] = xz - wy;
+		result.columns[2][1] = yz + wx;
+		result.columns[2][2] = 1.0f - (xx + yy);*/
+
+			/*(, , ,
+			, , ,
+			, , );*/
+
+		/*auto q0 = quat.x;
+		auto q1 = quat.y;
+		auto q2 = quat.z;
+		auto q3 = quat.w;
+		
+		result.columns[0][0] = 2.0f * (q0 * q0 + q1 * q1) - 1.0f;
+		result.columns[0][1] = 2.0f * (q1 * q2 - q0 * q3);
+		result.columns[0][2] = 2.0f * (q1 * q3 + q0 * q2);
+
+		result.columns[1][0] = 2.0f * (q1 * q2 + q0 * q3);
+		result.columns[1][1] = 2.0f * (q0 * q0 + q2 * q2) - 1.0f;
+		result.columns[1][2] = 2.0f * (q2 * q3 - q0 * q1);
+
+		result.columns[2][0] = 2.0f * (q1 * q3 - q0 * q2);
+		result.columns[2][1] = 2.0f * (q2 * q3 + q0 * q1);
+		result.columns[2][2] = 2.0f * (q0 * q0 + q3 * q3) - 1.0f;*/
+
+		
+		/*auto sqx = quat.x * quat.x;
+		auto sqy = quat.y * quat.y;
+		auto sqz = quat.z * quat.z;
+		auto sqw = quat.w * quat.w;
+
+		auto inverse = quat.IsNormalized() ? 1.0f : 1.0f / (sqx + sqy + sqz + sqw);
+		result.columns[0][0] = (sqx - sqy - sqz + sqw) * inverse;
+		result.columns[1][1] = (-sqx + sqy - sqz + sqw) * inverse;
+		result.columns[2][2] = (-sqx - sqy + sqz + sqw) * inverse;
+		
+		auto temp1 = quat.x * quat.y;
+		auto temp2 = quat.z * quat.w;
+		result.columns[1][0] = 2.0f * (temp1 + temp2) * inverse;
+		result.columns[0][1] = 2.0f * (temp1 - temp2) * inverse;
+
+		temp1 = quat.x * quat.z;
+		temp2 = quat.y * quat.w;
+		result.columns[2][0] = 2.0f * (temp1 - temp2) * inverse;
+		result.columns[0][2] = 2.0f * (temp1 + temp2) * inverse;
+
+		temp1 = quat.y * quat.z;
+		temp2 = quat.x * quat.w;
+		result.columns[2][1] = 2.0f * (temp1 + temp2) * inverse;
+		result.columns[1][2] = 2.0f * (temp1 - temp2) * inverse;*/
+
+		auto xx = quat.x * quat.x;
+		auto xy = quat.x * quat.y;
+		auto xz = quat.x * quat.z;
+		auto xw = quat.x * quat.w;
+		
+		auto yy = quat.y * quat.y;
+		auto yz = quat.y * quat.z;
+		auto yw = quat.y * quat.w;
+		
+		auto zz = quat.z * quat.z;
+		auto zw = quat.z * quat.w;
+
+		result.columns[0][0] = 1 - 2 * (yy + zz);
+		result.columns[0][1] = 2 * (xy - zw);
+		result.columns[0][2] = 2 * (xz + yw);
+
+		result.columns[1][0] = 2 * (xy + zw);
+		result.columns[1][1] = 1 - 2 * (xx + zz);
+		result.columns[1][2] = 2 * (yz - xw);
+
+		result.columns[2][0] = 2 * (xz - yw);
+		result.columns[2][1] = 2 * (yz + xw);
+		result.columns[2][2] = 1 - 2 * (xx + yy);
+
 		return result;
 	}
 

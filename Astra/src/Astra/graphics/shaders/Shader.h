@@ -115,6 +115,12 @@ namespace Astra::Graphics
 			sprintf(GetBuffer(), "instanced_Textures[%i]", index);
 			return GetBuffer();
 		}
+
+		static const char* GetBoneTransformTag(int index)
+		{
+			sprintf(GetBuffer(), "boneTransformation[%i]", index);
+			return GetBuffer();
+		}
 	private:
 		static char* GetBuffer()
 		{
