@@ -90,11 +90,6 @@ public:
     TestGame()
         : Application()
     {
-
-        auto quat = Quat(0.98f, 0.205f, -0.0070f, 0.97f);
-        auto rotation = Math::Mat4::RotationMatrix(quat);
-
-
         srand((unsigned)time(0));
 
         scene = new Astra::Scene();
@@ -230,10 +225,9 @@ public:
         models.emplace_back(barrelModel);
         scene->AddModel(barrelModel);
 
-        //vampire = ResourceManager::LoadModel("res/abe.fbx", true);
         vampire = ResourceManager::LoadModel("res/vampire/dancing_vampire.dae", false);
         models.emplace_back(vampire);
-        vampire->SetScale(Math::Vec3(0.1f));
+        vampire->SetScale(Math::Vec3(0.001f));
         vampire->SetTranslation(Math::Vec3(50, terrain->GetHeightOfTerrain(50, 70), 70));
         vampire->SetAnimator(new Animator());
         vampire->PlayAnimation("");

@@ -20,6 +20,11 @@ namespace Astra::Math
 		Mat4(float diagonal);
 		Mat4(const Mat4& other);
 		Mat4(const Vec3& translation, const Quat& rotation, const Vec3& scale);
+		Mat4(float v00, float v01, float v02, float v03,
+			 float v10, float v11, float v12, float v13,
+			 float v20, float v21, float v22, float v23,
+			 float v30, float v31, float v32, float v33);
+
 		void operator=(const Mat4&);
 
 		static Mat4 Identity();

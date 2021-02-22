@@ -10,28 +10,10 @@ namespace Astra::Graphics
 {
 	static Math::Mat4 ConvertAiMatrix(const aiMatrix4x4& mat)
 	{
-		// TODO: Improve Mat4 class to allow for explicit initialization.
-		Math::Mat4 converted;
-		converted.columns[0][0] = mat.a1;
-		converted.columns[0][1] = mat.b1;
-		converted.columns[0][2] = mat.c1;
-		converted.columns[0][3] = mat.d1;
-
-		converted.columns[1][0] = mat.a2;
-		converted.columns[1][1] = mat.b2;
-		converted.columns[1][2] = mat.c2;
-		converted.columns[1][3] = mat.d2;
-
-		converted.columns[2][0] = mat.a3;
-		converted.columns[2][1] = mat.b3;
-		converted.columns[2][2] = mat.c3;
-		converted.columns[2][3] = mat.d3;
-
-		converted.columns[3][0] = mat.a4;
-		converted.columns[3][1] = mat.b4;
-		converted.columns[3][2] = mat.c4;
-		converted.columns[3][3] = mat.d4;
-		return converted;
+		return Math::Mat4(mat.a1, mat.b1, mat.c1, mat.d1,
+						  mat.a2, mat.b2, mat.c2, mat.d2, 
+						  mat.a3, mat.b3, mat.c3, mat.d3, 
+						  mat.a4, mat.b4, mat.c4, mat.d4);
 	}
 
 	static Math::Vec3 ConvertAiVector(const aiVector3D& vec)

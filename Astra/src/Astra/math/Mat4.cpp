@@ -47,6 +47,32 @@ namespace Astra::Math
 		columns[3][3] = 1.0f;
 	}
 
+	Mat4::Mat4(float v00, float v01, float v02, float v03,
+		       float v10, float v11, float v12, float v13,
+		       float v20, float v21, float v22, float v23,
+		       float v30, float v31, float v32, float v33)
+	{
+		columns[0][0] = v00;
+		columns[0][1] = v01;
+		columns[0][2] = v02;
+		columns[0][3] = v03;
+
+		columns[1][0] = v10;
+		columns[1][1] = v11;
+		columns[1][2] = v12;
+		columns[1][3] = v13;
+
+		columns[2][0] = v20;
+		columns[2][1] = v21;
+		columns[2][2] = v22;
+		columns[2][3] = v23;
+
+		columns[3][0] = v30;
+		columns[3][1] = v31;
+		columns[3][2] = v32;
+		columns[3][3] = v33;
+	}
+
 	void Mat4::operator=(const Mat4& other)
 	{
 		memcpy(data, other.data, 16 * sizeof(float));
