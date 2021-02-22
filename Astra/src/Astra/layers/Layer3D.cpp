@@ -152,12 +152,19 @@ namespace Astra
 	{
 		if (!m_attached) { return; }
 
-		m_shadowMapController->Render();
-
+		// Move to async thread
 		for (auto* system : m_particles)
 		{
 			system->GenerateParticles(delta);
 		}
+
+		// Move to async thread
+		for (auto* animator : m_animators)
+		{
+			animator->UpdateAnimation(delta);
+		}
+		
+		m_shadowMapController->Render();
 		
 		if (m_waterBuffer && m_mainCamera)
 		{
@@ -203,6 +210,11 @@ namespace Astra
 			EmplaceModel(EntityType::Selected, model);
 		}
 		m_shadowMapController->AddEntity(model);
+
+		if (model->HasAnimator())
+		{
+			m_animators.emplace_back(model->GetAnimator());
+		}
 	}
 
 	void Layer3D::UpdateScreen(unsigned int width, unsigned int height)

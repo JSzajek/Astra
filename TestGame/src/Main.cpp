@@ -225,10 +225,12 @@ public:
         models.emplace_back(barrelModel);
         scene->AddModel(barrelModel);
 
-        vampire = ResourceManager::LoadModel("res/vampire/dancing_vampire.dae", true);
+        vampire = ResourceManager::LoadModel("res/vampire/dancing_vampire.dae", false);
         models.emplace_back(vampire);
-        vampire->SetScale(Math::Vec3(0.1f));
+        vampire->SetScale(Math::Vec3(0.001f));
         vampire->SetTranslation(Math::Vec3(50, terrain->GetHeightOfTerrain(50, 70), 70));
+        vampire->SetAnimator(new Animator());
+        vampire->PlayAnimation("");
         scene->AddModel(vampire);
 
         // FBX doesn't export displacement map- Work Around
@@ -319,7 +321,7 @@ public:
     {
         m_player->Update(delta);
 
-        barrelModel->operator()(ROTATION, SUM_EQ, Y_POS, 0.5f);
+        //barrelModel->operator()(ROTATION, SUM_EQ, Y_POS, 0.5f);
 
         skybox->BlendFactor() += InGameTimeSpeed * timeDir * delta;
         if (skybox->BlendFactor() >= 1)

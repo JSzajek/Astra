@@ -4,6 +4,7 @@
 
 #include "Vec3.h"
 #include "Vec4.h"
+#include "Quat.h"
 
 namespace Astra::Math
 {
@@ -18,6 +19,12 @@ namespace Astra::Math
 		Mat4();
 		Mat4(float diagonal);
 		Mat4(const Mat4& other);
+		Mat4(const Vec3& translation, const Quat& rotation, const Vec3& scale);
+		Mat4(float v00, float v01, float v02, float v03,
+			 float v10, float v11, float v12, float v13,
+			 float v20, float v21, float v22, float v23,
+			 float v30, float v31, float v32, float v33);
+
 		void operator=(const Mat4&);
 
 		static Mat4 Identity();
@@ -59,6 +66,7 @@ namespace Astra::Math
 
 		static Mat4 TranslationMatrix(const Vec3& translation);
 		static Mat4 RotationMatrix(float angle, const Vec3& axis);
+		static Mat4 RotationMatrix(const Quat& quat);
 		static Mat4 ScaleMatrix(const Vec3& scale);
 		static Mat4 ScaleMatrix(float scale);
 

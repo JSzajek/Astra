@@ -44,13 +44,13 @@ namespace Astra::Math
 	float& Vec3::operator[](int index)
 	{
 		ASTRA_ASSERT(index < 3, "Vec3: Out Of Index Axis Access.");
-		return index == 0 ? x : index == 1 ? y : z;
+		return m_data[index];
 	}
 
 	const float Vec3::operator[](int index) const
 	{
 		ASTRA_ASSERT(index < 3, "Vec3: Out Of Index Axis Access.");
-		return index == 0 ? x : index == 1 ? y : z;
+		return m_data[index];
 	}
 
 	Vec3 Vec3::operator+(const Vec3& r_val) const
@@ -378,6 +378,11 @@ namespace Astra::Math
 		Vec3 result(r_val.x - x, r_val.y - y, r_val.z - z);
 		result.Normalize();
 		return result;
+	}
+
+	Vec3 Vec3::Mix(const Vec3& r_val, float weight)
+	{
+		return (*this * (1.0f - weight)) + (r_val * weight);
 	}
 
 	float Vec3::Dot(const Vec3& r_val) const

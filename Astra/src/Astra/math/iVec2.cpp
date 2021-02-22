@@ -31,13 +31,13 @@ namespace Astra::Math
 
 	int& iVec2::operator[](int index)
 	{
-		ASTRA_ASSERT(index < 2, "Vec2: Out Of Index Axis Access.");
+		ASTRA_CORE_ASSERT(index < 2, "Vec2: Out Of Index Axis Access.");
 		return index ? y : x;
 	}
 
 	const int iVec2::operator[](int index) const
 	{
-		ASTRA_ASSERT(index < 2, "Vec2: Out Of Index Axis Access.");
+		ASTRA_CORE_ASSERT(index < 2, "Vec2: Out Of Index Axis Access.");
 		return index ? y : x;
 	}
 

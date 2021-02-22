@@ -20,6 +20,8 @@
 #include "Astra/graphics/entities/terrains/Terrain.h"
 #include "Astra/graphics/entities/terrains/WaterTile.h"
 
+#include "Astra/graphics/entities/utility/Animator.h"
+
 #include "Astra/graphics/particles/ParticleController.h"
 #include "Astra/graphics/particles/ParticleSystem.h"
 #include "Astra/graphics/materials/SkyboxMaterial.h"
@@ -77,6 +79,7 @@ namespace Astra
 
 		// Entities - 1: regular, 2: normal-mapped, 3: selected
 		std::unordered_map<unsigned int, std::vector<const Graphics::Model*>> m_entities[3];
+		std::vector<Graphics::Animator*> m_animators;
 		std::vector<const Graphics::ParticleSystem*> m_particles;
 
 		// Lighting

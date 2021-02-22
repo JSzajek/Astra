@@ -66,6 +66,22 @@ namespace Astra::Graphics
 					m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(model->GetRowCount()));
 					m_shader->SetUniformMat4(NORMAL_MATRIX_TAG, model->GetNormalMatrix());
 					m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetModelMatrix());
+
+					if (model->HasAnimator())
+					{
+						m_shader->SetUniform1i("animated", true);
+
+						const auto size = model->GetAnimator()->GetCount();
+						for (unsigned int i = 0; i < size; ++i)
+						{
+							m_shader->SetUniformMat4(Shader::GetBoneTransformTag(i), model->GetAnimator()->GetOffsets()[i]);
+						}
+					}
+					else
+					{
+						m_shader->SetUniform1i("animated", false);
+					}
+
 					glDrawElements(GL_TRIANGLES, mesh.GetVertexCount(), GL_UNSIGNED_INT, NULL);
 				}
 				glBindVertexArray(0);

@@ -6,6 +6,7 @@
 #include "Astra/graphics/loaders/Loader.h"
 #include "Astra/graphics/ResourceManager.h"
 #include "Astra/math/Mat4Utils.h"
+#include "Astra/graphics/entities/utility/AssimpReader.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
@@ -18,7 +19,7 @@ namespace Astra::Graphics
 		: m_normals(false), m_uid(std::hash<std::string>{}(filepath)), // Currently using filepath as UID - Investigate better method
 			selectedModelMatrix(new Math::Mat4()),
 			m_textureIndex(0), m_rowCount(1),
-			m_selected(0)
+			m_selected(0), m_boneCounter(0), m_animator(NULL)
 	{
 		LoadModel(filepath, calcTangents);
 	}
@@ -27,7 +28,8 @@ namespace Astra::Graphics
 		: Spatial(other), m_directory(other.m_directory), m_normals(other.m_normals),
 			m_textureIndex(other.m_textureIndex), m_rowCount(other.m_rowCount),
 			m_selected(other.m_selected), m_meshes(other.m_meshes), m_uid(other.m_uid),
-			selectedModelMatrix(new Math::Mat4(*other.selectedModelMatrix))
+			selectedModelMatrix(new Math::Mat4(*other.selectedModelMatrix)), m_boneCounter(other.m_boneCounter),
+			m_animator(other.m_animator), m_animations(other.m_animations)
 	{
 	}
 
@@ -45,21 +47,27 @@ namespace Astra::Graphics
 			pFlag |= aiProcess_CalcTangentSpace;
 		}
 		const aiScene* scene = importer.ReadFile(filepath, pFlag);
-
-		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-		{
-			ASTRA_CORE_ERROR("Model: Assimp Error Loading");
-		}
+		ASTRA_CORE_ASSERT(scene && scene->mFlags | AI_SCENE_FLAGS_INCOMPLETE && scene->mRootNode, "Model: Assimp Error Loading")
 		
 		m_directory = filepath.substr(0, filepath.find_last_of('/'));
 
-		if (scene && scene->mRootNode)
+		if (scene->mRootNode)
 		{
 			ProcessNode(scene->mRootNode, scene);
 		}
 		else
 		{
 			ASTRA_CORE_ERROR("Model: No root node");
+		}
+	
+		// Load Animations in Model
+		if (scene->HasAnimations())
+		{
+			m_globalInverseTransform = ConvertAiMatrix(scene->mRootNode->mTransformation.Inverse());
+			m_animations.reserve(scene->mNumAnimations);
+			
+			// For now only check first animation
+			m_animations.push_back(Animation(scene->mAnimations[0], scene->mRootNode, m_boneInfoMap, m_boneCounter));
 		}
 	}
 
@@ -109,6 +117,13 @@ namespace Astra::Graphics
 					indices.push_back(face.mIndices[j]);
 				}
 			}
+
+			// Extract Animation Information
+			if (mesh->HasBones())
+			{
+				ExtractBoneWeightForVertices(vertices, mesh, scene);
+			}
+
 			return Mesh(vertices, indices, material);
 		}
 		else
@@ -134,6 +149,13 @@ namespace Astra::Graphics
 					indices.push_back(face.mIndices[j]);
 				}
 			}
+
+			// Extract Animation Information
+			if (mesh->HasBones())
+			{
+				ExtractBoneWeightForVertices(vertices, mesh, scene);
+			}
+
 			return Mesh(vertices, indices, material);
 		}
 	}
@@ -212,6 +234,51 @@ namespace Astra::Graphics
 			}
 		}
 		return { textures, _hash };
+	}
+
+	template<class Vertex>
+	void Model::SetVertexBoneData(Vertex& vertex, int id, float weight)
+	{
+		for (unsigned int i = 0; i < MAX_BONE_INFLUENCE; ++i)
+		{
+			if (vertex.BoneIds[i] < 0)
+			{
+				vertex.BoneIds[i] = id;
+				vertex.Weights[i] = weight;
+				break;
+			}
+		}
+	}
+
+	template<class Vertex>
+	void Model::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene)
+	{
+		for (unsigned int index = 0; index < mesh->mNumBones; ++index)
+		{
+			int id = -1;
+			std::string name = mesh->mBones[index]->mName.C_Str();
+			if (m_boneInfoMap.find(name) == m_boneInfoMap.end())
+			{
+				BoneInfo info(m_boneCounter, ConvertAiMatrix(mesh->mBones[index]->mOffsetMatrix));
+				m_boneInfoMap[name] = info;
+				id = m_boneCounter++;
+			}
+			else
+			{
+				id = m_boneInfoMap[name].Id;
+			}
+			ASTRA_CORE_ASSERT(id != -1, "Model: Error in Animation Bone Id Matching.");
+
+			auto weights = mesh->mBones[index]->mWeights;
+			int numWeights = mesh->mBones[index]->mNumWeights;
+			for (int weightIndex = 0; weightIndex < numWeights; ++weightIndex)
+			{
+				unsigned int vertexId = weights[weightIndex].mVertexId;
+				float weight = weights[weightIndex].mWeight;
+				ASTRA_CORE_ASSERT(vertexId <= vertices.size(), "Model: Out of Bounds Vertex Id.");
+				SetVertexBoneData(vertices[vertexId], id, weight);
+			}
+		}
 	}
 
 	void Model::UpdateMatrices()
