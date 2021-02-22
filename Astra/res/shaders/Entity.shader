@@ -1,15 +1,23 @@
 #shader vertex
 #version 330
 
+#define MAX_BONES			75
+#define MAX_BONE_INFLUENCE	3
+
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 textureCoords;
 layout(location = 2) in vec3 normal;
+layout(location = 3) in ivec3 boneIds;
+layout(location = 4) in vec3 weights;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 transformMatrix;
 uniform mat4 normalMatrix;
 uniform mat4 toShadowMapSpace;
+
+uniform int animated = 0;
+uniform mat4 boneTransformation[MAX_BONES];
 
 uniform vec4 inverseViewVector;
 uniform int useFakeLighting;
@@ -29,9 +37,23 @@ out vec4 v_ShadowCoords;
 const float density = 0.0035;
 const float gradient = 5.0;
 
+void CalcBoneInfluence(out vec4 totalPosition, out vec4 totalNormal);
+
 void main()
 {
-	vec4 worldPosition = transformMatrix * vec4(position, 1);
+	//vec4 worldPosition = transformMatrix * vec4(position, 1);
+	vec4 aPosition = vec4(position, 1.0f);
+	vec3 aNormal = normal;
+	if (animated > 0)
+	{
+		vec4 totalPosition = vec4(0.0f);
+		vec4 totalNormal = vec4(0.0f);
+		CalcBoneInfluence(totalPosition, totalNormal);
+		aPosition = totalPosition;
+		aNormal = totalNormal.xyz;
+	}
+	vec4 worldPosition = transformMatrix * aPosition;
+
 	v_ShadowCoords = toShadowMapSpace * worldPosition;
 	vec4 positionRelativeToCam = viewMatrix * worldPosition;
 
@@ -39,7 +61,7 @@ void main()
 
 	v_TexCoordinates = (textureCoords / numberOfRows) + offset;
 
-	v_Normal = useFakeLighting > 0.5 ? vec3(0, 1, 0) : mat3(normalMatrix) * normal;
+	v_Normal = useFakeLighting > 0.5 ? vec3(0, 1, 0) : mat3(normalMatrix) * aNormal;
 	v_FragPosition = worldPosition.xyz;
 	v_viewVector = inverseViewVector.xyz - v_FragPosition;
 
@@ -52,6 +74,19 @@ void main()
 	v_ShadowCoords.w = clamp(1.0 - distance, 0.0, 1.0);
 
 	gl_Position = projectionMatrix * positionRelativeToCam;
+}
+
+void CalcBoneInfluence(out vec4 totalPosition, out vec4 totalNormal)
+{
+	vec4 partialPos = vec4(position, 1.0f);
+	vec4 partialNorm = vec4(normal, 1.0f);
+	for (int i = 0; i < MAX_BONE_INFLUENCE; i++)
+	{
+		if (boneIds[i] < 0)
+			continue;
+		totalPosition += boneTransformation[boneIds[i]] * partialPos * weights[i];
+		totalNormal += boneTransformation[boneIds[i]] * partialNorm * weights[i];
+	}
 }
 
 #shader fragment

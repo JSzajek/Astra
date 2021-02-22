@@ -109,6 +109,8 @@ namespace Astra::Math
 
 		Vec3 DirectionTo(const Vec3& r_val) const;
 
+		Vec3 Mix(const Vec3& r_val, float weight);
+
 		float Dot(const Vec3& r_val) const;
 		Vec3 Cross(const Vec3& r_val) const;
 

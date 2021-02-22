@@ -20,6 +20,59 @@ namespace Astra::Math
 		memcpy(data, other.data, 16 * sizeof(float));
 	}
 
+	Mat4::Mat4(const Vec3& translation, const Quat& rotation, const Vec3& scale)
+	{
+		// Calc Coefficients
+		auto xx = rotation.x * rotation.x;	auto yy = rotation.y * rotation.y;	auto zz = rotation.z * rotation.z;
+		auto xy = rotation.x * rotation.y;	auto yz = rotation.y * rotation.z;	auto zw = rotation.z * rotation.w;
+		auto xz = rotation.x * rotation.z;	auto yw = rotation.y * rotation.w;
+		auto xw = rotation.x * rotation.w;
+
+		columns[0][0] = (1.0f) - (2.0f) * (yy + zz) * scale.x;	//rot00 * xScale
+		columns[1][0] = (2.0f) * (xy - zw) * scale.x;			//rot10 * xScale
+		columns[2][0] = (2.0f) * (xz + yw) * scale.x;			//rot20 * xScale
+		columns[3][0] = translation.x;
+
+		columns[0][1] = (2.0f) * (xy + zw) * scale.y;			//rot01 * yScale
+		columns[1][1] = (1.0f) - (2.0f) * (xx + zz) * scale.y;	//rot11 * yScale
+		columns[2][1] = (2.0f) * (yz - xw) * scale.y;			//rot21 * yScale
+		columns[3][1] = translation.y;
+
+		columns[0][2] = (2.0f) * (xz - yw) * scale.z;			//rot02 * zScale
+		columns[1][2] = (2.0f) * (yz + xw) * scale.z;			//rot12 * zScale
+		columns[2][2] = (1.0f) - (2.0f) * (xx + yy) * scale.z;	//rot22 * zScale
+		columns[3][2] = translation.z;
+
+		columns[0][3] = columns[1][3] = columns[2][3] = 0.0f;
+		columns[3][3] = 1.0f;
+	}
+
+	Mat4::Mat4(float v00, float v01, float v02, float v03,
+		       float v10, float v11, float v12, float v13,
+		       float v20, float v21, float v22, float v23,
+		       float v30, float v31, float v32, float v33)
+	{
+		columns[0][0] = v00;
+		columns[0][1] = v01;
+		columns[0][2] = v02;
+		columns[0][3] = v03;
+
+		columns[1][0] = v10;
+		columns[1][1] = v11;
+		columns[1][2] = v12;
+		columns[1][3] = v13;
+
+		columns[2][0] = v20;
+		columns[2][1] = v21;
+		columns[2][2] = v22;
+		columns[2][3] = v23;
+
+		columns[3][0] = v30;
+		columns[3][1] = v31;
+		columns[3][2] = v32;
+		columns[3][3] = v33;
+	}
+
 	void Mat4::operator=(const Mat4& other)
 	{
 		memcpy(data, other.data, 16 * sizeof(float));
@@ -341,6 +394,32 @@ namespace Astra::Math
 		result.columns[2][0] = temp[2] * normAxis[0] + s * normAxis[1];
 		result.columns[2][1] = temp[2] * normAxis[1] - s * normAxis[0];
 		result.columns[2][2] = c + temp[2] * normAxis[2];
+		return result;
+	}
+
+	Mat4 Mat4::RotationMatrix(const Quat& quat)
+	{
+		// Equations based on https://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
+		Mat4 result(1);
+
+		// Calc Coefficients
+		auto xx = quat.x * quat.x;	auto yy = quat.y * quat.y;	auto zz = quat.z * quat.z;
+		auto xy = quat.x * quat.y;	auto yz = quat.y * quat.z;	auto zw = quat.z * quat.w;
+		auto xz = quat.x * quat.z;	auto yw = quat.y * quat.w;
+		auto xw = quat.x * quat.w;
+
+		result.columns[0][0] = 1.0f - 2.0f * (yy + zz);
+		result.columns[0][1] = 2.0f * (xy - zw);
+		result.columns[0][2] = 2.0f * (xz + yw);
+
+		result.columns[1][0] = 2.0f * (xy + zw);
+		result.columns[1][1] = 1.0f - 2.0f * (xx + zz);
+		result.columns[1][2] = 2.0f * (yz - xw);
+
+		result.columns[2][0] = 2.0f * (xz - yw);
+		result.columns[2][1] = 2.0f * (yz + xw);
+		result.columns[2][2] = 1.0f - 2.0f * (xx + yy);
+
 		return result;
 	}
 

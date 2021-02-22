@@ -50,13 +50,13 @@ namespace Astra::Math
 	float& Vec4::operator[](int index)
 	{
 		ASTRA_ASSERT(index < 4, "Vec4: Out Of Index Axis Access.");
-		return index == 0 ? x : index == 1 ? y : index == 2 ? z : w;
+		return m_data[index];
 	}
 
 	const float Vec4::operator[](int index) const
 	{
 		ASTRA_ASSERT(index < 4, "Vec4: Out Of Index Axis Access.");
-		return index == 0 ? x : index == 1 ? y : index == 2 ? z : w;
+		return m_data[index];
 	}
 
 	Vec4 Vec4::operator+(const Vec4& r_val) const
