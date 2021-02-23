@@ -22,18 +22,18 @@ namespace Astra::Graphics
 		delete m_renderer;
 	}
 
-	void ShadowMapController::SetDirectionalLight(const Light* light) 
+	void ShadowMapController::SetDirectionalLight(const DirectionalLight* light) 
 	{ 
 		m_light = light;
 		UpdateLightViewMatrix(m_light->GetRotation() * -1);
 	}
 
-	void ShadowMapController::Render()
+	void ShadowMapController::Render(const std::unordered_map<unsigned int, std::vector<const Model*>>& models)
 	{
 		if (m_box->Update() && m_light != NULL)
 		{
 			Prepare();
-			m_renderer->Draw();
+			m_renderer->Draw(0, models);
 		}
 	}
 

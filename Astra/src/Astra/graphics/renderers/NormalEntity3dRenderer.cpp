@@ -39,7 +39,7 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
-	void NormalEntity3dRenderer::Draw(float delta, const std::unordered_map<unsigned int, std::vector<const Model*>>& models, 
+	void NormalEntity3dRenderer::Draw(float delta, const std::unordered_map<unsigned int, std::vector<const Model*>>& models,
 									  const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
@@ -151,51 +151,9 @@ namespace Astra::Graphics
 		}
 	}
 
-	void NormalEntity3dRenderer::AddLight(Light* light)
+	void NormalEntity3dRenderer::AddLight(unsigned int index, Light* light)
 	{
-		switch (light->GetType())
-		{
-		case LightType::Directional:
-			m_directionalLight = light;
-			break;
-		case LightType::Point:
-			m_lights.emplace_back(light);
-			break;
-		case LightType::Spotlight:
-			break;
-		}
-		light->SetCallback(std::bind(&NormalEntity3dRenderer::UpdateLight, this, light));
-		UpdateLight(light);
-	}
-
-	void NormalEntity3dRenderer::UpdateLight(const Light* light)
-	{
-		m_shader->Start();
-		if (light->GetType() == LightType::Directional)
-		{
-			m_shader->SetUniform3f(DIR_LIGHT_DIRECTION, m_directionalLight->GetRotation());
-			m_shader->SetUniform3f(DIR_LIGHT_AMBIENT, m_directionalLight->GetAmbient());
-			m_shader->SetUniform3f(DIR_LIGHT_DIFFUSE, m_directionalLight->GetDiffuse());
-			m_shader->SetUniform3f(DIR_LIGHT_SPECULAR, m_directionalLight->GetSpecular());
-		}
-
-		if (light->GetType() == LightType::Point)
-		{
-			size_t i = 0;
-			for (; i < m_lights.size(); i++)
-			{
-				if (m_lights[i] == light)
-				{
-					break;
-				}
-			}
-
-			m_shader->SetUniform3f(Shader::GetPointLightPositionTag(i), m_lights[i]->GetTranslation());
-			m_shader->SetUniform3f(Shader::GetPointLightAmbientTag(i), m_lights[i]->GetAmbient());
-			m_shader->SetUniform3f(Shader::GetPointLightDiffuseTag(i), m_lights[i]->GetDiffuse());
-			m_shader->SetUniform3f(Shader::GetPointLightSpecularTag(i), m_lights[i]->GetSpecular());
-			m_shader->SetUniform3f(Shader::GetPointLightAttenuationTag(i), (static_cast<const PointLight*>(m_lights[i]))->GetAttenuation());
-		}
-		m_shader->Stop();
+		UpdateLight(index, light);
+		light->SetCallback(std::bind(&Renderer::UpdateLight, this, index, light));
 	}
 }

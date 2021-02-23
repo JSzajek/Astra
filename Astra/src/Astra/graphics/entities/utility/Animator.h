@@ -11,7 +11,6 @@ namespace Astra::Graphics
 	{
 	private:
 		std::vector<Math::Mat4> m_finalBoneOffsets;
-		Math::Mat4 m_globalInverseTransform;
 		Animation* m_current;
 		float m_currentTime;
 		bool m_playing;
@@ -22,9 +21,6 @@ namespace Astra::Graphics
 		inline const unsigned int GetCount() const { return m_finalBoneOffsets.size(); }
 
 		void UpdateAnimation(float delta);
-		inline void SetGlobalInverseTransform(const Math::Mat4& mat) {
-			m_globalInverseTransform = mat;
-		}
 		void SetAnimation(Astra::Graphics::Animation* animation);
 		inline void Play() { m_playing = true; }
 	private:

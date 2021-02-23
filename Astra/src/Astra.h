@@ -25,7 +25,6 @@
 #include "Astra/graphics/entities/terrains/Terrain.h"
 #include "Astra/graphics/entities/terrains/WaterTile.h"
 #include "Astra/graphics/particles/ParticleSystem.h"
-#include "Astra/graphics/particles/ConeParticleSystem.h"
 
 #include "Astra/graphics/guis/Guis.h"
 

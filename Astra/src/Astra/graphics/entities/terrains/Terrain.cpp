@@ -1,12 +1,17 @@
 #include "astra_pch.h"
 
 #include "Terrain.h"
-#include "../../ResourceManager.h"
+#include "Astra/graphics/ResourceManager.h"
 
 #include <stb_image/stb_image.h>
 
 namespace Astra::Graphics
 {
+	Terrain::Terrain()
+		: Spatial(), texturePack(NULL), blendMap(NULL)
+	{
+	}
+
 	Terrain::Terrain(int xGrid, int zGrid, const char* const heightmap, const TerrainMaterialPack* pack, const TerrainMaterial* map)
 		: Spatial(), texturePack(pack), blendMap(map)
 	{
@@ -34,10 +39,10 @@ namespace Astra::Graphics
 
 	Terrain::~Terrain()
 	{
-		delete m_heights;
+		/*delete m_heights;
 		RESOURCE_UNLOAD(vertexArray);
 		RESOURCE_UNLOAD(blendMap);
-		RESOURCE_UNLOAD(texturePack);
+		RESOURCE_UNLOAD(texturePack);*/
 	}
 
 	const VertexArray* Terrain::GeneratePlaneTerrain(const char* const heightmap)

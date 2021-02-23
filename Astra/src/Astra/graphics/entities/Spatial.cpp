@@ -5,8 +5,8 @@
 
 namespace Astra::Graphics
 {
-	Spatial::Spatial()
-		: m_modelMatrix(new Math::Mat4(0)), m_normalMatrix(new Math::Mat4(0))
+	Spatial::Spatial(const char* const name)
+		: LayerEntity(name), m_modelMatrix(new Math::Mat4(0)), m_normalMatrix(new Math::Mat4(0))
 	{
 		for (size_t i = 0; i < 3 * 3; i++)
 		{
@@ -14,9 +14,14 @@ namespace Astra::Graphics
 		}
 		UpdateMatrices();
 	}
+	
+	Spatial::Spatial()
+		: Spatial("")
+	{
+	}
 
 	Spatial::Spatial(const Spatial& other)
-		: m_modelMatrix(new Math::Mat4(*other.m_modelMatrix)), m_normalMatrix(new Math::Mat4(*other.m_normalMatrix))
+		: LayerEntity(other), m_modelMatrix(new Math::Mat4(*other.m_modelMatrix)), m_normalMatrix(new Math::Mat4(*other.m_normalMatrix))
 	{
 		memcpy(m_data, other.m_data, sizeof(m_data));
 	}
@@ -49,8 +54,8 @@ namespace Astra::Graphics
 
 	Spatial::~Spatial()
 	{
-		delete m_modelMatrix;
-		delete m_normalMatrix;
+		/*delete m_modelMatrix;
+		delete m_normalMatrix;*/
 	}
 
 	float& Spatial::operator()(const unsigned int& row, const unsigned int& column)

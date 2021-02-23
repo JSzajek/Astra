@@ -23,6 +23,7 @@ namespace Astra::Graphics
 		const TerrainMaterialPack* texturePack;
 		const TerrainMaterial* blendMap;
 	public:
+		Terrain();
 		Terrain(int xGrid, int zGrid, const char* const heightmap, const TerrainMaterialPack* pack, const TerrainMaterial* map);
 		Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, const TerrainMaterialPack* pack, const TerrainMaterial* map);
 		Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, int seed, const TerrainMaterialPack* pack, const TerrainMaterial* map);

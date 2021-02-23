@@ -11,6 +11,8 @@
 #include "Player.h"
 #include "Synchronous.h"
 
+#include <unordered_set>
+
 using namespace Astra::Graphics;
 using namespace Astra::Math;
 using namespace Astra::Audio;
@@ -21,25 +23,25 @@ private:
     Astra::Scene* scene;
     Player* m_player;
     TextBox* m_textbox;
-    DirectionalLight* dir_light;
+    /*DirectionalLight* dir_light;
     PointLight* light3;
-    PointLight* light4;
-    Model* cubeModel;
+    PointLight* light4;*/
+    /*Model* cubeModel;
     Model* cubeModel2;
-    Model* cubeModel3;
-    Model* barrelModel;
-    Model* vampire;
-    Model* brickModel;
-    SkyboxMaterial* skybox;
-    AudioSource* audioSource;
-    Image* image;
+    Model* cubeModel3;*/
+    //Model barrelModel;
+   /* Model* vampire;
+    Model* brickModel;*/
+    //SkyboxMaterial* skybox;
+    //AudioSource* audioSource;
+    //Image* image;
     Vec3* particleCenter;
-    ToggleButton* vsycnToggle;
+    /*ToggleButton* vsycnToggle;
     Button* multisamplingButton;
     ToggleButton* bloomToggle;
     ToggleButton* hdrToggle;
-    ToggleButton* reflectionToggle;
-    std::vector<const Model*> models;
+    ToggleButton* reflectionToggle;*/
+    //std::vector<const Model*> models;
     
     const float InGameTimeSpeed = 0.005f;
     short timeDir = 1;
@@ -48,44 +50,44 @@ private:
     float elapsedTime = 0;
     unsigned int frames = 0;
 public:
-    void OnButtonPress()
-    {
-        image->operator()(ROTATION, SUM_EQ, 5);
-    }
+    //void OnButtonPress()
+    //{
+    //    image->operator()(ROTATION, SUM_EQ, 5);
+    //}
 
-    void ToggleVsync(bool enabled)
-    {
-        vsycnToggle->SetText(enabled ? "Vsync: 1" : "Vsync: 0");
-        GetWindow().SetVSync(enabled);
-    }
+    //void ToggleVsync(bool enabled)
+    //{
+    //    vsycnToggle->SetText(enabled ? "Vsync: 1" : "Vsync: 0");
+    //    GetWindow().SetVSync(enabled);
+    //}
 
-    void ToggleMultiSampling()
-    {
-        static int multisampling = 0;
-        multisampling += 1;
-        multisampling %= 5; // Current Max multi sampling 4 - check:   glGetInteger64v(GL_MAX_SAMPLES) for maximum sampling?
-        std::string text = "Multi: " + std::to_string(multisampling);
-        multisamplingButton->SetText(text);
-        GetWindow().SetMultisampling(multisampling);
-    }
+    //void ToggleMultiSampling()
+    //{
+    //    static int multisampling = 0;
+    //    multisampling += 1;
+    //    multisampling %= 5; // Current Max multi sampling 4 - check:   glGetInteger64v(GL_MAX_SAMPLES) for maximum sampling?
+    //    std::string text = "Multi: " + std::to_string(multisampling);
+    //    multisamplingButton->SetText(text);
+    //    GetWindow().SetMultisampling(multisampling);
+    //}
 
-    void ToggleBloomSampling(bool enabled)
-    {
-        bloomToggle->SetText(enabled ? "Bloom: 1" : "Bloom: 0");
-        GetWindow().SetBloom(enabled);
-    }
+    //void ToggleBloomSampling(bool enabled)
+    //{
+    //    bloomToggle->SetText(enabled ? "Bloom: 1" : "Bloom: 0");
+    //    GetWindow().SetBloom(enabled);
+    //}
 
-    void ToggleHDR(bool enabled)
-    {
-        hdrToggle->SetText(enabled ? "HDR: 1" : "HDR: 0");
-        GetWindow().SetHDR(enabled);
-    }
+    //void ToggleHDR(bool enabled)
+    //{
+    //    hdrToggle->SetText(enabled ? "HDR: 1" : "HDR: 0");
+    //    GetWindow().SetHDR(enabled);
+    //}
 
-    void ToggleReflection(bool enabled)
-    {
-        reflectionToggle->SetText(enabled ? "Refl: 1" : "Refl: 0");
-        GetWindow().SetReflections(enabled);
-    }
+    //void ToggleReflection(bool enabled)
+    //{
+    //    reflectionToggle->SetText(enabled ? "Refl: 1" : "Refl: 0");
+    //    GetWindow().SetReflections(enabled);
+    //}
 
     TestGame()
         : Application()
@@ -99,30 +101,31 @@ public:
         auto* pack = ResourceManager::LoadTerrainMaterialPack("res/textures/grass.jpg", "res/textures/grass.jpg", "res/textures/mud.png", "res/textures/grass.jpg");
 
         //Terrain terrain = Terrain(0, 0, "res/textures/meteorcrater_heightmap.png", &pack, blendMap);
-        Terrain* terrain = new Terrain(0, 0, 40, 4, 0.01f, 4862, pack, blendMap);
-        terrain->operator()(TRANSLATION, SUB_EQ, X_POS, 128);
-        terrain->operator()(TRANSLATION, SUB_EQ, Z_POS, 128);
-        scene->AddTerrain(terrain);
+        Terrain terrain(0, 0, 40, 4, 0.01f, 4862, pack, blendMap);
+        //terrain->operator()(TRANSLATION, SUB_EQ, X_POS, 128);
+        //terrain->operator()(TRANSLATION, SUB_EQ, Z_POS, 128);
+        terrain.SetTranslation(terrain.GetTranslation() - Vec3(128, 0, 128));
+        auto* terr = scene->AddTerrain(terrain);
         
-        m_player = new Player(Vec3(-25, 50, -100), terrain);
+        m_player = new Player(Vec3(-25, 50, -100), terr);
         scene->SetMainCamera(m_player->GetCamera());
-        scene->AddModel(m_player->GetBody());
+        //scene->AddModel(m_player->GetBody());
 
-        WaterTile* tile1 = new WaterTile(0, 0, -2.5f, 128);
+        WaterTile tile1(0, 0, -2.5f, 128);
         scene->AddWaterTile(tile1);
 
-        //const Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
-        auto* guiMat = ResourceManager::LoadGuiMaterial("res/textures/grassTexture.png");
-        image = new Image(guiMat, Vec2(10, 200), Vec2(1), 1);
-        image->SetModulate(Color::White);
-        scene->AddGui(image, 0);
+        ////const Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
+        //auto* guiMat = ResourceManager::LoadGuiMaterial("res/textures/grassTexture.png");
+        //image = new Image(guiMat, Vec2(10, 200), Vec2(1), 1);
+        //image->SetModulate(Color::White);
+        //scene->AddGui(image, 0);
 
         //auto* fontAtlas = ResourceManager::LoadFontAtlas("res/fonts/OpenSans-Regular.ttf", 24);
         m_textbox = new TextBox("", Vec2(10), 0, Vec2(1));
         m_textbox->SetModulate(Color::Red);
         scene->AddGui(m_textbox, 0);
 
-        auto* buttonMat = ResourceManager::LoadGuiMaterial("res/textures/Panel.png");
+        /*auto* buttonMat = ResourceManager::LoadGuiMaterial("res/textures/Panel.png");
         Button* button = new Button(buttonMat, Vec2(200, 10), Vec2(1));
         button->SetHoverColor(Color::Red);
         button->SetPressedColor(Color::Blue);
@@ -169,7 +172,7 @@ public:
         auto* panelMat = ResourceManager::LoadGuiMaterial("res/textures/Panel.png");
         Panel* panel = new Panel(panelMat, Vec2(100, 200), Vec2(1));
         panel->SetText("panel");
-        scene->AddGui(panel, 1);
+        scene->AddGui(panel, 1);*/
 
         std::vector<const char*> m_textureFiles =
         {
@@ -191,57 +194,54 @@ public:
             "res/textures/Default_Night_Skybox/front.png",
         };
 
-        skybox = ResourceManager::LoadSkyboxMaterial(m_textureFiles, m_nightTextureFiles);
-        scene->SetSkyBox(skybox);
+        //skybox = ResourceManager::LoadSkyboxMaterial(m_textureFiles, m_nightTextureFiles);
+        auto skybox1 = SkyboxMaterial(m_textureFiles, m_nightTextureFiles);
+        scene->SetSkyBox(skybox1);
 
-        Vec3 light_pos = Astra::Math::Vec3(20, terrain->GetHeightOfTerrain(-55, 55) + 7, 5);
-        dir_light = new DirectionalLight(Vec3(25), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0));
-        light4 = new PointLight(Vec3(-28.75f, 0, -65.5f), Vec3(3, 1.5f, 0), Vec3(1), Vec3(5), 1, 0.22f, 0.20f);
-        light3 = new PointLight(light_pos, Vec3(3, 1.5f, 0), Vec3(1), Vec3(25));
+        Vec3 light_pos = Astra::Math::Vec3(20, terrain.GetHeightOfTerrain(-55, 55) + 7, 5);
+        auto dir_light = DirectionalLight("Sun", Vec3(25), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0));
+        auto light4 = PointLight(Vec3(-28.75f, 0, -65.5f), Vec3(3, 1.5f, 0), Vec3(1), Vec3(5), 1, 0.22f, 0.20f);
+        auto light3 = PointLight("Lamp Light", light_pos, Vec3(3, 1.5f, 0), Vec3(1), Vec3(25));
 
+        scene->SetDirectionalLight(dir_light);
         scene->AddPointLight(light3);
         scene->AddPointLight(light4);
-        scene->SetDirectionalLight(dir_light);
 
-        cubeModel = ResourceManager::LoadModel("res/cube.fbx");
-        cubeModel->SetScale(Math::Vec3(1));
-        cubeModel->SetTranslation(Math::Vec3(0, 0, 20));
-        models.emplace_back(cubeModel);
-        scene->AddModel(cubeModel);
+        //cubeModel = ResourceManager::LoadModel("res/cube.fbx");
+        //cubeModel->SetScale(Math::Vec3(1));
+        //cubeModel->SetTranslation(Math::Vec3(0, 0, 20));
+        //models.emplace_back(cubeModel);
+        //scene->AddModel(cubeModel);
 
-        // Example of loaded already loaded model and deleting pointer but not source
-        cubeModel2 = ResourceManager::LoadModel("res/cube.fbx");
-        RESOURCE_UNLOAD(cubeModel2);
+        //// Example of loaded already loaded model and deleting pointer but not source
+        //cubeModel2 = ResourceManager::LoadModel("res/cube.fbx");
+        //RESOURCE_UNLOAD(cubeModel2);
 
-        cubeModel3 = ResourceManager::LoadModel("res/cube.fbx");
-        cubeModel3->SetScale(Math::Vec3(1));
-        cubeModel3->SetTranslation(Math::Vec3(20, 0, 20));
-        models.emplace_back(cubeModel3);
-        scene->AddModel(cubeModel3);
+        //cubeModel3 = ResourceManager::LoadModel("res/cube.fbx");
+        //cubeModel3->SetScale(Math::Vec3(1));
+        //cubeModel3->SetTranslation(Math::Vec3(20, 0, 20));
+        //models.emplace_back(cubeModel3);
+        //scene->AddModel(cubeModel3);
 
-        barrelModel = ResourceManager::LoadModel("res/barrel_2.fbx", true);
-        barrelModel->SetScale(Math::Vec3(3));
-        barrelModel->SetSelected(true);
-        models.emplace_back(barrelModel);
-        scene->AddModel(barrelModel);
+        //vampire = ResourceManager::LoadModel("res/vampire/dancing_vampire.dae", true);
+        //models.emplace_back(vampire);
+        //vampire->SetScale(Math::Vec3(0.001f));
+        //vampire->SetTranslation(Math::Vec3(50, terrain->GetHeightOfTerrain(50, 70), 70));
+        //vampire->SetAnimator(new Animator());
+        //vampire->PlayAnimation("");
+        //scene->AddModel(vampire);
 
-        vampire = ResourceManager::LoadModel("res/vampire/dancing_vampire.dae", true);
-        models.emplace_back(vampire);
-        vampire->SetScale(Math::Vec3(0.1f));
-        vampire->SetTranslation(Math::Vec3(50, terrain->GetHeightOfTerrain(50, 70), 70));
-        scene->AddModel(vampire);
-
-        // FBX doesn't export displacement map- Work Around
-        auto* heightMap = Loader::LoadTexture("res/textures/bricks_heightmap.jpg", false, GL_REPEAT, false);
-        heightMap->type = TextureType::HeightMap;
-        brickModel = ResourceManager::LoadModel("res/bricks.fbx", true);
-        brickModel->GetMesh(0).GetMaterial()->AddTexture(heightMap);
-        brickModel->GetMesh(0).GetMaterial()->SetHeightOffset(0.1f);
-        brickModel->SetScale(Math::Vec3(10));
-        brickModel->SetRotation(Math::Vec3(0, 0, -90));
-        brickModel->SetTranslation(Math::Vec3(-10, 0, -10));
-        models.emplace_back(brickModel);
-        scene->AddModel(brickModel);
+        //// FBX doesn't export displacement map- Work Around
+        //auto* heightMap = Loader::LoadTexture("res/textures/bricks_heightmap.jpg", false, GL_REPEAT, false);
+        //heightMap->type = TextureType::HeightMap;
+        //brickModel = ResourceManager::LoadModel("res/bricks.fbx", true);
+        //brickModel->GetMesh(0).GetMaterial()->AddTexture(heightMap);
+        //brickModel->GetMesh(0).GetMaterial()->SetHeightOffset(0.1f);
+        //brickModel->SetScale(Math::Vec3(10));
+        //brickModel->SetRotation(Math::Vec3(0, 0, -90));
+        //brickModel->SetTranslation(Math::Vec3(-10, 0, -10));
+        //models.emplace_back(brickModel);
+        //scene->AddModel(brickModel);
 
         //auto* barrelMat = ResourceManager::LoadMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.jpg", "res/textures/barrelNormal.png", NULL, 0, NULL, 1, 32);
         //barrelModel = ResourceManager::LoadNormalEntity("res/barrel.obj", 0, Vec3(-40, terrain->GetHeightOfTerrain(-40, 55) + 5, 55), Vec3(0), Vec3(1));
@@ -283,21 +283,22 @@ public:
         //scene->AddEntity(container);
 
         ParticleMaterial* partMaterial = ResourceManager::LoadParticleMaterial("res/textures/particleAtlas.png", 4);
-        particleCenter = new Vec3(-80, terrain->GetHeightOfTerrain(-80, 80) + 5, 80);
+        auto particleCenter = Vec3(-80, terrain.GetHeightOfTerrain(-80, 80) + 5, 80);
 
-        ConeParticleSystem* partSystem =  new ConeParticleSystem(partMaterial, particleCenter, 15, 5, -0.1f, 1.5f, 2, true);
-        partSystem->SetDirection(Vec3(0, 1, 0), 0.5f);
-        partSystem->SetLifeError(0.1f);
-        partSystem->SetSpeedError(0.4f);
-        partSystem->SetScaleError(0.8f);
-        partSystem->SetRandomRotation(true);
+        ParticleSystem partSystem("Fire Spout", partMaterial, particleCenter, 15, 5, -0.1f, 1.5f, true);
+        partSystem.SetScale(2);
+        partSystem.SetDirection(Vec3(0, 1, 0), 0.5f);
+        partSystem.SetLifeError(0.1f);
+        partSystem.SetSpeedError(0.4f);
+        partSystem.SetScaleError(0.8f);
+        partSystem.SetRandomRotation(true);
         scene->AddParticleSystem(partSystem);
 
-        unsigned int tempSound = AudioController::LoadSound("res/audio/bounce.wav");
+        /*unsigned int tempSound = AudioController::LoadSound("res/audio/bounce.wav");
         audioSource = new AudioSource (1, 12, 15);
         audioSource->SetPosition(Vec3(-25, terrain->GetHeightOfTerrain(-25, -65), -65));
         audioSource->SetLooping(true);
-        audioSource->Play(tempSound);
+        audioSource->Play(tempSound);*/
 
         /*auto* fernMat = ResourceManager::LoadMaterial("res/textures/fernAtlas.png", Texture::DefaultSpecular, NULL, 2, 0.25f, true);
         fernMat->FakeLight = true;
@@ -317,11 +318,21 @@ public:
 
     virtual void OnUpdate(float delta) override
     {
+        auto* barrel = scene->Get<Model>("Barrel");
+        auto str = barrel->ToString();
+
+        auto* cube = scene->Get<Model>("Cube");
+        auto str2 = cube->ToString();
+
+        auto* system = scene->Get<ParticleSystem>("Fire Spout");
+        auto str3 = system->ToString();
+
+
         m_player->Update(delta);
 
-        barrelModel->operator()(ROTATION, SUM_EQ, Y_POS, 0.5f);
+        //barrelModel->operator()(ROTATION, SUM_EQ, Y_POS, 0.5f);
 
-        skybox->BlendFactor() += InGameTimeSpeed * timeDir * delta;
+        /*skybox->BlendFactor() += InGameTimeSpeed * timeDir * delta;
         if (skybox->BlendFactor() >= 1)
         {
             skybox->BlendFactor() = 1;
@@ -331,7 +342,7 @@ public:
         {
             skybox->BlendFactor() = 0;
             timeDir = 1;
-        }
+        }*/
 
         frames++;
         if (timer.Elapsed() - elapsedTime > 1.0f)
@@ -353,19 +364,19 @@ public:
     {
         scene->Disable();
 
-        delete audioSource;
+        //delete audioSource;
 
         // Clean up models
-        for (const auto* model : models)
+        /*for (const auto* model : models)
         {
             delete model;
-        }
+        }*/
 
-        delete particleCenter;
+        //delete particleCenter;
 
-        delete dir_light;
+        /*delete dir_light;
         delete light3;
-        delete light4;
+        delete light4;*/
 
         delete scene;
     }

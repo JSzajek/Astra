@@ -153,6 +153,7 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\Application.h" />
     <ClInclude Include="src\Astra\Core.h" />
     <ClInclude Include="src\Astra\EntryPoint.h" />
+    <ClInclude Include="src\Astra\graphics\entities\LayerEntity.h" />
     <ClInclude Include="src\Astra\graphics\entities\utility\Animation.h" />
     <ClInclude Include="src\Astra\graphics\entities\utility\Animator.h" />
     <ClInclude Include="src\Astra\graphics\entities\utility\AssimpReader.h" />
@@ -212,7 +213,6 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\graphics\materials\SkyboxMaterial.h" />
     <ClInclude Include="src\Astra\graphics\materials\TerrainMaterial.h" />
     <ClInclude Include="src\Astra\graphics\materials\WaterMaterial.h" />
-    <ClInclude Include="src\Astra\graphics\particles\ConeParticleSystem.h" />
     <ClInclude Include="src\Astra\graphics\particles\Particle.h" />
     <ClInclude Include="src\Astra\graphics\particles\ParticleController.h" />
     <ClInclude Include="src\Astra\graphics\particles\ParticleSystem.h" />
@@ -323,7 +323,6 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClCompile Include="src\Astra\graphics\materials\SkyboxMaterial.cpp" />
     <ClCompile Include="src\Astra\graphics\materials\TerrainMaterial.cpp" />
     <ClCompile Include="src\Astra\graphics\materials\WaterMaterial.cpp" />
-    <ClCompile Include="src\Astra\graphics\particles\ConeParticleSystem.cpp" />
     <ClCompile Include="src\Astra\graphics\particles\Particle.cpp" />
     <ClCompile Include="src\Astra\graphics\particles\ParticleController.cpp" />
     <ClCompile Include="src\Astra\graphics\particles\ParticleSystem.cpp" />

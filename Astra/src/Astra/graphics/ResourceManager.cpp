@@ -266,7 +266,7 @@ namespace Astra::Graphics
 
 	void ResourceManager::UnloadModel(const Model* model)
 	{
-		auto source = m_loadedModels.find(model->GetUID());
+		auto source = m_loadedModels.find(model->GetRenderID());
 		auto last = UnloadResource(source->second);
 		if (last) // Last reference to model - can clean up vao, vbos, ebos, etc.
 		{

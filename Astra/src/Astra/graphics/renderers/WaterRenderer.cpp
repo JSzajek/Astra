@@ -11,8 +11,7 @@
 namespace Astra::Graphics
 {
 	WaterRenderer::WaterRenderer(float _near, float _far)
-		: Renderer(), m_buffer(NULL), m_directionalLight(NULL), 
-			m_near(_near), m_far(_far), m_toShadowSpaceMatrix(NULL)
+		: Renderer(), m_buffer(NULL), m_near(_near), m_far(_far), m_toShadowSpaceMatrix(NULL)
 		#if ASTRA_DEBUG
 			, m_wireframe(false)
 		#endif
@@ -49,7 +48,8 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
-	void WaterRenderer::Draw(float delta, const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void WaterRenderer::Draw(float delta, const std::unordered_map<unsigned int, Graphics::WaterTile>& tiles, 
+							 const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
 		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, viewMatrix);
@@ -64,11 +64,11 @@ namespace Astra::Graphics
 	#endif
 
 		PrepareRender();
-		for (const WaterTile* tile: m_waterTiles)
+		for (const auto& tileDir: tiles)
 		{
-			PrepareTile(tile);
-			m_shader->SetUniform1f(MOVE_FACTOR, tile->material->Increase(delta));
-			m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, tile->GetModelMatrix());
+			PrepareTile(&tileDir.second);
+			m_shader->SetUniform1f(MOVE_FACTOR, tileDir.second.material->Increase(delta));
+			m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, tileDir.second.GetModelMatrix());
 			glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
 		}
 
@@ -87,52 +87,10 @@ namespace Astra::Graphics
 	#endif
 	}
 
-	void WaterRenderer::AddLight(Light* light)
+	void WaterRenderer::AddLight(unsigned int index, Light* light)
 	{
-		switch (light->GetType())
-		{
-		case LightType::Directional:
-			m_directionalLight = light;
-			break;
-		case LightType::Point:
-			m_lights.emplace_back(light);
-			break;
-		case LightType::Spotlight:
-			break;
-		}
-		light->SetCallback(std::bind(&WaterRenderer::UpdateLight, this, light));
-		UpdateLight(light);
-	}
-
-	void WaterRenderer::UpdateLight(const Light* light)
-	{
-		m_shader->Start();
-		if (light->GetType() == LightType::Directional)
-		{
-			m_shader->SetUniform3f(DIR_LIGHT_DIRECTION, m_directionalLight->GetRotation());
-			m_shader->SetUniform3f(DIR_LIGHT_AMBIENT, m_directionalLight->GetAmbient());
-			m_shader->SetUniform3f(DIR_LIGHT_DIFFUSE, m_directionalLight->GetDiffuse());
-			m_shader->SetUniform3f(DIR_LIGHT_SPECULAR, m_directionalLight->GetSpecular());
-		}
-
-		if (light->GetType() == LightType::Point)
-		{
-			size_t i = 0;
-			for (; i < m_lights.size(); i++)
-			{
-				if (m_lights[i] == light)
-				{
-					break;
-				}
-			}
-
-			m_shader->SetUniform3f(Shader::GetPointLightPositionTag(i), m_lights[i]->GetTranslation());
-			m_shader->SetUniform3f(Shader::GetPointLightAmbientTag(i), m_lights[i]->GetAmbient());
-			m_shader->SetUniform3f(Shader::GetPointLightDiffuseTag(i), m_lights[i]->GetDiffuse());
-			m_shader->SetUniform3f(Shader::GetPointLightSpecularTag(i), m_lights[i]->GetSpecular());
-			m_shader->SetUniform3f(Shader::GetPointLightAttenuationTag(i), (static_cast<const PointLight*>(m_lights[i]))->GetAttenuation());
-		}
-		m_shader->Stop();
+		UpdateLight(index, light);
+		light->SetCallback(std::bind(&Renderer::UpdateLight, this, index, light));
 	}
 
 	void WaterRenderer::SetReflection(bool enabled)

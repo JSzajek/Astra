@@ -5,6 +5,11 @@
 
 namespace Astra::Graphics
 {
+	WaterTile::WaterTile()
+		: m_size(0), material(NULL)
+	{
+	}
+
 	WaterTile::WaterTile(float xCenter, float zCenter, float height, float size)
 		: m_size(size), material(ResourceManager::LoadWaterMaterial())
 	{
@@ -33,6 +38,6 @@ namespace Astra::Graphics
 
 	WaterTile::~WaterTile()
 	{
-		RESOURCE_UNLOAD(material);
+		//RESOURCE_UNLOAD(material);
 	}
 }

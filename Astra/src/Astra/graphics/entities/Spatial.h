@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../../math/Maths.h"
+#include "Astra/math/Maths.h"
+#include "Astra/graphics/entities/LayerEntity.h"
 
 namespace Astra::Graphics
 {
@@ -16,7 +17,7 @@ namespace Astra::Graphics
 	#define Y_POS 1
 	#define Z_POS 2
 
-	struct Spatial
+	struct Spatial : public LayerEntity
 	{
 	private:
 		Math::Mat4* m_modelMatrix;
@@ -29,11 +30,15 @@ namespace Astra::Graphics
 		};
 	public:
 		Spatial();
+		Spatial(const char* const name);
 		Spatial(const Spatial& other);
 		Spatial(const Math::Vec3& translation);
 		Spatial(const Math::Vec3& translation, const Math::Vec3& rotation, const Math::Vec3& scale);
 		~Spatial();
 		
+		virtual void Free() override { }
+		inline virtual std::string ToString() const override { return !Name.length() ? ("Spatial_&" + std::to_string(m_uid)) : Name; }
+
 		virtual inline const Math::Vec3& GetTranslation() const { return m_rows[0]; }
 		virtual inline const Math::Vec3& GetRotation() const { return m_rows[1]; }
 		virtual inline const Math::Vec3& GetScale() const { return m_rows[2]; }

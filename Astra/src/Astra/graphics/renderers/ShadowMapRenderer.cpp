@@ -11,15 +11,15 @@ namespace Astra::Graphics
 		Renderer::SetShader(shader);
 	}
 
-	void ShadowMapRenderer::Draw(float delta, const Math::Mat4* viewMatrix, 
-									const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void ShadowMapRenderer::Draw(float delta, const std::unordered_map<unsigned int, std::vector<const Model*>>& models,
+								 const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		BindFrameBuffer(m_buffer->GetBuffer()->GetId(), m_buffer->GetWidth(), m_buffer->GetHeight());
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		m_shader->Start();
-		for (const auto& directory : m_models)
+		for (const auto& directory : models)
 		{
 			for (const auto& mesh : directory.second.front()->GetMeshes())
 			{
@@ -55,21 +55,6 @@ namespace Astra::Graphics
 	#if ASTRA_DEBUG
 		glCheckError();
 	#endif
-	}
-
-	void ShadowMapRenderer::AddEntity(const Model* model)
-	{
-		auto uid = model->GetUID();
-		auto temp = m_models.find(uid);
-		if (temp != m_models.end())
-		{
-			temp->second.emplace_back(model);
-		}
-		else
-		{
-			m_models[uid] = std::vector<const Model*>();
-			m_models[uid].emplace_back(model);
-		}
 	}
 
 	void ShadowMapRenderer::PrepareMesh(const Mesh& mesh)

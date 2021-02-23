@@ -14,8 +14,10 @@ namespace Astra::Graphics
 		CubeMapTexture* m_secondaryTexture;
 		float m_blendFactor;
 	public:
+		SkyboxMaterial();
 		SkyboxMaterial(const std::vector<const char*>& firstFiles);
 		SkyboxMaterial(const std::vector<const char*>& firstFiles, const std::vector<const char*>& secondFiles);
+		SkyboxMaterial(const SkyboxMaterial& other);
 		~SkyboxMaterial();
 
 		const unsigned int GetFirstTextureId() const;

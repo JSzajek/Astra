@@ -15,13 +15,18 @@
 
 namespace Astra::Graphics
 {
+	enum ModelType : unsigned char
+	{
+		Default, NormalMapped, Selected, ShadowCaster
+	};
+
 	class Model : public Spatial
 	{
 	private:
 		// In Game Properties
-		size_t m_uid;
+		size_t m_renderId;
 		bool m_normals; // Contains a Normal Mapped Mesh
-		Math::Mat4* selectedModelMatrix;
+		Math::Mat4 selectedModelMatrix;
 		unsigned int m_textureIndex;
 		unsigned int m_rowCount;
 		bool m_selected;
@@ -33,13 +38,19 @@ namespace Astra::Graphics
 		// Animation Information
 		std::vector<Animation> m_animations;
 		Animator* m_animator;
-		Math::Mat4 m_globalInverseTransform;
 		std::map<std::string, BoneInfo> m_boneInfoMap;
 		int m_boneCounter;
 	public:
+		Model() = default;
+		Model(const char* const name, const char* const filepath, bool calcTangents);
 		Model(const char* const filepath, bool calcTangents);
 		Model(const Model& other);
 		~Model();
+
+		virtual void Free() override;
+		inline virtual std::string ToString() const override { return !Name.length() ? ("Model_&" + std::to_string(m_uid)) : Name; }
+		
+		inline size_t GetRenderID() const { return m_renderId; }
 
 		inline bool HasNormals() const { return m_normals; }
 		inline bool IsSelected() const { return m_selected; }
@@ -50,17 +61,12 @@ namespace Astra::Graphics
 
 		inline unsigned int GetTextureIndex() const { return m_textureIndex; }
 		inline unsigned int GetRowCount() const { return m_rowCount; }
-		inline size_t GetUID() const { return m_uid; }
 
-		inline void SetSelected(bool enabled) { m_selected = enabled; }
+		inline void SetSelected(bool enabled) { m_selected = enabled; UpdateMatrices(); }
 		inline void SetTextureIndex(unsigned int index) { m_textureIndex = index; }
 		inline void SetRowCount(unsigned int count) { m_rowCount = count; }
 
-		inline void SetAnimator(Animator* animator) 
-		{ 
-			m_animator = animator; 
-			m_animator->SetGlobalInverseTransform(m_globalInverseTransform);
-		}
+		inline void SetAnimator(Animator* animator) { m_animator = animator; }
 		inline bool HasAnimator() const { return m_animator; }
 		inline Animator* GetAnimator() const { return m_animator; }
 
@@ -73,7 +79,7 @@ namespace Astra::Graphics
 		inline float GetMaterialXOffset() const { return (float)(m_textureIndex % m_rowCount) / (float)m_rowCount; }
 		inline float GetMaterialYOffset() const { return (float)(m_textureIndex / m_rowCount) / (float)m_rowCount; }
 	
-		inline const Math::Mat4* const GetSelectedModelMatrix() const { return selectedModelMatrix; }
+		inline const Math::Mat4& GetSelectedModelMatrix() const { return selectedModelMatrix; }
 	private:
 		// Base Methods
 		void LoadModel(std::string filepath, bool calcTangents);

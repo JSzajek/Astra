@@ -15,27 +15,37 @@
 
 namespace Astra::Graphics
 {
-	Model::Model(const char* const filepath, bool calcTangents)
-		: m_normals(false), m_uid(std::hash<std::string>{}(filepath)), // Currently using filepath as UID - Investigate better method
-			selectedModelMatrix(new Math::Mat4()),
-			m_textureIndex(0), m_rowCount(1),
-			m_selected(0), m_boneCounter(0), m_animator(NULL)
+	Model::Model(const char* const name, const char* const filepath, bool calcTangents)
+		: Spatial(name), m_renderId(std::hash<std::string>{}(filepath)), m_normals(false), selectedModelMatrix(1.0f),
+			m_textureIndex(0), m_rowCount(1), m_selected(0), m_boneCounter(0), m_animator(NULL)
 	{
 		LoadModel(filepath, calcTangents);
+	}
+
+	Model::Model(const char* const filepath, bool calcTangents)
+		: Model("Model", filepath, calcTangents)
+	{
 	}
 
 	Model::Model(const Model& other)
 		: Spatial(other), m_directory(other.m_directory), m_normals(other.m_normals),
 			m_textureIndex(other.m_textureIndex), m_rowCount(other.m_rowCount),
-			m_selected(other.m_selected), m_meshes(other.m_meshes), m_uid(other.m_uid),
-			selectedModelMatrix(new Math::Mat4(*other.selectedModelMatrix)), m_boneCounter(other.m_boneCounter),
+			m_selected(other.m_selected), m_meshes(other.m_meshes),
+			selectedModelMatrix(other.selectedModelMatrix), m_boneCounter(other.m_boneCounter),
 			m_animator(other.m_animator), m_animations(other.m_animations)
 	{
 	}
 
 	Model::~Model()
 	{
-		delete selectedModelMatrix;
+	}
+
+	void Model::Free()
+	{
+		for (auto& mesh : m_meshes)
+		{
+			mesh.Unload();
+		}
 	}
 
 	void Model::LoadModel(std::string filepath, bool calcTangents)
@@ -63,7 +73,6 @@ namespace Astra::Graphics
 		// Load Animations in Model
 		if (scene->HasAnimations())
 		{
-			m_globalInverseTransform = ConvertAiMatrix(scene->mRootNode->mTransformation.Inverse());
 			m_animations.reserve(scene->mNumAnimations);
 			
 			// For now only check first animation
@@ -169,11 +178,6 @@ namespace Astra::Graphics
 		ASTRA_CORE_ASSERT(mesh->mMaterialIndex >= 0, "Model: No Materials Found");
 
 		auto* material = scene->mMaterials[mesh->mMaterialIndex];
-		for (int i = aiTextureType_DIFFUSE; i < 12; i++)
-		{
-			auto t = material->GetTextureCount((aiTextureType)i);
-		}
-
 		auto [diffuseMaps, diffuseHash] = LoadMaterialTextures(scene, material, aiTextureType_DIFFUSE, TextureType::DiffuseMap);
 		auto [specularMaps, specularHash] = LoadMaterialTextures(scene, material, aiTextureType_SPECULAR, TextureType::SpecularMap);
 		auto [normalMaps, normalHash] = LoadMaterialTextures(scene, material, aiTextureType_NORMALS, TextureType::NormalMap);
@@ -287,7 +291,7 @@ namespace Astra::Graphics
 		{
 			Math::Vec3 scale = GetScale();
 			scale *= 1.1f;
-			*selectedModelMatrix = Math::Mat4Utils::Transformation(GetTranslation(), GetRotation(), scale);
+			selectedModelMatrix = Math::Mat4Utils::Transformation(GetTranslation(), GetRotation(), scale);
 		}
 		Spatial::UpdateMatrices();
 	}

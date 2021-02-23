@@ -267,9 +267,6 @@
     <ClInclude Include="src\Astra\graphics\materials\WaterMaterial.h">
       <Filter>src\Astra\graphics\materials</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astra\graphics\particles\ConeParticleSystem.h">
-      <Filter>src\Astra\graphics\particles</Filter>
-    </ClInclude>
     <ClInclude Include="src\Astra\graphics\particles\Particle.h">
       <Filter>src\Astra\graphics\particles</Filter>
     </ClInclude>
@@ -494,6 +491,7 @@
     <ClInclude Include="src\Astra\graphics\entities\utility\Animation.h" />
     <ClInclude Include="src\Astra\graphics\entities\utility\AssimpReader.h" />
     <ClInclude Include="src\Astra\graphics\entities\utility\Animator.h" />
+    <ClInclude Include="src\Astra\graphics\entities\LayerEntity.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astra\Application.cpp">
@@ -594,9 +592,6 @@
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\materials\WaterMaterial.cpp">
       <Filter>src\Astra\graphics\materials</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Astra\graphics\particles\ConeParticleSystem.cpp">
-      <Filter>src\Astra\graphics\particles</Filter>
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\particles\Particle.cpp">
       <Filter>src\Astra\graphics\particles</Filter>

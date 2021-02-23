@@ -7,6 +7,11 @@
 
 namespace Astra::Graphics
 {
+	SkyboxMaterial::SkyboxMaterial()
+		: m_blendFactor(0), m_primaryTexture(NULL), m_secondaryTexture(NULL)
+	{
+	}
+
 	SkyboxMaterial::SkyboxMaterial(const std::vector<const char*>& firstFiles)
 		: m_secondaryTexture(NULL), m_blendFactor(0)
 	{
@@ -19,11 +24,16 @@ namespace Astra::Graphics
 		m_primaryTexture = Loader::LoadCubeMap(firstFiles);
 		m_secondaryTexture = Loader::LoadCubeMap(secondFiles);
 	}
+	
+	SkyboxMaterial::SkyboxMaterial(const SkyboxMaterial& other)
+		: m_blendFactor(other.m_blendFactor), m_primaryTexture(other.m_primaryTexture), m_secondaryTexture(other.m_secondaryTexture)
+	{
+	}
 
 	SkyboxMaterial::~SkyboxMaterial()
 	{
-		RESOURCE_UNLOAD(m_primaryTexture);
-		RESOURCE_UNLOAD(m_secondaryTexture);
+		/*RESOURCE_UNLOAD(m_primaryTexture);
+		RESOURCE_UNLOAD(m_secondaryTexture);*/
 	}
 
 	const unsigned int SkyboxMaterial::GetFirstTextureId() const

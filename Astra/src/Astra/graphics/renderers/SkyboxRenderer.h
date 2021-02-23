@@ -63,7 +63,8 @@ namespace Astra::Graphics
 		};
 	private:
 		const VertexArray* m_cube;
-		const SkyboxMaterial* m_material;
+		SkyboxMaterial m_material;
+		bool m_set;
 		const Color* m_fogColor;
 		Math::Mat4* m_fixedViewMatrix;
 		float m_blendFactor;
@@ -72,8 +73,7 @@ namespace Astra::Graphics
 		SkyboxRenderer(Shader* shader, const Color* fogColor);
 		~SkyboxRenderer();
 
-		//inline void Clear() override { m_material = NULL; }
-		inline void SetSkyBox(const SkyboxMaterial* material) { m_material = material; }
+		void SetSkyBox(const SkyboxMaterial& material);
 
 		void Draw(float delta = 0, const Math::Mat4* viewMatrix = NULL, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane);
 	private:

@@ -121,7 +121,7 @@ namespace Astra::Graphics
 			for (const auto& mesh : directory.second.front()->GetMeshes())
 			{
 				PrepareMesh(mesh);
-				for (const auto* model : directory.second)
+				for (const auto& model : directory.second)
 				{
 					m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(model->GetRowCount()));
 					m_shader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());

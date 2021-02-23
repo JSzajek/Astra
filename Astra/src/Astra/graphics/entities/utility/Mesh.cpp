@@ -98,6 +98,6 @@ namespace Astra::Graphics
 		glDeleteBuffers(1, &m_vbo);
 		glDeleteBuffers(1, &m_ebo);
 
-		RESOURCE_UNLOAD(m_material);
+		//RESOURCE_UNLOAD(m_material); // Reinstate
 	}
 }

@@ -40,17 +40,25 @@ namespace Astra
 			Application::Get().PopLayer(m_canvas);
 		}
 
+		template <class T>
+		inline T* Get(std::string name) 
+		{
+			if (auto* ptr = m_3dLayer->Get(name))
+				return reinterpret_cast<T*>(ptr);
+			return NULL; 
+		}
+
 		inline void SetMainCamera(Graphics::Camera* camera) { m_3dLayer->SetCamera(camera); }
-		inline void SetDirectionalLight(Graphics::DirectionalLight* light) { m_3dLayer->SetDirectionalLight(light); }
-		inline void SetSkyBox(const Graphics::SkyboxMaterial* material) { m_3dLayer->SetSkyBox(material); }
+		inline void SetDirectionalLight(const Graphics::DirectionalLight& light) { m_3dLayer->SetDirectionalLight(light); }
+		inline void SetSkyBox(const Graphics::SkyboxMaterial& material) { m_3dLayer->SetSkyBox(material); }
 		inline void SetFogColor(const Graphics::Color& color) { m_3dLayer->SetFogColor(color); }
 
-		inline void AddModel(const Graphics::Model* model) { m_3dLayer->AddModel(model); }
-		inline void AddParticleSystem(const Graphics::ParticleSystem* system) { m_3dLayer->AddParticleSystem(system); }
-		inline void AddTerrain(const Graphics::Terrain* terrain) { m_3dLayer->AddTerrain(terrain); }
-		inline void AddWaterTile(const Graphics::WaterTile* tile) { m_3dLayer->AddWaterTile(tile); }
+		inline void AddModel(const Graphics::Model& model) { m_3dLayer->AddModel(model); }
+		inline void AddParticleSystem(const Graphics::ParticleSystem& system) { m_3dLayer->AddParticleSystem(system); }
+		inline Graphics::Terrain* AddTerrain(const Graphics::Terrain& terrain) { return m_3dLayer->AddTerrain(terrain); }
+		inline void AddWaterTile(const Graphics::WaterTile& tile) { m_3dLayer->AddWaterTile(tile); }
 		
-		inline void AddPointLight(Graphics::PointLight* light) { m_3dLayer->AddPointLight(light); }
+		inline void AddPointLight(const Graphics::PointLight& light) { m_3dLayer->AddPointLight(light); }
 		
 		inline void AddGui(Graphics::Gui* gui, int layer) { m_canvas->AddGui(gui, layer); }
 
