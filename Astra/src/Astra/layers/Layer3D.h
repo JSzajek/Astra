@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <thread>
 
 #include "Layer.h"
 
@@ -49,6 +50,9 @@ namespace Astra
 		static const constexpr float NearPlane = 0.1f;
 		static const constexpr float FarPlane = 500.0f;
 	private:
+		std::mutex m_modelLock;
+		std::mutex m_particleLock;
+
 		// Renderers
 		Graphics::Entity3dRenderer* m_entityRenderer;
 		Graphics::NormalEntity3dRenderer* m_normalEntityRenderer;
@@ -131,6 +135,7 @@ namespace Astra
 	#endif
 	private:
 		void LayerUpdateAnimations(float delta);
+		//void LayerUpdateParticles(float delta);
 	private:
 		void Init();
 		void PreRender(float delta);

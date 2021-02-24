@@ -64,20 +64,14 @@ namespace Astra::Graphics
 		unsigned int m_defaultVBO;
 		
 		Shader* m_fontShader;
-		
-		std::vector<GuiLayer*> m_layers;
 	public:
 		GuiRenderer(Shader* guiShader, Shader* fontShader);
 		~GuiRenderer();
 
 		void UpdateProjectionMatrix(const Math::Mat4* projectionMatrix) override;
 
-		void AddGui(Gui* gui, int layer);
 		
-		void Draw(float delta = 0, 
-				  const Math::Mat4* viewMatrix = NULL, 
-				  const Math::Vec4& inverseViewVector = NULL, 
-				  const Math::Vec4& clipPlane = DefaultClipPlane);
+		void Draw(const std::vector<Graphics::GuiLayer>& layers);
 	private:
 		void Flush(std::unordered_map<unsigned int, unsigned int>& mapping, size_t& offset);
 

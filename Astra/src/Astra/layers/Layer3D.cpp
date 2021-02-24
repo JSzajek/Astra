@@ -2,8 +2,6 @@
 
 #include "Layer3D.h"
 
-#include <thread>
-
 #include "Astra/Application.h"
 
 #include "Astra/graphics/loaders/Loader.h"
@@ -156,6 +154,7 @@ namespace Astra
 
 	void Layer3D::LayerUpdateAnimations(float delta)
 	{
+		std::lock_guard<std::mutex> lock(m_modelLock);
 		for (const auto& model : m_models)
 		{
 			if (auto* animator = model.second.GetAnimator())
@@ -165,19 +164,27 @@ namespace Astra
 		}
 	}
 
+	//void Layer3D::LayerUpdateParticles(float delta)
+	//{
+	//	std::lock_guard<std::mutex> lock(m_particleLock);
+	//	for (const auto& system : m_particles) // Moving to thread causes weird issues?
+	//	{
+	//		system.second.GenerateParticles(delta);
+	//	}
+	//}
+
 	void Layer3D::OnUpdate(float delta)
 	{
 		// With heap stored particles - ~43 fps
 
 		if (!m_attached) { return; }
 
-		std::thread animationWorker(&Layer3D::LayerUpdateAnimations, this, delta);
+		//std::thread animationWorker(&Layer3D::LayerUpdateAnimations, this, delta);
 		for (const auto& system : m_particles) // Moving to thread causes weird issues?
 		{
 			system.second.GenerateParticles(delta);
 		}
 
-		animationWorker.join();
 		m_shadowMapController->Render(m_modelCategories[Graphics::ModelType::ShadowCaster]);
 		
 		if (m_waterBuffer && m_mainCamera)
@@ -201,6 +208,9 @@ namespace Astra
 		Math::Vec4 inverseView = m_viewMatrix->Inverse() * Math::Vec4::W_Axis;
 		Render(delta, inverseView, false); // Renders entities 
 		PostRender();
+
+		std::thread{ &Layer3D::LayerUpdateAnimations, this, delta }.detach();
+		//std::thread{ &Layer3D::LayerUpdateParticles, this, delta }.detach();
 	}
 
 	void Layer3D::SetSelectionColor(const Graphics::Color& color)
@@ -279,6 +289,8 @@ namespace Astra
 
 	void Layer3D::PreRender(float delta)
 	{
+		std::lock_guard<std::mutex> lock(m_particleLock);
+
 		Graphics::ParticleController::Update(delta, m_mainCamera->GetTranslation());
 
 		// Connect Post Processing Buffer
@@ -295,6 +307,8 @@ namespace Astra
 
 	void Layer3D::Render(float delta, const Math::Vec4& inverseViewVector, bool waterPass, const Math::Vec4& clipPlane)
 	{
+		std::lock_guard<std::mutex> lock(m_modelLock);
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		m_terrainRenderer->Draw(delta, m_terrainCategories, m_viewMatrix, inverseViewVector, clipPlane);

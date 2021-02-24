@@ -24,11 +24,16 @@ namespace Astra::Graphics
 		//uniform float outlineWidth;
 		//uniform float outlineEdge;
 	public:
+		TextBox();
+		TextBox(const char* name, const char* text, const FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
 		TextBox(const char* text, const FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
 		TextBox(const char* text, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		TextBox(const char* name, const char* text, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
 		~TextBox();
 
 		virtual inline GuiType GetType() const override { return GuiType::TextBox; }
+		virtual void Free() override { }
+		inline virtual std::string ToString() const override { return !Name.length() ? ("TextBox_&" + std::to_string(m_uid)) : Name; }
 
 		inline const bool HasCustomVao() const override { return true; }
 		inline const int GetCustomVao() const override { return m_vao; }

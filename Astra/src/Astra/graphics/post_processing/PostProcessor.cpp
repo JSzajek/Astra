@@ -21,7 +21,7 @@ namespace Astra::Graphics
 			effects.push_front(new BloomEffect(width, height));
 		}
 
-		effects.push_back(new HDREffect(hdr, 1));
+		effects.push_back(new HDREffect(hdr, 0.8f));
 		ResourceManager::ToggleHDRTextures(hdr);
 	}
 

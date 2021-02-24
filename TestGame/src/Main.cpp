@@ -34,13 +34,13 @@ private:
     Model* brickModel;*/
     //SkyboxMaterial* skybox;
     //AudioSource* audioSource;
-    //Image* image;
     //Vec3* particleCenter;
-    /*ToggleButton* vsycnToggle;
+    Image* image;
+    ToggleButton* vsycnToggle;
     Button* multisamplingButton;
     ToggleButton* bloomToggle;
     ToggleButton* hdrToggle;
-    ToggleButton* reflectionToggle;*/
+    ToggleButton* reflectionToggle;
     //std::vector<const Model*> models;
     
     const float InGameTimeSpeed = 0.005f;
@@ -50,50 +50,73 @@ private:
     float elapsedTime = 0;
     unsigned int frames = 0;
 public:
-    //void OnButtonPress()
-    //{
-    //    image->operator()(ROTATION, SUM_EQ, 5);
-    //}
+    void OnButtonPress()
+    {
+        image->operator()(ROTATION, SUM_EQ, 5);
+    }
 
-    //void ToggleVsync(bool enabled)
-    //{
-    //    vsycnToggle->SetText(enabled ? "Vsync: 1" : "Vsync: 0");
-    //    GetWindow().SetVSync(enabled);
-    //}
+    void ToggleVsync(bool enabled)
+    {
+        vsycnToggle->SetText(enabled ? "Vsync: 1" : "Vsync: 0");
+        GetWindow().SetVSync(enabled);
+    }
 
-    //void ToggleMultiSampling()
-    //{
-    //    static int multisampling = 0;
-    //    multisampling += 1;
-    //    multisampling %= 5; // Current Max multi sampling 4 - check:   glGetInteger64v(GL_MAX_SAMPLES) for maximum sampling?
-    //    std::string text = "Multi: " + std::to_string(multisampling);
-    //    multisamplingButton->SetText(text);
-    //    GetWindow().SetMultisampling(multisampling);
-    //}
+    void ToggleMultiSampling()
+    {
+        static int multisampling = 0;
+        multisampling += 1;
+        multisampling %= 5; // Current Max multi sampling 4 - check:   glGetInteger64v(GL_MAX_SAMPLES) for maximum sampling?
+        std::string text = "Multi: " + std::to_string(multisampling);
+        multisamplingButton->SetText(text);
+        GetWindow().SetMultisampling(multisampling);
+    }
 
-    //void ToggleBloomSampling(bool enabled)
-    //{
-    //    bloomToggle->SetText(enabled ? "Bloom: 1" : "Bloom: 0");
-    //    GetWindow().SetBloom(enabled);
-    //}
+    void ToggleBloomSampling(bool enabled)
+    {
+        bloomToggle->SetText(enabled ? "Bloom: 1" : "Bloom: 0");
+        GetWindow().SetBloom(enabled);
+    }
 
-    //void ToggleHDR(bool enabled)
-    //{
-    //    hdrToggle->SetText(enabled ? "HDR: 1" : "HDR: 0");
-    //    GetWindow().SetHDR(enabled);
-    //}
+    void ToggleHDR(bool enabled)
+    {
+        hdrToggle->SetText(enabled ? "HDR: 1" : "HDR: 0");
+        GetWindow().SetHDR(enabled);
+    }
 
-    //void ToggleReflection(bool enabled)
-    //{
-    //    reflectionToggle->SetText(enabled ? "Refl: 1" : "Refl: 0");
-    //    GetWindow().SetReflections(enabled);
-    //}
+    void ToggleReflection(bool enabled)
+    {
+        reflectionToggle->SetText(enabled ? "Refl: 1" : "Refl: 0");
+        GetWindow().SetReflections(enabled);
+    }
+
+    void OnAwake() override
+    {
+        //auto* fontAtlas = ResourceManager::LoadFontAtlas("res/fonts/OpenSans-Regular.ttf", 24);
+        m_textbox = scene->Get<TextBox>("lol");
+
+        image = scene->Get<Image>("image");
+
+        scene->Get<Button>("button")->SetOnPressed(std::bind(&TestGame::OnButtonPress, this));
+        
+        vsycnToggle = scene->Get<ToggleButton>("vsync toggle");
+        multisamplingButton = scene->Get<Button>("multisampling button");
+        bloomToggle = scene->Get<ToggleButton>("bloom toggle");
+        hdrToggle = scene->Get<ToggleButton>("hdr toggle");
+        reflectionToggle = scene->Get<ToggleButton>("reflection toggle");
+
+        vsycnToggle->SetOnToggled(std::bind(&TestGame::ToggleVsync, this, std::placeholders::_1));
+        multisamplingButton->SetOnPressed(std::bind(&TestGame::ToggleMultiSampling, this));
+        bloomToggle->SetOnToggled(std::bind(&TestGame::ToggleBloomSampling, this, std::placeholders::_1));
+        hdrToggle->SetOnToggled(std::bind(&TestGame::ToggleHDR, this, std::placeholders::_1));
+        reflectionToggle->SetOnToggled(std::bind(&TestGame::ToggleReflection, this, std::placeholders::_1));
+    }
 
     TestGame()
         : Application()
     {
         srand((unsigned)time(0));
 
+        // Should open scene from file data.
         scene = new Astra::Scene();
         SetCurrentScene(scene);
 
@@ -114,65 +137,57 @@ public:
         WaterTile tile1(0, 0, -2.5f, 128);
         scene->AddWaterTile(tile1);
 
-        ////const Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
-        //auto* guiMat = ResourceManager::LoadGuiMaterial("res/textures/grassTexture.png");
-        //image = new Image(guiMat, Vec2(10, 200), Vec2(1), 1);
-        //image->SetModulate(Color::White);
-        //scene->AddGui(image, 0);
+        TextBox textbox("lol", "", Vec2(10), 0, Vec2(1));
+        textbox.SetModulate(Color::Red);
+        scene->Add<TextBox>(textbox, 0);
 
-        //auto* fontAtlas = ResourceManager::LoadFontAtlas("res/fonts/OpenSans-Regular.ttf", 24);
-        m_textbox = new TextBox("", Vec2(10), 0, Vec2(1));
-        m_textbox->SetModulate(Color::Red);
-        scene->AddGui(m_textbox, 0);
+        //const Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
+        auto* guiMat = ResourceManager::LoadGuiMaterial("res/textures/grassTexture.png");
+        auto image = Image("image", guiMat, Vec2(10, 200), Vec2(1), 1);
+        image.SetModulate(Color::White);
+        scene->Add<Image>(image, 0);
 
-        /*auto* buttonMat = ResourceManager::LoadGuiMaterial("res/textures/Panel.png");
-        Button* button = new Button(buttonMat, Vec2(200, 10), Vec2(1));
-        button->SetHoverColor(Color::Red);
-        button->SetPressedColor(Color::Blue);
-        button->SetText("button");
-        scene->AddGui(button, 2);
+        auto* buttonMat = ResourceManager::LoadGuiMaterial("res/textures/Panel.png");
+        auto button = Button("button", buttonMat, Vec2(200, 10), Vec2(1));
+        button.SetHoverColor(Color::Red);
+        button.SetPressedColor(Color::Blue);
+        button.SetText("button");
+        scene->Add<Button>(button, 2);
 
-        button->SetOnPressed(std::bind(&TestGame::OnButtonPress, this));
+        auto vsycnToggle = ToggleButton("vsync toggle", buttonMat, Vec2(850, 10), Vec2(1));
+        vsycnToggle.SetHoverColor(Color::Red);
+        vsycnToggle.SetToggledColor(Color::Green);
+        vsycnToggle.SetText("Vsync: 0");
+        scene->Add<ToggleButton>(vsycnToggle, 1);
 
-        vsycnToggle = new ToggleButton(buttonMat, Vec2(850, 10), Vec2(1));
-        vsycnToggle->SetHoverColor(Color::Red);
-        vsycnToggle->SetToggledColor(Color::Green);
-        vsycnToggle->SetText("Vsync: 0");
-        scene->AddGui(vsycnToggle, 1);
-        vsycnToggle->SetOnToggled(std::bind(&TestGame::ToggleVsync, this, std::placeholders::_1));
+        auto multisamplingButton = Button("multisampling button", buttonMat, Vec2(850, 50), Vec2(1));
+        multisamplingButton.SetHoverColor(Color::Red);
+        multisamplingButton.SetPressedColor(Color::Green);
+        multisamplingButton.SetText("Multi: 0");
+        scene->Add<Button>(multisamplingButton, 1);
 
-        multisamplingButton = new Button(buttonMat, Vec2(850, 50), Vec2(1));
-        multisamplingButton->SetHoverColor(Color::Red);
-        multisamplingButton->SetPressedColor(Color::Green);
-        multisamplingButton->SetText("Multi: 0");
-        scene->AddGui(multisamplingButton, 1);
-        multisamplingButton->SetOnPressed(std::bind(&TestGame::ToggleMultiSampling, this));
+        auto bloomToggle = ToggleButton("bloom toggle", buttonMat, Vec2(850, 90), Vec2(1));
+        bloomToggle.SetHoverColor(Color::Red);
+        bloomToggle.SetToggledColor(Color::Green);
+        bloomToggle.SetText("Bloom: 0");
+        scene->Add<ToggleButton>(bloomToggle, 1);
 
-        bloomToggle = new ToggleButton(buttonMat, Vec2(850, 90), Vec2(1));
-        bloomToggle->SetHoverColor(Color::Red);
-        bloomToggle->SetToggledColor(Color::Green);
-        bloomToggle->SetText("Bloom: 0");
-        scene->AddGui(bloomToggle, 1);
-        bloomToggle->SetOnToggled(std::bind(&TestGame::ToggleBloomSampling, this, std::placeholders::_1));
+        auto hdrToggle = ToggleButton("hdr toggle", buttonMat, Vec2(850, 130), Vec2(1));
+        hdrToggle.SetHoverColor(Color::Red);
+        hdrToggle.SetToggledColor(Color::Green);
+        hdrToggle.SetText("HDR: 0");
+        scene->Add<ToggleButton>(hdrToggle, 1);
 
-        hdrToggle = new ToggleButton(buttonMat, Vec2(850, 130), Vec2(1));
-        hdrToggle->SetHoverColor(Color::Red);
-        hdrToggle->SetToggledColor(Color::Green);
-        hdrToggle->SetText("HDR: 0");
-        scene->AddGui(hdrToggle, 1);
-        hdrToggle->SetOnToggled(std::bind(&TestGame::ToggleHDR, this, std::placeholders::_1));
-
-        reflectionToggle = new ToggleButton(buttonMat, Vec2(850, 170), Vec2(1));
-        reflectionToggle->SetHoverColor(Color::Red);
-        reflectionToggle->SetToggledColor(Color::Green);
-        reflectionToggle->SetText("Refl: 0");
-        scene->AddGui(reflectionToggle, 1);
-        reflectionToggle->SetOnToggled(std::bind(&TestGame::ToggleReflection, this, std::placeholders::_1));
+        auto reflectionToggle = ToggleButton("reflection toggle", buttonMat, Vec2(850, 170), Vec2(1));
+        reflectionToggle.SetHoverColor(Color::Red);
+        reflectionToggle.SetToggledColor(Color::Green);
+        reflectionToggle.SetText("Refl: 0");
+        scene->Add<ToggleButton>(reflectionToggle, 1);
 
         auto* panelMat = ResourceManager::LoadGuiMaterial("res/textures/Panel.png");
-        Panel* panel = new Panel(panelMat, Vec2(100, 200), Vec2(1));
-        panel->SetText("panel");
-        scene->AddGui(panel, 1);*/
+        auto panel = Panel(panelMat, Vec2(100, 200), Vec2(1));
+        panel.SetText("panel");
+        scene->Add<Panel>(panel, 1);
 
         std::vector<const char*> m_textureFiles =
         {

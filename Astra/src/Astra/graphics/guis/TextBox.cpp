@@ -2,17 +2,28 @@
 
 #include "TextBox.h"
 
-#include "../ResourceManager.h"
-#include "../loaders/Loader.h"
+#include "Astra/graphics/ResourceManager.h"
+#include "Astra/graphics/loaders/Loader.h"
 
 namespace Astra::Graphics
 {
+    TextBox::TextBox()
+        : Gui(), m_font(NULL), m_vao(0), m_vbo(0)
+    {
+    }
+
+    TextBox::TextBox(const char* name, const char* text, const FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
+        : Gui(name, NULL, position, rotation, scale), m_font(font), m_vao(0), m_vbo(0)
+    {
+        m_rect.SetSize(Math::iVec2(0, m_font->GetFontSize()));
+        SetText(text);
+    }
+
     TextBox::TextBox(const char* text, const FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
         : Gui(NULL, position, rotation, scale), m_font(font), m_vao(0), m_vbo(0)
     {
         m_rect.SetSize(Math::iVec2(0, m_font->GetFontSize()));
         SetText(text);
-        SetType(GuiType::TextBox);
     }
 
     TextBox::TextBox(const char* text, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
@@ -20,9 +31,14 @@ namespace Astra::Graphics
     {
     }
 
+    TextBox::TextBox(const char* name, const char* text, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
+        : TextBox(name, text, ResourceManager::LoadFontAtlas(DEFAULT_FONT_PATH, DEFAULT_FONT_SIZE), position, rotation, scale)
+    {
+    }
+
     TextBox::~TextBox()
     {
-        RESOURCE_UNLOAD(m_font);
+        //RESOURCE_UNLOAD(m_font);
     }
 
     void TextBox::GenerateVertices(const std::string& string)

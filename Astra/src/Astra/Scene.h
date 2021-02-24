@@ -45,6 +45,8 @@ namespace Astra
 		{
 			if (auto* ptr = m_3dLayer->Get(name))
 				return reinterpret_cast<T*>(ptr);
+			if (auto* ptr = m_canvas->Get(name))
+				return reinterpret_cast<T*>(ptr);
 			return NULL; 
 		}
 
@@ -60,7 +62,8 @@ namespace Astra
 		
 		inline void AddPointLight(const Graphics::PointLight& light) { m_3dLayer->AddPointLight(light); }
 		
-		inline void AddGui(Graphics::Gui* gui, int layer) { m_canvas->AddGui(gui, layer); }
+		template<class T>
+		inline T* Add(const T& gui, int layer) { return m_canvas->Add(gui, layer); }
 
 	#if ASTRA_DEBUG
 		void ToggleWireframeMode() 

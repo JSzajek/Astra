@@ -21,13 +21,17 @@ namespace Astra
 	{
 	}
 
+	Graphics::LayerEntity* Layer2D::Get(std::string name)
+	{
+		if (m_loaded.find(name) != m_loaded.end())
+		{
+			return m_loaded[name];
+		}
+		return NULL;
+	}
+
 	void Layer2D::OnAttach()
 	{
-		for (const auto& gui : m_guis)
-		{
-			m_guiRenderer->AddGui(std::get<0>(gui), std::get<1>(gui));
-		}
-
 		// Update Projection Matrix
 		auto [width, height] = Application::Get().GetWindow().GetSize();
 		UpdateScreen(width, height);
@@ -61,7 +65,33 @@ namespace Astra
 
 	void Layer2D::Render()
 	{
-		m_guiRenderer->Draw();
+		m_guiRenderer->Draw(m_layers);
+	}
+	
+	template<class T>
+	T* Layer2D::AddGui(Graphics::Gui* gui, int level)
+	{
+		for (auto& layer : m_layers)
+		{
+			if (layer.GetLevel() == level)
+			{
+				layer.Add(gui);
+				return (T*)gui;
+			}
+		}
+
+		Graphics::GuiLayer newLayer(level);
+		newLayer.Add(gui);
+		m_layers.push_back(newLayer);
+
+		// Insertion Sort layers
+		for (auto it = m_layers.begin(); it != m_layers.end(); it++)
+		{
+			auto const insertion_point = std::upper_bound(m_layers.begin(), it, *it,
+				[](const Graphics::GuiLayer& a, const Graphics::GuiLayer& b) {return b.GetLevel() > a.GetLevel(); });
+			std::rotate(insertion_point, it, it + 1);
+		}
+		return (T*)gui;
 	}
 
 	bool Layer2D::OnMouseMoved(MouseMovedEvent& _event)
@@ -73,13 +103,37 @@ namespace Astra
 			m_focused = NULL;
 		}
 
-		for (auto tuple_gui : m_guis)
+		for (const auto& layer : m_layers)
 		{
-			auto* gui = std::get<0>(tuple_gui);
-			if (gui->GetBounds().HasPoint(position))
+			// TODO: deal with click through or passing the event along. For now click through textboxes
+			/*for (auto* gui : layer.GetTexts())
 			{
-				m_focused = gui;
-				gui->OnHover();
+				if (gui->GetBounds().HasPoint(position))
+				{
+					m_focused = gui;
+					gui->OnHover();
+					return true;
+				}
+			}*/
+
+			for (auto* gui : layer.GetDefaultGuis())
+			{
+				if (gui->GetBounds().HasPoint(position))
+				{
+					m_focused = gui;
+					gui->OnHover();
+					return true;
+				}
+			}
+
+			for (auto* gui : layer.GetCustomGuis())
+			{
+				if (gui->GetBounds().HasPoint(position))
+				{
+					m_focused = gui;
+					gui->OnHover();
+					return true;
+				}
 			}
 		}
 		return true;
@@ -112,5 +166,53 @@ namespace Astra
 			}
 		}
 		return true;
+	}
+
+	Graphics::Button* Layer2D::Add(const Graphics::Button& gui, int layer)
+	{
+		auto uid = gui.GetUID();
+		m_buttons[uid] = gui;
+		m_loaded[gui.ToString()] = &m_buttons[uid];
+		return AddGui<Graphics::Button>(&m_buttons[uid], layer);
+	}
+
+	Graphics::ToggleButton* Layer2D::Add(const Graphics::ToggleButton& gui, int layer)
+	{
+		auto uid = gui.GetUID();
+		m_toggleButtons[uid] = gui;
+		m_loaded[gui.ToString()] = &m_toggleButtons[uid];
+		return AddGui<Graphics::ToggleButton>(&m_toggleButtons[uid], layer);
+	}
+
+	Graphics::Panel* Layer2D::Add(const Graphics::Panel& gui, int layer)
+	{
+		auto uid = gui.GetUID();
+		m_panels[uid] = gui;
+		m_loaded[gui.ToString()] = &m_panels[uid];
+		return AddGui<Graphics::Panel>(&m_panels[uid], layer);
+	}
+
+	Graphics::Label* Layer2D::Add(const Graphics::Label& gui, int layer)
+	{
+		auto uid = gui.GetUID();
+		m_labels[uid] = gui;
+		m_loaded[gui.ToString()] = &m_labels[uid];
+		return AddGui<Graphics::Label>(&m_labels[uid], layer);
+	}
+
+	Graphics::Image* Layer2D::Add(const Graphics::Image& gui, int layer)
+	{
+		auto uid = gui.GetUID();
+		m_images[uid] = gui;
+		m_loaded[gui.ToString()] = &m_images[uid];
+		return AddGui<Graphics::Image>(&m_images[uid], layer);
+	}
+
+	Graphics::TextBox* Layer2D::Add(const Graphics::TextBox& gui, int layer)
+	{
+		auto uid = gui.GetUID();
+		m_textboxes[uid] = gui;
+		m_loaded[gui.ToString()] = &m_textboxes[uid];
+		return AddGui<Graphics::TextBox>(&m_textboxes[uid], layer);
 	}
 }

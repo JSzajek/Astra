@@ -29,10 +29,12 @@ namespace Astra::Graphics
 		};
 		float m_rotation;
 	public:
-		Spatial2D();
+		Spatial2D(const char* const name = "");
 		Spatial2D(const Spatial2D& other);
+		Spatial2D(const char* const name, const Math::Vec2& translation);
 		Spatial2D(const Math::Vec2& translation);
 		Spatial2D(const Math::Vec2& translation, float rotation, const Math::Vec2& scale);
+		Spatial2D(const char* const name, const Math::Vec2& translation, float rotation, const Math::Vec2& scale);
 		~Spatial2D();
 
 		virtual void Free() override { }

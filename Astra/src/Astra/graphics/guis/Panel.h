@@ -12,6 +12,19 @@ namespace Astra::Graphics
 	private:
 		TextBox m_text;
 	public:
+		Panel()
+			: Gui(), m_text()
+		{
+		}
+
+		Panel(const char* const name, const GuiMaterial* material, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
+			: Gui(name, material, position, rotation, scale), m_text("", position, rotation, scale)
+		{
+			m_rect.SetSize(Math::iVec2(static_cast<int>(m_rows[1].x * Material->GetSize().x), static_cast<int>(m_rows[1].y * Material->GetSize().y)));
+			UpdateMatrices();
+		}
+
+
 		Panel(const GuiMaterial* material, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
 			: Gui(material, position, rotation, scale), m_text("", position, rotation, scale)
 		{
@@ -24,7 +37,14 @@ namespace Astra::Graphics
 		{
 		}
 
+		Panel(const char* const name, const GuiMaterial* material, const Math::Vec2& position, const Math::Vec2& scale)
+			: Panel(name, material, position, 0, scale)
+		{
+		}
+
 		virtual inline GuiType GetType() const override { return GuiType::Panel; }
+		virtual void Free() override { }
+		inline virtual std::string ToString() const override { return !Name.length() ? ("Panel_&" + std::to_string(m_uid)) : Name; }
 
 		inline void SetText(std::string text) { m_text.SetText(text); }
 		inline TextBox* GetTextBox() { return &m_text; }

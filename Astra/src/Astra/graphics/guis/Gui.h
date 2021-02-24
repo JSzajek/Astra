@@ -25,8 +25,6 @@ namespace Astra::Graphics
 
 	class Gui : public Spatial2D
 	{
-	private:
-		GuiType m_type;
 	protected:
 		Color m_modulate;
 		std::function<void()> m_onHover;
@@ -35,11 +33,11 @@ namespace Astra::Graphics
 		std::function<void(bool hovering)> m_onReleased;
 		Rect2 m_rect;
 	public:
-		std::string Name;
 		const GuiMaterial* Material;
 	public:
+		Gui();
+		Gui(const char* const name, const GuiMaterial* material, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
 		Gui(const GuiMaterial* material, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
-		Gui(const GuiMaterial* material, const char* const name, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
 		Gui(const Gui& other);
 		~Gui();
 

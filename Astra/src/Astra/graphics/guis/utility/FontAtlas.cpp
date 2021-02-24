@@ -36,7 +36,7 @@ namespace Astra::Graphics
 
 	FontAtlas::~FontAtlas()
 	{
-        RESOURCE_UNLOAD(m_texture, m_fontSize);
+        //RESOURCE_UNLOAD(m_texture, m_fontSize);
 	}
 
     const Post_Char& FontAtlas::GetCharacter(char c) const

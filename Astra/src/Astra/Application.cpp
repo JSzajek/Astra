@@ -37,6 +37,8 @@ namespace Astra
 
 	void Application::Run()
 	{
+		OnAwake();
+
 		while(m_running) 
 		{
 			m_window->Clear();
