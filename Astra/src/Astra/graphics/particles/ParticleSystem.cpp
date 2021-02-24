@@ -2,7 +2,6 @@
 
 #include "ParticleSystem.h"
 #include "ParticleController.h"
-#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {

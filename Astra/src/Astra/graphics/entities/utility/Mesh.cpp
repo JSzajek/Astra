@@ -1,7 +1,6 @@
 #include "astra_pch.h"
 
 #include "Mesh.h"
-#include "Astra/graphics/ResourceManager.h"
 
 #include <GL/glew.h>
 

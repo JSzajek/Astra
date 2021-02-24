@@ -3,7 +3,6 @@
 #include "GuiRenderer.h"
 #include "Astra/math/Mat4Utils.h"
 #include "Astra/graphics/loaders/Loader.h"
-#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {

@@ -4,12 +4,12 @@
 
 #include "Astra/Application.h"
 #include "Astra/graphics/loaders/Loader.h"
-#include "Astra/graphics/ResourceManager.h"
 #include "Astra/graphics/Resource.h"
 
 namespace Astra::Graphics
 {
 	PostProcessor::PostProcessor()
+		: m_screenBuffer(NULL), m_multisampledBuffer(NULL)
 	{
 		m_defaultQuad = Loader::Load(GL_TRIANGLE_STRIP, { -1, 1, -1, -1, 1, 1, 1, -1 }, 2);
 		auto [width, height] = Application::Get().GetWindow().GetSize();
@@ -28,9 +28,9 @@ namespace Astra::Graphics
 
 	PostProcessor::~PostProcessor()
 	{
-		RESOURCE_UNLOAD(m_defaultQuad);
-		RESOURCE_UNLOAD(m_screenBuffer);
-		RESOURCE_UNLOAD(m_multisampledBuffer);
+		delete m_defaultQuad;
+		delete m_screenBuffer;
+		delete m_multisampledBuffer;
 
 		for (const auto* effect : effects)
 		{
@@ -58,8 +58,10 @@ namespace Astra::Graphics
 		auto [width, height] = Application::Get().GetWindow().GetSize();
 		bool hdr = Application::Get().GetWindow().IsHDR();
 
-		RESOURCE_UNLOAD(m_screenBuffer);
-		RESOURCE_UNLOAD(m_multisampledBuffer);
+		delete m_screenBuffer;
+		m_screenBuffer = NULL;
+		delete m_multisampledBuffer;
+		m_multisampledBuffer = NULL;
 
 		if (sampleSize == 0)
 		{

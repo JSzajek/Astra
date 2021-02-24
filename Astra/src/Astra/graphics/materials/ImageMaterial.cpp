@@ -2,7 +2,6 @@
 
 #include "ImageMaterial.h"
 #include "Astra/graphics/loaders/Loader.h"
-#include "Astra/graphics/ResourceManager.h"
 #include "Astra/graphics/Resource.h"
 
 namespace Astra::Graphics

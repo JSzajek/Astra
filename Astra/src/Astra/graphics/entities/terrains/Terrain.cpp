@@ -1,7 +1,6 @@
 #include "astra_pch.h"
 
 #include "Terrain.h"
-#include "Astra/graphics/ResourceManager.h"
 #include "Astra/graphics/Resource.h"
 
 #include <stb_image/stb_image.h>

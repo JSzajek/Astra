@@ -22,6 +22,7 @@ namespace Astra::Graphics
 		auto t = m_tracker.size();
 		auto m = m_loadedMeshes.size();
 		auto c = m_loadedCubeTextures.size();
+		auto f = m_loadedFontAtlas.size();
 		auto tex = m_loadedTextures.size();
 		auto total = m + c + tex;
 	}
@@ -43,6 +44,9 @@ namespace Astra::Graphics
 						break;
 					case ResourceType::CubeTextureResource:
 						m_loadedCubeTextures.erase(m_loadedCubeTextures.find(result->second.hash));
+						break;
+					case ResourceType::FontAtlasResource:
+						m_loadedFontAtlas.erase(m_loadedFontAtlas.find(result->second.hash));
 						break;
 					case ResourceType::MeshResource:
 						m_loadedMeshes.erase(m_loadedMeshes.find(result->second.hash));
@@ -66,7 +70,7 @@ namespace Astra::Graphics
 		}
 	}
 
-	Texture* Resource::LoadTextureImpl(const char* const filepath, bool diffuse)
+	Texture* Resource::LoadTextureImpl(const char* const filepath, bool diffuse, bool flipped)
 	{
 		// Check if filepath exists within loaded textures.
 		size_t hash = std::hash<std::string>{}(filepath);
@@ -79,7 +83,7 @@ namespace Astra::Graphics
 
 		Texture texture(filepath);
 
-		stbi_set_flip_vertically_on_load(true);
+		stbi_set_flip_vertically_on_load(flipped);
 		int m_bpp;
 		unsigned char* buffer;
 		buffer = stbi_load(std::string(filepath).c_str(), &texture.width, &texture.height, &m_bpp, 4);
@@ -238,6 +242,25 @@ namespace Astra::Graphics
 		m_loadedCubeTextures[hash] = texture;
 		auto* result = &m_loadedCubeTextures[hash];
 		m_tracker[result] = ResourceTrack(hash, ResourceType::CubeTextureResource);
+
+		return result;
+	}
+
+	FontAtlas* Resource::LoadFontAtlasImpl(const char* const filepath, unsigned int fontsize)
+	{
+		size_t hash = std::hash<std::string>{}(filepath);
+		hash += std::hash<unsigned int>{}(fontsize);
+
+		if (m_loadedFontAtlas.find(hash) != m_loadedFontAtlas.end())
+		{
+			auto* result = &m_loadedFontAtlas[hash];
+			++m_tracker[result];
+			return result;
+		}
+
+		m_loadedFontAtlas[hash] = FontAtlas(filepath, fontsize);
+		auto* result = &m_loadedFontAtlas[hash];
+		m_tracker[result] = ResourceTrack(hash, ResourceType::FontAtlasResource);
 
 		return result;
 	}

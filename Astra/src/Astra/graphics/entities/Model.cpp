@@ -4,7 +4,6 @@
 
 #include "Astra/Application.h"
 #include "Astra/graphics/loaders/Loader.h"
-#include "Astra/graphics/ResourceManager.h"
 #include "Astra/graphics/Resource.h"
 #include "Astra/math/Mat4Utils.h"
 #include "Astra/graphics/entities/utility/AssimpReader.h"

@@ -29,7 +29,7 @@ private:
 	float PanSpeed = 180; // In Degrees per sec
 	
 	Camera* m_camera;
-	Model* m_body;
+	Model m_body;
 	Terrain* m_terrain;
 
 	bool m_rotating;
@@ -49,5 +49,5 @@ public:
 	void Update(float delta) override;
 	void CheckInput();
 	inline Camera* GetCamera() { return m_camera; }
-	inline Model* GetBody() { return m_body; }
+	inline const Model& GetBody() { return m_body; }
 };

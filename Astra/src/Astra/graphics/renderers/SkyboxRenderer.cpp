@@ -1,7 +1,6 @@
 #include "astra_pch.h"
 
 #include "SkyboxRenderer.h"
-#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -20,8 +19,7 @@ namespace Astra::Graphics
 
 	SkyboxRenderer::~SkyboxRenderer()
 	{
-		RESOURCE_UNLOAD(m_cube);
-		//RESOURCE_UNLOAD(m_material);
+		delete m_cube;
 	}
 
 	void SkyboxRenderer::SetSkyBox(const SkyboxMaterial& material)

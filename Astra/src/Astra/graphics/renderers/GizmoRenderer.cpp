@@ -2,7 +2,6 @@
 
 #include "GizmoRenderer.h"
 #include "Astra/graphics/loaders/Loader.h"
-#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -17,7 +16,7 @@ namespace Astra::Graphics
 
 	GizmoRenderer::~GizmoRenderer()
 	{
-		ResourceManager::Unload(m_defaultQuad);
+		delete m_defaultQuad;
 		delete m_modelViewMatrix;
 	}
 

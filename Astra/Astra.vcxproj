@@ -174,7 +174,6 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\events\KeyEvent.h" />
     <ClInclude Include="src\Astra\events\MouseEvent.h" />
     <ClInclude Include="src\Astra\graphics\Color.h" />
-    <ClInclude Include="src\Astra\graphics\ResourceManager.h" />
     <ClInclude Include="src\Astra\graphics\buffers\CubeMapTexture.h" />
     <ClInclude Include="src\Astra\graphics\buffers\FrameBuffer.h" />
     <ClInclude Include="src\Astra\graphics\buffers\ShadowFrameBuffer.h" />
@@ -297,7 +296,6 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClCompile Include="src\Astra\audio\AudioController.cpp" />
     <ClCompile Include="src\Astra\audio\AudioSource.cpp" />
     <ClCompile Include="src\Astra\graphics\Color.cpp" />
-    <ClCompile Include="src\Astra\graphics\ResourceManager.cpp" />
     <ClCompile Include="src\Astra\graphics\buffers\CubeMapTexture.cpp" />
     <ClCompile Include="src\Astra\graphics\buffers\ShadowFrameBuffer.cpp" />
     <ClCompile Include="src\Astra\graphics\buffers\Texture.cpp" />

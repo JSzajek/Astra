@@ -14,7 +14,7 @@
 #include "Astra/math/Maths.h"
 #include "Astra/utils/Timer.h"
 
-#include "Astra/graphics/ResourceManager.h"
+#include "Astra/graphics/Resource.h"
 
 #include "Astra/graphics/entities/Model.h"
 #include "Astra/graphics/entities/Camera.h"

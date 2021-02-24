@@ -6,9 +6,9 @@
 #include "Astra/Res.h"
 #include "Astra/graphics/buffers/Texture.h"
 #include "Astra/graphics/buffers/CubeMapTexture.h"
+#include "Astra/graphics/guis/utility/FontAtlas.h"
 #include "Astra/graphics/entities/utility/Mesh.h"
 #include "Astra/graphics/entities/utility/BoneInfo.h"
-//#include "Astra/graphics/buffers/FrameBuffer.h" - later
 
 namespace Astra::Graphics
 {
@@ -19,9 +19,11 @@ namespace Astra::Graphics
 	{
 		TextureResource,
 		CubeTextureResource,
+		FontAtlasResource,
 		MeshResource
 	};
 
+	// track pointer to amount in use, original listing source, and original hash
 	struct ResourceTrack
 	{
 		unsigned short count;
@@ -48,8 +50,9 @@ namespace Astra::Graphics
 	private:
 		std::unordered_map<size_t, Texture> m_loadedTextures;
 		std::unordered_map<size_t, CubeMapTexture> m_loadedCubeTextures;
+		std::unordered_map<size_t, FontAtlas> m_loadedFontAtlas;
 		std::unordered_map<size_t, Mesh> m_loadedMeshes;
-		// track pointer to amount in use, original listing source, and original hash
+
 		std::map<Res*, ResourceTrack> m_tracker;
 	public:
 		Resource(const Resource&) = delete;
@@ -71,9 +74,9 @@ namespace Astra::Graphics
 			Get().RemarkImpl(ptr);
 		}
 
-		static Texture* LoadTexture(const char* const filepath, bool diffuse = false)
+		static Texture* LoadTexture(const char* const filepath, bool diffuse = false, bool flipped = true)
 		{
-			return Get().LoadTextureImpl(filepath, diffuse);
+			return Get().LoadTextureImpl(filepath, diffuse, flipped);
 		}
 
 		static Texture* LoadTexture(std::string filepath, std::string directory, const void* scene, bool diffuse = false)
@@ -84,6 +87,11 @@ namespace Astra::Graphics
 		static CubeMapTexture* LoadCubeMap(const std::vector<const char*>& filepaths)
 		{
 			return Get().LoadCubeMapImpl(filepaths);
+		}
+
+		static FontAtlas* LoadFontAtlas(const char* const filepath, unsigned int fontsize)
+		{
+			return Get().LoadFontAtlasImpl(filepath, fontsize);
 		}
 
 		static Mesh* LoadMesh(const std::string& filepath, void* mesh, const void* scene,
@@ -107,18 +115,19 @@ namespace Astra::Graphics
 	private:
 		void UnloadImpl(Res* ptr);
 		void RemarkImpl(Res* ptr);
-		Texture* LoadTextureImpl(const char* const filepath, bool diffuse);
+		Texture* LoadTextureImpl(const char* const filepath, bool diffuse, bool flipped);
 		Texture* LoadTextureImpl(std::string filepath, std::string directory, const void* scene, bool diffuse = false);
 		
 		CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);
-
-		void UpdateDiffuseTexturesImpl(bool hdr);
+		
+		FontAtlas* LoadFontAtlasImpl(const char* const filepath, unsigned int fontsize);
 
 		Mesh* LoadMeshImpl(const std::string& filepath, void* mesh, const void* scene,
 						   std::map<std::string, BoneInfo>& map, int& counter, bool normalMapped);
 		Mesh* LoadMeshImpl(const std::string& name, const std::vector<Vertex>& vertices, const std::vector<int>& indices);
-	private:
 		
+		void UpdateDiffuseTexturesImpl(bool hdr);
+	private:
 		// Animation Methods
 		template<class Vertex>
 		void SetVertexBoneData(Vertex& vertex, int id, float weight);

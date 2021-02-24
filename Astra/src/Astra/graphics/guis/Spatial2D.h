@@ -19,7 +19,7 @@ namespace Astra::Graphics
 
 	struct Spatial2D : public LayerEntity
 	{
-	private:
+	protected:
 		Math::Mat4* m_modelMatrix;
 	protected:
 		union // TODO: Look into moving into private encapsulation

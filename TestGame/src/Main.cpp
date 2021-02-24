@@ -23,25 +23,13 @@ private:
     Astra::Scene* scene;
     Player* m_player;
     TextBox* m_textbox;
-    /*DirectionalLight* dir_light;
-    PointLight* light3;
-    PointLight* light4;*/
-    /*Model* cubeModel;
-    Model* cubeModel2;
-    Model* cubeModel3;*/
-    //Model barrelModel;
-   /* Model* vampire;
-    Model* brickModel;*/
-    //SkyboxMaterial* skybox;
-    //AudioSource* audioSource;
-    //Vec3* particleCenter;
     Image* image;
     ToggleButton* vsycnToggle;
     Button* multisamplingButton;
     ToggleButton* bloomToggle;
     ToggleButton* hdrToggle;
     ToggleButton* reflectionToggle;
-    //std::vector<const Model*> models;
+    AudioSource* audioSource;
     
     const float InGameTimeSpeed = 0.005f;
     short timeDir = 1;
@@ -91,7 +79,6 @@ public:
 
     void OnAwake() override
     {
-        //auto* fontAtlas = ResourceManager::LoadFontAtlas("res/fonts/OpenSans-Regular.ttf", 24);
         m_textbox = scene->Get<TextBox>("lol");
 
         image = scene->Get<Image>("image");
@@ -140,7 +127,6 @@ public:
         textbox.SetModulate(Color::Red);
         scene->Add<TextBox>(textbox, 0);
 
-        //const Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
         auto guiMat = GuiMaterial("res/textures/grassTexture.png");
         auto image = Image("image", guiMat, Vec2(10, 200), Vec2(1), 1);
         image.SetModulate(Color::White);
@@ -208,7 +194,6 @@ public:
             "res/textures/Default_Night_Skybox/front.png",
         };
 
-        //skybox = ResourceManager::LoadSkyboxMaterial(m_textureFiles, m_nightTextureFiles);
         auto skybox1 = SkyboxMaterial(m_textureFiles, m_nightTextureFiles);
         scene->SetSkyBox(skybox1);
 
@@ -221,34 +206,21 @@ public:
         scene->AddPointLight(light3);
         scene->AddPointLight(light4);
 
-        //auto cubeModel = ResourceManager::LoadModel("res/cube.fbx");
         auto cubeModel = Model("res/cube.fbx", false);
         cubeModel.SetScale(Math::Vec3(1));
         cubeModel.SetTranslation(Math::Vec3(0, 0, 20));
         scene->AddModel(cubeModel);
 
-        // Example of loaded already loaded model and deleting pointer but not source
-        //cubeModel2 = ResourceManager::LoadModel("res/cube.fbx");
-        //RESOURCE_UNLOAD(cubeModel2);
-
-        /*cubeModel3 = ResourceManager::LoadModel("res/cube.fbx");
-        cubeModel3->SetScale(Math::Vec3(1));
-        cubeModel3->SetTranslation(Math::Vec3(20, 0, 20));
-        models.emplace_back(cubeModel3);
-        scene->AddModel(cubeModel3);*/
-
-        //vampire = ResourceManager::LoadModel("res/vampire/dancing_vampire.dae", true);
-        /*auto vampire = Model("res/vampire/dancing_vampire.dae", true);
+        auto vampire = Model("res/vampire/dancing_vampire.dae", true);
         vampire.SetScale(Math::Vec3(10));
         vampire.SetTranslation(Math::Vec3(50, terrain.GetHeightOfTerrain(50, 70), 70));
         vampire.AddAnimator();
         vampire.PlayAnimation("");
-        scene->AddModel(vampire);*/
+        scene->AddModel(vampire);
 
         // FBX doesn't export displacement map- Work Around
-        auto* heightMap = Loader::LoadTexture("res/textures/bricks_heightmap.jpg", false, GL_REPEAT, false);
+        auto* heightMap = Resource::LoadTexture("res/textures/bricks_heightmap.jpg", false, false);
         heightMap->type = TextureType::HeightMap;
-        //brickModel = ResourceManager::LoadModel("res/bricks.fbx", true);
         auto brickModel = Model("res/bricks.fbx", true);
         brickModel.GetMaterial().AddTexture(heightMap);
         brickModel.GetMaterial().SetHeightOffset(0.1f);
@@ -257,46 +229,6 @@ public:
         brickModel.SetTranslation(Math::Vec3(-10, 0, -10));
         scene->AddModel(brickModel);
 
-        //auto* barrelMat = ResourceManager::LoadMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.jpg", "res/textures/barrelNormal.png", NULL, 0, NULL, 1, 32);
-        //barrelModel = ResourceManager::LoadNormalEntity("res/barrel.obj", 0, Vec3(-40, terrain->GetHeightOfTerrain(-40, 55) + 5, 55), Vec3(0), Vec3(1));
-        //barrelModel->SetMaterial(barrelMat);
-        //barrelModel->SetSelected(true);
-        //entities.emplace_back(barrelModel);
-        //scene->AddEntity(barrelModel);
-
-        //auto* brickMat = ResourceManager::LoadMaterial("res/textures/bricks.jpg", "res/textures/bricks_specular.jpg", "res/textures/bricks_normal.jpg", "res/textures/bricks_heightmap.jpg", 0.1f, NULL, 1, 16);
-        //auto* brick = ResourceManager::LoadNormalEntity("res/plane.obj", 0, Vec3(-50, terrain->GetHeightOfTerrain(-50, 50) + 5, 50), Vec3(90, 0, 0), Vec3(5, 1, 5));
-        //brick->SetMaterial(brickMat);
-        //entities.emplace_back(brick);
-        //scene->AddEntity(brick);
-
-        //auto* runestoneMat = ResourceManager::LoadMaterial("res/textures/rock1_basecolor.png", "res/textures/rock1_roughness.png", "res/textures/rock1_normal.png", NULL, 0, "res/textures/rock1_emissive.png", 1, 32);
-        //auto* runestone = ResourceManager::LoadNormalEntity("res/runestone_1.obj", 0, Vec3(-60, terrain->GetHeightOfTerrain(-60, 60) + 2, 60), Vec3::Zero, Vec3(2));
-        //runestone->SetMaterial(runestoneMat);
-        //entities.emplace_back(runestone);
-        //scene->AddEntity(runestone);
-
-        //auto* lampMat = ResourceManager::LoadMaterial("res/textures/Lamp_UV_Layout.png", "res/textures/Lamp_Specular.png", "res/textures/Lamp_Emission.png", 1, 32);
-        //auto* lamp = ResourceManager::LoadEntity("res/Lamp.obj", 0, Vec3(-28.75f, -1.25f, -65.5f), Vec3::Zero, Vec3(1.5f));
-        //lamp->SetMaterial(lampMat);
-        //entities.emplace_back(lamp);
-        //scene->AddEntity(lamp);
-
-        //auto* mushroomMat = ResourceManager::LoadMaterial("res/textures/Boxing_Shroom_UV_Layout.png", "res/textures/Boxing_Shroom_Specular.png", NULL, 1, 8);
-        //auto* mushroom = ResourceManager::LoadEntity("res/Boxing_Shroom.obj", 0, Vec3(-25, terrain->GetHeightOfTerrain(-25, -65), -65), Vec3(0, 180, 0), Vec3(2));
-        //mushroom->SetMaterial(mushroomMat);
-        //entities.emplace_back(mushroom);
-        //scene->AddEntity(mushroom);
-
-        //// Example of duplicate usage of vertex array object (duplicate of player)
-        //auto* containerMat = ResourceManager::LoadMaterial("res/textures/container.png", "res/textures/container_specular.png", NULL, 1, 32);
-        //auto* container = ResourceManager::LoadEntity("res/cube.obj", 0, Vec3(-25, 3000, 1000), Vec3(0), Vec3(2));
-        //container->SetMaterial(containerMat);
-        //container->SetSelected(true);
-        //entities.emplace_back(container);
-        //scene->AddEntity(container);
-
-        //ParticleMaterial* partMaterial = ResourceManager::LoadParticleMaterial("res/textures/particleAtlas.png", 4);
         auto partMaterial = ParticleMaterial("res/textures/particleAtlas.png", 4);
         auto particleCenter = Vec3(-80, terrain.GetHeightOfTerrain(-80, 80) + 5, 80);
 
@@ -309,25 +241,12 @@ public:
         partSystem.SetRandomRotation(true);
         scene->AddParticleSystem(partSystem);
 
-        /*unsigned int tempSound = AudioController::LoadSound("res/audio/bounce.wav");
+        unsigned int tempSound = AudioController::LoadSound("res/audio/bounce.wav");
         audioSource = new AudioSource (1, 12, 15);
-        audioSource->SetPosition(Vec3(-25, terrain->GetHeightOfTerrain(-25, -65), -65));
+        audioSource->SetPosition(Vec3(-25, terrain.GetHeightOfTerrain(-25, -65), -65));
         audioSource->SetLooping(true);
-        audioSource->Play(tempSound);*/
+        audioSource->Play(tempSound);
 
-        /*auto* fernMat = ResourceManager::LoadMaterial("res/textures/fernAtlas.png", Texture::DefaultSpecular, NULL, 2, 0.25f, true);
-        fernMat->FakeLight = true;
-        for (int i = 0; i < 12; i++)
-        {
-            int x = (rand() % 256) - 128;
-            int z = (rand() % 256) - 128;
-            float y = terrain->GetHeightOfTerrain(x, z);
-            auto* fern = ResourceManager::LoadEntity("res/fern.obj", rand() % 4, Vec3(static_cast<float>(x), y, static_cast<float>(z)), Vec3::Zero, Vec3(Math::Random() * 1.5f));
-            fern->SetMaterial(fernMat);
-            entities.emplace_back(fern);
-            fern->SetSelected(Math::RandomRange(0, 10) > 5);
-            scene->AddEntity(fern);
-        }*/
         scene->Enable();
     }
 

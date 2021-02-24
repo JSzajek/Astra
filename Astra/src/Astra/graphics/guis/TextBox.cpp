@@ -2,8 +2,8 @@
 
 #include "TextBox.h"
 
-#include "Astra/graphics/ResourceManager.h"
-#include "Astra/graphics/loaders/Loader.h"
+#include "Astra/graphics/Resource.h"
+#include <GL/glew.h>
 
 namespace Astra::Graphics
 {
@@ -12,14 +12,14 @@ namespace Astra::Graphics
     {
     }
 
-    TextBox::TextBox(const char* name, const char* text, const FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
+    TextBox::TextBox(const char* name, const char* text, FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
         : Gui(name, position, rotation, scale), m_font(font), m_vao(0), m_vbo(0)
     {
         m_rect.SetSize(Math::iVec2(0, m_font->GetFontSize()));
         SetText(text);
     }
 
-    TextBox::TextBox(const char* text, const FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
+    TextBox::TextBox(const char* text, FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
         : Gui(position, rotation, scale), m_font(font), m_vao(0), m_vbo(0)
     {
         m_rect.SetSize(Math::iVec2(0, m_font->GetFontSize()));
@@ -27,18 +27,55 @@ namespace Astra::Graphics
     }
 
     TextBox::TextBox(const char* text, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
-        : TextBox(text, ResourceManager::LoadFontAtlas(DEFAULT_FONT_PATH, DEFAULT_FONT_SIZE), position, rotation, scale)
+        : TextBox(text, Resource::LoadFontAtlas(DEFAULT_FONT_PATH, DEFAULT_FONT_SIZE), position, rotation, scale)
     {
     }
 
     TextBox::TextBox(const char* name, const char* text, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
-        : TextBox(name, text, ResourceManager::LoadFontAtlas(DEFAULT_FONT_PATH, DEFAULT_FONT_SIZE), position, rotation, scale)
+        : TextBox(name, text, Resource::LoadFontAtlas(DEFAULT_FONT_PATH, DEFAULT_FONT_SIZE), position, rotation, scale)
     {
+    }
+
+    TextBox::TextBox(const TextBox& other)
+        : Gui(other), m_font(other.m_font), m_text(other.m_text),
+          m_vao(0), m_vbo(0) // regenerates in copied textbox
+    {
+        TRACK(m_font);
+        
+        GenerateVertices(m_text);
+    }
+
+    void TextBox::operator=(const TextBox& other)
+    {
+        Name = other.Name;
+        m_uid = other.m_uid;
+        m_modelMatrix = new Math::Mat4(*other.m_modelMatrix);
+        m_rotation = other.m_rotation;
+
+        memcpy(m_data, other.m_data, sizeof(m_data));
+
+        m_modulate = other.m_modulate;
+        m_onHover = other.m_onHover;
+        m_onExit = other.m_onExit;
+        m_onPressed = other.m_onPressed;
+        m_onReleased = other.m_onReleased;
+        m_rect = other.m_rect;
+        Material = other.Material;
+
+        m_text = other.m_text;
+        m_vao = m_vbo = 0; // regenerates in copied textbox
+        m_font = other.m_font;
+        TRACK(m_font);
+
+        GenerateVertices(m_text);
     }
 
     TextBox::~TextBox()
     {
-        //RESOURCE_UNLOAD(m_font);
+        UNLOAD(m_font);
+
+        glDeleteVertexArrays(1, &m_vao);
+        glDeleteBuffers(1, &m_vbo);
     }
 
     void TextBox::GenerateVertices(const std::string& string)

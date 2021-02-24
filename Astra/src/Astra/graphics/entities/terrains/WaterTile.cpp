@@ -1,7 +1,6 @@
 #include "astra_pch.h"
 
 #include "WaterTile.h"
-#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {

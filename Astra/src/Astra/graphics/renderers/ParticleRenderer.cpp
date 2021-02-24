@@ -26,6 +26,9 @@ namespace Astra::Graphics
 
 	ParticleRenderer::~ParticleRenderer()
 	{
+		glDeleteVertexArrays(1, &m_defaultVAO);
+		glDeleteBuffers(1, &m_defaultVBO);
+
 		delete m_modelViewMatrix;
 		for (size_t x = 0; x < NUM_OF_TYPES; x++)
 		{

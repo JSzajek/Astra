@@ -2,8 +2,7 @@
 
 #include "Astra/Application.h"
 #include "ImageEffect.h"
-#include "../loaders/Loader.h"
-#include "../ResourceManager.h"
+#include "Astra/graphics/loaders/Loader.h"
 
 namespace Astra::Graphics
 {
@@ -20,7 +19,7 @@ namespace Astra::Graphics
 	
 	ImageEffect::~ImageEffect()
 	{
-		ResourceManager::Unload(m_buffer);
+		delete m_buffer;
 		delete m_shader;
 	}
 

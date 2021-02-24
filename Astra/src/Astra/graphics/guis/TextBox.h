@@ -15,7 +15,7 @@ namespace Astra::Graphics
 	private:
 		std::string m_text;
 		unsigned int m_vao, m_vbo;
-		const FontAtlas* m_font;
+		FontAtlas* m_font;
 
 		// TODO: Implement bolding and outlining
 		//uniform float width;
@@ -25,10 +25,12 @@ namespace Astra::Graphics
 		//uniform float outlineEdge;
 	public:
 		TextBox();
-		TextBox(const char* name, const char* text, const FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
-		TextBox(const char* text, const FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		TextBox(const char* name, const char* text, FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		TextBox(const char* text, FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
 		TextBox(const char* text, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
 		TextBox(const char* name, const char* text, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		TextBox(const TextBox& other);
+		void operator=(const TextBox& other);
 		~TextBox();
 
 		virtual inline GuiType GetType() const override { return GuiType::TextBox; }

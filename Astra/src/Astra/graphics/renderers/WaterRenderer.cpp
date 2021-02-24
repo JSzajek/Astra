@@ -3,7 +3,6 @@
 #include "WaterRenderer.h"
 #include "Astra/math/Mat4Utils.h"
 #include "Astra/graphics/loaders/Loader.h"
-#include "Astra/graphics/ResourceManager.h"
 
 #include "Astra/graphics/entities/PointLight.h"
 #include "Astra/graphics/shadows/ShadowMapController.h"
@@ -21,7 +20,7 @@ namespace Astra::Graphics
 
 	WaterRenderer::~WaterRenderer()
 	{
-		ResourceManager::Unload(m_defaultQuad);
+		delete m_defaultQuad;
 	}
 
 	void WaterRenderer::SetShader(Shader* shader)
