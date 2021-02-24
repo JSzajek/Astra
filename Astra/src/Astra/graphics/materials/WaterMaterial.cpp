@@ -1,8 +1,7 @@
 #include "astra_pch.h"
 
 #include "WaterMaterial.h"
-#include "Astra/graphics/loaders/Loader.h"
-#include "Astra/graphics/ResourceManager.h"
+#include "Astra/graphics/Resource.h"
 
 namespace Astra::Graphics
 {
@@ -12,36 +11,60 @@ namespace Astra::Graphics
 
 	WaterMaterial::WaterMaterial()
 		: waveStrength(DefaultWaveStrength), waveSpeed(DefaultWaveSpeed), shineDampener(DefaultShineDampener),
-			reflectivity(DefaultReflectivity), diffuseTexture(Loader::LoadTexture(DefaultDiffuseMap)), m_currentWaveSpeed(0),
-				dudvTexture(Loader::LoadTexture(DefaultDuDvMap, false)), normalTexture(Loader::LoadTexture(DefaultNormalMap, false))
+			reflectivity(DefaultReflectivity), diffuseTexture(Resource::LoadTexture(DefaultDiffuseMap, true)), m_currentWaveSpeed(0),
+				dudvTexture(Resource::LoadTexture(DefaultDuDvMap)), normalTexture(Resource::LoadTexture(DefaultNormalMap))
 	{
-		m_specular = Loader::LoadTexture(Texture::DefaultSpecular, false);
+		m_specular = Resource::LoadTexture(Texture::DefaultSpecular, false);
 	}
 
 	WaterMaterial::WaterMaterial(const char* const diffuseFilePath, const char* const dudvMapFilePath, const char* const normalMapFilePath)
 		: waveStrength(DefaultWaveStrength), waveSpeed(DefaultWaveSpeed), shineDampener(DefaultShineDampener),
-			reflectivity(DefaultReflectivity), diffuseTexture(Loader::LoadTexture(diffuseFilePath)), m_currentWaveSpeed(0),
-			dudvTexture(Loader::LoadTexture(dudvMapFilePath, false)), normalTexture(Loader::LoadTexture(normalMapFilePath, false))
+			reflectivity(DefaultReflectivity), diffuseTexture(Resource::LoadTexture(diffuseFilePath)), m_currentWaveSpeed(0),
+			dudvTexture(Resource::LoadTexture(dudvMapFilePath, false)), normalTexture(Resource::LoadTexture(normalMapFilePath, false))
 	{
-		m_specular = Loader::LoadTexture(Texture::DefaultSpecular, false);
+		m_specular = Resource::LoadTexture(Texture::DefaultSpecular, false);
 	}
 
-	float WaterMaterial::Increase(float delta)
+	WaterMaterial::WaterMaterial(const WaterMaterial& other)
+		: waveStrength(other.waveStrength), waveSpeed(other.waveSpeed), shineDampener(other.shineDampener),
+		reflectivity(other.reflectivity), diffuseTexture(other.diffuseTexture), m_currentWaveSpeed(other.m_currentWaveSpeed),
+		dudvTexture(other.dudvTexture), normalTexture(other.normalTexture), m_specular(other.m_specular)
 	{
-		m_currentWaveSpeed = fmodf(m_currentWaveSpeed + waveSpeed * delta, 1);
-		return m_currentWaveSpeed;
+		TRACK(m_specular);
+		TRACK(diffuseTexture);
+		TRACK(dudvTexture);
+		TRACK(normalTexture);
+	}
+	
+	void WaterMaterial::operator=(const WaterMaterial& other)
+	{
+		waveStrength = other.waveStrength;
+		waveSpeed = other.waveSpeed;
+		shineDampener = other.shineDampener;
+		reflectivity = other.reflectivity;
+		diffuseTexture = other.diffuseTexture;
+		m_currentWaveSpeed = other.m_currentWaveSpeed;
+		dudvTexture = other.dudvTexture;
+		normalTexture = other.normalTexture; 
+		m_specular = other.m_specular;
+
+		TRACK(m_specular);
+		TRACK(diffuseTexture);
+		TRACK(dudvTexture);
+		TRACK(normalTexture);
 	}
 
 	WaterMaterial::~WaterMaterial()
 	{
-		RESOURCE_UNLOAD(m_specular);
-		RESOURCE_UNLOAD(diffuseTexture);
-		RESOURCE_UNLOAD(dudvTexture);
-		RESOURCE_UNLOAD(normalTexture);
+		UNLOAD(m_specular);
+		UNLOAD(diffuseTexture);
+		UNLOAD(dudvTexture);
+		UNLOAD(normalTexture);
 	}
-
-	void WaterMaterial::UpdateDiffuseMap(bool hdr)
+	
+	float WaterMaterial::Increase(float delta)
 	{
-		Loader::UpdateDiffuseTexture(diffuseTexture, hdr);
+		m_currentWaveSpeed = fmodf(m_currentWaveSpeed + waveSpeed * delta, 1);
+		return m_currentWaveSpeed;
 	}
 }

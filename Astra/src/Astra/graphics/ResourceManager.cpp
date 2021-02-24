@@ -138,7 +138,7 @@ namespace Astra::Graphics
 		return material;
 	}
 
-	TerrainMaterial* ResourceManager::LoadTerrainMaterialImpl(const char* filepath)
+	/*TerrainMaterial* ResourceManager::LoadTerrainMaterialImpl(const char* filepath)
 	{
 		size_t hash = std::hash<std::string>{}(std::string(filepath));
 
@@ -153,29 +153,30 @@ namespace Astra::Graphics
 		Track(material);
 		m_loadedTerrainMaterials[hash] = material;
 		return material;
-	}
+	}*/
 
-	TerrainMaterialPack* ResourceManager::LoadTerrainMaterialPackImpl(const char* background, const char* red, const char* blue, const char* green)
-	{
-		size_t hash = std::hash<std::string>{}(std::string(background) + red + blue + green);
+	//TerrainMaterialPack* ResourceManager::LoadTerrainMaterialPackImpl(const char* background, const char* red, const char* blue, const char* green)
+	//{
+	//	/*size_t hash = std::hash<std::string>{}(std::string(background) + red + blue + green);
 
-		auto found = m_loadedTerrainMaterialPacks.find(hash);
-		if (found != m_loadedTerrainMaterialPacks.end())
-		{
-			Track(found->second);
-			return found->second;
-		}
+	//	auto found = m_loadedTerrainMaterialPacks.find(hash);
+	//	if (found != m_loadedTerrainMaterialPacks.end())
+	//	{
+	//		Track(found->second);
+	//		return found->second;
+	//	}
 
-		auto* _back = LoadTerrainMaterialImpl(background);
-		auto* _red = LoadTerrainMaterialImpl(red);
-		auto* _blue = LoadTerrainMaterialImpl(blue);
-		auto* _green = LoadTerrainMaterialImpl(green);
+	//	auto* _back = LoadTerrainMaterialImpl(background);
+	//	auto* _red = LoadTerrainMaterialImpl(red);
+	//	auto* _blue = LoadTerrainMaterialImpl(blue);
+	//	auto* _green = LoadTerrainMaterialImpl(green);
 
-		auto* material = new TerrainMaterialPack(_back, _red, _blue, _green);
-		Track(material);
-		m_loadedTerrainMaterialPacks[hash] = material;
-		return material;
-	}
+	//	auto* material = new TerrainMaterialPack(_back, _red, _blue, _green);
+	//	Track(material);
+	//	m_loadedTerrainMaterialPacks[hash] = material;
+	//	return material;*/
+	//	return NULL;
+	//}
 
 	SkyboxMaterial* ResourceManager::LoadSkyboxMaterialImpl(std::vector<const char*> first, std::vector<const char*> second)
 	{
@@ -275,10 +276,6 @@ namespace Astra::Graphics
 				if (it->second == source->second) 
 				{ 
 					m_loadedModels.erase(it);
-					for (auto mesh : source->second->GetMeshes())
-					{
-						mesh.Unload();
-					}
 					delete source->second; 
 					break; 
 				}
@@ -303,15 +300,15 @@ namespace Astra::Graphics
 		LIST_UNLOAD(m_loadedFontAtlases, atlas);
 	}
 
-	void ResourceManager::UnloadTerrainMaterial(const TerrainMaterial* material)
+	/*void ResourceManager::UnloadTerrainMaterial(const TerrainMaterial* material)
 	{
 		LIST_UNLOAD(m_loadedTerrainMaterials, material);
-	}
+	}*/
 
-	void ResourceManager::UnloadTerrainMaterialPack(const TerrainMaterialPack* material)
+	/*void ResourceManager::UnloadTerrainMaterialPack(const TerrainMaterialPack* material)
 	{
 		LIST_UNLOAD(m_loadedTerrainMaterialPacks, material);
-	}
+	}*/
 
 	void ResourceManager::UnloadSkyboxMaterial(const SkyboxMaterial* material)
 	{
@@ -346,25 +343,25 @@ namespace Astra::Graphics
 
 	void ResourceManager::ToggleHDRTexturesImpl(bool enabled)
 	{
-		for (const auto& image : m_loadedImageMaterials)
+		/*for (const auto& image : m_loadedImageMaterials)
 		{
 			image.second->UpdateDiffuseMap(enabled);
-		}
-		for (const auto& terrain : m_loadedTerrainMaterials)
+		}*/
+		/*for (const auto& terrain : m_loadedTerrainMaterials)
 		{
 			terrain.second->UpdateDiffuseMap(enabled);
-		}
-		for (const auto& water : m_loadedWaterMaterials)
+		}*/
+	/*	for (const auto& water : m_loadedWaterMaterials)
 		{
 			water.second->UpdateDiffuseMap(enabled);
-		}
-		for (const auto& sky : m_loadedSkyboxMaterials)
+		}*/
+		/*for (const auto& sky : m_loadedSkyboxMaterials)
 		{
 			sky.second->UpdateDiffuseMap(enabled);
-		}
-		for (const auto& particle : m_loadedParticleMaterials)
+		}*/
+		/*for (const auto& particle : m_loadedParticleMaterials)
 		{
 			particle.second->UpdateDiffuseMap(enabled);
-		}
+		}*/
 	}
 }

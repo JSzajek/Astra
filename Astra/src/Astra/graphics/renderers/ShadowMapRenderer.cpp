@@ -21,34 +21,34 @@ namespace Astra::Graphics
 		m_shader->Start();
 		for (const auto& directory : models)
 		{
-			for (const auto& mesh : directory.second.front()->GetMeshes())
+			const auto* mesh = directory.second.front()->GetMesh();
+			glBindVertexArray(mesh->GetVAO());
+
+			for (const auto* model : directory.second)
 			{
-				PrepareMesh(mesh);
-				for (const auto* model : directory.second)
-				{
-					m_shader->SetUniformMat4(MODEL_VIEW_PROJ_MATRIX_TAG, projectionViewMatrix * (*model->GetModelMatrix()));
-					m_shader->SetUniform1f(NUMBER_OF_ROWS_TAG, static_cast<float>(model->GetRowCount()));
-					m_shader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
+				PrepareModel(model);
+				m_shader->SetUniformMat4(MODEL_VIEW_PROJ_MATRIX_TAG, projectionViewMatrix * (*model->GetModelMatrix()));
+				m_shader->SetUniform1f(NUMBER_OF_ROWS_TAG, static_cast<float>(model->GetRowCount()));
+				m_shader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
 					
-					if (model->HasAnimator())
-					{
-						m_shader->SetUniform1i("animated", true);
+				if (model->HasAnimator())
+				{
+					m_shader->SetUniform1i("animated", true);
 
-						const auto size = model->GetAnimator()->GetCount();
-						for (unsigned int i = 0; i < size; ++i)
-						{
-							m_shader->SetUniformMat4(Shader::GetBoneTransformTag(i), model->GetAnimator()->GetOffsets()[i]);
-						}
-					}
-					else
+					const auto size = model->GetAnimator()->GetCount();
+					for (unsigned int i = 0; i < size; ++i)
 					{
-						m_shader->SetUniform1i("animated", false);
+						m_shader->SetUniformMat4(Shader::GetBoneTransformTag(i), model->GetAnimator()->GetOffsets()[i]);
 					}
-
-					glDrawElements(GL_TRIANGLES, mesh.GetVertexCount(), GL_UNSIGNED_INT, NULL);
 				}
-				glBindVertexArray(0);
+				else
+				{
+					m_shader->SetUniform1i("animated", false);
+				}
+
+				glDrawElements(GL_TRIANGLES, mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
 			}
+			glBindVertexArray(0);
 		}
 		UnbindFrameBuffer();
 		m_shader->Stop();
@@ -57,18 +57,14 @@ namespace Astra::Graphics
 	#endif
 	}
 
-	void ShadowMapRenderer::PrepareMesh(const Mesh& mesh)
+	void ShadowMapRenderer::PrepareModel(const Model* model)
 	{
-		glBindVertexArray(mesh.GetVAO());
-
-		if (const auto* material = mesh.GetMaterial())
+		const auto& material = model->GetMaterial();
+		if (material.GetTransparency())
 		{
-			if (material->GetTransparency())
-			{
-				glDisable(GL_CULL_FACE);
-			}
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, material->GetTextureId(TextureType::DiffuseMap));
+			glDisable(GL_CULL_FACE);
 		}
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, material.GetTextureId(TextureType::DiffuseMap));
 	}
 }

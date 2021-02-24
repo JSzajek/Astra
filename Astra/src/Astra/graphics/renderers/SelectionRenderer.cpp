@@ -61,19 +61,19 @@ namespace Astra::Graphics
 
 		for (const auto& directory : models)
 		{
-			for (const auto& mesh : directory.second.front()->GetMeshes())
+			const auto* mesh = directory.second.front()->GetMesh();
+			glBindVertexArray(mesh->GetVAO());
+
+			for (const auto* model : directory.second)
 			{
-				PrepareMesh(mesh);
-				for (const auto* model : directory.second)
-				{
-					m_entityShader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(model->GetRowCount()));
-					m_entityShader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
-					m_entityShader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetModelMatrix());
+				PrepareModel(model);
+				m_entityShader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(model->GetRowCount()));
+				m_entityShader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
+				m_entityShader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetModelMatrix());
 					
-					glDrawElements(GL_TRIANGLES, mesh.GetVertexCount(), GL_UNSIGNED_INT, NULL);
-				}
-				glBindVertexArray(0);
+				glDrawElements(GL_TRIANGLES, mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
 			}
+			glBindVertexArray(0);
 		}
 		m_entityShader->Stop();
 
@@ -90,20 +90,16 @@ namespace Astra::Graphics
 		DrawSelected(models, viewMatrix);
 	}
 
-	void SelectionRenderer::PrepareMesh(const Mesh& mesh)
+	void SelectionRenderer::PrepareModel(const Model* model)
 	{
-		glBindVertexArray(mesh.GetVAO());
-
-		if (const auto* material = mesh.GetMaterial())
+		const auto& material = model->GetMaterial();
+		if (material.GetTransparency())
 		{
-			if (material->GetTransparency())
-			{
-				glDisable(GL_CULL_FACE);
-			}
-
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, material->GetTextureId(TextureType::DiffuseMap));
+			glDisable(GL_CULL_FACE);
 		}
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, material.GetTextureId(TextureType::DiffuseMap));
 	}
 
 	void SelectionRenderer::DrawSelected(const std::unordered_map<unsigned int, std::vector<const Model*>>& models, 
@@ -118,18 +114,18 @@ namespace Astra::Graphics
 
 		for (const auto& directory : models)
 		{
-			for (const auto& mesh : directory.second.front()->GetMeshes())
+			const auto* mesh = directory.second.front()->GetMesh();
+			glBindVertexArray(mesh->GetVAO());
+
+			for (const auto* model : directory.second)
 			{
-				PrepareMesh(mesh);
-				for (const auto& model : directory.second)
-				{
-					m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(model->GetRowCount()));
-					m_shader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
-					m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetSelectedModelMatrix());
-					glDrawElements(GL_TRIANGLES, mesh.GetVertexCount(), GL_UNSIGNED_INT, NULL);
-				}
-				glBindVertexArray(0);
+				PrepareModel(model);
+				m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(model->GetRowCount()));
+				m_shader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
+				m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetSelectedModelMatrix());
+				glDrawElements(GL_TRIANGLES, mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
 			}
+			glBindVertexArray(0);
 		}
 
 		glStencilFunc(GL_ALWAYS, 0, 0xFF);

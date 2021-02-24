@@ -18,7 +18,7 @@ namespace Astra::Graphics
 			m_data[4] = direction.y;
 			m_data[5] = direction.z;
 		#if ASTRA_DEBUG
-			m_gizmo = new Gizmo(RESOURCE("res/textures/SpotLight.png"), translation, 3);
+			m_gizmo = Gizmo(RESOURCE("res/textures/SpotLight.png"), translation, 3);
 		#endif
 		}
 		inline virtual LightType GetType() const override { return LightType::Spotlight; }

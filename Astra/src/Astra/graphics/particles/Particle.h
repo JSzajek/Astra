@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../math/Vec3.h"
-#include "../materials/ParticleMaterial.h"
+#include "Astra/math/Vec3.h"
+#include "Astra/graphics/materials/ParticleMaterial.h"
 
 namespace Astra::Graphics
 {
@@ -13,7 +13,7 @@ namespace Astra::Graphics
 		Math::Vec3 Position;
 		float Rotation;
 		float Scale;
-		const ParticleMaterial* Material;
+		ParticleMaterial Material;
 	private:
 		Math::Vec3 m_velocity;
 		float m_gravity;
@@ -26,10 +26,10 @@ namespace Astra::Graphics
 		float m_distance;
 		bool m_additive;
 	public:
-		Particle(const ParticleMaterial* material, const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale, bool additive = false);
+		Particle(const ParticleMaterial& material, const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale, bool additive = false);
 		Particle(const Particle& other);
 
-		void operator()(const ParticleMaterial* material, const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale, bool additive = false);
+		void operator()(const ParticleMaterial& material, const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale, bool additive = false);
 
 		inline const Math::Vec2& GetTexOffset1() const { return m_texOffset1; }
 		inline const Math::Vec2& GetTexOffset2() const { return m_texOffset2; }

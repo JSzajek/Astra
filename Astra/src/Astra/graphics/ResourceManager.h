@@ -34,7 +34,7 @@ namespace Astra::Graphics
 		std::unordered_map<size_t, GuiMaterial*> m_loadedGuiMaterials;
 		std::unordered_map<size_t, FontAtlas*> m_loadedFontAtlases;
 		std::unordered_map<size_t, TerrainMaterial*> m_loadedTerrainMaterials;
-		std::unordered_map<size_t, TerrainMaterialPack*> m_loadedTerrainMaterialPacks;
+		//std::unordered_map<size_t, TerrainMaterialPack*> m_loadedTerrainMaterialPacks;
 		std::unordered_map<size_t, SkyboxMaterial*> m_loadedSkyboxMaterials;
 		std::unordered_map<size_t, WaterMaterial*> m_loadedWaterMaterials;
 		std::unordered_map<size_t, ParticleMaterial*> m_loadedParticleMaterials;
@@ -76,15 +76,15 @@ namespace Astra::Graphics
 			return Get().LoadMaterialImpl(textures, hash);
 		}
 
-		static TerrainMaterial* LoadTerrainMaterial(const char* filepath)
+		/*static TerrainMaterial* LoadTerrainMaterial(const char* filepath)
 		{
 			return Get().LoadTerrainMaterialImpl(filepath);
-		}
+		}*/
 
-		static TerrainMaterialPack* LoadTerrainMaterialPack(const char* background, const char* red, const char* blue, const char* green)
+		/*static TerrainMaterialPack* LoadTerrainMaterialPack(const char* background, const char* red, const char* blue, const char* green)
 		{
 			return Get().LoadTerrainMaterialPackImpl(background, red, blue, green);
-		}
+		}*/
 
 		static SkyboxMaterial* LoadSkyboxMaterial(std::vector<const char*> first, std::vector<const char*> second)
 		{
@@ -193,23 +193,23 @@ namespace Astra::Graphics
 			}
 		}
 
-		/* Template Override */
-		static void Unload(const TerrainMaterial* ptr)
-		{
-			if (Get().UnloadResource((void*)ptr))
-			{
-				Get().UnloadTerrainMaterial(ptr);
-			}
-		}
+		///* Template Override */
+		//static void Unload(const TerrainMaterial* ptr)
+		//{
+		//	if (Get().UnloadResource((void*)ptr))
+		//	{
+		//		Get().UnloadTerrainMaterial(ptr);
+		//	}
+		//}
 
-		/* Template Override */
-		static void Unload(const TerrainMaterialPack* ptr)
-		{
-			if (Get().UnloadResource((void*)ptr))
-			{
-				Get().UnloadTerrainMaterialPack(ptr);
-			}
-		}
+		///* Template Override */
+		//static void Unload(const TerrainMaterialPack* ptr)
+		//{
+		//	if (Get().UnloadResource((void*)ptr))
+		//	{
+		//		Get().UnloadTerrainMaterialPack(ptr);
+		//	}
+		//}
 
 		/* Template Override */
 		static void Unload(const SkyboxMaterial* ptr)
@@ -260,8 +260,8 @@ namespace Astra::Graphics
 		GuiMaterial* LoadGuiMaterialImpl(const char* filepath, size_t rowCount);
 		FontAtlas* LoadFontAtlasImpl(const char* filepath, unsigned int fontSize);
 	
-		TerrainMaterial* LoadTerrainMaterialImpl(const char* filepath);
-		TerrainMaterialPack* LoadTerrainMaterialPackImpl(const char* background, const char* red, const char* blue, const char* green);
+		//TerrainMaterial* LoadTerrainMaterialImpl(const char* filepath);
+		//TerrainMaterialPack* LoadTerrainMaterialPackImpl(const char* background, const char* red, const char* blue, const char* green);
 
 		SkyboxMaterial* LoadSkyboxMaterialImpl(std::vector<const char*> first, std::vector<const char*> second);
 		WaterMaterial* LoadWaterMaterialImpl(const char* diffuse, const char* dudvMap, const char* normalMap);
@@ -275,8 +275,8 @@ namespace Astra::Graphics
 		void UnloadImageMaterial(const ImageMaterial* material);
 		void UnloadGuiMaterial(const GuiMaterial* material);
 		void UnloadFontAtlas(const FontAtlas* atlas);
-		void UnloadTerrainMaterial(const TerrainMaterial* material);
-		void UnloadTerrainMaterialPack(const TerrainMaterialPack* material);
+		//void UnloadTerrainMaterial(const TerrainMaterial* material);
+		//void UnloadTerrainMaterialPack(const TerrainMaterialPack* material);
 		void UnloadSkyboxMaterial(const SkyboxMaterial* material);
 		void UnloadWaterMaterial(const WaterMaterial* material);
 		void UnloadParticleMaterial(const ParticleMaterial* material);

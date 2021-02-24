@@ -120,11 +120,10 @@ public:
         scene = new Astra::Scene();
         SetCurrentScene(scene);
 
-        auto* blendMap = ResourceManager::LoadTerrainMaterial("res/textures/blendMap.png");
-        auto* pack = ResourceManager::LoadTerrainMaterialPack("res/textures/grass.jpg", "res/textures/grass.jpg", "res/textures/mud.png", "res/textures/grass.jpg");
-
+        auto terrainMat = TerrainMaterial("res/textures/blendMap.png", "res/textures/grass.jpg", "res/textures/grass.jpg", "res/textures/mud.png", "res/textures/grass.jpg");
+        
         //Terrain terrain = Terrain(0, 0, "res/textures/meteorcrater_heightmap.png", &pack, blendMap);
-        Terrain terrain(0, 0, 40, 4, 0.01f, 4862, pack, blendMap);
+        Terrain terrain(0, 0, 40, 4, 0.01f, 4862, terrainMat);
         //terrain->operator()(TRANSLATION, SUB_EQ, X_POS, 128);
         //terrain->operator()(TRANSLATION, SUB_EQ, Z_POS, 128);
         terrain.SetTranslation(terrain.GetTranslation() - Vec3(128, 0, 128));
@@ -142,12 +141,12 @@ public:
         scene->Add<TextBox>(textbox, 0);
 
         //const Texture* texture = Loader::LoadTexture("res/textures/grassTexture.png", false);
-        auto* guiMat = ResourceManager::LoadGuiMaterial("res/textures/grassTexture.png");
+        auto guiMat = GuiMaterial("res/textures/grassTexture.png");
         auto image = Image("image", guiMat, Vec2(10, 200), Vec2(1), 1);
         image.SetModulate(Color::White);
         scene->Add<Image>(image, 0);
 
-        auto* buttonMat = ResourceManager::LoadGuiMaterial("res/textures/Panel.png");
+        auto buttonMat = GuiMaterial("res/textures/Panel.png");
         auto button = Button("button", buttonMat, Vec2(200, 10), Vec2(1));
         button.SetHoverColor(Color::Red);
         button.SetPressedColor(Color::Blue);
@@ -184,7 +183,7 @@ public:
         reflectionToggle.SetText("Refl: 0");
         scene->Add<ToggleButton>(reflectionToggle, 1);
 
-        auto* panelMat = ResourceManager::LoadGuiMaterial("res/textures/Panel.png");
+        auto panelMat = GuiMaterial("res/textures/Panel.png");
         auto panel = Panel(panelMat, Vec2(100, 200), Vec2(1));
         panel.SetText("panel");
         scene->Add<Panel>(panel, 1);
@@ -239,20 +238,20 @@ public:
         scene->AddModel(cubeModel3);*/
 
         //vampire = ResourceManager::LoadModel("res/vampire/dancing_vampire.dae", true);
-        auto vampire = Model("res/vampire/dancing_vampire.dae", true);
+        /*auto vampire = Model("res/vampire/dancing_vampire.dae", true);
         vampire.SetScale(Math::Vec3(10));
         vampire.SetTranslation(Math::Vec3(50, terrain.GetHeightOfTerrain(50, 70), 70));
         vampire.AddAnimator();
         vampire.PlayAnimation("");
-        scene->AddModel(vampire);
+        scene->AddModel(vampire);*/
 
         // FBX doesn't export displacement map- Work Around
         auto* heightMap = Loader::LoadTexture("res/textures/bricks_heightmap.jpg", false, GL_REPEAT, false);
         heightMap->type = TextureType::HeightMap;
         //brickModel = ResourceManager::LoadModel("res/bricks.fbx", true);
         auto brickModel = Model("res/bricks.fbx", true);
-        brickModel.GetMesh(0).GetMaterial()->AddTexture(heightMap);
-        brickModel.GetMesh(0).GetMaterial()->SetHeightOffset(0.1f);
+        brickModel.GetMaterial().AddTexture(heightMap);
+        brickModel.GetMaterial().SetHeightOffset(0.1f);
         brickModel.SetScale(Math::Vec3(10));
         brickModel.SetRotation(Math::Vec3(0, 0, -90));
         brickModel.SetTranslation(Math::Vec3(-10, 0, -10));
@@ -297,7 +296,8 @@ public:
         //entities.emplace_back(container);
         //scene->AddEntity(container);
 
-        ParticleMaterial* partMaterial = ResourceManager::LoadParticleMaterial("res/textures/particleAtlas.png", 4);
+        //ParticleMaterial* partMaterial = ResourceManager::LoadParticleMaterial("res/textures/particleAtlas.png", 4);
+        auto partMaterial = ParticleMaterial("res/textures/particleAtlas.png", 4);
         auto particleCenter = Vec3(-80, terrain.GetHeightOfTerrain(-80, 80) + 5, 80);
 
         ParticleSystem partSystem("Fire Spout", partMaterial, particleCenter, 15, 5, -0.1f, 1.5f, true);

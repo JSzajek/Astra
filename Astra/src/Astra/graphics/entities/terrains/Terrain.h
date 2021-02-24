@@ -5,6 +5,7 @@
 #include "../../buffers/VertexArray.h"
 #include "../../materials/TerrainMaterial.h"
 #include "../../loaders/Loader.h"
+#include "Astra/graphics/entities/utility/Mesh.h"
 
 namespace Astra::Graphics
 {
@@ -18,21 +19,23 @@ namespace Astra::Graphics
 	private:
 		float* m_heights;
 		int m_vertexCount;
+		Mesh* m_mesh;
 	public:
-		const VertexArray* vertexArray;
-		const TerrainMaterialPack* texturePack;
-		const TerrainMaterial* blendMap;
+		TerrainMaterial material;
 	public:
 		Terrain();
-		Terrain(int xGrid, int zGrid, const char* const heightmap, const TerrainMaterialPack* pack, const TerrainMaterial* map);
-		Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, const TerrainMaterialPack* pack, const TerrainMaterial* map);
-		Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, int seed, const TerrainMaterialPack* pack, const TerrainMaterial* map);
+		Terrain(int xGrid, int zGrid, const char* const heightmap, const TerrainMaterial& material);
+		Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, const TerrainMaterial& material);
+		Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, int seed, const TerrainMaterial& material);
+		Terrain(const Terrain& other);
+		void operator=(const Terrain& other);
 		~Terrain();
-
+		
+		inline Mesh* GetMesh() const { return m_mesh; }
 		float GetHeightOfTerrain(int xWorldCoord, int zWorldCoord);
 	private:
-		const VertexArray* GeneratePlaneTerrain(const char* const heightmap);
-		const VertexArray* GeneratePlaneTerrain(HeightGenerator* const generator);
+		Mesh* GeneratePlaneTerrain(const char* const heightmap);
+		Mesh* GeneratePlaneTerrain(HeightGenerator* const generator);
 		float GetHeight(int x, int z, const unsigned char* buffer, const int& imageHeight);
 		float GetHeight(int x, int z, HeightGenerator* const generator);
 		Math::Vec3 CalculateNormal(int x, int z, const unsigned char* buffer, const int& imageHeight);

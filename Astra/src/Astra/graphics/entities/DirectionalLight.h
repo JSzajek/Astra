@@ -12,7 +12,7 @@ namespace Astra::Graphics
 			: Light(Math::Vec3::Zero, Math::Vec3(1), Math::Vec3(1), Math::Vec3(1))
 		{
 		#if ASTRA_DEBUG
-			m_gizmo = new Gizmo(RESOURCE("res/textures/DirectionalLight.png"), Math::Vec3::Zero, 3);
+			m_gizmo = Gizmo(RESOURCE("res/textures/DirectionalLight.png"), Math::Vec3::Zero, 3);
 		#endif
 		}
 
@@ -25,7 +25,7 @@ namespace Astra::Graphics
 			m_data[4] = direction.y;
 			m_data[5] = direction.z;
 		#if ASTRA_DEBUG
-			m_gizmo = new Gizmo(RESOURCE("res/textures/DirectionalLight.png"), position, 3);
+			m_gizmo = Gizmo(RESOURCE("res/textures/DirectionalLight.png"), position, 3);
 		#endif
 		}
 

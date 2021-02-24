@@ -4,6 +4,7 @@
 #include "SkyboxMaterial.h"
 #include "Astra/graphics/loaders/Loader.h"
 #include "Astra/graphics/ResourceManager.h"
+#include "Astra/graphics/Resource.h"
 
 namespace Astra::Graphics
 {
@@ -15,25 +16,36 @@ namespace Astra::Graphics
 	SkyboxMaterial::SkyboxMaterial(const std::vector<const char*>& firstFiles)
 		: m_secondaryTexture(NULL), m_blendFactor(0)
 	{
-		m_primaryTexture = Loader::LoadCubeMap(firstFiles);
+		m_primaryTexture = Resource::LoadCubeMap(firstFiles);
 	}
 	
 	SkyboxMaterial::SkyboxMaterial(const std::vector<const char*>& firstFiles, const std::vector<const char*>& secondFiles)
 		: m_blendFactor(0)
 	{
-		m_primaryTexture = Loader::LoadCubeMap(firstFiles);
-		m_secondaryTexture = Loader::LoadCubeMap(secondFiles);
+		m_primaryTexture = Resource::LoadCubeMap(firstFiles);
+		m_secondaryTexture = Resource::LoadCubeMap(secondFiles);
 	}
 	
 	SkyboxMaterial::SkyboxMaterial(const SkyboxMaterial& other)
 		: m_blendFactor(other.m_blendFactor), m_primaryTexture(other.m_primaryTexture), m_secondaryTexture(other.m_secondaryTexture)
 	{
+		TRACK(m_primaryTexture);
+		TRACK(m_secondaryTexture);
+	}
+
+	void SkyboxMaterial::operator=(const SkyboxMaterial& other)
+	{
+		m_blendFactor = other.m_blendFactor;
+		m_primaryTexture = other.m_primaryTexture;
+		m_secondaryTexture = other.m_secondaryTexture;
+		TRACK(m_primaryTexture);
+		TRACK(m_secondaryTexture);
 	}
 
 	SkyboxMaterial::~SkyboxMaterial()
 	{
-		/*RESOURCE_UNLOAD(m_primaryTexture);
-		RESOURCE_UNLOAD(m_secondaryTexture);*/
+		UNLOAD(m_primaryTexture);
+		UNLOAD(m_secondaryTexture);
 	}
 
 	const unsigned int SkyboxMaterial::GetFirstTextureId() const
@@ -54,14 +66,5 @@ namespace Astra::Graphics
 		}
 		ASTRA_CORE_WARN("SkyboxMaterial: Skybox Secondary Texture Not Set.");
 		return m_primaryTexture->id;
-	}
-
-	void SkyboxMaterial::UpdateDiffuseMap(bool hdr)
-	{
-		Loader::UpdateCubeMap(m_primaryTexture, hdr);
-		if (m_secondaryTexture)
-		{
-			Loader::UpdateCubeMap(m_secondaryTexture, hdr);
-		}
 	}
 }

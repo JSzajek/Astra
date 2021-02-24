@@ -13,14 +13,14 @@ namespace Astra::Graphics
     }
 
     TextBox::TextBox(const char* name, const char* text, const FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
-        : Gui(name, NULL, position, rotation, scale), m_font(font), m_vao(0), m_vbo(0)
+        : Gui(name, position, rotation, scale), m_font(font), m_vao(0), m_vbo(0)
     {
         m_rect.SetSize(Math::iVec2(0, m_font->GetFontSize()));
         SetText(text);
     }
 
     TextBox::TextBox(const char* text, const FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
-        : Gui(NULL, position, rotation, scale), m_font(font), m_vao(0), m_vbo(0)
+        : Gui(position, rotation, scale), m_font(font), m_vao(0), m_vbo(0)
     {
         m_rect.SetSize(Math::iVec2(0, m_font->GetFontSize()));
         SetText(text);

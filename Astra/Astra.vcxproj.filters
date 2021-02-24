@@ -492,6 +492,8 @@
     <ClInclude Include="src\Astra\graphics\entities\utility\AssimpReader.h" />
     <ClInclude Include="src\Astra\graphics\entities\utility\Animator.h" />
     <ClInclude Include="src\Astra\graphics\entities\LayerEntity.h" />
+    <ClInclude Include="src\Astra\graphics\Resource.h" />
+    <ClInclude Include="src\Astra\Res.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astra\Application.cpp">
@@ -705,6 +707,7 @@
     <ClCompile Include="src\Astra\graphics\entities\utility\Bone.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\utility\Animation.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\utility\Animator.cpp" />
+    <ClCompile Include="src\Astra\graphics\Resource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\fonts\calibri.ttf">

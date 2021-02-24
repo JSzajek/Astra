@@ -26,7 +26,7 @@ namespace Astra::Graphics
 		float m_cutOff;
 		float m_outerCutOff;
 	#if ASTRA_DEBUG
-		const Gizmo* m_gizmo;
+		Gizmo m_gizmo;
 	#endif
 	protected:
 		Light(const Math::Vec3& translation, const Math::Vec3& color);
@@ -48,7 +48,7 @@ namespace Astra::Graphics
 		inline const float GetCutOff() const { return m_cutOff; }
 		inline const float GetOuterCutOff() const { return m_outerCutOff; }
 	#if ASTRA_DEBUG
-		inline const Gizmo* const GetGizmo() const { return m_gizmo; }
+		inline const Gizmo& GetGizmo() const { return m_gizmo; }
 	#endif
 		inline virtual LightType GetType() const = 0;
 		inline virtual bool IsDirectional() const = 0;

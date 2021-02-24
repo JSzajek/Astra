@@ -105,8 +105,9 @@ namespace Astra
 		m_terrainRenderer->AddLight(&m_mainLight);
 		m_normalEntityRenderer->AddLight(&m_mainLight);
 		m_waterRenderer->AddLight(&m_mainLight);
+
 	#if ASTRA_DEBUG
-		Graphics::GizmoController::AddGizmo(m_mainLight.GetGizmo());
+		AddGizmo(m_mainLight.GetGizmo());
 	#endif
 
 		for (const auto& tileDir : m_waterTiles)
@@ -124,15 +125,15 @@ namespace Astra
 			m_terrainRenderer->AddLight(i, &m_pointLights[i]);
 			m_waterRenderer->AddLight(i, &m_pointLights[i]);
 		#if ASTRA_DEBUG
-			Graphics::GizmoController::AddGizmo(m_pointLights[i].GetGizmo());
+			AddGizmo(m_pointLights[i].GetGizmo());
 		#endif
 		}
+		#if ASTRA_DEBUG
 		for (const auto& system : m_particles)
 		{
-		#if ASTRA_DEBUG
-			Graphics::GizmoController::AddGizmo(system.second.GetGizmo());
-		#endif
+			AddGizmo(system.second.GetGizmo());
 		}
+		#endif
 
 		// Update Projection Matrix
 		auto [width, height] = Application::Get().GetWindow().GetSize();
@@ -150,6 +151,14 @@ namespace Astra
 	void Layer3D::OnDetach()
 	{
 		m_attached = false;
+		
+		m_loaded.clear();
+
+		m_models.clear();
+		m_terrains.clear();
+		m_waterTiles.clear();
+		m_particles.clear();
+		m_pointLights.clear();
 	}
 
 	void Layer3D::LayerUpdateAnimations(float delta)
@@ -266,7 +275,23 @@ namespace Astra
 		auto uid = tile.GetUID();
 		m_waterTiles[uid] = tile;
 		m_loaded[tile.ToString()] = &m_waterTiles[uid];
+		m_tiles.push_back(&m_waterTiles[uid]);
 	}
+
+#if ASTRA_DEBUG
+	void Layer3D::AddGizmo(const Graphics::Gizmo& gizmo)
+	{
+		auto uid = gizmo.GetUID();
+		m_gizmos[uid] = gizmo;
+		m_loaded[gizmo.ToString()] = &m_gizmos[uid];
+
+		if (m_gizmoCategories.find(uid) == m_gizmoCategories.end())
+		{
+			m_gizmoCategories[uid] = std::vector<const Graphics::Gizmo*>();
+		}
+		m_gizmoCategories[uid].push_back(&m_gizmos[uid]);
+	}
+#endif
 
 	void Layer3D::UpdateScreen(unsigned int width, unsigned int height)
 	{
@@ -319,7 +344,7 @@ namespace Astra
 
 			m_entityRenderer->Draw(delta, m_modelCategories[Graphics::ModelType::Default], m_viewMatrix, inverseViewVector, clipPlane);
 			m_normalEntityRenderer->Draw(delta, m_modelCategories[Graphics::ModelType::NormalMapped], m_viewMatrix, inverseViewVector, clipPlane);
-			m_waterRenderer->Draw(delta, m_waterTiles, m_viewMatrix, inverseViewVector);
+			m_waterRenderer->Draw(delta, m_tiles, m_viewMatrix, inverseViewVector);
 			
 		}
 		else
@@ -355,7 +380,7 @@ namespace Astra
 		}
 
 	#if ASTRA_DEBUG
-		Graphics::GizmoController::Render(m_viewMatrix);
+		Graphics::GizmoController::Render(m_gizmoCategories, m_viewMatrix);
 	#endif
 	}
 

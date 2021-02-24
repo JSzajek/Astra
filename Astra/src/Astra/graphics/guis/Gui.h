@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include "../../math/Vec2.h"
+#include "Astra/math/Vec2.h"
 #include "Spatial2D.h"
 #include "utility/Rect2.h"
 
@@ -33,13 +33,14 @@ namespace Astra::Graphics
 		std::function<void(bool hovering)> m_onReleased;
 		Rect2 m_rect;
 	public:
-		const GuiMaterial* Material;
+		GuiMaterial Material;
 	public:
 		Gui();
-		Gui(const char* const name, const GuiMaterial* material, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
-		Gui(const GuiMaterial* material, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		Gui(const char* const name, const GuiMaterial& material, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		Gui(const char* const name, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		Gui(const GuiMaterial& material, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		Gui(const Math::Vec2& position, float rotation, const Math::Vec2& scale);
 		Gui(const Gui& other);
-		~Gui();
 
 		inline void SetModulate(const Color& modulate) { m_modulate = modulate; }
 		inline virtual const Color& GetModulate() const { return m_modulate; }
@@ -48,7 +49,7 @@ namespace Astra::Graphics
 		virtual inline const int GetCustomVao() const { return -1; }
 		virtual inline const int GetCustomVbo() const { return -1; }
 
-		virtual inline const Math::Vec2& GetSize() const { return Material->GetSize(); }
+		virtual inline const Math::Vec2& GetSize() const { return Material.GetSize(); }
 		
 		virtual inline GuiType GetType() const = 0;
 		inline const Rect2& GetBounds() { return m_rect; }

@@ -2,50 +2,74 @@
 
 #include "Terrain.h"
 #include "Astra/graphics/ResourceManager.h"
+#include "Astra/graphics/Resource.h"
 
 #include <stb_image/stb_image.h>
 
 namespace Astra::Graphics
 {
 	Terrain::Terrain()
-		: Spatial(), texturePack(NULL), blendMap(NULL)
+		: Spatial(), material(), m_mesh(NULL), m_heights(NULL), m_vertexCount(0)
 	{
 	}
 
-	Terrain::Terrain(int xGrid, int zGrid, const char* const heightmap, const TerrainMaterialPack* pack, const TerrainMaterial* map)
-		: Spatial(), texturePack(pack), blendMap(map)
+	Terrain::Terrain(int xGrid, int zGrid, const char* const heightmap, const TerrainMaterial& material)
+		: Spatial(), material(material)
 	{
 		SetTranslation(Math::Vec3(xGrid * Size, 0, zGrid * Size));
-		vertexArray = GeneratePlaneTerrain(heightmap);
+		m_mesh = GeneratePlaneTerrain(heightmap);
 	}
 
-	Terrain::Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, const TerrainMaterialPack* pack, const TerrainMaterial* map)
-		: Spatial(), texturePack(pack), blendMap(map)
+	Terrain::Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, const TerrainMaterial& material)
+		: Spatial(), material(material)
 	{
 		SetTranslation(Math::Vec3(xGrid * Size, 0, zGrid * Size));
-		HeightGenerator* generator = new HeightGenerator(amplitude, octaves, roughness);
-		vertexArray = GeneratePlaneTerrain(generator);
-		delete generator;
+		HeightGenerator generator(amplitude, octaves, roughness);
+		m_mesh = GeneratePlaneTerrain(&generator);
 	}
 
-	Terrain::Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, int seed, const TerrainMaterialPack* pack, const TerrainMaterial* map)
-		: Spatial(), texturePack(pack), blendMap(map)
+	Terrain::Terrain(int xGrid, int zGrid, float amplitude, int octaves, float roughness, int seed, const TerrainMaterial& material)
+		: Spatial(), material(material)
 	{
 		SetTranslation(Math::Vec3(xGrid * Size, 0, zGrid * Size));
-		HeightGenerator* generator = new HeightGenerator(amplitude, octaves, roughness, seed);
-		vertexArray = GeneratePlaneTerrain(generator);
-		delete generator;
+		HeightGenerator generator(amplitude, octaves, roughness, seed);
+		m_mesh = GeneratePlaneTerrain(&generator);
+	}
+
+	Terrain::Terrain(const Terrain& other)
+		: Spatial(other), material(other.material),
+			m_vertexCount(other.m_vertexCount), m_mesh(other.m_mesh)
+	{
+		m_heights = new float[m_vertexCount * m_vertexCount];
+		memcpy(m_heights, other.m_heights, m_vertexCount * m_vertexCount * sizeof(float));
+		TRACK(m_mesh);
+	}
+	
+	void Terrain::operator=(const Terrain& other)
+	{
+		Name = other.Name;
+		m_uid = other.m_uid;
+
+		m_modelMatrix = new Math::Mat4(*other.m_modelMatrix);
+		m_normalMatrix = new Math::Mat4(*other.m_normalMatrix);
+		memcpy(m_data, other.m_data, sizeof(m_data));
+
+		material = other.material;
+		m_vertexCount = other.m_vertexCount;
+		m_heights = new float[m_vertexCount * m_vertexCount];
+		memcpy(m_heights, other.m_heights, m_vertexCount * m_vertexCount * sizeof(float));
+
+		m_mesh = other.m_mesh;
+		TRACK(m_mesh);
 	}
 
 	Terrain::~Terrain()
 	{
-		/*delete m_heights;
-		RESOURCE_UNLOAD(vertexArray);
-		RESOURCE_UNLOAD(blendMap);
-		RESOURCE_UNLOAD(texturePack);*/
+		UNLOAD(m_mesh);
+		delete m_heights;
 	}
 
-	const VertexArray* Terrain::GeneratePlaneTerrain(const char* const heightmap)
+	Mesh* Terrain::GeneratePlaneTerrain(const char* const heightmap)
 	{
 		static int width, height;
 		static unsigned char* buffer;
@@ -57,30 +81,25 @@ namespace Astra::Graphics
 		m_heights = new float[m_vertexCount * m_vertexCount];
 
 		int count = m_vertexCount * m_vertexCount;
-		std::vector<float> vertices(count * 3);
-		std::vector<float> textureCoords(count * 2);
-		std::vector<float> normals(count * 3);
-		std::vector<int> indices(6 * (m_vertexCount - 1) * (m_vertexCount - 1));
-
-		unsigned int pointer = 0;
+		std::vector<int> indices;
+		std::vector<Vertex> vertices;
+		indices.reserve(6 * (m_vertexCount - 1) * (m_vertexCount - 1));
+		vertices.reserve(count);
 		for (int i = 0; i < m_vertexCount; i++)
 		{
 			for (int j = 0; j < m_vertexCount; j++)
 			{
-				vertices[pointer * 3] = j / ((float)m_vertexCount - 1) * Size;
+				Vertex vertex;
 				m_heights[j + i * m_vertexCount] = GetHeight(j, i, buffer, height);
-				vertices[(pointer * 3) + 1] = m_heights[j + i * m_vertexCount];
-				vertices[(pointer * 3) + 2] = i / ((float)m_vertexCount - 1) * Size;
-				const Math::Vec3& norm = CalculateNormal(j, i, buffer, height);
-				normals[pointer * 3] = norm.x;
-				normals[(pointer * 3) + 1] = norm.y;
-				normals[(pointer * 3) + 2] = norm.z;
-				textureCoords[pointer * 2] = j / ((float)m_vertexCount - 1);
-				textureCoords[(pointer * 2) + 1] = i / ((float)m_vertexCount - 1);
-				pointer++;
+				vertex.Position = Math::Vec3(j / ((float)m_vertexCount - 1) * Size,
+											 m_heights[j + i * m_vertexCount],
+											 i / ((float)m_vertexCount - 1) * Size);
+				vertex.Normal = CalculateNormal(j, i, buffer, height);
+				vertex.TextureCoords = Math::Vec2(j / ((float)m_vertexCount - 1),
+												  i / ((float)m_vertexCount - 1));
+				vertices.push_back(vertex);
 			}
 		}
-		pointer = 0;
 		for (int gz = 0; gz < m_vertexCount - 1; gz++)
 		{
 			for (int gx = 0; gx < m_vertexCount - 1; gx++)
@@ -89,50 +108,45 @@ namespace Astra::Graphics
 				int topRight = topLeft + 1;
 				int bottomLeft = ((gz + 1) * m_vertexCount) + gx;
 				int bottomRight = bottomLeft + 1;
-				indices[pointer++] = topLeft;
-				indices[pointer++] = bottomLeft;
-				indices[pointer++] = topRight;
-				indices[pointer++] = topRight;
-				indices[pointer++] = bottomLeft;
-				indices[pointer++] = bottomRight;
+				
+				indices.push_back(topLeft);
+				indices.push_back(bottomLeft);
+				indices.push_back(topRight);
+				indices.push_back(topRight);
+				indices.push_back(bottomLeft);
+				indices.push_back(bottomRight);
 			}
 		}
-
 		stbi_image_free(buffer);
 
-		return Loader::Load(GL_TRIANGLES, vertices, indices, textureCoords, normals);
+		return Resource::LoadMesh(heightmap, vertices, indices);
 	}
 	
-	const VertexArray* Terrain::GeneratePlaneTerrain(HeightGenerator* const generator)
+	Mesh* Terrain::GeneratePlaneTerrain(HeightGenerator* const generator)
 	{
 		m_vertexCount = MAX_VERTICES;
 		m_heights = new float[m_vertexCount * m_vertexCount];
 
 		int count = m_vertexCount * m_vertexCount;
-		std::vector<float> vertices(count * 3);
-		std::vector<float> textureCoords(count * 2);
-		std::vector<float> normals(count * 3);
-		std::vector<int> indices(6 * (m_vertexCount - 1) * (m_vertexCount - 1));
-
-		unsigned int pointer = 0;
+		std::vector<int> indices;
+		std::vector<Vertex> vertices;
+		indices.reserve(6 * (m_vertexCount - 1) * (m_vertexCount - 1));
+		vertices.reserve(count);
 		for (int i = 0; i < m_vertexCount; i++)
 		{
 			for (int j = 0; j < m_vertexCount; j++)
 			{
-				vertices[pointer * 3] = j / ((float)m_vertexCount - 1) * Size;
+				Vertex vertex;
 				m_heights[j + i * m_vertexCount] = GetHeight(j, i, generator);
-				vertices[(pointer * 3) + 1] = m_heights[j + i * m_vertexCount];
-				vertices[(pointer * 3) + 2] = i / ((float)m_vertexCount - 1) * Size;
-				const Math::Vec3& norm = CalculateNormal(j, i, generator);
-				normals[pointer * 3] = norm.x;
-				normals[(pointer * 3) + 1] = norm.y;
-				normals[(pointer * 3) + 2] = norm.z;
-				textureCoords[pointer * 2] = j / ((float)m_vertexCount - 1);
-				textureCoords[(pointer * 2) + 1] = i / ((float)m_vertexCount - 1);
-				pointer++;
+				vertex.Position = Math::Vec3(j / ((float)m_vertexCount - 1) * Size,
+											 m_heights[j + i * m_vertexCount],
+											 i / ((float)m_vertexCount - 1) * Size);
+				vertex.Normal = CalculateNormal(j, i, generator);
+				vertex.TextureCoords = Math::Vec2(j / ((float)m_vertexCount - 1),
+												  i / ((float)m_vertexCount - 1));
+				vertices.push_back(vertex);
 			}
 		}
-		pointer = 0;
 		for (int gz = 0; gz < m_vertexCount - 1; gz++)
 		{
 			for (int gx = 0; gx < m_vertexCount - 1; gx++)
@@ -141,15 +155,16 @@ namespace Astra::Graphics
 				int topRight = topLeft + 1;
 				int bottomLeft = ((gz + 1) * m_vertexCount) + gx;
 				int bottomRight = bottomLeft + 1;
-				indices[pointer++] = topLeft;
-				indices[pointer++] = bottomLeft;
-				indices[pointer++] = topRight;
-				indices[pointer++] = topRight;
-				indices[pointer++] = bottomLeft;
-				indices[pointer++] = bottomRight;
+
+				indices.push_back(topLeft);
+				indices.push_back(bottomLeft);
+				indices.push_back(topRight);
+				indices.push_back(topRight);
+				indices.push_back(bottomLeft);
+				indices.push_back(bottomRight);
 			}
 		}
-		return Loader::Load(GL_TRIANGLES, vertices, indices, textureCoords, normals);
+		return Resource::LoadMesh(("HeightGenerator_" + std::to_string(generator->GetSeed())).c_str(), vertices, indices);
 	}
 
 	float Terrain::GetHeightOfTerrain(int xWorldCoord, int zWorldCoord)
@@ -170,14 +185,14 @@ namespace Astra::Graphics
 		if (xCoord <= (1 - zCoord))
 		{
 			return Math::BarryCentric(Math::Vec3(0, m_heights[xGrid + zGrid * m_vertexCount], 0),
-										Math::Vec3(1, m_heights[(xGrid + 1) + zGrid * m_vertexCount], 0),
-										Math::Vec3(0, m_heights[xGrid + (zGrid + 1) * m_vertexCount], 1),
-										Math::Vec2(xCoord, zCoord));
+									  Math::Vec3(1, m_heights[(xGrid + 1) + zGrid * m_vertexCount], 0),
+									  Math::Vec3(0, m_heights[xGrid + (zGrid + 1) * m_vertexCount], 1),
+									  Math::Vec2(xCoord, zCoord));
 		}
 		return Math::BarryCentric(Math::Vec3(1, m_heights[(xGrid + 1) + zGrid * m_vertexCount], 0),
-									Math::Vec3(1, m_heights[(xGrid + 1) + (zGrid + 1) * m_vertexCount], 1),
-									Math::Vec3(0, m_heights[xGrid + (zGrid + 1) * m_vertexCount], 1),
-									Math::Vec2(xCoord, zCoord));
+								  Math::Vec3(1, m_heights[(xGrid + 1) + (zGrid + 1) * m_vertexCount], 1),
+								  Math::Vec3(0, m_heights[xGrid + (zGrid + 1) * m_vertexCount], 1),
+								  Math::Vec2(xCoord, zCoord));
 	}
 
 	float Terrain::GetHeight(int x, int z, const unsigned char* buffer, const int& imageHeight)

@@ -17,27 +17,27 @@ namespace Astra::Graphics
 		{
 		}
 
-		Panel(const char* const name, const GuiMaterial* material, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
+		Panel(const char* const name, const GuiMaterial& material, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
 			: Gui(name, material, position, rotation, scale), m_text("", position, rotation, scale)
 		{
-			m_rect.SetSize(Math::iVec2(static_cast<int>(m_rows[1].x * Material->GetSize().x), static_cast<int>(m_rows[1].y * Material->GetSize().y)));
+			m_rect.SetSize(Math::iVec2(static_cast<int>(m_rows[1].x * Material.GetSize().x), static_cast<int>(m_rows[1].y * Material.GetSize().y)));
 			UpdateMatrices();
 		}
 
 
-		Panel(const GuiMaterial* material, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
+		Panel(const GuiMaterial& material, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
 			: Gui(material, position, rotation, scale), m_text("", position, rotation, scale)
 		{
-			m_rect.SetSize(Math::iVec2(static_cast<int>(m_rows[1].x * Material->GetSize().x), static_cast<int>(m_rows[1].y * Material->GetSize().y)));
+			m_rect.SetSize(Math::iVec2(static_cast<int>(m_rows[1].x * Material.GetSize().x), static_cast<int>(m_rows[1].y * Material.GetSize().y)));
 			UpdateMatrices();
 		}
 
-		Panel(const GuiMaterial* material, const Math::Vec2& position, const Math::Vec2& scale)
+		Panel(const GuiMaterial& material, const Math::Vec2& position, const Math::Vec2& scale)
 			: Panel(material, position, 0, scale)
 		{
 		}
 
-		Panel(const char* const name, const GuiMaterial* material, const Math::Vec2& position, const Math::Vec2& scale)
+		Panel(const char* const name, const GuiMaterial& material, const Math::Vec2& position, const Math::Vec2& scale)
 			: Panel(name, material, position, 0, scale)
 		{
 		}
@@ -70,7 +70,7 @@ namespace Astra::Graphics
 		void UpdateMatrices() override
 		{
 			Math::Vec2 copy = m_rows[1];
-			m_rows[1] = copy * Material->GetSize();
+			m_rows[1] = copy * Material.GetSize();
 			Spatial2D::UpdateMatrices();
 			m_rows[1] = copy;
 		}

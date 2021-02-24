@@ -30,7 +30,7 @@ namespace Astra::Graphics
 		inline void SetShadowMatrix(const Math::Mat4* shadowMatrix) { m_toShadowSpaceMatrix = shadowMatrix; }
 
 		void Draw(float delta, 
-				  const std::unordered_map<unsigned int, Graphics::WaterTile>& tiles,
+				  const std::vector<Graphics::WaterTile*>& tiles,
 				  const Math::Mat4* viewMatrix = NULL, 
 				  const Math::Vec4& inverseViewVector = NULL, 
 				  const Math::Vec4& clipPlane = DefaultClipPlane);

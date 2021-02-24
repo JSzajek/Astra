@@ -118,7 +118,7 @@ namespace Astra::Graphics
 					Flush(m_textureMapping, offset);
 				}
 
-				const auto& temp = m_textureMapping.find(gui->Material->GetId());
+				const auto& temp = m_textureMapping.find(gui->Material.GetId());
 				if (temp == m_textureMapping.end())
 				{
 					if (m_textureMapping.size() + 1 == MAX_TEXTURE_SLOTS)
@@ -126,7 +126,7 @@ namespace Astra::Graphics
 						Flush(m_textureMapping, offset);
 					}
 					slot = m_textureMapping.size();
-					m_textureMapping[gui->Material->GetId()] = m_textureMapping.size();
+					m_textureMapping[gui->Material.GetId()] = m_textureMapping.size();
 				}
 				else
 				{
@@ -139,7 +139,7 @@ namespace Astra::Graphics
 				float dat[8] =
 				{
 					static_cast<float>(slot),
-					static_cast<float>(gui->Material->GetRowCount()),
+					static_cast<float>(gui->Material.GetRowCount()),
 					static_cast<float>(static_cast<Image*>(gui)->GetMaterialXOffset()),
 					static_cast<float>(static_cast<Image*>(gui)->GetMaterialYOffset()),
 					color.GetR(),
@@ -165,7 +165,7 @@ namespace Astra::Graphics
 				glBindBuffer(GL_ARRAY_BUFFER, gui->GetCustomVbo());
 
 				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, gui->Material->GetId());
+				glBindTexture(GL_TEXTURE_2D, gui->Material.GetId());
 
 				glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 1);
 				glBindVertexArray(0);

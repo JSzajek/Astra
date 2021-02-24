@@ -15,7 +15,7 @@ namespace Astra::Graphics
 		{
 			m_attenuation = Math::Vec3(constant, linear, quadratic);
 		#if ASTRA_DEBUG
-			m_gizmo = new Gizmo(RESOURCE("res/textures/PointLight.png"), translation, 3);
+			m_gizmo = Gizmo(RESOURCE("res/textures/PointLight.png"), translation, 3);
 		#endif
 		}
 

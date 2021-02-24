@@ -39,7 +39,6 @@ namespace Astra::Graphics
 		inline void AddLight(Light* light) { AddLight(0, light); }
 		void AddLight(unsigned int index, Light* light);
 	private:
-		void PrepareTerrain(const Terrain* terrain);
 		void BindTerrainTextures(const Terrain* terrain);
 	};
 }

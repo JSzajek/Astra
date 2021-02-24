@@ -7,31 +7,29 @@
 namespace Astra::Graphics
 {
 	ParticleSystem::ParticleSystem()
-		: LayerEntity(), m_material(NULL), m_center(), m_particlePerSecond(0), m_speed(0), m_gravityComplient(0), m_lifeSpan(0), m_additive(0)
+		: LayerEntity(), m_center(), m_particlePerSecond(0), m_speed(0), m_gravityComplient(0), m_lifeSpan(0), m_additive(0)
 	{
 	#if ASTRA_DEBUG
-		m_gizmo = new Gizmo(RESOURCE("res/textures/Emitter.png"), Math::Vec3::Zero, 3);
+		m_gizmo = Gizmo(RESOURCE("res/textures/Emitter.png"), Math::Vec3::Zero, 3);
 	#endif
 	}
 
-	ParticleSystem::ParticleSystem(const char* const name, const ParticleMaterial* const material, const Math::Vec3& center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, bool additive)
+	ParticleSystem::ParticleSystem(const char* const name, const ParticleMaterial& material, const Math::Vec3& center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, bool additive)
 		: LayerEntity(name), m_material(material), m_center(center), m_particlePerSecond(particlesPerSecond), m_speed(speed), 
 			m_gravityComplient(gravityComplient), m_lifeSpan(lifeSpan), m_additive(additive), m_scale(0), m_speedError(0), 
 			m_lifeError(0), m_scaleError(0), m_randomRotation(false), m_direction(Math::Vec3::Zero), m_directionDeviation(0)
 	{
-		m_material = ResourceManager::Track(material);
 	#if ASTRA_DEBUG
-		m_gizmo = new Gizmo(RESOURCE("res/textures/Emitter.png"), center, 3);
+		m_gizmo = Gizmo(RESOURCE("res/textures/Emitter.png"), center, 3);
 	#endif
 	}
 
-	ParticleSystem::ParticleSystem(const ParticleMaterial* const material, const Math::Vec3& center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, bool additive)
+	ParticleSystem::ParticleSystem(const ParticleMaterial& material, const Math::Vec3& center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, bool additive)
 		: LayerEntity(), m_material(material), m_center(center), m_particlePerSecond(particlesPerSecond), m_speed(speed),
 			m_gravityComplient(gravityComplient), m_lifeSpan(lifeSpan), m_additive(additive)
 	{
-		m_material = ResourceManager::Track(material);
 	#if ASTRA_DEBUG
-		m_gizmo = new Gizmo(RESOURCE("res/textures/Emitter.png"), center, 3);
+		m_gizmo = Gizmo(RESOURCE("res/textures/Emitter.png"), center, 3);
 	#endif
 	}
 

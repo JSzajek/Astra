@@ -48,7 +48,7 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
-	void WaterRenderer::Draw(float delta, const std::unordered_map<unsigned int, Graphics::WaterTile>& tiles, 
+	void WaterRenderer::Draw(float delta, const std::vector<Graphics::WaterTile*>& tiles,
 							 const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		m_shader->Start();
@@ -64,11 +64,11 @@ namespace Astra::Graphics
 	#endif
 
 		PrepareRender();
-		for (const auto& tileDir: tiles)
+		for (auto* tile: tiles)
 		{
-			PrepareTile(&tileDir.second);
-			m_shader->SetUniform1f(MOVE_FACTOR, tileDir.second.material->Increase(delta));
-			m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, tileDir.second.GetModelMatrix());
+			PrepareTile(tile);
+			m_shader->SetUniform1f(MOVE_FACTOR, tile->material.Increase(delta));
+			m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, tile->GetModelMatrix());
 			glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
 		}
 
@@ -119,17 +119,17 @@ namespace Astra::Graphics
 
 	void WaterRenderer::PrepareTile(const WaterTile* tile)
 	{
-		m_shader->SetUniform1f(WAVE_STRENGTH, tile->material->waveStrength);
-		m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, tile->material->reflectivity);
+		m_shader->SetUniform1f(WAVE_STRENGTH, tile->material.waveStrength);
+		m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, tile->material.reflectivity);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, tile->material->diffuseTexture->id);
+		glBindTexture(GL_TEXTURE_2D, tile->material.diffuseTexture->id);
 		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, tile->material->dudvTexture->id);
+		glBindTexture(GL_TEXTURE_2D, tile->material.dudvTexture->id);
 		glActiveTexture(GL_TEXTURE4);
-		glBindTexture(GL_TEXTURE_2D, tile->material->normalTexture->id);
+		glBindTexture(GL_TEXTURE_2D, tile->material.normalTexture->id);
 		glActiveTexture(GL_TEXTURE5);
-		glBindTexture(GL_TEXTURE_2D, tile->material->GetSpecularId());
+		glBindTexture(GL_TEXTURE_2D, tile->material.GetSpecularId());
 	}
 
 	void WaterRenderer::UnbindVertexArray()

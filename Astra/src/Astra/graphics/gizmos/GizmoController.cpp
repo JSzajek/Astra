@@ -20,19 +20,9 @@ namespace Astra::Graphics
 		m_gizmoRenderer->UpdateProjectionMatrix(projectionMatrix);
 	}
 
-	void GizmoController::RenderImpl(const Math::Mat4* viewMatrix)
+	void GizmoController::RenderImpl(const std::unordered_map<unsigned int, std::vector<const Graphics::Gizmo*>>& gizmos, const Math::Mat4* viewMatrix)
 	{
-		m_gizmoRenderer->Draw(0, viewMatrix, NULL);
+		m_gizmoRenderer->Draw(gizmos, viewMatrix);
 	}
-
-	void GizmoController::AddGizmoImpl(const Gizmo* gizmo)
-	{
-		m_gizmoRenderer->AddGizmo(gizmo);
-	}
-
-	//void GizmoController::ClearImpl()
-	//{
-	//	m_gizmoRenderer->Clear();
-	//}
 #endif
 }

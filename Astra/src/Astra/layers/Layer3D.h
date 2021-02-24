@@ -87,6 +87,7 @@ namespace Astra
 		std::unordered_map<unsigned int, Graphics::Terrain> m_terrains;
 		std::unordered_map<unsigned int, std::vector<const Graphics::Terrain*>> m_terrainCategories;
 		std::unordered_map<unsigned int, Graphics::WaterTile> m_waterTiles;
+		std::vector<Graphics::WaterTile*> m_tiles;
 
 		// Entities - 1: regular, 2: normal-mapped, 3: selected, 4: shadow-caster
 		//std::unordered_map<unsigned int, std::vector<Graphics::Model>> m_models[4];
@@ -101,6 +102,11 @@ namespace Astra
 		// Skybox
 		Graphics::SkyboxMaterial m_skybox;
 
+		// Gizmos
+	#if ASTRA_DEBUG
+		std::unordered_map<unsigned int, Graphics::Gizmo> m_gizmos;
+		std::unordered_map<unsigned int, std::vector<const Graphics::Gizmo*>> m_gizmoCategories;
+	#endif
 		bool m_attached = false;
 	public:
 		Layer3D();
@@ -120,6 +126,8 @@ namespace Astra
 		void AddWaterTile(const Graphics::WaterTile& tile);
 		inline void AddPointLight(const Graphics::PointLight& light) { m_pointLights.emplace_back(light); }
 		
+	
+
 		void SetMultisampling(unsigned int sampleSize);
 		void SetBloom(bool enabled);
 		void SetHDR(bool enabled);
@@ -134,6 +142,9 @@ namespace Astra
 		void ToggleWireframeMode(unsigned char state);
 	#endif
 	private:
+	#if ASTRA_DEBUG
+		void AddGizmo(const Graphics::Gizmo& gizmo);
+	#endif
 		void LayerUpdateAnimations(float delta);
 		//void LayerUpdateParticles(float delta);
 	private:

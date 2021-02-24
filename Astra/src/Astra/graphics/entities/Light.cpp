@@ -6,7 +6,7 @@ namespace Astra::Graphics
 {
 	Light::Light(const Math::Vec3& translation, const Math::Vec3& color)
 		: Spatial(translation), m_color(color), m_ambient(Math::Vec3::Zero), m_diffuse(Math::Vec3::Zero), m_specular(Math::Vec3::Zero),
-			m_attenuation(Math::Vec3::Zero), m_cutOff(0), m_outerCutOff(0), m_gizmo(NULL)
+			m_attenuation(Math::Vec3::Zero), m_cutOff(0), m_outerCutOff(0), m_gizmo()
 	{
 	}
 
@@ -23,7 +23,7 @@ namespace Astra::Graphics
 	Light::Light(const Math::Vec3& translation, const Math::Vec3& ambient,
 					const Math::Vec3& diffuse, const Math::Vec3& specular)
 		: Spatial(translation), m_color(Math::Vec3::Zero), m_ambient(ambient), m_diffuse(diffuse), m_specular(specular),
-			m_attenuation(Math::Vec3::Zero), m_cutOff(0), m_outerCutOff(0), m_gizmo(NULL)
+			m_attenuation(Math::Vec3::Zero), m_cutOff(0), m_outerCutOff(0), m_gizmo()
 	{
 	}
 

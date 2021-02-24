@@ -55,12 +55,15 @@ namespace Astra::Graphics
 
 		for (const auto& directory : terrains)
 		{
-			PrepareTerrain(directory.second.front());
+			const auto* mesh = directory.second.front()->GetMesh();
+			glBindVertexArray(mesh->GetVAO());
+
+			BindTerrainTextures(directory.second.front());
 			for (const auto* terrain : directory.second)
 			{
 				m_shader->SetUniformMat4(NORMAL_MATRIX_TAG, terrain->GetNormalMatrix());
 				m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, terrain->GetModelMatrix());
-				glDrawElements(terrain->vertexArray->drawType, terrain->vertexArray->vertexCount, GL_UNSIGNED_INT, NULL);
+				glDrawElements(GL_TRIANGLES, mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
 			}
 		}
 	#if ASTRA_DEBUG
@@ -82,28 +85,22 @@ namespace Astra::Graphics
 		light->SetCallback(std::bind(&Renderer::UpdateLight, this, index, light));
 	}
 
-	void TerrainRenderer::PrepareTerrain(const Terrain* terrain)
-	{
-		glBindVertexArray(terrain->vertexArray->vaoId);
-		BindTerrainTextures(terrain);
-	}
-
 	void TerrainRenderer::BindTerrainTextures(const Terrain* terrain)
 	{
 		// TODO: Add shine and reflectivity back to terrains
 		m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, 1);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->backgroundTexture->GetId());
+		glBindTexture(GL_TEXTURE_2D, terrain->material.GetBackgroundId());
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->rTexture->GetId());
+		glBindTexture(GL_TEXTURE_2D, terrain->material.GetRedId());
 		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->gTexture->GetId());
+		glBindTexture(GL_TEXTURE_2D, terrain->material.GetGreenId());
 		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->bTexture->GetId());
+		glBindTexture(GL_TEXTURE_2D, terrain->material.GetBlueId());
 		glActiveTexture(GL_TEXTURE4);
-		glBindTexture(GL_TEXTURE_2D, terrain->blendMap->GetId());
+		glBindTexture(GL_TEXTURE_2D, terrain->material.GetBlendMapId());
 		glActiveTexture(GL_TEXTURE5);
-		glBindTexture(GL_TEXTURE_2D, terrain->texturePack->specularTexture->id);
+		glBindTexture(GL_TEXTURE_2D, terrain->material.GetSpecularId());
 	}
 }

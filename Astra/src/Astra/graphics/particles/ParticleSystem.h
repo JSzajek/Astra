@@ -11,10 +11,10 @@ namespace Astra::Graphics
 	{
 	private:
 	#if ASTRA_DEBUG
-		const Gizmo* m_gizmo;
+		Gizmo m_gizmo;
 	#endif
 	protected:
-		const ParticleMaterial* m_material;
+		ParticleMaterial m_material;
 		Math::Vec3 m_center;
 		float m_particlePerSecond;
 		float m_speed;
@@ -30,12 +30,12 @@ namespace Astra::Graphics
 		float m_directionDeviation;
 	public:
 		ParticleSystem();
-		ParticleSystem(const char* const name, const ParticleMaterial* material, const Math::Vec3& center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, bool additive = false);
-		ParticleSystem(const ParticleMaterial* material, const Math::Vec3& center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, bool additive = false);
+		ParticleSystem(const char* const name, const ParticleMaterial& material, const Math::Vec3& center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, bool additive = false);
+		ParticleSystem(const ParticleMaterial& material, const Math::Vec3& center, float particlesPerSecond, float speed, float gravityComplient, float lifeSpan, bool additive = false);
 		ParticleSystem(const ParticleSystem& other);
 		~ParticleSystem();
 	#if ASTRA_DEBUG
-		inline const Gizmo* const GetGizmo() const { return m_gizmo; }
+		inline const Gizmo& GetGizmo() const { return m_gizmo; }
 	#endif
 		inline Math::Vec3* GetCenter() { return &m_center; }
 

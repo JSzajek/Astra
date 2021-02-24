@@ -26,6 +26,6 @@ namespace Astra::Graphics
 				  const Math::Vec4& inverseViewVector = NULL, 
 				  const Math::Vec4& clipPlane = DefaultClipPlane);
 	private:
-		void PrepareMesh(const Mesh& mesh);
+		void PrepareModel(const Model* model);
 	};
 }

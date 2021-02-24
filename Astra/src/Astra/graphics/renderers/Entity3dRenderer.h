@@ -40,6 +40,6 @@ namespace Astra::Graphics
 		inline void AddLight(Light* light) { AddLight(0, light); }
 		void AddLight(unsigned int index, Light* light);
 	private:
-		void PrepareMesh(const Mesh& mesh);
+		void PrepareModel(const Model* model);
 	};
 }

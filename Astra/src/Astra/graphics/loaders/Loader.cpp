@@ -223,47 +223,47 @@ namespace Astra::Graphics
 		static unsigned char* buffer;
 
 		CubeMapTexture* texture = NULL;
-		if (ResourceManager::QueryTexture(filepaths, &texture))
-		{
-			return texture;
-		}
-		else if (texture)
-		{
-			glGenTextures(1, &texture->id);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, texture->id);
-			stbi_set_flip_vertically_on_load(0); // Don't flip?
-			
-			auto hdr = Application::Get().GetWindow().IsHDR();
-			
-			int width, height;
-			for (size_t i = 0; i < filepaths.size(); i++)
-			{
-				auto* tex = (*texture)[i];
-				buffer = stbi_load(std::string(tex->m_filePath).c_str(), &width, &height, &m_bpp, 4);
-				if (!buffer)
-				{
-					ASTRA_CORE_WARN("Cube Map Texture {0} Did Not Load Correctly.", tex->m_filePath);
-					return NULL;
-				}
+		//if (ResourceManager::QueryTexture(filepaths, &texture))
+		//{
+		//	return texture;
+		//}
+		//else if (texture)
+		//{
+		//	glGenTextures(1, &texture->id);
+		//	glActiveTexture(GL_TEXTURE0);
+		//	glBindTexture(GL_TEXTURE_CUBE_MAP, texture->id);
+		//	stbi_set_flip_vertically_on_load(0); // Don't flip?
+		//	
+		//	auto hdr = Application::Get().GetWindow().IsHDR();
+		//	
+		//	int width, height;
+		//	for (size_t i = 0; i < filepaths.size(); i++)
+		//	{
+		//		auto* tex = (*texture)[i];
+		//		buffer = stbi_load(std::string(tex->m_filePath).c_str(), &width, &height, &m_bpp, 4);
+		//		if (!buffer)
+		//		{
+		//			ASTRA_CORE_WARN("Cube Map Texture {0} Did Not Load Correctly.", tex->m_filePath);
+		//			return NULL;
+		//		}
 
-				if (buffer)
-				{
-					glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, hdr ? GL_SRGB8_ALPHA8 : GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-					stbi_image_free(buffer);
-				}
-			}
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		//		if (buffer)
+		//		{
+		//			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, hdr ? GL_SRGB8_ALPHA8 : GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		//			stbi_image_free(buffer);
+		//		}
+		//	}
+		//	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		//	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		//	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		//	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-			glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+		//	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 			return texture;
-		}
+		/*}
 		ASTRA_CORE_ERROR("Loader Error in Cube Map Texture Initialization.");
-		return NULL;
+		return NULL;*/
 	}
 
 	void Loader::UpdateCubeMapImpl(CubeMapTexture* texture, bool hdrEnabled)
@@ -272,36 +272,36 @@ namespace Astra::Graphics
 		static int m_bpp;
 		static unsigned char* buffer;
 
-		if (texture->hdr == hdrEnabled)
-		{
-			return;
-		}
+		//if (texture->hdr == hdrEnabled)
+		//{
+		//	return;
+		//}
 
-		glBindTexture(GL_TEXTURE_CUBE_MAP, texture->id);
-		stbi_set_flip_vertically_on_load(false); // Don't flip?
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, texture->id);
+		//stbi_set_flip_vertically_on_load(false); // Don't flip?
 
-		int width, height;
-		for (size_t i = 0; i < texture->GetFiles().size(); i++)
-		{
-			auto* tex = (*texture)[i];
-			buffer = stbi_load(std::string(tex->m_filePath).c_str(), &width, &height, &m_bpp, 4);
-			if (!buffer)
-			{
-				ASTRA_CORE_WARN("Cube Map Texture {0} Did Not Load Correctly.", tex->m_filePath);
-				return;
-			}
+		//int width, height;
+		//for (size_t i = 0; i < texture->GetFiles().size(); i++)
+		//{
+		//	auto* tex = (*texture)[i];
+		//	buffer = stbi_load(std::string(tex->m_filePath).c_str(), &width, &height, &m_bpp, 4);
+		//	if (!buffer)
+		//	{
+		//		ASTRA_CORE_WARN("Cube Map Texture {0} Did Not Load Correctly.", tex->m_filePath);
+		//		return;
+		//	}
 
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, hdrEnabled ? GL_SRGB8_ALPHA8 : GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-			stbi_image_free(buffer);
-		}
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		//	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, hdrEnabled ? GL_SRGB8_ALPHA8 : GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		//	stbi_image_free(buffer);
+		//}
+		//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-		texture->hdr = hdrEnabled;
-		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+		//texture->hdr = hdrEnabled;
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
 
 	WaterFrameBuffer* Loader::LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,

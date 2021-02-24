@@ -59,37 +59,37 @@ namespace Astra::Graphics
 
 		for (const auto& directory : models)
 		{
-			for (const auto& mesh : directory.second.front()->GetMeshes())
+			const auto* mesh = directory.second.front()->GetMesh();
+			glBindVertexArray(mesh->GetVAO());
+
+			for (const auto* model : directory.second)
 			{
-				PrepareMesh(mesh);
-				for (const auto* model : directory.second)
+				PrepareModel(model);
+				m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(model->GetRowCount()));
+
+				m_shader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
+				m_shader->SetUniformMat4(NORMAL_MATRIX_TAG, model->GetNormalMatrix());
+				m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetModelMatrix());
+
+				if (model->HasAnimator())
 				{
-					m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(model->GetRowCount()));
+					m_shader->SetUniform1i("animated", true);
 
-					m_shader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
-					m_shader->SetUniformMat4(NORMAL_MATRIX_TAG, model->GetNormalMatrix());
-					m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetModelMatrix());
-
-					if (model->HasAnimator())
+					const auto size = model->GetAnimator()->GetCount();
+					for (unsigned int i = 0; i < size; ++i)
 					{
-						m_shader->SetUniform1i("animated", true);
-
-						const auto size = model->GetAnimator()->GetCount();
-						for (unsigned int i = 0; i < size; ++i)
-						{
-							m_shader->SetUniformMat4(Shader::GetBoneTransformTag(i), model->GetAnimator()->GetOffsets()[i]);
-						}
+						m_shader->SetUniformMat4(Shader::GetBoneTransformTag(i), model->GetAnimator()->GetOffsets()[i]);
 					}
-					else
-					{
-						m_shader->SetUniform1i("animated", false);
-					}
-
-					glDrawElements(GL_TRIANGLES, mesh.GetVertexCount(), GL_UNSIGNED_INT, NULL);
 				}
-				glBindVertexArray(0);
-				glEnable(GL_CULL_FACE);
+				else
+				{
+					m_shader->SetUniform1i("animated", false);
+				}
+
+				glDrawElements(GL_TRIANGLES, mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
 			}
+			glBindVertexArray(0);
+			glEnable(GL_CULL_FACE);
 		}
 
 	#if ASTRA_DEBUG
@@ -104,50 +104,46 @@ namespace Astra::Graphics
 	#endif
 	}
 
-	void NormalEntity3dRenderer::PrepareMesh(const Mesh& mesh)
+	void NormalEntity3dRenderer::PrepareModel(const Model* model)
 	{
-		glBindVertexArray(mesh.GetVAO());
-		
-		if (const auto* material = mesh.GetMaterial())
+		const auto& material = model->GetMaterial();
+		if (material.GetTransparency())
 		{
-			if (material->GetTransparency())
-			{
-				glDisable(GL_CULL_FACE);
-			}
+			glDisable(GL_CULL_FACE);
+		}
 
-			m_shader->SetUniform1f(HEIGHT_SCALE, material->GetHeightOffset());
-			m_shader->SetUniform1i(FAKE_LIGHT, material->GetFakeLighting());
-			m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, material->GetReflectivity());
+		m_shader->SetUniform1f(HEIGHT_SCALE, material.GetHeightOffset());
+		m_shader->SetUniform1i(FAKE_LIGHT, material.GetFakeLighting());
+		m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, material.GetReflectivity());
 
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, material->GetTextureId(TextureType::DiffuseMap));
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, material.GetTextureId(TextureType::DiffuseMap));
 
-			auto normal = material->HasTexture(TextureType::NormalMap);
-			m_shader->SetUniform1i(NORMAL_MAPPED_FLAG_TAG, normal);
-			if (normal)
-			{
-				glActiveTexture(GL_TEXTURE1);
-				glBindTexture(GL_TEXTURE_2D, material->GetTextureId(TextureType::NormalMap));
-			}
+		auto normal = material.HasTexture(TextureType::NormalMap);
+		m_shader->SetUniform1i(NORMAL_MAPPED_FLAG_TAG, normal);
+		if (normal)
+		{
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, material.GetTextureId(TextureType::NormalMap));
+		}
 
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, material->GetTextureId(TextureType::SpecularMap));
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, material.GetTextureId(TextureType::SpecularMap));
 
-			auto parralax = material->HasTexture(TextureType::HeightMap);
-			m_shader->SetUniform1i(PARALLAX_MAPPED_FLAG_TAG, parralax);
-			if (parralax)
-			{
-				glActiveTexture(GL_TEXTURE3);
-				glBindTexture(GL_TEXTURE_2D, material->GetTextureId(TextureType::HeightMap));
-			}
+		auto parralax = material.HasTexture(TextureType::HeightMap);
+		m_shader->SetUniform1i(PARALLAX_MAPPED_FLAG_TAG, parralax);
+		if (parralax)
+		{
+			glActiveTexture(GL_TEXTURE3);
+			glBindTexture(GL_TEXTURE_2D, material.GetTextureId(TextureType::HeightMap));
+		}
 			
-			auto hasGlow = material->HasTexture(TextureType::EmissionMap);
-			m_shader->SetUniform1i(GLOWING, hasGlow);
-			if (hasGlow)
-			{
-				glActiveTexture(GL_TEXTURE4);
-				glBindTexture(GL_TEXTURE_2D, material->GetTextureId(TextureType::EmissionMap));
-			}
+		auto hasGlow = material.HasTexture(TextureType::EmissionMap);
+		m_shader->SetUniform1i(GLOWING, hasGlow);
+		if (hasGlow)
+		{
+			glActiveTexture(GL_TEXTURE4);
+			glBindTexture(GL_TEXTURE_2D, material.GetTextureId(TextureType::EmissionMap));
 		}
 	}
 

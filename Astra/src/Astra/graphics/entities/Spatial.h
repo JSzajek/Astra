@@ -19,7 +19,7 @@ namespace Astra::Graphics
 
 	struct Spatial : public LayerEntity
 	{
-	private:
+	protected:
 		Math::Mat4* m_modelMatrix;
 		Math::Mat4* m_normalMatrix;
 	protected:
