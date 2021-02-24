@@ -36,13 +36,14 @@ namespace Astra::Graphics
 		inline void SetShadowMatrix(const Math::Mat4* shadowMatrix) { m_toShadowSpaceMatrix = shadowMatrix; }
 
 		void Draw(float delta, 
-				  const std::unordered_map<unsigned int, std::vector<const Model*>>& models, 
+				  const std::unordered_map<unsigned int, std::vector<const Model*>>& models,
 				  const Math::Mat4* viewMatrix = NULL, 
 				  const Math::Vec4& inverseViewVector = NULL, 
 				  const Math::Vec4& clipPlane = DefaultClipPlane);
-		void AddLight(Light* light);
-		void UpdateLight(const Light* light);
+
+		inline void AddLight(Light* light) { AddLight(0, light); }
+		void AddLight(unsigned int index, Light* light);
 	private:
-		void PrepareMesh(const Mesh& mesh);
+		void PrepareModel(const Model* model);
 	};
 }

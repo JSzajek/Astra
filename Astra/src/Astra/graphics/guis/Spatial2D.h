@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../../math/Maths.h"
+#include "Astra/graphics/entities/LayerEntity.h"
+#include "Astra/math/Maths.h"
 
 namespace Astra::Graphics
 {
@@ -16,9 +17,9 @@ namespace Astra::Graphics
 	#define Y_POS 1
 	#define Z_POS 2
 
-	struct Spatial2D
+	struct Spatial2D : public LayerEntity
 	{
-	private:
+	protected:
 		Math::Mat4* m_modelMatrix;
 	protected:
 		union // TODO: Look into moving into private encapsulation
@@ -28,11 +29,16 @@ namespace Astra::Graphics
 		};
 		float m_rotation;
 	public:
-		Spatial2D();
+		Spatial2D(const char* const name = "");
 		Spatial2D(const Spatial2D& other);
+		Spatial2D(const char* const name, const Math::Vec2& translation);
 		Spatial2D(const Math::Vec2& translation);
 		Spatial2D(const Math::Vec2& translation, float rotation, const Math::Vec2& scale);
+		Spatial2D(const char* const name, const Math::Vec2& translation, float rotation, const Math::Vec2& scale);
 		~Spatial2D();
+
+		virtual void Free() override { }
+		inline virtual std::string ToString() const override { return !Name.length() ? ("Spatial2D_&" + std::to_string(m_uid)) : Name; }
 
 		virtual inline const Math::Vec2& GetTranslation() const { return m_rows[0]; }
 		virtual inline const float GetRotation() const { return m_rotation; }
@@ -51,5 +57,4 @@ namespace Astra::Graphics
 		void UpdateVector(Math::Vec2* _vec, unsigned int _op, unsigned int _index, float _val);
 		void UpdateValue(float* _base, unsigned int _op, float _val);
 	};
-
 }

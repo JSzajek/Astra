@@ -2,8 +2,7 @@
 
 #include "BloomEffect.h"
 #include "Astra/Application.h"
-#include "../loaders/Loader.h"
-#include "../ResourceManager.h"
+#include "Astra/graphics/loaders/Loader.h"
 
 namespace Astra::Graphics
 {
@@ -37,7 +36,7 @@ namespace Astra::Graphics
 
 	BloomEffect::~BloomEffect()
 	{
-		ResourceManager::Unload(m_secondBuffer);
+		delete m_secondBuffer;
 		delete m_secondShader;
 		for (const auto* effect : m_blurs)
 		{

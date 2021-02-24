@@ -1,12 +1,11 @@
 #include "astra_pch.h"
 
 #include "SkyboxRenderer.h"
-#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {
 	SkyboxRenderer::SkyboxRenderer(Shader* shader, const Color* fogColor)
-		: Renderer(), m_fogColor(fogColor), m_blendFactor(0), m_material(NULL), m_rotation(0), m_fixedViewMatrix(new Math::Mat4())
+		: Renderer(), m_fogColor(fogColor), m_blendFactor(0), m_rotation(0), m_fixedViewMatrix(new Math::Mat4()), m_set(false)
 	{
 		Renderer::SetShader(shader);
 
@@ -20,8 +19,13 @@ namespace Astra::Graphics
 
 	SkyboxRenderer::~SkyboxRenderer()
 	{
-		RESOURCE_UNLOAD(m_cube);
-		RESOURCE_UNLOAD(m_material);
+		delete m_cube;
+	}
+
+	void SkyboxRenderer::SetSkyBox(const SkyboxMaterial& material)
+	{
+		m_set = true;
+		m_material = material;
 	}
 
 	void SkyboxRenderer::Draw(float delta, const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
@@ -52,12 +56,13 @@ namespace Astra::Graphics
 
 	void SkyboxRenderer::BindTextures()
 	{
-		if (m_material == NULL) { return; }
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_material->GetFirstTextureId());
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_material->GetSecondTextureId());
-		m_shader->SetUniform1f(BLEND_FACTOR_TAG, m_material->GetBlendFactor());
+		if (m_set)
+		{
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, m_material.GetFirstTextureId());
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, m_material.GetSecondTextureId());
+			m_shader->SetUniform1f(BLEND_FACTOR_TAG, m_material.GetBlendFactor());
+		}
 	}
 }

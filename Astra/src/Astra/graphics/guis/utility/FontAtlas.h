@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <stack>
 
-#include "../../buffers/Texture.h"
+#include "Astra/Res.h"
 #include "FontStructs.h"
 
 #include <ft2build.h>
@@ -25,25 +25,29 @@ namespace Astra::Graphics
     using spaces_type = rectpack2D::empty_spaces<allow_flip, rectpack2D::default_empty_spaces>;
     using rect_type = rectpack2D::output_rect_t<spaces_type>;
 
-	class FontAtlas
+	class FontAtlas : public Res
 	{
     private:
         std::unordered_map<char, Post_Char> m_characters;
     private:
+    #if ASTRA_DEBUG
+        std::string m_filePath;
+    #endif
+        unsigned int width, height;
+        unsigned int id;
         unsigned int m_fontSize;
-        const Texture* m_texture;
 	public:
+		FontAtlas();
 		FontAtlas(const char* const fontFile, const unsigned int fontSize);
-		~FontAtlas();
+        virtual void Free() override;
 
-        inline const Texture* GetTexture() const { return m_texture; }
         inline unsigned int GetFontSize() const { return m_fontSize; }
-        inline unsigned int GetId() const { return m_texture->id; }
+        inline unsigned int GetId() const { return id; }
 
         const Post_Char& GetCharacter(char c) const;
     private:
         void LoadCharacter(const FT_Face& face, unsigned char c);
-        const Texture* LoadFontTextureAtlas(const char* const filepath, unsigned int fontSize, const FT_Face& face);
+        void LoadFontTextureAtlas(const char* const filepath, unsigned int fontSize, const FT_Face& face);
     };
 
     struct iVec2Hasher

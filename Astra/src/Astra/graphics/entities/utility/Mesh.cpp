@@ -1,28 +1,31 @@
 #include "astra_pch.h"
 
 #include "Mesh.h"
-#include "Astra/graphics/ResourceManager.h"
 
 #include <GL/glew.h>
 
 namespace Astra::Graphics
 {
-	Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<int>& indices, ImageMaterial* material)
-		: m_material(material), m_vertexCount(indices.size())
+	Mesh::Mesh()
+		: m_vertexCount(0), m_vao(0), m_vbo(0), m_ebo(0)
+	{
+	}
+
+	Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<int>& indices)
+		: m_vertexCount(indices.size())
 	{
 		Initialize(vertices, indices);
 	}
 
-	Mesh::Mesh(const std::vector<NormalVertex>& vertices, const std::vector<int>& indices, ImageMaterial* material)
-		: m_material(material), m_vertexCount(indices.size())
+	Mesh::Mesh(const std::vector<NormalVertex>& vertices, const std::vector<int>& indices)
+		: m_vertexCount(indices.size())
 	{
 		Initialize(vertices, indices);
 	}
 
 	Mesh::Mesh(const Mesh& other)
 		: m_vertexCount(other.m_vertexCount), 
-			m_vao(other.m_vao), m_vbo(other.m_vbo), m_ebo(other.m_ebo),
-			m_material(other.m_material)
+			m_vao(other.m_vao), m_vbo(other.m_vbo), m_ebo(other.m_ebo)
 	{
 	}
 
@@ -92,12 +95,10 @@ namespace Astra::Graphics
 		glBindVertexArray(0);
 	}
 
-	void Mesh::Unload()
+	void Mesh::Free()
 	{
 		glDeleteVertexArrays(1, &m_vao);
 		glDeleteBuffers(1, &m_vbo);
 		glDeleteBuffers(1, &m_ebo);
-
-		RESOURCE_UNLOAD(m_material);
 	}
 }

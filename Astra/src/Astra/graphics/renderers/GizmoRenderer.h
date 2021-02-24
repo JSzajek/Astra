@@ -4,8 +4,8 @@
 
 #include "Renderer.h"
 
-#include "../gizmos/Gizmo.h"
-#include "../shaders/GizmoShader.h"
+#include "Astra/graphics/gizmos/Gizmo.h"
+#include "Astra/graphics/shaders/GizmoShader.h"
 
 namespace Astra::Graphics
 {
@@ -14,17 +14,14 @@ namespace Astra::Graphics
 	{
 	private:
 		const VertexArray* m_defaultQuad;
-		std::unordered_map<unsigned int, std::vector<const Gizmo*>> m_gizmos;
 		const Math::Mat4* m_viewMatrix;
 		Math::Mat4* m_modelViewMatrix;
 	public:
 		GizmoRenderer(GizmoShader* shader);
 		~GizmoRenderer();
 
-		inline std::unordered_map<unsigned int, std::vector<const Gizmo*>>& GetGizmos() { return m_gizmos; }
-
-		void AddGizmo(const Gizmo* gizmo);
-		void Draw(float delta = 0, const Math::Mat4* viewMatrix = NULL, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane);
+		void Draw(const std::unordered_map<unsigned int, std::vector<const Graphics::Gizmo*>>& gizmos, 
+				  const Math::Mat4* viewMatrix = NULL);
 	private:
 		void UpdateModelViewMatrix(const Math::Vec3& position, float scale);
 	};

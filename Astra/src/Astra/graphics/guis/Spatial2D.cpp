@@ -5,8 +5,8 @@
 
 namespace Astra::Graphics
 {
-	Spatial2D::Spatial2D()
-		: m_modelMatrix(new Math::Mat4(0)), m_rotation(0)
+	Spatial2D::Spatial2D(const char* const name)
+		: LayerEntity(name), m_modelMatrix(new Math::Mat4(0)), m_rotation(0)
 	{
 		for (size_t i = 0; i < 2 * 2; i++)
 		{
@@ -29,6 +29,14 @@ namespace Astra::Graphics
 		UpdateMatrices();
 	}
 
+	Spatial2D::Spatial2D(const char* const name, const Math::Vec2& translation)
+		: Spatial2D(name)
+	{
+		m_data[0] = translation.x;
+		m_data[1] = translation.y;
+		UpdateMatrices();
+	}
+
 	Spatial2D::Spatial2D(const Math::Vec2& translation, float rotation, const Math::Vec2& scale)
 		: Spatial2D()
 	{
@@ -42,9 +50,22 @@ namespace Astra::Graphics
 		UpdateMatrices();
 	}
 
+	Spatial2D::Spatial2D(const char* const name, const Math::Vec2& translation, float rotation, const Math::Vec2& scale)
+		: Spatial2D(name)
+	{
+		m_data[0] = translation.x;
+		m_data[1] = translation.y;
+
+		m_rotation = rotation;
+
+		m_data[2] = scale.x;
+		m_data[3] = scale.y;
+		UpdateMatrices();
+	}
+
 	Spatial2D::~Spatial2D()
 	{
-		delete m_modelMatrix;
+		//delete m_modelMatrix;
 	}
 
 	float& Spatial2D::operator()(const unsigned int& row, const unsigned int& column)

@@ -15,18 +15,38 @@ namespace Astra::Graphics
 		bool m_hovering;
 		bool m_pressing;
 	public:
-		Button(const GuiMaterial* material, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
-			: Gui(material, position, rotation, scale), m_hoverColor(), m_pressedColor(), m_hovering(0), m_pressing(0), m_text("", position, rotation, scale)
+		Button()
+			: Gui(), m_hoverColor(), m_pressedColor(), m_hovering(0), m_pressing(0), m_text()
 		{
-			m_rect.SetSize(Math::iVec2(static_cast<int>(m_rows[1].x * Material->GetSize().x), static_cast<int>(m_rows[1].y * Material->GetSize().y)));
-			SetType(GuiType::Button);
+		}
+
+		Button(const char* const name, const GuiMaterial& material, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
+			: Gui(name, material, position, rotation, scale), m_hoverColor(), m_pressedColor(), m_hovering(0), m_pressing(0), m_text("", position, rotation, scale)
+		{
+			m_rect.SetSize(Math::iVec2(static_cast<int>(m_rows[1].x * Material.GetSize().x), static_cast<int>(m_rows[1].y * Material.GetSize().y)));
 			UpdateMatrices();
 		}
 
-		Button(const GuiMaterial* material, const Math::Vec2& position, const Math::Vec2& scale)
+		Button(const GuiMaterial& material, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
+			: Gui(material, position, rotation, scale), m_hoverColor(), m_pressedColor(), m_hovering(0), m_pressing(0), m_text("", position, rotation, scale)
+		{
+			m_rect.SetSize(Math::iVec2(static_cast<int>(m_rows[1].x * Material.GetSize().x), static_cast<int>(m_rows[1].y * Material.GetSize().y)));
+			UpdateMatrices();
+		}
+
+		Button(const GuiMaterial& material, const Math::Vec2& position, const Math::Vec2& scale)
 			: Button(material, position, 0, scale)
 		{
 		}
+
+		Button(const char* const name, const GuiMaterial& material, const Math::Vec2& position, const Math::Vec2& scale)
+			: Button(name, material, position, 0, scale)
+		{
+		}
+		
+		virtual inline GuiType GetType() const override { return GuiType::Button; }
+		virtual void Free() override { }
+		inline virtual std::string ToString() const override { return !Name.length() ? ("Button_&" + std::to_string(m_uid)) : Name; }
 
 		inline void OnHover() override
 		{
@@ -92,7 +112,7 @@ namespace Astra::Graphics
 		void UpdateMatrices() override
 		{
 			Math::Vec2 copy = m_rows[1];
-			m_rows[1] = copy * Material->GetSize();
+			m_rows[1] = copy * Material.GetSize();
 			Spatial2D::UpdateMatrices();
 			m_rows[1] = copy;
 		}

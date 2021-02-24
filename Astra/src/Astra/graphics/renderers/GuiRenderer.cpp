@@ -3,7 +3,6 @@
 #include "GuiRenderer.h"
 #include "Astra/math/Mat4Utils.h"
 #include "Astra/graphics/loaders/Loader.h"
-#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -54,7 +53,7 @@ namespace Astra::Graphics
 			m_texts.emplace_back(static_cast<Button*>(gui)->GetTextBox());
 			m_textures.emplace_back(gui);
 		}
-		else if (gui->GetType() == GuiType::Toggle)
+		else if (gui->GetType() == GuiType::ToggleButton)
 		{
 			m_texts.emplace_back(static_cast<ToggleButton*>(gui)->GetTextBox());
 			m_textures.emplace_back(gui);
@@ -71,30 +70,6 @@ namespace Astra::Graphics
 		{
 			// Add Texture to textures to render
 			m_textures.emplace_back(gui);
-		}
-	}
-
-	void GuiRenderer::AddGui(Gui* gui, int level)
-	{
-		for (auto& layer : m_layers)
-		{
-			if (layer->GetLevel() == level)
-			{
-				layer->Add(gui);
-				return;
-			}
-		}
-
-		GuiLayer* newLayer = new GuiLayer(level);
-		newLayer->Add(gui);
-		m_layers.emplace_back(newLayer);
-
-		// Insertion Sort layers
-		for (auto it = m_layers.begin(); it != m_layers.end(); it++)
-		{
-			auto const insertion_point = std::upper_bound(m_layers.begin(), it, *it,
-				[](const GuiLayer* a, const GuiLayer* b) {return b->GetLevel() > a->GetLevel(); });
-			std::rotate(insertion_point, it, it + 1);
 		}
 	}
 
@@ -115,9 +90,9 @@ namespace Astra::Graphics
 		offset = 0;
 	}
 
-	void GuiRenderer::Draw(float delta, const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+	void GuiRenderer::Draw(const std::vector<Graphics::GuiLayer>& layers)
 	{
-		if (m_layers.size() == 0) { return; }
+		if (layers.size() == 0) { return; }
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -127,7 +102,7 @@ namespace Astra::Graphics
 		size_t offset = 0;
 		unsigned int slot;
 
-		for (const auto* layer : m_layers)
+		for (const auto& layer : layers)
 		{
 			// Render Guis
 			m_shader->Start();
@@ -135,14 +110,14 @@ namespace Astra::Graphics
 			glBindVertexArray(m_defaultVAO);
 			glBindBuffer(GL_ARRAY_BUFFER, m_defaultVBO);
 
-			for (auto* gui : layer->GetDefaultGuis())
+			for (auto* gui : layer.GetDefaultGuis())
 			{
 				if (offset == MAX_GUIS)
 				{
 					Flush(m_textureMapping, offset);
 				}
 
-				const auto& temp = m_textureMapping.find(gui->Material->GetId());
+				const auto& temp = m_textureMapping.find(gui->Material.GetId());
 				if (temp == m_textureMapping.end())
 				{
 					if (m_textureMapping.size() + 1 == MAX_TEXTURE_SLOTS)
@@ -150,7 +125,7 @@ namespace Astra::Graphics
 						Flush(m_textureMapping, offset);
 					}
 					slot = m_textureMapping.size();
-					m_textureMapping[gui->Material->GetId()] = m_textureMapping.size();
+					m_textureMapping[gui->Material.GetId()] = m_textureMapping.size();
 				}
 				else
 				{
@@ -163,7 +138,7 @@ namespace Astra::Graphics
 				float dat[8] =
 				{
 					static_cast<float>(slot),
-					static_cast<float>(gui->Material->GetRowCount()),
+					static_cast<float>(gui->Material.GetRowCount()),
 					static_cast<float>(static_cast<Image*>(gui)->GetMaterialXOffset()),
 					static_cast<float>(static_cast<Image*>(gui)->GetMaterialYOffset()),
 					color.GetR(),
@@ -183,13 +158,13 @@ namespace Astra::Graphics
 			glBindVertexArray(0);
 
 			// Render all custom VAO guis
-			for (auto* gui : layer->GetCustomGuis())
+			for (auto* gui : layer.GetCustomGuis())
 			{
 				glBindVertexArray(gui->GetCustomVao());
 				glBindBuffer(GL_ARRAY_BUFFER, gui->GetCustomVbo());
 
 				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, gui->Material->GetId());
+				glBindTexture(GL_TEXTURE_2D, gui->Material.GetId());
 
 				glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 1);
 				glBindVertexArray(0);
@@ -202,7 +177,7 @@ namespace Astra::Graphics
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-			for (const auto* text : layer->GetTexts())
+			for (const auto* text : layer.GetTexts())
 			{
 				m_fontShader->SetUniformMat4(TRANSFORM_MATRIX_TAG, text->GetModelMatrix());
 				m_fontShader->SetUniform4f(MODULATE_TAG, text->GetModulate());

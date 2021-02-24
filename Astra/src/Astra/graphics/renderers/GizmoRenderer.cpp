@@ -2,7 +2,6 @@
 
 #include "GizmoRenderer.h"
 #include "Astra/graphics/loaders/Loader.h"
-#include "Astra/graphics/ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -17,28 +16,15 @@ namespace Astra::Graphics
 
 	GizmoRenderer::~GizmoRenderer()
 	{
-		ResourceManager::Unload(m_defaultQuad);
+		delete m_defaultQuad;
 		delete m_modelViewMatrix;
 	}
 
-	void GizmoRenderer::AddGizmo(const Gizmo* gizmo)
+	void GizmoRenderer::Draw(const std::unordered_map<unsigned int, std::vector<const Graphics::Gizmo*>>& gizmos, 
+							 const Math::Mat4* viewMatrix)
 	{
-		unsigned int id = gizmo->GetTextureId();
-		auto temp = m_gizmos.find(id);
-		if (temp != m_gizmos.end())
-		{
-			temp->second.push_back(gizmo);
-		}
-		else
-		{
-			m_gizmos[id] = std::vector<const Gizmo*>();
-			m_gizmos[id].push_back(gizmo);
-		}
-	}
+		if (gizmos.size() == 0) { return; }
 
-	void GizmoRenderer::Draw(float delta, const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
-	{
-		if (m_gizmos.size() == 0) { return; }
 		m_shader->Start();
 		m_viewMatrix = viewMatrix;
 		glBindVertexArray(m_defaultQuad->vaoId);
@@ -46,10 +32,10 @@ namespace Astra::Graphics
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDepthMask(GL_FALSE);
 
-		for (const auto& directory : m_gizmos)
+		for (const auto& directory : gizmos)
 		{
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, directory.first);
+			glBindTexture(GL_TEXTURE_2D, directory.second.front()->GetTextureId());
 			for (const Gizmo* gizmo : directory.second)
 			{
 				UpdateModelViewMatrix(gizmo->Position, gizmo->Scale);

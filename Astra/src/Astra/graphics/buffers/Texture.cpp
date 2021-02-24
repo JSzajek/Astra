@@ -11,12 +11,20 @@ namespace Astra::Graphics
 	Texture::Texture()
 		: id(0), width(0), height(0), hdr(0)
 	#if ASTRA_DEBUG
-		, m_filePath(NULL)
+		, m_filePath()
 	#endif
 	{
 	}
 
 	Texture::Texture(const char* const filepath)
+		: id(0), width(0), height(0), hdr(0)
+	#if ASTRA_DEBUG
+		, m_filePath(filepath)
+	#endif
+	{
+	}
+
+	Texture::Texture(std::string filepath)
 		: id(0), width(0), height(0), hdr(0)
 	#if ASTRA_DEBUG
 		, m_filePath(filepath)
@@ -32,7 +40,7 @@ namespace Astra::Graphics
 	{
 	}
 
-	Texture::~Texture()
+	void Texture::Free()
 	{
 		glDeleteTextures(1, &id);
 	}

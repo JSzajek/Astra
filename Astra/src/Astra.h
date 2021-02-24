@@ -14,7 +14,7 @@
 #include "Astra/math/Maths.h"
 #include "Astra/utils/Timer.h"
 
-#include "Astra/graphics/ResourceManager.h"
+#include "Astra/graphics/Resource.h"
 
 #include "Astra/graphics/entities/Model.h"
 #include "Astra/graphics/entities/Camera.h"
@@ -25,7 +25,6 @@
 #include "Astra/graphics/entities/terrains/Terrain.h"
 #include "Astra/graphics/entities/terrains/WaterTile.h"
 #include "Astra/graphics/particles/ParticleSystem.h"
-#include "Astra/graphics/particles/ConeParticleSystem.h"
 
 #include "Astra/graphics/guis/Guis.h"
 

@@ -19,34 +19,21 @@ namespace Astra::Graphics
 			return instance;
 		}
 
-		static void AddGizmo(const Gizmo* gizmo)
-		{
-			Get().AddGizmoImpl(gizmo);
-		}
-
 		static void UpdateProjectionMatrix(const Math::Mat4* projectionMatrix)
 		{
 			Get().UpdateProjectionMatrixImpl(projectionMatrix);
 		}
 
-		static void Render(const Math::Mat4* viewMatrix)
+		static void Render(const std::unordered_map<unsigned int, std::vector<const Graphics::Gizmo*>>& gizmos, const Math::Mat4* viewMatrix)
 		{
-			Get().RenderImpl(viewMatrix);
+			Get().RenderImpl(gizmos, viewMatrix);
 		}
-
-		//static void Clear()
-		//{
-		//	Get().ClearImpl();
-		//}
-
 	private:
 		GizmoController();
 		~GizmoController();
 
 		void UpdateProjectionMatrixImpl(const Math::Mat4* projectionMatrix);
-		void RenderImpl(const Math::Mat4* viewMatrix);
-		void AddGizmoImpl(const Gizmo* gizmo);
-		//void ClearImpl();
+		void RenderImpl(const std::unordered_map<unsigned int, std::vector<const Graphics::Gizmo*>>& gizmos, const Math::Mat4* viewMatrix);
 	};
 #endif
 }

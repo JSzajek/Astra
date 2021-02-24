@@ -10,11 +10,11 @@ namespace Astra::Graphics
 	private:
 		float m_size;
 	public:
-		WaterMaterial* material;
+		WaterMaterial material;
 	public:
+		WaterTile();
 		WaterTile(float xCenter, float zCenter, float height, float size);
-		WaterTile(WaterMaterial* material, float xCenter, float zCenter, float height, float size);
+		WaterTile(const WaterMaterial& material, float xCenter, float zCenter, float height, float size);
 		WaterTile(const WaterTile& other);
-		~WaterTile();
 	};
 }

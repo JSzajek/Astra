@@ -6,7 +6,7 @@
 namespace Astra::Graphics
 {
 	Animation::Animation(const aiAnimation* animation, const aiNode* root, std::map<std::string, BoneInfo>& boneMap, int& boneCount)
-		: m_duration(static_cast<float>(animation->mDuration)), m_ticksPerSecond(static_cast<float>(animation->mTicksPerSecond))
+		: m_name(animation->mName.C_Str()), m_duration(static_cast<float>(animation->mDuration)), m_ticksPerSecond(static_cast<float>(animation->mTicksPerSecond))
 	{
 		ReadData(m_root, root);
 		ValidateBones(animation, boneMap, boneCount);

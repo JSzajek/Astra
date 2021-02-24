@@ -15,10 +15,7 @@ namespace Astra::Graphics
 	class TerrainRenderer : public Renderer
 	{
 	private:
-		std::unordered_map<GLuint, std::vector<const Terrain*>> m_terrains;
-		std::vector<const Light*> m_lights;
 		const Color* m_fogColor;
-		const Light* m_directionalLight;
 		const Math::Mat4* m_toShadowSpaceMatrix;
 	#if ASTRA_DEBUG
 		bool m_wireframe;
@@ -33,12 +30,15 @@ namespace Astra::Graphics
 
 		inline void SetShadowMatrix(const Math::Mat4* shadowMatrix) { m_toShadowSpaceMatrix = shadowMatrix; }
 
-		void Draw(float delta = 0, const Math::Mat4* viewMatrix = NULL, const Math::Vec4& inverseViewVector = NULL, const Math::Vec4& clipPlane = DefaultClipPlane);
-		void AddTerrain(const Terrain* terrain);
-		void AddLight(Light* light);
-		void UpdateLight(const Light* light);
+		void Draw(float delta, 
+				  const std::unordered_map<unsigned int, std::vector<const Graphics::Terrain*>>& terrains,
+				  const Math::Mat4* viewMatrix = NULL, 
+				  const Math::Vec4& inverseViewVector = NULL, 
+				  const Math::Vec4& clipPlane = DefaultClipPlane);
+
+		inline void AddLight(Light* light) { AddLight(0, light); }
+		void AddLight(unsigned int index, Light* light);
 	private:
-		void PrepareTerrain(const Terrain* terrain);
 		void BindTerrainTextures(const Terrain* terrain);
 	};
 }

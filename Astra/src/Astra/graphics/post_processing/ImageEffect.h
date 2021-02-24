@@ -7,7 +7,7 @@ namespace Astra::Graphics
 {
 	enum EffectType
 	{
-		Default,
+		DefaultEffect,
 		Bloom,
 		Hdr,
 		Blur

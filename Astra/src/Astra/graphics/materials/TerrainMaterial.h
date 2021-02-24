@@ -7,29 +7,27 @@ namespace Astra::Graphics
 	class TerrainMaterial
 	{
 	private:
-		Texture* m_texture;
+		Texture* m_blendMapTexture;
+		Texture* m_backgroundTexture;
+		Texture* m_rTexture;
+		Texture* m_gTexture;
+		Texture* m_bTexture;
+		Texture* specularTexture;
 	public:
 		float shineDampener, reflectivity;
 	public:
-		TerrainMaterial(const char* const filepath);
+		TerrainMaterial();
+		TerrainMaterial(const char* const blendMap, const char* const background, 
+						const char* const red, const char* const green, const char* const blue);
+		TerrainMaterial(const TerrainMaterial& other);
+		void operator=(const TerrainMaterial& other);
 		~TerrainMaterial();
 
-		inline unsigned int GetId() const { return m_texture->id; }
-	public:
-		void UpdateDiffuseMap(bool hdr);
-	};
-	
-	struct TerrainMaterialPack
-	{
-		const TerrainMaterial* backgroundTexture;
-		const TerrainMaterial* rTexture;
-		const TerrainMaterial* gTexture;
-		const TerrainMaterial* bTexture;
-
-		const Texture* specularTexture;
-	
-		TerrainMaterialPack(const TerrainMaterial* background, const TerrainMaterial* red,
-							const TerrainMaterial* green, const TerrainMaterial* blue);
-		~TerrainMaterialPack();
+		inline unsigned int GetBackgroundId() const { return m_backgroundTexture->id; }
+		inline unsigned int GetBlendMapId() const { return m_blendMapTexture->id; }
+		inline unsigned int GetRedId() const { return m_rTexture->id; }
+		inline unsigned int GetGreenId() const { return m_gTexture->id; }
+		inline unsigned int GetBlueId() const { return m_bTexture->id; }
+		inline unsigned int GetSpecularId() const { return specularTexture->id; }
 	};
 }

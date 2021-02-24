@@ -26,6 +26,9 @@ namespace Astra::Graphics
 
 	ParticleRenderer::~ParticleRenderer()
 	{
+		glDeleteVertexArrays(1, &m_defaultVAO);
+		glDeleteBuffers(1, &m_defaultVBO);
+
 		delete m_modelViewMatrix;
 		for (size_t x = 0; x < NUM_OF_TYPES; x++)
 		{
@@ -91,7 +94,7 @@ namespace Astra::Graphics
 					Flush(m_textureMapping, offset);
 				}
 
-				const auto& temp = m_textureMapping.find(particle->Material->GetId());
+				const auto& temp = m_textureMapping.find(particle->Material.GetId());
 				if (temp == m_textureMapping.end())
 				{
 					if (m_textureMapping.size() + 1 == MAX_TEXTURE_SLOTS)
@@ -99,7 +102,7 @@ namespace Astra::Graphics
 						Flush(m_textureMapping, offset);
 					}
 					slot = m_textureMapping.size();
-					m_textureMapping[particle->Material->GetId()] = m_textureMapping.size();
+					m_textureMapping[particle->Material.GetId()] = m_textureMapping.size();
 				}
 				else
 				{
@@ -130,7 +133,7 @@ namespace Astra::Graphics
 					particle->GetTexOffset2().x,
 					particle->GetTexOffset2().y,
 					static_cast<float>(slot),
-					static_cast<float>(particle->Material->GetRowCount()),
+					static_cast<float>(particle->Material.GetRowCount()),
 					particle->GetBlendFactor()
 				};
 				glBufferSubData(GL_ARRAY_BUFFER, (offset * sizeof(ParticleInfo)) + (16 * sizeof(float)), 7 * sizeof(float), dat);

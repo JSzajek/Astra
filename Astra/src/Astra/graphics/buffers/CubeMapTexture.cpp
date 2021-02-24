@@ -1,31 +1,22 @@
 #include "astra_pch.h"
 
 #include "CubeMapTexture.h"
-#include "../ResourceManager.h"
+#include <GL/glew.h>
 
 namespace Astra::Graphics
 {
+	CubeMapTexture::CubeMapTexture()
+		: m_filepaths(), id(0), type(TextureType::None)
+	{
+	}
+
 	CubeMapTexture::CubeMapTexture(const std::vector<const char*>& filepaths)
-		: m_filepaths(filepaths), id(0)
+		: m_filepaths(filepaths), id(0), type(TextureType::DiffuseMap)
 	{
-		m_faces = new Texture*[6];
-		for (size_t i = 0; i < filepaths.size(); i++)
-		{
-			m_faces[i] = new Texture(filepaths[i]);
-		}
 	}
 
-	CubeMapTexture::~CubeMapTexture()
+	void CubeMapTexture::Free()
 	{
-		for (size_t i = 0; i < m_filepaths.size(); i++)
-		{
-			ResourceManager::Unload(m_faces[i]);
-		}
-		delete[] m_faces;
-	}
-
-	Texture* CubeMapTexture::operator[](int index)
-	{
-		return m_faces[index];
+		glDeleteTextures(1, &id);
 	}
 }

@@ -9,7 +9,7 @@ namespace Astra::Graphics
 	{
 	private:
 		// Data
-		Texture* m_textures[5];
+		Texture* m_textures[5] = {};
 		unsigned char m_flags;
 	private:
 		// Properties
@@ -18,7 +18,10 @@ namespace Astra::Graphics
 		bool m_transparent;
 		bool m_fakeLight;
 	public:		
+		ImageMaterial();
 		ImageMaterial(const std::vector<Texture*>& textures);
+		ImageMaterial(const ImageMaterial& other);
+		void operator=(const ImageMaterial& other);
 		~ImageMaterial();
 
 		inline unsigned int GetTextureId(TextureType type) const 
@@ -39,7 +42,5 @@ namespace Astra::Graphics
 		inline void SetFakeLighting(bool enabled) { m_fakeLight = enabled; }
 		
 		void AddTexture(Texture* texture);
-	public:
-		void UpdateDiffuseMap(bool hdr);
 	};
 }

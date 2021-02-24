@@ -1,23 +1,36 @@
 #include "astra_pch.h"
 
 #include "ParticleMaterial.h"
-#include "Astra/graphics/loaders/Loader.h"
-#include "Astra/graphics/ResourceManager.h"
+#include "Astra/graphics/Resource.h"
 
 namespace Astra::Graphics
 {
-	ParticleMaterial::ParticleMaterial(const char* const filepath, int rowCount)
-		: m_texture(Loader::LoadTexture(filepath, true, GL_REPEAT, false)), m_rowCount(rowCount)
+	ParticleMaterial::ParticleMaterial()
+		: m_texture(NULL), m_rowCount(1)
 	{
+	}
+
+	ParticleMaterial::ParticleMaterial(const char* const filepath, unsigned int rowCount)
+		: m_texture(Resource::LoadTexture(filepath, true)), m_rowCount(rowCount)
+	{
+	}
+
+	ParticleMaterial::ParticleMaterial(const ParticleMaterial& other)
+		: m_texture(other.m_texture), m_rowCount(other.m_rowCount)
+	{
+		TRACK(m_texture);
+	}
+
+	void ParticleMaterial::operator=(const ParticleMaterial& other)
+	{
+		m_texture = other.m_texture;
+		m_rowCount = other.m_rowCount;
+
+		TRACK(m_texture);
 	}
 
 	ParticleMaterial::~ParticleMaterial()
 	{
-		RESOURCE_UNLOAD(m_texture);
-	}
-
-	void ParticleMaterial::UpdateDiffuseMap(bool hdr)
-	{
-		Loader::UpdateDiffuseTexture(m_texture, hdr);
+		UNLOAD(m_texture);
 	}
 }

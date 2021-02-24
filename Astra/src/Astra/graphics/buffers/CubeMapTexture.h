@@ -1,7 +1,9 @@
 #pragma once
 
 #include <vector>
+
 #include "Texture.h"
+#include "Astra/Res.h"
 
 namespace Astra::Graphics
 {
@@ -15,20 +17,19 @@ namespace Astra::Graphics
 		Front	= 5
 	};
 
-	class CubeMapTexture
+	class CubeMapTexture : public Res
 	{
 	private:
 		std::vector<const char*> m_filepaths;
-		Texture** m_faces;
 	public:
+		int width, height; // Used in gui textures - TODO
 		unsigned int id;
 		bool hdr;
+		TextureType type = TextureType::None;
 	public:
+		CubeMapTexture();
 		CubeMapTexture(const std::vector<const char*>& filepaths);
-		~CubeMapTexture();
-
-		Texture* operator[](int index); 
-
 		inline const std::vector<const char*>& GetFiles() const { return m_filepaths; }
+		virtual void Free() override;
 	};
 }

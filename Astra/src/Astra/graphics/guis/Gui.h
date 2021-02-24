@@ -2,11 +2,11 @@
 
 #include <functional>
 
-#include "../../math/Vec2.h"
+#include "Astra/math/Vec2.h"
 #include "Spatial2D.h"
 #include "utility/Rect2.h"
 
-#include "../materials/GuiMaterial.h"
+#include "Astra/graphics/materials/GuiMaterial.h"
 #include "Astra/graphics/Color.h"
 
 #include "utility/FontAtlas.h"
@@ -18,15 +18,13 @@ namespace Astra::Graphics
 		Panel,
 		Label,
 		Button,
-		Toggle,
+		ToggleButton,
 		Image,
 		TextBox
 	};
 
 	class Gui : public Spatial2D
 	{
-	private:
-		GuiType m_type;
 	protected:
 		Color m_modulate;
 		std::function<void()> m_onHover;
@@ -35,13 +33,14 @@ namespace Astra::Graphics
 		std::function<void(bool hovering)> m_onReleased;
 		Rect2 m_rect;
 	public:
-		std::string Name;
-		const GuiMaterial* Material;
+		GuiMaterial Material;
 	public:
-		Gui(const GuiMaterial* material, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
-		Gui(const GuiMaterial* material, const char* const name, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		Gui();
+		Gui(const char* const name, const GuiMaterial& material, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		Gui(const char* const name, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		Gui(const GuiMaterial& material, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		Gui(const Math::Vec2& position, float rotation, const Math::Vec2& scale);
 		Gui(const Gui& other);
-		~Gui();
 
 		inline void SetModulate(const Color& modulate) { m_modulate = modulate; }
 		inline virtual const Color& GetModulate() const { return m_modulate; }
@@ -50,10 +49,9 @@ namespace Astra::Graphics
 		virtual inline const int GetCustomVao() const { return -1; }
 		virtual inline const int GetCustomVbo() const { return -1; }
 
-		virtual inline const Math::Vec2& GetSize() const { return Material->GetSize(); }
+		virtual inline const Math::Vec2& GetSize() const { return Material.GetSize(); }
 		
-		inline const GuiType& GetType() const { return m_type; }
-	
+		virtual inline GuiType GetType() const = 0;
 		inline const Rect2& GetBounds() { return m_rect; }
 
 		inline void SetOnHover(std::function<void()> func) { m_onHover = func; }
@@ -65,7 +63,5 @@ namespace Astra::Graphics
 		inline virtual void OnExit() { if (m_onExit) m_onExit(); };
 		inline virtual void OnPressed() { if (m_onPressed) m_onPressed(); };
 		inline virtual void OnReleased(bool hovering) { if (m_onReleased) m_onReleased(hovering); };
-	protected:
-		inline void SetType(GuiType type) { m_type = type; }
 	};
 }
