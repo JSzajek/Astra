@@ -20,6 +20,7 @@ namespace Astra::Graphics
 		HeightGenerator(float amplitude, int octaves, float roughness, int seed);
 		~HeightGenerator();
 		float GenerateHeight(int x, int z);
+		inline int GetSeed() const { return m_seed; }
 	private:
 		void Init(int seed);
 		float GetNoise(int x, int z, int index) const;

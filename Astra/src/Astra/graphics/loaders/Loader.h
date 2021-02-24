@@ -4,12 +4,10 @@
 #include <string>
 #include <unordered_map>
 
-#include "../buffers/VertexArray.h"
-#include "../buffers/Texture.h"
-#include "../buffers/CubeMapTexture.h"
-#include "../buffers/FrameBuffer.h"
-#include "../buffers/WaterFrameBuffer.h"
-#include "../buffers/ShadowFrameBuffer.h"
+#include "Astra/graphics/buffers/VertexArray.h"
+#include "Astra/graphics/buffers/FrameBuffer.h"
+#include "Astra/graphics/buffers/WaterFrameBuffer.h"
+#include "Astra/graphics/buffers/ShadowFrameBuffer.h"
 
 namespace Astra::Graphics
 {
@@ -45,36 +43,6 @@ namespace Astra::Graphics
 		static const unsigned int Load(unsigned int drawType, const std::vector<float>& vertices, const std::vector<float>& textureCoords)
 		{
 			return Get().LoadImpl(drawType, vertices, textureCoords);
-		}
-
-		static Texture* LoadTexture(const char* const filepath, bool diffuse = true, GLint clippingOption = GL_REPEAT, bool flip = true, bool invert = false)
-		{
-			return Get().LoadTextureImpl(filepath, diffuse, clippingOption, flip, invert);
-		}
-
-		static void LoadTexture(Texture* texture, unsigned char* data, int width, int height, int nrComponents, bool diffuse)
-		{
-			return Get().LoadTextureDataImpl(texture, data, width, height, nrComponents, diffuse);
-		}
-
-		static void UpdateDiffuseTexture(Texture* texture, bool hdrEnabled)
-		{
-			return Get().UpdateDiffuseTextureImpl(texture, hdrEnabled);
-		}
-
-		static const Texture* LoadFontAtlasTexture(const char* const filepath, unsigned int fontSize, const std::vector<unsigned char>& data, unsigned int width, unsigned int height)
-		{
-			return Get().LoadFontAtlasTextureImpl(filepath, fontSize, data, width, height);
-		}
-
-		static CubeMapTexture* LoadCubeMap(const std::vector<const char*>& filepaths)
-		{
-			return Get().LoadCubeMapImpl(filepaths);
-		}
-
-		static void UpdateCubeMap(CubeMapTexture* texture, bool hdrEnabled)
-		{
-			return Get().UpdateCubeMapImpl(texture, hdrEnabled);
 		}
 
 		static WaterFrameBuffer* LoadWaterFrameBuffer(unsigned int reflectionWidth, unsigned int reflectionHeight,
@@ -116,14 +84,6 @@ namespace Astra::Graphics
 
 		const VertexArray* LoadImpl(unsigned int drawType, const std::vector<float>& vertices, unsigned int dimensions);
 		const GLuint LoadImpl(unsigned int drawType, const std::vector<float>& vertices, const std::vector<float>& textureCoords);
-		
-		const Texture* LoadFontAtlasTextureImpl(const char* const filepath, unsigned int fontSize, const std::vector<unsigned char>& data, unsigned int width, unsigned int height);
-		Texture* LoadTextureImpl(const char* const filepath, bool diffuse, GLint clippingOption, bool flip, bool invert);
-		void LoadTextureDataImpl(Texture* texture, unsigned char* data, int width, int height, int nrComponents, bool diffuse);
-		void UpdateDiffuseTextureImpl(Texture* texture, bool hdrEnabled);
-
-		CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);
-		void UpdateCubeMapImpl(CubeMapTexture* texture, bool hdrEnabled);
 
 		WaterFrameBuffer* LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
 												   unsigned int refractionWidth, unsigned int refractionHeight);

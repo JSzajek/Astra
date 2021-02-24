@@ -5,7 +5,7 @@
 
 namespace Astra::Graphics
 {
-	Particle::Particle(const ParticleMaterial* material, const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale, bool additive)
+	Particle::Particle(const ParticleMaterial& material, const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale, bool additive)
 		: Material(material), Position(position), m_velocity(velocity), m_gravity(gravity), m_lifeSpan(lifeSpan), m_elapsedTime(0), Rotation(rotation), Scale(scale),
 			m_texOffset1(0), m_texOffset2(0), m_blendFactor(0), m_distance(0), m_additive(additive)
 	{
@@ -18,7 +18,7 @@ namespace Astra::Graphics
 	{
 	}
 
-	void Particle::operator()(const ParticleMaterial* material, const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale, bool additive)
+	void Particle::operator()(const ParticleMaterial& material, const Math::Vec3& position, const Math::Vec3& velocity, float gravity, float lifeSpan, float rotation, float scale, bool additive)
 	{
 		Material = material;
 		Position = position;
@@ -46,7 +46,7 @@ namespace Astra::Graphics
 	void Particle::UpdateTextureCoordInfo()
 	{
 		float lifeFactor = m_elapsedTime / m_lifeSpan;
-		int stageCount = Material->GetRowCount() * Material->GetRowCount();
+		int stageCount = Material.GetRowCount() * Material.GetRowCount();
 		float atlasProgression = lifeFactor * stageCount;
 		int index1 = static_cast<int>(floorf(atlasProgression));
 		int index2 = index1 < stageCount - 1 ? index1 + 1 : index1;
@@ -57,9 +57,9 @@ namespace Astra::Graphics
 
 	void Particle::SetTextureOffset(Math::Vec2* offset, int index)
 	{
-		int column = index % Material->GetRowCount();
-		int row = index / Material->GetRowCount();
-		offset->x = (float)column / (float)Material->GetRowCount();
-		offset->y = (float)row / (float)Material->GetRowCount();
+		int column = index % Material.GetRowCount();
+		int row = index / Material.GetRowCount();
+		offset->x = (float)column / (float)Material.GetRowCount();
+		offset->y = (float)row / (float)Material.GetRowCount();
 	}
 }

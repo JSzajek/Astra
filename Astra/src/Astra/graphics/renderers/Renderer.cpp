@@ -70,4 +70,26 @@ namespace Astra::Graphics
 	{
 		//TODO: Implement
 	}
+
+	void Renderer::UpdateLight(unsigned int index, const Light* light)
+	{
+		m_shader->Start();
+		switch (light->GetType())
+		{
+		case LightType::Directional:
+			m_shader->SetUniform3f(DIR_LIGHT_DIRECTION, light->GetRotation());
+			m_shader->SetUniform3f(DIR_LIGHT_AMBIENT, light->GetAmbient());
+			m_shader->SetUniform3f(DIR_LIGHT_DIFFUSE, light->GetDiffuse());
+			m_shader->SetUniform3f(DIR_LIGHT_SPECULAR, light->GetSpecular());
+			break;
+		case LightType::Point:
+			m_shader->SetUniform3f(Shader::GetPointLightPositionTag(index), light->GetTranslation());
+			m_shader->SetUniform3f(Shader::GetPointLightAmbientTag(index), light->GetAmbient());
+			m_shader->SetUniform3f(Shader::GetPointLightDiffuseTag(index), light->GetDiffuse());
+			m_shader->SetUniform3f(Shader::GetPointLightSpecularTag(index), light->GetSpecular());
+			m_shader->SetUniform3f(Shader::GetPointLightAttenuationTag(index), light->GetAttenuation());
+			break;
+		}
+		m_shader->Stop();
+	}
 }

@@ -21,7 +21,7 @@ namespace Astra
 		: m_reflectionClipPlane(Math::Vec4(0, 1, 0, 0)), m_refractionClipPlane(Math::Vec4(0, -1, 0, 0)),
 			m_projectionMatrix(new Math::Mat4(1)), m_toShadowMapMatrix(new Math::Mat4(1)),
 			m_fogColor(new Graphics::Color(0.5f, 0.6f, 0.6f, 1.0f)), 
-			m_viewMatrix(NULL), m_mainCamera(NULL), m_skybox(NULL), m_mainLight(NULL),
+			m_viewMatrix(NULL), m_mainCamera(NULL),
 			m_postProcessor(NULL), m_waterBuffer(NULL)
 
 	{
@@ -59,6 +59,15 @@ namespace Astra
 		delete m_waterBuffer;
 	}
 
+	Graphics::LayerEntity* Layer3D::Get(std::string name)
+	{
+		if (m_loaded.find(name) != m_loaded.end())
+		{
+			return m_loaded[name];
+		}
+		return NULL;
+	}
+
 	void Layer3D::Init()
 	{
 		glEnable(GL_DEPTH_TEST);
@@ -79,7 +88,7 @@ namespace Astra
 	void Layer3D::OnAttach()
 	{
 		// Create Shaders
-		size_t numOfLights = m_pointlights.size();
+		size_t numOfLights = m_pointLights.size();
 		m_entityRenderer->SetShader(new Graphics::EntityShader(numOfLights));
 		m_normalEntityRenderer->SetShader(new Graphics::NormalEntityShader(numOfLights));
 		m_terrainRenderer->SetShader(new Graphics::TerrainShader(numOfLights));
@@ -91,44 +100,40 @@ namespace Astra
 
 		m_skyboxRenderer->SetSkyBox(m_skybox);
 
-		m_shadowMapController->SetDirectionalLight(m_mainLight);
-		m_entityRenderer->AddLight(m_mainLight);
-		m_terrainRenderer->AddLight(m_mainLight);
-		m_normalEntityRenderer->AddLight(m_mainLight);
-		m_waterRenderer->AddLight(m_mainLight);
+		m_shadowMapController->SetDirectionalLight(&m_mainLight);
+		m_entityRenderer->AddLight(&m_mainLight);
+		m_terrainRenderer->AddLight(&m_mainLight);
+		m_normalEntityRenderer->AddLight(&m_mainLight);
+		m_waterRenderer->AddLight(&m_mainLight);
+
 	#if ASTRA_DEBUG
-		Graphics::GizmoController::AddGizmo(m_mainLight->GetGizmo());
+		AddGizmo(m_mainLight.GetGizmo());
 	#endif
 
-		for (auto* terrain : m_terrains)
-		{
-			m_terrainRenderer->AddTerrain(terrain);
-		}
-		for (auto* tile : m_tiles)
+		for (const auto& tileDir : m_waterTiles)
 		{
 			// Determine better method of offseting clipping planes.
-			m_reflectionClipPlane.w = -tile->GetTranslation().y + 0.5f;
-			m_refractionClipPlane.w = tile->GetTranslation().y + 0.5f;
-
-			m_waterRenderer->AddTile(tile);
+			m_reflectionClipPlane.w = -tileDir.second.GetTranslation().y + 0.5f;
+			m_refractionClipPlane.w =  tileDir.second.GetTranslation().y + 0.5f;
 		}
 
-		for (auto* light : m_pointlights)
+		for (unsigned int i = 0; i < m_pointLights.size(); ++i)
 		{
-			m_entityRenderer->AddLight(light);
-			m_normalEntityRenderer->AddLight(light);
-			m_terrainRenderer->AddLight(light);
-			m_waterRenderer->AddLight(light);
+			m_entityRenderer->AddLight(i, &m_pointLights[i]);
+
+			m_normalEntityRenderer->AddLight(i, &m_pointLights[i]);
+			m_terrainRenderer->AddLight(i, &m_pointLights[i]);
+			m_waterRenderer->AddLight(i, &m_pointLights[i]);
 		#if ASTRA_DEBUG
-			Graphics::GizmoController::AddGizmo(light->GetGizmo());
+			AddGizmo(m_pointLights[i].GetGizmo());
 		#endif
 		}
-		for (auto* system : m_particles)
-		{
 		#if ASTRA_DEBUG
-			Graphics::GizmoController::AddGizmo(system->GetGizmo());
-		#endif
+		for (const auto& system : m_particles)
+		{
+			AddGizmo(system.second.GetGizmo());
 		}
+		#endif
 
 		// Update Projection Matrix
 		auto [width, height] = Application::Get().GetWindow().GetSize();
@@ -146,25 +151,50 @@ namespace Astra
 	void Layer3D::OnDetach()
 	{
 		m_attached = false;
+		
+		m_loaded.clear();
+
+		m_models.clear();
+		m_terrains.clear();
+		m_waterTiles.clear();
+		m_particles.clear();
+		m_pointLights.clear();
 	}
+
+	void Layer3D::LayerUpdateAnimations(float delta)
+	{
+		std::lock_guard<std::mutex> lock(m_modelLock);
+		for (const auto& model : m_models)
+		{
+			if (auto* animator = model.second.GetAnimator())
+			{
+				animator->UpdateAnimation(delta);
+			}
+		}
+	}
+
+	//void Layer3D::LayerUpdateParticles(float delta)
+	//{
+	//	std::lock_guard<std::mutex> lock(m_particleLock);
+	//	for (const auto& system : m_particles) // Moving to thread causes weird issues?
+	//	{
+	//		system.second.GenerateParticles(delta);
+	//	}
+	//}
 
 	void Layer3D::OnUpdate(float delta)
 	{
+		// With heap stored particles - ~43 fps
+
 		if (!m_attached) { return; }
 
-		// Move to async thread
-		for (auto* system : m_particles)
+		//std::thread animationWorker(&Layer3D::LayerUpdateAnimations, this, delta);
+		for (const auto& system : m_particles) // Moving to thread causes weird issues?
 		{
-			system->GenerateParticles(delta);
+			system.second.GenerateParticles(delta);
 		}
 
-		// Move to async thread
-		for (auto* animator : m_animators)
-		{
-			animator->UpdateAnimation(delta);
-		}
-		
-		m_shadowMapController->Render();
+		m_shadowMapController->Render(m_modelCategories[Graphics::ModelType::ShadowCaster]);
 		
 		if (m_waterBuffer && m_mainCamera)
 		{
@@ -182,11 +212,14 @@ namespace Astra
 			Render(delta, m_viewMatrix->Inverse() * Math::Vec4::W_Axis, true, m_refractionClipPlane);
 			m_waterRenderer->UnbindFrameBuffer();
 		}
-		
+
 		PreRender(delta);
 		Math::Vec4 inverseView = m_viewMatrix->Inverse() * Math::Vec4::W_Axis;
 		Render(delta, inverseView, false); // Renders entities 
 		PostRender();
+
+		std::thread{ &Layer3D::LayerUpdateAnimations, this, delta }.detach();
+		//std::thread{ &Layer3D::LayerUpdateParticles, this, delta }.detach();
 	}
 
 	void Layer3D::SetSelectionColor(const Graphics::Color& color)
@@ -194,28 +227,71 @@ namespace Astra
 		m_selectionRenderer->SetSelectionColor(color);
 	}
 
-	void Layer3D::AddModel(const Graphics::Model* model)
+	void Layer3D::AddModel(const Graphics::Model& model)
 	{
-		if (model->HasNormals())
-		{
-			EmplaceModel(EntityType::NormalMapped, model);
-		}
-		else
-		{
-			EmplaceModel(EntityType::Default, model);
-		}
+		unsigned char flag = 0;
 
-		if (model->IsSelected())
-		{
-			EmplaceModel(EntityType::Selected, model);
-		}
-		m_shadowMapController->AddEntity(model);
+		flag |= BIT(Graphics::ModelType::ShadowCaster); // Add Check if it is a shadow caster?
 
-		if (model->HasAnimator())
+		// Grab Components
+		if (model.HasAnimator())
 		{
-			m_animators.emplace_back(model->GetAnimator());
+			m_animators.emplace_back(model.GetAnimator());
 		}
+		
+		flag |= model.HasNormals() ? BIT(Graphics::ModelType::NormalMapped) : BIT(Graphics::ModelType::Default);
+		
+		if (model.IsSelected())
+			flag |= BIT(Graphics::ModelType::Selected);
+
+		EmplaceModel(flag, model);
 	}
+
+	void Layer3D::AddParticleSystem(const Graphics::ParticleSystem& system)
+	{
+		auto uid = system.GetUID();
+		m_particles[uid] = system;
+		m_loaded[system.ToString()] = &m_particles[uid];
+	}
+
+	Graphics::Terrain* Layer3D::AddTerrain(const Graphics::Terrain& terrain)
+	{
+		auto uid = terrain.GetUID();
+		auto name = terrain.ToString();
+
+		m_terrains[uid] = terrain;
+		m_loaded[name] = &m_terrains[uid];
+
+		if (m_terrainCategories.find(uid) == m_terrainCategories.end())
+		{
+			m_terrainCategories[uid] = std::vector<const Graphics::Terrain*>();
+		}
+		m_terrainCategories[uid].push_back(&m_terrains[uid]);
+		return &m_terrains[uid];
+	}
+
+	void Layer3D::AddWaterTile(const Graphics::WaterTile& tile) 
+	{
+		auto uid = tile.GetUID();
+		m_waterTiles[uid] = tile;
+		m_loaded[tile.ToString()] = &m_waterTiles[uid];
+		m_tiles.push_back(&m_waterTiles[uid]);
+	}
+
+#if ASTRA_DEBUG
+	void Layer3D::AddGizmo(const Graphics::Gizmo& gizmo)
+	{
+		auto uid = gizmo.GetUID();
+		m_gizmos[uid] = gizmo;
+		m_loaded[gizmo.ToString()] = &m_gizmos[uid];
+
+		if (m_gizmoCategories.find(uid) == m_gizmoCategories.end())
+		{
+			m_gizmoCategories[uid] = std::vector<const Graphics::Gizmo*>();
+		}
+		m_gizmoCategories[uid].push_back(&m_gizmos[uid]);
+	}
+#endif
 
 	void Layer3D::UpdateScreen(unsigned int width, unsigned int height)
 	{
@@ -238,6 +314,8 @@ namespace Astra
 
 	void Layer3D::PreRender(float delta)
 	{
+		std::lock_guard<std::mutex> lock(m_particleLock);
+
 		Graphics::ParticleController::Update(delta, m_mainCamera->GetTranslation());
 
 		// Connect Post Processing Buffer
@@ -254,23 +332,25 @@ namespace Astra
 
 	void Layer3D::Render(float delta, const Math::Vec4& inverseViewVector, bool waterPass, const Math::Vec4& clipPlane)
 	{
+		std::lock_guard<std::mutex> lock(m_modelLock);
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		m_terrainRenderer->Draw(delta, m_viewMatrix, inverseViewVector, clipPlane);
+		m_terrainRenderer->Draw(delta, m_terrainCategories, m_viewMatrix, inverseViewVector, clipPlane);
 
 		if (!waterPass)
 		{
 			m_skyboxRenderer->Draw(delta, m_viewMatrix, NULL);
 
-			m_entityRenderer->Draw(delta, m_entities[EntityType::Default], m_viewMatrix, inverseViewVector, clipPlane);
-			m_normalEntityRenderer->Draw(delta, m_entities[EntityType::NormalMapped], m_viewMatrix, inverseViewVector, clipPlane);
-			m_waterRenderer->Draw(delta, m_viewMatrix, inverseViewVector);
+			m_entityRenderer->Draw(delta, m_modelCategories[Graphics::ModelType::Default], m_viewMatrix, inverseViewVector, clipPlane);
+			m_normalEntityRenderer->Draw(delta, m_modelCategories[Graphics::ModelType::NormalMapped], m_viewMatrix, inverseViewVector, clipPlane);
+			m_waterRenderer->Draw(delta, m_tiles, m_viewMatrix, inverseViewVector);
 			
 		}
 		else
 		{
-			m_entityRenderer->Draw(delta, m_entities[EntityType::Default], m_viewMatrix, inverseViewVector, clipPlane);
-			m_normalEntityRenderer->Draw(delta, m_entities[EntityType::NormalMapped], m_viewMatrix, inverseViewVector, clipPlane);
+			m_entityRenderer->Draw(delta, m_modelCategories[Graphics::ModelType::Default], m_viewMatrix, inverseViewVector, clipPlane);
+			m_normalEntityRenderer->Draw(delta, m_modelCategories[Graphics::ModelType::NormalMapped], m_viewMatrix, inverseViewVector, clipPlane);
 			m_skyboxRenderer->Draw(delta, m_viewMatrix, NULL);
 		}
 	}
@@ -278,10 +358,10 @@ namespace Astra
 	void Layer3D::PostRender()
 	{
 		// Renders outline based on stencil buffer
-		if (m_entities[EntityType::Selected].size() > 0)
+		if (m_modelCategories[Graphics::ModelType::Selected].size() > 0)
 		{
 			glClear(GL_STENCIL_BUFFER_BIT);
-			m_selectionRenderer->Draw(0, m_entities[EntityType::Selected], m_viewMatrix);
+			m_selectionRenderer->Draw(0, m_modelCategories[Graphics::ModelType::Selected], m_viewMatrix);
 		}
 		else
 		{
@@ -300,22 +380,32 @@ namespace Astra
 		}
 
 	#if ASTRA_DEBUG
-		Graphics::GizmoController::Render(m_viewMatrix);
+		Graphics::GizmoController::Render(m_gizmoCategories, m_viewMatrix);
 	#endif
 	}
 
-	void Layer3D::EmplaceModel(unsigned int listIndex, const Graphics::Model* model)
+	void Layer3D::EmplaceModel(unsigned char flags, const Graphics::Model& model)
 	{
-		auto uid = model->GetUID();
-		auto temp = m_entities[listIndex].find(uid);
-		if (temp != m_entities[listIndex].end())
+		auto string = model.ToString();
+		auto renderId = model.GetRenderID();
+		auto uid = model.GetUID();
+		m_models[uid] = model;
+		m_loaded[string] = &m_models[uid];
+
+		for (unsigned char cat = Graphics::ModelType::Default; cat < 4; ++cat)
 		{
-			temp->second.emplace_back(model);
-		}
-		else
-		{
-			m_entities[listIndex][uid] = std::vector<const Graphics::Model*>();
-			m_entities[listIndex][uid].emplace_back(model);
+			if (flags & BIT(cat))
+			{
+				if (m_modelCategories[cat].find(renderId) != m_modelCategories[cat].end())
+				{
+					m_modelCategories[cat][renderId].push_back(&m_models[uid]);
+				}
+				else
+				{
+					m_modelCategories[cat][renderId] = std::vector<const Graphics::Model*>();
+					m_modelCategories[cat][renderId].push_back(&m_models[uid]);
+				}
+			}
 		}
 	}
 

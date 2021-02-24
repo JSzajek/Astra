@@ -1,36 +1,35 @@
 #pragma once
 
 #include "Light.h"
-#include "../gizmos/Gizmo.h"
+#include "Astra/Core.h"
 
 namespace Astra::Graphics
 {
 	class PointLight : public Light
 	{
-	private:
-	#if ASTRA_DEBUG
-		const Gizmo* m_gizmo;
-	#endif
-		Math::Vec3 m_attenuation;
 	public:
-		PointLight(const Math::Vec3& translation, const Math::Vec3& ambient,
+		PointLight(const Math::Vec3& translation, const Math::Vec3& ambient, 
 				   const Math::Vec3& diffuse, const Math::Vec3& specular,
 				   float constant = 1.0f, float linear = 0.09f, float quadratic = 0.035f)
-			: Light(translation, ambient, diffuse, specular), m_attenuation(constant, linear, quadratic)
+			: Light(translation, ambient, diffuse, specular)
 		{
-			m_type = LightType::Point;
+			m_attenuation = Math::Vec3(constant, linear, quadratic);
 		#if ASTRA_DEBUG
-			m_gizmo = new Gizmo(RESOURCE("res/textures/PointLight.png"), translation, 3);
+			m_gizmo = Gizmo(RESOURCE("res/textures/PointLight.png"), translation, 3);
 		#endif
 		}
-	#if ASTRA_DEBUG
-		~PointLight()
-		{
-			delete m_gizmo;
-		}
-		inline const Gizmo* const GetGizmo() const { return m_gizmo; }
-	#endif
 
-		inline const Math::Vec3& GetAttenuation() const { return m_attenuation; }
+		PointLight(const char* const name, const Math::Vec3& translation, const Math::Vec3& ambient,
+				   const Math::Vec3& diffuse, const Math::Vec3& specular,
+				   float constant = 1.0f, float linear = 0.09f, float quadratic = 0.035f)
+			: PointLight(translation, ambient, diffuse, specular, constant, linear, quadratic)
+		{
+			Name = name;
+		}
+
+		inline virtual LightType GetType() const override { return LightType::Point; }
+		inline virtual bool IsDirectional() const override { return false; }
+
+		inline virtual std::string ToString() const override { return !Name.length() ? ("Point_Light_&" + std::to_string(m_uid)) : Name; }
 	};
 }

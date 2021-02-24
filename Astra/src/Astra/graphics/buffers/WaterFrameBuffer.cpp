@@ -1,7 +1,6 @@
 #include "astra_pch.h"
 
 #include "WaterFrameBuffer.h"
-#include "../ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -23,7 +22,7 @@ namespace Astra::Graphics
 
 	WaterFrameBuffer::~WaterFrameBuffer()
 	{
-		ResourceManager::Unload(m_reflectionBuffer);
-		ResourceManager::Unload(m_refractionBuffer);
+		delete m_reflectionBuffer;
+		delete m_refractionBuffer;
 	}
 }

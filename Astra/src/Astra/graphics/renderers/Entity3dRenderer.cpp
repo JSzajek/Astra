@@ -14,7 +14,7 @@
 namespace Astra::Graphics
 {
 	Entity3dRenderer::Entity3dRenderer(const Color* fogColor)
-		: Renderer(), m_fogColor(fogColor), m_directionalLight(NULL), m_toShadowSpaceMatrix(NULL)
+		: Renderer(), m_fogColor(fogColor), m_toShadowSpaceMatrix(NULL)
 		#if ASTRA_DEBUG
 			, m_wireframe(false)
 		#endif
@@ -57,36 +57,35 @@ namespace Astra::Graphics
 
 		for (const auto& directory : models)
 		{
-			for (const auto& mesh : directory.second.front()->GetMeshes())
+			const auto* mesh = directory.second.front()->GetMesh();
+			glBindVertexArray(mesh->GetVAO());
+
+			for (const auto* model : directory.second)
 			{
-				PrepareMesh(mesh);
-				for (const auto* model : directory.second)
+				PrepareModel(model);
+				
+				m_shader->SetUniformMat4(NORMAL_MATRIX_TAG, model->GetNormalMatrix());
+				m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetModelMatrix());
+
+				if (model->HasAnimator())
 				{
-					m_shader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
-					m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(model->GetRowCount()));
-					m_shader->SetUniformMat4(NORMAL_MATRIX_TAG, model->GetNormalMatrix());
-					m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetModelMatrix());
+					m_shader->SetUniform1i("animated", true);
 
-					if (model->HasAnimator())
+					const auto size = model->GetAnimator()->GetCount();
+					for (unsigned int i = 0; i < size; ++i)
 					{
-						m_shader->SetUniform1i("animated", true);
-
-						const auto size = model->GetAnimator()->GetCount();
-						for (unsigned int i = 0; i < size; ++i)
-						{
-							m_shader->SetUniformMat4(Shader::GetBoneTransformTag(i), model->GetAnimator()->GetOffsets()[i]);
-						}
+						m_shader->SetUniformMat4(Shader::GetBoneTransformTag(i), model->GetAnimator()->GetOffsets()[i]);
 					}
-					else
-					{
-						m_shader->SetUniform1i("animated", false);
-					}
-
-					glDrawElements(GL_TRIANGLES, mesh.GetVertexCount(), GL_UNSIGNED_INT, NULL);
 				}
-				glBindVertexArray(0);
-				glEnable(GL_CULL_FACE);
+				else
+				{
+					m_shader->SetUniform1i("animated", false);
+				}
+
+				glDrawElements(GL_TRIANGLES, mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
 			}
+			glBindVertexArray(0);
+			glEnable(GL_CULL_FACE);
 		}
 
 	#if ASTRA_DEBUG
@@ -101,77 +100,37 @@ namespace Astra::Graphics
 	#endif 
 	}
 
-	void Entity3dRenderer::PrepareMesh(const Mesh& mesh)
+	void Entity3dRenderer::PrepareModel(const Model* model)
 	{
-		glBindVertexArray(mesh.GetVAO());
-
-		if (const auto* material = mesh.GetMaterial())
+		const auto& material = model->GetMaterial();
+		if (material.GetTransparency())
 		{
-			if (material->GetTransparency())
-			{
-				glDisable(GL_CULL_FACE);
-			}
+			glDisable(GL_CULL_FACE);
+		}
 
-			m_shader->SetUniform1i(FAKE_LIGHT, material->GetFakeLighting());
-			m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, material->GetReflectivity());
+		m_shader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
+		m_shader->SetUniform1f(NUMBER_OF_ROWS, static_cast<float>(model->GetRowCount()));
 
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, material->GetTextureId(TextureType::DiffuseMap));
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, material->GetTextureId(TextureType::SpecularMap));
+		m_shader->SetUniform1i(FAKE_LIGHT, material.GetFakeLighting());
+		m_shader->SetUniform1f(MATERIAL_REFLECTIVITY, material.GetReflectivity());
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, material.GetTextureId(TextureType::DiffuseMap));
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, material.GetTextureId(TextureType::SpecularMap));
 			
-			auto hasGlow = material->HasTexture(TextureType::EmissionMap);
-			m_shader->SetUniform1i(GLOWING, hasGlow);
-			if (hasGlow)
-			{
-				glActiveTexture(GL_TEXTURE2);
-				glBindTexture(GL_TEXTURE_2D, material->GetTextureId(TextureType::EmissionMap));
-			}
+		auto hasGlow = material.HasTexture(TextureType::EmissionMap);
+		m_shader->SetUniform1i(GLOWING, hasGlow);
+		if (hasGlow)
+		{
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, material.GetTextureId(TextureType::EmissionMap));
 		}
 	}
 
-	void Entity3dRenderer::AddLight(Light* light)
+	void Entity3dRenderer::AddLight(unsigned int index, Light* light)
 	{
-		switch (light->GetType())
-		{
-		case LightType::Directional:
-			m_directionalLight = light;
-			break;
-		case LightType::Point:
-			m_lights.emplace_back(light);
-			break;
-		case LightType::Spotlight:
-			break;
-		}
-		light->SetCallback(std::bind(&Entity3dRenderer::UpdateLight, this, light));
-		UpdateLight(light);
-	}
-
-	void Entity3dRenderer::UpdateLight(const Light* light)
-	{
-		m_shader->Start();
-		if (light->GetType() == LightType::Directional)
-		{
-			m_shader->SetUniform3f(DIR_LIGHT_DIRECTION, m_directionalLight->GetRotation());
-			m_shader->SetUniform3f(DIR_LIGHT_AMBIENT, m_directionalLight->GetAmbient());
-			m_shader->SetUniform3f(DIR_LIGHT_DIFFUSE, m_directionalLight->GetDiffuse());
-			m_shader->SetUniform3f(DIR_LIGHT_SPECULAR, m_directionalLight->GetSpecular());
-		}
-
-		if (light->GetType() == LightType::Point)
-		{
-			size_t i = 0;
-			for (; i < m_lights.size(); i++)
-			{
-				if (m_lights[i] == light) { break; }
-			}
-
-			m_shader->SetUniform3f(Shader::GetPointLightPositionTag(i), m_lights[i]->GetTranslation());
-			m_shader->SetUniform3f(Shader::GetPointLightAmbientTag(i), m_lights[i]->GetAmbient());
-			m_shader->SetUniform3f(Shader::GetPointLightDiffuseTag(i), m_lights[i]->GetDiffuse());
-			m_shader->SetUniform3f(Shader::GetPointLightSpecularTag(i), m_lights[i]->GetSpecular());
-			m_shader->SetUniform3f(Shader::GetPointLightAttenuationTag(i), (static_cast<const PointLight*>(m_lights[i]))->GetAttenuation());
-		}
-		m_shader->Stop();
+		UpdateLight(index, light);
+		light->SetCallback(std::bind(&Renderer::UpdateLight, this, index, light));
 	}
 }

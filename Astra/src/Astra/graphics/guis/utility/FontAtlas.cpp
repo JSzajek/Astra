@@ -1,13 +1,23 @@
 #include "astra_pch.h"
 
 #include "FontAtlas.h"
-#include "../../loaders/Loader.h"
-#include "../../ResourceManager.h"
+#include <GL/glew.h>
 
 namespace Astra::Graphics
 {
+    FontAtlas::FontAtlas()
+        : m_fontSize(0), id(0)
+    #if ASTRA_DEBUG
+        , m_filePath()
+    #endif
+    {
+    }
+
 	FontAtlas::FontAtlas(const char* const fontFile, const unsigned int fontSize)
         : m_fontSize(fontSize)
+    #if ASTRA_DEBUG
+        , m_filePath(fontFile)
+    #endif
     {
 		FT_Library ft;
 		if (FT_Init_FreeType(&ft))
@@ -27,17 +37,17 @@ namespace Astra::Graphics
 		FT_Set_Pixel_Sizes(face, 0, fontSize);
 
         // Initialize texture
-		m_texture = LoadFontTextureAtlas(fontFile, fontSize, face);
+		LoadFontTextureAtlas(fontFile, fontSize, face);
 
 		// Clean up the face
 		FT_Done_Face(face);
 		FT_Done_FreeType(ft);
 	}
 
-	FontAtlas::~FontAtlas()
-	{
-        RESOURCE_UNLOAD(m_texture, m_fontSize);
-	}
+    void FontAtlas::Free()
+    {
+        glDeleteTextures(1, &id);
+    }
 
     const Post_Char& FontAtlas::GetCharacter(char c) const
     {
@@ -58,7 +68,7 @@ namespace Astra::Graphics
         }
     }
 
-	const Texture* FontAtlas::LoadFontTextureAtlas(const char* const filepath, unsigned int fontSize, const FT_Face& face)
+	void FontAtlas::LoadFontTextureAtlas(const char* const filepath, unsigned int fontSize, const FT_Face& face)
 	{
 		std::vector<rect_type> rectangles;
 		std::unordered_map<Math::iVec2, std::stack<char>, iVec2Hasher> m_possible;
@@ -155,6 +165,24 @@ namespace Astra::Graphics
 
             m_characters[character.GetChar()] = Post_Char(character, result_size.w, result_size.h);
         }
-        return Loader::LoadFontAtlasTexture(filepath, fontSize, imgBuffer, result_size.w, result_size.h);
+        
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        width = result_size.w;
+        height = result_size.h;
+        
+        glGenTextures(1, &id);
+        glBindTexture(GL_TEXTURE_2D, id);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, &imgBuffer[0]);
+
+        // set texture options
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // Reset unpacking alignment to default
+
+        glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }

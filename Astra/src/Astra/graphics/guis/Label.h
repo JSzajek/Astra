@@ -4,6 +4,7 @@
 
 namespace Astra::Graphics
 {
+	// TODO: Refactor and rethink the difference between a label and a panel
 	class Label : public Gui
 	{
 	private:
@@ -11,32 +12,27 @@ namespace Astra::Graphics
 		//FontType* m_font;
 		//GuiText* m_text;
 	public:
-		Label(const GuiMaterial* material, const Math::Vec2& position, float rotation, const Math::Vec2& scale, unsigned int textureIndex = 1)
+		Label()
+			: Gui(), m_textureIndex(0)
+		{
+		}
+
+		Label(const GuiMaterial& material, const Math::Vec2& position, float rotation, const Math::Vec2& scale, unsigned int textureIndex = 1)
 			: Gui(material, position, rotation, scale), m_textureIndex(textureIndex)/*, m_text(NULL), m_font(NULL)*/
 		{
-			SetType(GuiType::Label);
-			/*Position = position;
-			Position += Math::Vec2::One;
-			Position /= 2.0f;*/
 		}
 
-		/*void SetFont(FontType* font)
+		Label(const char* const name, const GuiMaterial& material, const Math::Vec2& position, float rotation, const Math::Vec2& scale, unsigned int textureIndex = 1)
+			: Gui(name, material, position, rotation, scale), m_textureIndex(textureIndex)/*, m_text(NULL), m_font(NULL)*/
 		{
-			m_font = font;
 		}
 
-		void SetText(const char* const text) 
-		{
-			if (m_text == NULL && m_font)
-			{
-				m_text = new GuiText(text, m_font, 3, Position, 0.5f, true);
-			}
-		}
-		
-		inline GuiText* GetText() const { return m_text; }*/
+		virtual inline GuiType GetType() const override { return GuiType::Label; }
+		virtual void Free() override { }
+		inline virtual std::string ToString() const override { return !Name.length() ? ("Label_&" + std::to_string(m_uid)) : Name; }
 
-		inline float GetMaterialXOffset() const { return (float)(m_textureIndex % Material->GetRowCount()) / (float)Material->GetRowCount(); }
-		inline float GetMaterialYOffset() const { return (float)(m_textureIndex / Material->GetRowCount()) / (float)Material->GetRowCount(); }
+		inline float GetMaterialXOffset() const { return (float)(m_textureIndex % Material.GetRowCount()) / (float)Material.GetRowCount(); }
+		inline float GetMaterialYOffset() const { return (float)(m_textureIndex / Material.GetRowCount()) / (float)Material.GetRowCount(); }
 		
 		inline unsigned int GetTextureIndex() const { return m_textureIndex; }
 	};

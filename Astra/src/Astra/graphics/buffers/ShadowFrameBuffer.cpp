@@ -1,7 +1,6 @@
 #include "astra_pch.h"
 
 #include "ShadowFrameBuffer.h"
-#include "../ResourceManager.h"
 
 namespace Astra::Graphics
 {
@@ -17,6 +16,6 @@ namespace Astra::Graphics
 
 	ShadowFrameBuffer::~ShadowFrameBuffer()
 	{
-		ResourceManager::Unload(m_buffer);
+		delete m_buffer;
 	}
 }

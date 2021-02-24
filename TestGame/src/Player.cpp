@@ -4,14 +4,14 @@ Player::Player(const Vec3& position, Terrain* terrain)
 	: m_camera(new Camera(20, 45, 0)), m_movement(Vec3(0)),
            m_rotating(false), m_oldPosition(Vec2(0,0)), m_terrain(terrain)
 {
-    m_body = ResourceManager::LoadModel("res/cube.fbx");
+    m_body = Model("res/cube.fbx");
 }
 
 void Player::Update(float delta)
 {
     CheckInput();
 
-    (*m_body)(ROTATION, SUM_EQ, Y_POS, currentTurnSpeed * delta);
+    m_body(ROTATION, SUM_EQ, Y_POS, currentTurnSpeed * delta);
 #if LOCKED_CAMERA
     //m_camera->Swivel() = m_body->GetRotation().y;
 #else
@@ -43,20 +43,20 @@ void Player::Update(float delta)
 #endif
 
     float distance = currentSpeed * delta;
-    float y_rot = ToRadians(m_body->GetRotation().y);
-    (*m_body)(TRANSLATION, SUM_EQ, X_POS, distance * sin(y_rot));
-    (*m_body)(TRANSLATION, SUM_EQ, Z_POS, distance * cos(y_rot));
+    float y_rot = ToRadians(m_body.GetRotation().y);
+    m_body(TRANSLATION, SUM_EQ, X_POS, distance * sin(y_rot));
+    m_body(TRANSLATION, SUM_EQ, Z_POS, distance * cos(y_rot));
 
     upwardsSpeed += GRAVITY * delta;
-    (*m_body)(TRANSLATION, SUM_EQ, Y_POS, upwardsSpeed * delta);
+    m_body(TRANSLATION, SUM_EQ, Y_POS, upwardsSpeed * delta);
 
 
-    float terrainHeight = m_terrain->GetHeightOfTerrain(static_cast<int>(m_body->GetTranslation().x), static_cast<int>(m_body->GetTranslation().z));
-    if (m_body->GetTranslation().y < terrainHeight + GROUND_OFFSET)
+    float terrainHeight = m_terrain->GetHeightOfTerrain(static_cast<int>(m_body.GetTranslation().x), static_cast<int>(m_body.GetTranslation().z));
+    if (m_body.GetTranslation().y < terrainHeight + GROUND_OFFSET)
     {
         upwardsSpeed = 0;
         isGrounded = true;
-        (*m_body)(TRANSLATION, EQ, Y_POS, terrainHeight + GROUND_OFFSET);
+        m_body(TRANSLATION, EQ, Y_POS, terrainHeight + GROUND_OFFSET);
     }
     
     /*float mouseWheel = Input::GetMouseScroll();
@@ -65,9 +65,9 @@ void Player::Update(float delta)
         m_camera->operator()(DISTANCE, EQ, NULL, Clamp(m_camera->GetDistance() + (mouseWheel * -1 * ZoomPower * 0.1f), (float)MIN_DISTANCE, (float)MAX_DISTANCE));
     }*/
     
-    m_camera->LookAt(m_body->GetTranslation());
+    m_camera->LookAt(m_body.GetTranslation());
 
-    Astra::Audio::AudioController::SetListenerPosition(m_body->GetTranslation());
+    Astra::Audio::AudioController::SetListenerPosition(m_body.GetTranslation());
 }
 
 void Player::CheckInput()
@@ -110,6 +110,5 @@ void Player::CheckInput()
 
 Player::~Player()
 {
-    RESOURCE_UNLOAD(m_body);
     delete m_camera;
 }

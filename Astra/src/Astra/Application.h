@@ -34,6 +34,7 @@ namespace Astra
 		inline void PopLayer(Layer* layer) { m_layerStack.PopLayer(layer); }
 		inline void PopOverlay(Layer* layer) { m_layerStack.PopOverlay(layer); }
 
+		virtual void OnAwake() { }
 		virtual void OnUpdate(float delta) { }
 
 		static Application& Get() { return *s_instance; }

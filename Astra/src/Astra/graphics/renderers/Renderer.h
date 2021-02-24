@@ -3,6 +3,7 @@
 #include "../shaders/Shader.h"
 #include "../buffers/VertexArray.h"
 #include "../buffers/FrameBuffer.h"
+#include "Astra/graphics/entities/Light.h"
 
 namespace Astra::Graphics
 {
@@ -49,5 +50,7 @@ namespace Astra::Graphics
 		virtual void UnbindVertexArray();
 		void UpdateDynamicVbo();
 		void UpdateTexture();
+	public:
+		void UpdateLight(unsigned int index, const Light* light);
 	};
 }

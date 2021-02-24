@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <thread>
 
 #include "Layer.h"
 
@@ -14,6 +15,7 @@
 #include "Astra/graphics/renderers/SkyboxRenderer.h"
 #include "Astra/graphics/renderers/WaterRenderer.h"
 
+#include "Astra/graphics/entities/LayerEntity.h"
 #include "Astra/graphics/entities/Model.h"
 #include "Astra/graphics/entities/PointLight.h"
 #include "Astra/graphics/entities/DirectionalLight.h"
@@ -35,11 +37,6 @@ namespace Astra
 {
 	#define FULL_SELECTION		0
 
-	enum EntityType : unsigned char
-	{
-		Default, NormalMapped, Selected
-	};
-
 	class Layer3D : public Layer
 	{
 	private:
@@ -53,6 +50,9 @@ namespace Astra
 		static const constexpr float NearPlane = 0.1f;
 		static const constexpr float FarPlane = 500.0f;
 	private:
+		std::mutex m_modelLock;
+		std::mutex m_particleLock;
+
 		// Renderers
 		Graphics::Entity3dRenderer* m_entityRenderer;
 		Graphics::NormalEntity3dRenderer* m_normalEntityRenderer;
@@ -72,41 +72,62 @@ namespace Astra
 
 		Math::Mat4* m_projectionMatrix;
 		Math::Mat4* m_toShadowMapMatrix;
+
+		//Stored References
+		std::unordered_map<std::string, Graphics::LayerEntity*> m_loaded;
+		
+		std::unordered_map<unsigned int, Graphics::Model> m_models;
+		std::unordered_map<unsigned int, std::vector<const Graphics::Model*>> m_modelCategories[4];
+
+		// Have an unordered_map that stores based off of name (which is unique).
+		// Upon adding or removing from the map store in another multiset the names that correspond with certain categories
+		// Update a list of references after adding or removing
 	private:
 		// Terrains
-		std::vector<const Graphics::Terrain*> m_terrains;
-		std::vector<const Graphics::WaterTile*> m_tiles;
+		std::unordered_map<unsigned int, Graphics::Terrain> m_terrains;
+		std::unordered_map<unsigned int, std::vector<const Graphics::Terrain*>> m_terrainCategories;
+		std::unordered_map<unsigned int, Graphics::WaterTile> m_waterTiles;
+		std::vector<Graphics::WaterTile*> m_tiles;
 
-		// Entities - 1: regular, 2: normal-mapped, 3: selected
-		std::unordered_map<unsigned int, std::vector<const Graphics::Model*>> m_entities[3];
+		// Entities - 1: regular, 2: normal-mapped, 3: selected, 4: shadow-caster
+		//std::unordered_map<unsigned int, std::vector<Graphics::Model>> m_models[4];
 		std::vector<Graphics::Animator*> m_animators;
-		std::vector<const Graphics::ParticleSystem*> m_particles;
+		std::unordered_map<unsigned int, Graphics::ParticleSystem> m_particles;
 
 		// Lighting
-		std::vector<Graphics::PointLight*> m_pointlights;
-		Graphics::DirectionalLight* m_mainLight;
+		Graphics::DirectionalLight m_mainLight;
+		std::vector<Graphics::PointLight> m_pointLights;
 		Graphics::Color* m_fogColor;
 
 		// Skybox
-		const Graphics::SkyboxMaterial* m_skybox;
+		Graphics::SkyboxMaterial m_skybox;
 
+		// Gizmos
+	#if ASTRA_DEBUG
+		std::unordered_map<unsigned int, Graphics::Gizmo> m_gizmos;
+		std::unordered_map<unsigned int, std::vector<const Graphics::Gizmo*>> m_gizmoCategories;
+	#endif
 		bool m_attached = false;
 	public:
 		Layer3D();
 		~Layer3D();
 	public:
-		inline void SetDirectionalLight(Graphics::DirectionalLight* light) { m_mainLight = light; }
-		inline void SetSkyBox(const Graphics::SkyboxMaterial* material) { m_skybox = material; }
+		Graphics::LayerEntity* Get(std::string name);
+
+		inline void SetDirectionalLight(const Graphics::DirectionalLight& light) { m_mainLight = light; }
+		inline void SetSkyBox(const Graphics::SkyboxMaterial& material) { m_skybox = material; }
 		inline void SetFogColor(const Graphics::Color& color) { *m_fogColor = color; }
 		inline void SetCamera(Graphics::Camera* camera) { m_mainCamera = camera; }
 		void SetSelectionColor(const Graphics::Color& color);
 
-		void AddModel(const Graphics::Model* entity);
-		inline void AddParticleSystem(const Graphics::ParticleSystem* system) { m_particles.emplace_back(system); }
-		inline void AddTerrain(const Graphics::Terrain* terrain) { m_terrains.emplace_back(terrain); }
-		inline void AddWaterTile(const Graphics::WaterTile* tile) { m_tiles.emplace_back(tile); }
-		inline void AddPointLight(Graphics::PointLight* light) { m_pointlights.emplace_back(light); }
+		void AddModel(const Graphics::Model& model);
+		void AddParticleSystem(const Graphics::ParticleSystem& system);
+		Graphics::Terrain* AddTerrain(const Graphics::Terrain& terrain);
+		void AddWaterTile(const Graphics::WaterTile& tile);
+		inline void AddPointLight(const Graphics::PointLight& light) { m_pointLights.emplace_back(light); }
 		
+	
+
 		void SetMultisampling(unsigned int sampleSize);
 		void SetBloom(bool enabled);
 		void SetHDR(bool enabled);
@@ -121,10 +142,17 @@ namespace Astra
 		void ToggleWireframeMode(unsigned char state);
 	#endif
 	private:
+	#if ASTRA_DEBUG
+		void AddGizmo(const Graphics::Gizmo& gizmo);
+	#endif
+		void LayerUpdateAnimations(float delta);
+		//void LayerUpdateParticles(float delta);
+	private:
 		void Init();
 		void PreRender(float delta);
-		void Render(float delta, const Math::Vec4& inverseViewVector, bool waterPass, const Math::Vec4& clipPlane = Graphics::Renderer::DefaultClipPlane);
+		void Render(float delta, const Math::Vec4& inverseViewVector, bool waterPass, 
+					const Math::Vec4& clipPlane = Graphics::Renderer::DefaultClipPlane);
 		void PostRender();
-		void EmplaceModel(unsigned int listIndex, const Graphics::Model* model);
+		void EmplaceModel(unsigned char flags, const Graphics::Model& model);
 	};
 }

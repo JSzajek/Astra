@@ -40,6 +40,7 @@ namespace Astra::Graphics
 				{
 					auto* temp = (*particlesIter);
 					particlesIter = particles.erase(particlesIter);
+					//delete temp;
 					m_leftovers.emplace(temp);
 				}
 				else
@@ -74,9 +75,4 @@ namespace Astra::Graphics
 			std::rotate(insertion_point, it, it + 1);
 		}
 	}
-
-	//void ParticleController::ClearImpl()
-	//{
-	//	m_particleRenderer->Clear();
-	//}
 }

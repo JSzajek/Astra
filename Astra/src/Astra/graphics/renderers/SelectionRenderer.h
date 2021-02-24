@@ -29,6 +29,6 @@ namespace Astra::Graphics
 		void DrawSelected(const std::unordered_map<unsigned int, std::vector<const Model*>>& models, 
 						  const Math::Mat4* viewMatrix);
 	private:
-		void PrepareMesh(const Mesh& mesh);
+		void PrepareModel(const Model* model);
 	};
 }

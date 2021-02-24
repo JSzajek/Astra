@@ -2,7 +2,7 @@
 
 #include "ShadowBox.h"
 #include "Astra/graphics/entities/Model.h"
-#include "Astra/graphics/entities/Light.h"
+#include "Astra/graphics/entities/DirectionalLight.h"
 #include "Astra/graphics/buffers/ShadowFrameBuffer.h"
 #include "Astra/graphics/renderers/ShadowMapRenderer.h"
 
@@ -19,7 +19,7 @@ namespace Astra::Graphics
 		ShadowMapRenderer* m_renderer;
 		ShadowBox* m_box;
 
-		const Light* m_light;
+		const DirectionalLight* m_light;
 
 		Math::Mat4 m_projectionMatrix;
 		Math::Mat4 m_lightViewMatrix;
@@ -29,11 +29,10 @@ namespace Astra::Graphics
 		ShadowMapController(float fov, float _near, float _far);
 		~ShadowMapController();
 		
-		void Render();
-		void SetDirectionalLight(const Light* light);
+		void Render(const std::unordered_map<unsigned int, std::vector<const Model*>>& models);
+		void SetDirectionalLight(const DirectionalLight* light);
 
 		inline void SetCamera(Camera* camera) { m_box->SetCamera(camera); }
-		inline void AddEntity(const Model* entity) { m_renderer->AddEntity(entity); }
 
 		inline Math::Mat4 GetToShadowMapSpaceMatrix() const { return m_offset * m_projectionViewMatrix; }
 		inline const unsigned int GetShadowMap() const { return m_buffer->GetShadowMap(); }

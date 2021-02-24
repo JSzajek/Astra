@@ -17,10 +17,6 @@ namespace Astra::Graphics
 	{
 	private:
 		const Math::Mat4* m_toShadowSpaceMatrix;
-		
-		std::vector<const Light*> m_lights;
-		const Light* m_directionalLight;
-
 		const Color* m_fogColor;
 		
 	#if ASTRA_DEBUG
@@ -41,9 +37,9 @@ namespace Astra::Graphics
 				  const Math::Vec4& inverseViewVector = NULL, 
 				  const Math::Vec4& clipPlane = DefaultClipPlane);
 
-		void AddLight(Light* light);
-		void UpdateLight(const Light* light);
+		inline void AddLight(Light* light) { AddLight(0, light); }
+		void AddLight(unsigned int index, Light* light);
 	private:
-		void PrepareMesh(const Mesh& mesh);
+		void PrepareModel(const Model* model);
 	};
 }
