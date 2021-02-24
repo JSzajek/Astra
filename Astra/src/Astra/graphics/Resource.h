@@ -96,6 +96,11 @@ namespace Astra::Graphics
 		{
 			return Get().LoadMeshImpl(name, vertices, indices);
 		}
+
+		static void UpdateDiffuseTextures(bool hdr)
+		{
+			Get().UpdateDiffuseTexturesImpl(hdr);
+		}
 	private:
 		Resource();
 		~Resource();
@@ -106,6 +111,8 @@ namespace Astra::Graphics
 		Texture* LoadTextureImpl(std::string filepath, std::string directory, const void* scene, bool diffuse = false);
 		
 		CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);
+
+		void UpdateDiffuseTexturesImpl(bool hdr);
 
 		Mesh* LoadMeshImpl(const std::string& filepath, void* mesh, const void* scene,
 						   std::map<std::string, BoneInfo>& map, int& counter, bool normalMapped);

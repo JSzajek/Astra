@@ -16,7 +16,7 @@ namespace Astra::Graphics
 
 	TerrainMaterial::TerrainMaterial(const char* const blendMap, const char* const background, 
 									 const char* const red, const char* const green, const char* const blue)
-		: m_blendMapTexture(Resource::LoadTexture(blendMap)), m_backgroundTexture(Resource::LoadTexture(background)), m_rTexture(Resource::LoadTexture(red, true)),
+		: m_blendMapTexture(Resource::LoadTexture(blendMap)), m_backgroundTexture(Resource::LoadTexture(background, true)), m_rTexture(Resource::LoadTexture(red, true)),
 		  m_gTexture(Resource::LoadTexture(green, true)), m_bTexture(Resource::LoadTexture(blue, true)), specularTexture(Resource::LoadTexture(Texture::DefaultSpecular)),
 		  reflectivity(0), shineDampener(1)
 	{

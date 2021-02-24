@@ -96,6 +96,8 @@ namespace Astra::Graphics
 		glTexImage2D(GL_TEXTURE_2D, 0, hdr && diffuse ? GL_SRGB8_ALPHA8 : GL_RGBA8, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		texture.hdr = hdr;
+		if (diffuse)
+			texture.type = TextureType::DiffuseMap;
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -238,6 +240,73 @@ namespace Astra::Graphics
 		m_tracker[result] = ResourceTrack(hash, ResourceType::CubeTextureResource);
 
 		return result;
+	}
+
+	void Resource::UpdateDiffuseTexturesImpl(bool hdr)
+	{
+		for (auto iter = m_loadedTextures.begin(); iter != m_loadedTextures.end(); ++iter)
+		{
+			if (iter->second.type != TextureType::DiffuseMap) // Not diffuse so don't consider
+				continue;
+
+			if (iter->second.hdr == hdr) // Already Updated
+				continue;
+
+			int width, height;
+			glBindTexture(GL_TEXTURE_2D, iter->second.id);
+			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+
+			void* data = malloc(sizeof(float) * width * height * 4 /*RGBA*/); // Allocate Enough Space For Image
+
+			// Gathers Image Data from Texture Buffer based on ID and re-buffers with new internal format
+			glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glTexImage2D(GL_TEXTURE_2D, 0, hdr ? GL_SRGB8_ALPHA8 : GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+
+			iter->second.hdr = hdr; // Update hdr status
+
+			free(data); // Free Image Data
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+
+		for (auto iter = m_loadedCubeTextures.begin(); iter != m_loadedCubeTextures.end(); ++iter)
+		{
+			if (iter->second.hdr == hdr) // Already Updated
+				continue;
+
+			int width, height;
+			glBindTexture(GL_TEXTURE_CUBE_MAP, iter->second.id);
+			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+		
+			stbi_set_flip_vertically_on_load(false); // Don't flip?
+
+			int m_bpp, i = 0;
+			unsigned char* buffer;
+			for (const auto& file : iter->second.GetFiles())
+			{
+				buffer = stbi_load(file, &width, &height, &m_bpp, 4);
+				if (!buffer)
+				{
+					ASTRA_CORE_WARN("Cube Map Texture {0} Did Not Load Correctly.", file);
+					return;
+				}
+
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, hdr ? GL_SRGB8_ALPHA8 : GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+				stbi_image_free(buffer);
+				++i;
+			}
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+			iter->second.hdr = hdr; // Update hdr status
+
+			glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+		}
 	}
 
 	Mesh* Resource::LoadMeshImpl(const std::string& filepath, void* _mesh, const void* _scene,

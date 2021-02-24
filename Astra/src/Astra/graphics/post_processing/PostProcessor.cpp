@@ -5,6 +5,7 @@
 #include "Astra/Application.h"
 #include "Astra/graphics/loaders/Loader.h"
 #include "Astra/graphics/ResourceManager.h"
+#include "Astra/graphics/Resource.h"
 
 namespace Astra::Graphics
 {
@@ -22,7 +23,7 @@ namespace Astra::Graphics
 		}
 
 		effects.push_back(new HDREffect(hdr, 0.8f));
-		ResourceManager::ToggleHDRTextures(hdr);
+		Resource::UpdateDiffuseTextures(hdr);
 	}
 
 	PostProcessor::~PostProcessor()
@@ -106,7 +107,7 @@ namespace Astra::Graphics
 		((HDREffect*)*(--effects.end()))->SetActive(enabled);
 
 		// Update loaded diffuse textures
-		ResourceManager::ToggleHDRTextures(enabled);
+		Resource::UpdateDiffuseTextures(enabled);
 
 		// Update framebuffer for hdr - Including ones inside effects
 		auto [width, height] = Application::Get().GetWindow().GetSize();
