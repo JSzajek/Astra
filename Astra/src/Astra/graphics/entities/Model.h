@@ -36,14 +36,14 @@ namespace Astra::Graphics
 		std::vector<Mesh> m_meshes;
 		
 		// Animation Information
-		std::vector<Animation> m_animations;
+		std::unordered_map<std::string, Animation> m_animations;
 		Animator* m_animator;
 		std::map<std::string, BoneInfo> m_boneInfoMap;
 		int m_boneCounter;
 	public:
 		Model() = default;
-		Model(const char* const name, const char* const filepath, bool calcTangents);
-		Model(const char* const filepath, bool calcTangents);
+		Model(const char* const name, const char* const filepath, bool calcTangents = false);
+		Model(const char* const filepath, bool calcTangents = false);
 		Model(const Model& other);
 		~Model();
 
@@ -66,13 +66,18 @@ namespace Astra::Graphics
 		inline void SetTextureIndex(unsigned int index) { m_textureIndex = index; }
 		inline void SetRowCount(unsigned int count) { m_rowCount = count; }
 
-		inline void SetAnimator(Animator* animator) { m_animator = animator; }
+		inline void AddAnimator() { m_animator = new Animator(); }
 		inline bool HasAnimator() const { return m_animator; }
 		inline Animator* GetAnimator() const { return m_animator; }
 
 		inline void PlayAnimation(const std::string& name) 
 		{
-			m_animator->SetAnimation(&m_animations[0]);
+			if (m_animations.find(name) == m_animations.end())
+			{
+				ASTRA_CORE_INFO("Model: Could Not Find Animation: {0}", name);
+				return;
+			}
+			m_animator->SetAnimation(m_animations[name]);
 			m_animator->Play();
 		}
 

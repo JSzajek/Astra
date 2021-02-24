@@ -13,7 +13,6 @@ namespace Astra::Graphics
 			: Gui(material, position, rotation, scale), m_textureIndex(textureIndex)
 		{
 			m_rect.SetSize(Math::iVec2(static_cast<int>(m_rows[1].x * Material->GetSize().x), static_cast<int>(m_rows[1].y * Material->GetSize().y)));
-			SetType(GuiType::Image);
 			UpdateMatrices();
 		}
 
@@ -21,6 +20,8 @@ namespace Astra::Graphics
 			: Image(material, position, 0, scale, textureIndex)
 		{
 		}
+
+		virtual inline GuiType GetType() const override { return GuiType::Image; }
 
 		inline float GetMaterialXOffset() const { return (float)(m_textureIndex % Material->GetRowCount()) / (float)Material->GetRowCount(); }
 		inline float GetMaterialYOffset() const { return (float)(m_textureIndex / Material->GetRowCount()) / (float)Material->GetRowCount(); }

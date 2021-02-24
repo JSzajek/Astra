@@ -156,9 +156,12 @@ namespace Astra
 
 	void Layer3D::LayerUpdateAnimations(float delta)
 	{
-		for (auto* animator : m_animators)
+		for (const auto& model : m_models)
 		{
-			animator->UpdateAnimation(delta);
+			if (auto* animator = model.second.GetAnimator())
+			{
+				animator->UpdateAnimation(delta);
+			}
 		}
 	}
 
@@ -169,7 +172,7 @@ namespace Astra
 		if (!m_attached) { return; }
 
 		std::thread animationWorker(&Layer3D::LayerUpdateAnimations, this, delta);
-		for (const auto& system : m_particles)
+		for (const auto& system : m_particles) // Moving to thread causes weird issues?
 		{
 			system.second.GenerateParticles(delta);
 		}

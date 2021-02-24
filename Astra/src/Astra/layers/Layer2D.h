@@ -18,6 +18,13 @@ namespace Astra
 		// Renderer
 		Graphics::GuiRenderer* m_guiRenderer;
 		
+		// Loaded Guis
+		std::unordered_map<unsigned int, Graphics::Button> m_buttons;
+		std::unordered_map<unsigned int, Graphics::ToggleButton> m_toggleButtons;
+		std::unordered_map<unsigned int, Graphics::Panel> m_panels;
+		std::unordered_map<unsigned int, Graphics::Label> m_labels;
+		std::unordered_map<unsigned int, Graphics::TextBox> m_textboxes;
+
 		// Guis
 		std::vector<std::tuple<Graphics::Gui*, int>> m_guis;
 	public:

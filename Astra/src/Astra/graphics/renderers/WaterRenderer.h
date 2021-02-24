@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Renderer.h"
-#include "../entities/Camera.h"
-#include "../buffers/WaterFrameBuffer.h"
-#include "../buffers/Texture.h"
-#include "../entities/terrains/WaterTile.h"
-#include "../entities/Light.h"
-#include "../shaders/WaterShader.h"
+#include "Astra/graphics/entities/Camera.h"
+#include "Astra/graphics/buffers/WaterFrameBuffer.h"
+#include "Astra/graphics/buffers/Texture.h"
+#include "Astra/graphics/entities/terrains/WaterTile.h"
+#include "Astra/graphics/entities/Light.h"
+#include "Astra/graphics/shaders/WaterShader.h"
 
 namespace Astra::Graphics
 {
@@ -15,7 +15,6 @@ namespace Astra::Graphics
 	private:
 		const VertexArray* m_defaultQuad;
 		WaterFrameBuffer* m_buffer;
-		//std::vector<const WaterTile*> m_waterTiles;
 		const Math::Mat4* m_toShadowSpaceMatrix;
 		float m_near, m_far;
 	#if ASTRA_DEBUG

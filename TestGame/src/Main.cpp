@@ -35,7 +35,7 @@ private:
     //SkyboxMaterial* skybox;
     //AudioSource* audioSource;
     //Image* image;
-    Vec3* particleCenter;
+    //Vec3* particleCenter;
     /*ToggleButton* vsycnToggle;
     Button* multisamplingButton;
     ToggleButton* bloomToggle;
@@ -207,41 +207,41 @@ public:
         scene->AddPointLight(light3);
         scene->AddPointLight(light4);
 
-        //cubeModel = ResourceManager::LoadModel("res/cube.fbx");
-        //cubeModel->SetScale(Math::Vec3(1));
-        //cubeModel->SetTranslation(Math::Vec3(0, 0, 20));
-        //models.emplace_back(cubeModel);
-        //scene->AddModel(cubeModel);
+        //auto cubeModel = ResourceManager::LoadModel("res/cube.fbx");
+        auto cubeModel = Model("res/cube.fbx", false);
+        cubeModel.SetScale(Math::Vec3(1));
+        cubeModel.SetTranslation(Math::Vec3(0, 0, 20));
+        scene->AddModel(cubeModel);
 
-        //// Example of loaded already loaded model and deleting pointer but not source
+        // Example of loaded already loaded model and deleting pointer but not source
         //cubeModel2 = ResourceManager::LoadModel("res/cube.fbx");
         //RESOURCE_UNLOAD(cubeModel2);
 
-        //cubeModel3 = ResourceManager::LoadModel("res/cube.fbx");
-        //cubeModel3->SetScale(Math::Vec3(1));
-        //cubeModel3->SetTranslation(Math::Vec3(20, 0, 20));
-        //models.emplace_back(cubeModel3);
-        //scene->AddModel(cubeModel3);
+        /*cubeModel3 = ResourceManager::LoadModel("res/cube.fbx");
+        cubeModel3->SetScale(Math::Vec3(1));
+        cubeModel3->SetTranslation(Math::Vec3(20, 0, 20));
+        models.emplace_back(cubeModel3);
+        scene->AddModel(cubeModel3);*/
 
         //vampire = ResourceManager::LoadModel("res/vampire/dancing_vampire.dae", true);
-        //models.emplace_back(vampire);
-        //vampire->SetScale(Math::Vec3(0.001f));
-        //vampire->SetTranslation(Math::Vec3(50, terrain->GetHeightOfTerrain(50, 70), 70));
-        //vampire->SetAnimator(new Animator());
-        //vampire->PlayAnimation("");
-        //scene->AddModel(vampire);
+        auto vampire = Model("res/vampire/dancing_vampire.dae", true);
+        vampire.SetScale(Math::Vec3(10));
+        vampire.SetTranslation(Math::Vec3(50, terrain.GetHeightOfTerrain(50, 70), 70));
+        vampire.AddAnimator();
+        vampire.PlayAnimation("");
+        scene->AddModel(vampire);
 
-        //// FBX doesn't export displacement map- Work Around
-        //auto* heightMap = Loader::LoadTexture("res/textures/bricks_heightmap.jpg", false, GL_REPEAT, false);
-        //heightMap->type = TextureType::HeightMap;
+        // FBX doesn't export displacement map- Work Around
+        auto* heightMap = Loader::LoadTexture("res/textures/bricks_heightmap.jpg", false, GL_REPEAT, false);
+        heightMap->type = TextureType::HeightMap;
         //brickModel = ResourceManager::LoadModel("res/bricks.fbx", true);
-        //brickModel->GetMesh(0).GetMaterial()->AddTexture(heightMap);
-        //brickModel->GetMesh(0).GetMaterial()->SetHeightOffset(0.1f);
-        //brickModel->SetScale(Math::Vec3(10));
-        //brickModel->SetRotation(Math::Vec3(0, 0, -90));
-        //brickModel->SetTranslation(Math::Vec3(-10, 0, -10));
-        //models.emplace_back(brickModel);
-        //scene->AddModel(brickModel);
+        auto brickModel = Model("res/bricks.fbx", true);
+        brickModel.GetMesh(0).GetMaterial()->AddTexture(heightMap);
+        brickModel.GetMesh(0).GetMaterial()->SetHeightOffset(0.1f);
+        brickModel.SetScale(Math::Vec3(10));
+        brickModel.SetRotation(Math::Vec3(0, 0, -90));
+        brickModel.SetTranslation(Math::Vec3(-10, 0, -10));
+        scene->AddModel(brickModel);
 
         //auto* barrelMat = ResourceManager::LoadMaterial("res/textures/barrel.png", "res/textures/barrelSpecular.jpg", "res/textures/barrelNormal.png", NULL, 0, NULL, 1, 32);
         //barrelModel = ResourceManager::LoadNormalEntity("res/barrel.obj", 0, Vec3(-40, terrain->GetHeightOfTerrain(-40, 55) + 5, 55), Vec3(0), Vec3(1));
@@ -318,15 +318,8 @@ public:
 
     virtual void OnUpdate(float delta) override
     {
-        auto* barrel = scene->Get<Model>("Barrel");
-        auto str = barrel->ToString();
-
-        auto* cube = scene->Get<Model>("Cube");
-        auto str2 = cube->ToString();
-
         auto* system = scene->Get<ParticleSystem>("Fire Spout");
         auto str3 = system->ToString();
-
 
         m_player->Update(delta);
 

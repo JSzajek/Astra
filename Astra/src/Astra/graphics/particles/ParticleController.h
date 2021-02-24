@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stack>
-#include "../renderers/ParticleRenderer.h"
+#include "Astra/graphics/renderers/ParticleRenderer.h"
 
 namespace Astra::Graphics
 {
@@ -57,10 +57,10 @@ namespace Astra::Graphics
 		inline Particle* GetParticleImpl() 
 		{
 			return NULL;
-			/*if (m_leftovers.size() == 0) { return NULL; }
+			if (m_leftovers.size() == 0) { return NULL; }
 			auto* left = m_leftovers.top();
 			m_leftovers.pop();
-			return left; */
+			return left; 
 		}
 	private:
 		void InsertionSort(std::vector<Particle*>& particles);

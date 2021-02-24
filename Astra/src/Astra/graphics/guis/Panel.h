@@ -16,7 +16,6 @@ namespace Astra::Graphics
 			: Gui(material, position, rotation, scale), m_text("", position, rotation, scale)
 		{
 			m_rect.SetSize(Math::iVec2(static_cast<int>(m_rows[1].x * Material->GetSize().x), static_cast<int>(m_rows[1].y * Material->GetSize().y)));
-			SetType(GuiType::Panel);
 			UpdateMatrices();
 		}
 
@@ -24,6 +23,8 @@ namespace Astra::Graphics
 			: Panel(material, position, 0, scale)
 		{
 		}
+
+		virtual inline GuiType GetType() const override { return GuiType::Panel; }
 
 		inline void SetText(std::string text) { m_text.SetText(text); }
 		inline TextBox* GetTextBox() { return &m_text; }

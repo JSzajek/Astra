@@ -134,7 +134,8 @@ namespace Astra
 	private:
 		void Init();
 		void PreRender(float delta);
-		void Render(float delta, const Math::Vec4& inverseViewVector, bool waterPass, const Math::Vec4& clipPlane = Graphics::Renderer::DefaultClipPlane);
+		void Render(float delta, const Math::Vec4& inverseViewVector, bool waterPass, 
+					const Math::Vec4& clipPlane = Graphics::Renderer::DefaultClipPlane);
 		void PostRender();
 		void EmplaceModel(unsigned char flags, const Graphics::Model& model);
 	};

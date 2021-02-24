@@ -28,7 +28,7 @@ namespace Astra::Graphics
 	}
 
 	Model::Model(const Model& other)
-		: Spatial(other), m_directory(other.m_directory), m_normals(other.m_normals),
+		: Spatial(other), m_renderId(other.m_renderId), m_directory(other.m_directory), m_normals(other.m_normals),
 			m_textureIndex(other.m_textureIndex), m_rowCount(other.m_rowCount),
 			m_selected(other.m_selected), m_meshes(other.m_meshes),
 			selectedModelMatrix(other.selectedModelMatrix), m_boneCounter(other.m_boneCounter),
@@ -75,8 +75,10 @@ namespace Astra::Graphics
 		{
 			m_animations.reserve(scene->mNumAnimations);
 			
-			// For now only check first animation
-			m_animations.push_back(Animation(scene->mAnimations[0], scene->mRootNode, m_boneInfoMap, m_boneCounter));
+			for (unsigned int i = 0; i < scene->mNumAnimations; ++i)
+			{
+				m_animations[scene->mAnimations[i]->mName.C_Str()] = Animation(scene->mAnimations[i], scene->mRootNode, m_boneInfoMap, m_boneCounter);
+			}
 		}
 	}
 

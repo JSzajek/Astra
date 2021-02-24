@@ -6,7 +6,7 @@
 #include "Spatial2D.h"
 #include "utility/Rect2.h"
 
-#include "../materials/GuiMaterial.h"
+#include "Astra/graphics/materials/GuiMaterial.h"
 #include "Astra/graphics/Color.h"
 
 #include "utility/FontAtlas.h"
@@ -18,7 +18,7 @@ namespace Astra::Graphics
 		Panel,
 		Label,
 		Button,
-		Toggle,
+		ToggleButton,
 		Image,
 		TextBox
 	};
@@ -52,8 +52,7 @@ namespace Astra::Graphics
 
 		virtual inline const Math::Vec2& GetSize() const { return Material->GetSize(); }
 		
-		inline const GuiType& GetType() const { return m_type; }
-	
+		virtual inline GuiType GetType() const = 0;
 		inline const Rect2& GetBounds() { return m_rect; }
 
 		inline void SetOnHover(std::function<void()> func) { m_onHover = func; }
@@ -65,7 +64,5 @@ namespace Astra::Graphics
 		inline virtual void OnExit() { if (m_onExit) m_onExit(); };
 		inline virtual void OnPressed() { if (m_onPressed) m_onPressed(); };
 		inline virtual void OnReleased(bool hovering) { if (m_onReleased) m_onReleased(hovering); };
-	protected:
-		inline void SetType(GuiType type) { m_type = type; }
 	};
 }

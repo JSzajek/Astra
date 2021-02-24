@@ -22,7 +22,6 @@ namespace Astra::Graphics
 			: Gui(material, position, rotation, scale), m_hoverColor(), m_toggledColor(), m_hovering(0), m_pressing(0), m_toggled(0), m_text("", position, rotation, scale)
 		{
 			m_rect.SetSize(Math::iVec2(static_cast<int>(m_rows[1].x * Material->GetSize().x), static_cast<int>(m_rows[1].y * Material->GetSize().y)));
-			SetType(GuiType::Toggle);
 			UpdateMatrices();
 		}
 
@@ -30,6 +29,8 @@ namespace Astra::Graphics
 			: ToggleButton(material, position, 0, scale)
 		{
 		}
+
+		virtual inline GuiType GetType() const override { return GuiType::ToggleButton; }
 
 		inline void SetOnToggled(std::function<void(bool)> func) { m_onToggled = func; }
 

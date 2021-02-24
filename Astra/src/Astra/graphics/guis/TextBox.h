@@ -28,6 +28,8 @@ namespace Astra::Graphics
 		TextBox(const char* text, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
 		~TextBox();
 
+		virtual inline GuiType GetType() const override { return GuiType::TextBox; }
+
 		inline const bool HasCustomVao() const override { return true; }
 		inline const int GetCustomVao() const override { return m_vao; }
 		inline const int GetCustomVbo() const override { return m_vbo; }
