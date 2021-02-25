@@ -2,9 +2,10 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
-#include "Astra/Res.h"
 #include "Astra/math/Maths.h"
+#include "Astra/graphics/entities/utility/BoneInfo.h"
 #include "Astra/graphics/materials/ImageMaterial.h"
 
 namespace Astra::Graphics
@@ -30,7 +31,7 @@ namespace Astra::Graphics
 		Math::Vec3 Tangent;
 	};
 
-	class Mesh : public Res
+	class Mesh
 	{
 	private:
 		unsigned int m_vertexCount;
@@ -41,13 +42,29 @@ namespace Astra::Graphics
 		Mesh(const std::vector<Vertex>& vertices, const std::vector<int>& indices);
 		Mesh(const std::vector<NormalVertex>& vertices, const std::vector<int>& indices);
 		Mesh(const Mesh& other);
+		~Mesh();
 
 		inline unsigned int GetVAO() const { return m_vao; }
 		inline unsigned int GetVertexCount() const { return m_vertexCount; }
-
-		virtual void Free() override;
 	private:
 		void Initialize(const std::vector<Vertex>& vertices, const std::vector<int>& indices);
 		void Initialize(const std::vector<NormalVertex>& vertices, const std::vector<int>& indices);
+	};
+
+	struct MeshCreationSpec
+	{
+		std::string filepath;
+		void* mesh = NULL;
+		const void* scene = NULL;
+
+		std::map<std::string, BoneInfo>* map = NULL;
+		int* counter = NULL;
+		bool normalMapped = false;
+
+		MeshCreationSpec(const std::string& filepath, void* mesh, const void* scene,
+						 std::map<std::string, BoneInfo>* map, int* counter, bool normalMapped)
+			: filepath(filepath), mesh(mesh), scene(scene), map(map), counter(counter), normalMapped(normalMapped)
+		{
+		}
 	};
 }

@@ -36,7 +36,6 @@ namespace Astra::Graphics
 		Spatial(const Math::Vec3& translation, const Math::Vec3& rotation, const Math::Vec3& scale);
 		~Spatial();
 		
-		virtual void Free() override { }
 		inline virtual std::string ToString() const override { return !Name.length() ? ("Spatial_&" + std::to_string(m_uid)) : Name; }
 
 		virtual inline const Math::Vec3& GetTranslation() const { return m_rows[0]; }

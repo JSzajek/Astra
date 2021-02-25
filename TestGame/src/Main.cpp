@@ -22,6 +22,8 @@ class TestGame : public Astra::Application
 private:
     Astra::Scene* scene;
     Player* m_player;
+    AudioSource* audioSource;
+
     TextBox* m_textbox;
     Image* image;
     ToggleButton* vsycnToggle;
@@ -29,7 +31,6 @@ private:
     ToggleButton* bloomToggle;
     ToggleButton* hdrToggle;
     ToggleButton* reflectionToggle;
-    AudioSource* audioSource;
     
     const float InGameTimeSpeed = 0.005f;
     short timeDir = 1;
@@ -219,7 +220,7 @@ public:
         scene->AddModel(vampire);
 
         // FBX doesn't export displacement map- Work Around
-        auto* heightMap = Resource::LoadTexture("res/textures/bricks_heightmap.jpg", false, false);
+        auto heightMap = Resource::LoadTexture(TextureCreationSpec("res/textures/bricks_heightmap.jpg", false, false));
         heightMap->type = TextureType::HeightMap;
         auto brickModel = Model("res/bricks.fbx", true);
         brickModel.GetMaterial().AddTexture(heightMap);
@@ -227,7 +228,7 @@ public:
         brickModel.SetScale(Math::Vec3(10));
         brickModel.SetRotation(Math::Vec3(0, 0, -90));
         brickModel.SetTranslation(Math::Vec3(-10, 0, -10));
-        scene->AddModel(brickModel);
+        //scene->AddModel(brickModel);
 
         auto partMaterial = ParticleMaterial("res/textures/particleAtlas.png", 4);
         auto particleCenter = Vec3(-80, terrain.GetHeightOfTerrain(-80, 80) + 5, 80);
@@ -291,20 +292,8 @@ public:
     {
         scene->Disable();
 
-        //delete audioSource;
-
-        // Clean up models
-        /*for (const auto* model : models)
-        {
-            delete model;
-        }*/
-
-        //delete particleCenter;
-
-        /*delete dir_light;
-        delete light3;
-        delete light4;*/
-
+        delete audioSource;
+        delete m_player;
         delete scene;
     }
 };

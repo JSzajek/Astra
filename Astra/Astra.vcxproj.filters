@@ -490,7 +490,6 @@
     <ClInclude Include="src\Astra\graphics\entities\utility\Animator.h" />
     <ClInclude Include="src\Astra\graphics\entities\LayerEntity.h" />
     <ClInclude Include="src\Astra\graphics\Resource.h" />
-    <ClInclude Include="src\Astra\Res.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astra\Application.cpp">

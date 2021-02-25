@@ -12,14 +12,14 @@ namespace Astra::Graphics
     {
     }
 
-    TextBox::TextBox(const char* name, const char* text, FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
+    TextBox::TextBox(const char* name, const char* text, Asset<FontAtlas> font, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
         : Gui(name, position, rotation, scale), m_font(font), m_vao(0), m_vbo(0)
     {
         m_rect.SetSize(Math::iVec2(0, m_font->GetFontSize()));
         SetText(text);
     }
 
-    TextBox::TextBox(const char* text, FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
+    TextBox::TextBox(const char* text, Asset<FontAtlas> font, const Math::Vec2& position, float rotation, const Math::Vec2& scale)
         : Gui(position, rotation, scale), m_font(font), m_vao(0), m_vbo(0)
     {
         m_rect.SetSize(Math::iVec2(0, m_font->GetFontSize()));
@@ -40,8 +40,6 @@ namespace Astra::Graphics
         : Gui(other), m_font(other.m_font), m_text(other.m_text),
           m_vao(0), m_vbo(0) // regenerates in copied textbox
     {
-        TRACK(m_font);
-        
         GenerateVertices(m_text);
     }
 
@@ -65,15 +63,12 @@ namespace Astra::Graphics
         m_text = other.m_text;
         m_vao = m_vbo = 0; // regenerates in copied textbox
         m_font = other.m_font;
-        TRACK(m_font);
 
         GenerateVertices(m_text);
     }
 
     TextBox::~TextBox()
     {
-        UNLOAD(m_font);
-
         glDeleteVertexArrays(1, &m_vao);
         glDeleteBuffers(1, &m_vbo);
     }

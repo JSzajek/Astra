@@ -120,14 +120,12 @@ namespace Astra
 		inline void SetCamera(Graphics::Camera* camera) { m_mainCamera = camera; }
 		void SetSelectionColor(const Graphics::Color& color);
 
-		void AddModel(const Graphics::Model& model);
+		Graphics::Model* AddModel(const Graphics::Model& model);
 		void AddParticleSystem(const Graphics::ParticleSystem& system);
 		Graphics::Terrain* AddTerrain(const Graphics::Terrain& terrain);
 		void AddWaterTile(const Graphics::WaterTile& tile);
 		inline void AddPointLight(const Graphics::PointLight& light) { m_pointLights.emplace_back(light); }
 		
-	
-
 		void SetMultisampling(unsigned int sampleSize);
 		void SetBloom(bool enabled);
 		void SetHDR(bool enabled);
@@ -153,6 +151,6 @@ namespace Astra
 		void Render(float delta, const Math::Vec4& inverseViewVector, bool waterPass, 
 					const Math::Vec4& clipPlane = Graphics::Renderer::DefaultClipPlane);
 		void PostRender();
-		void EmplaceModel(unsigned char flags, const Graphics::Model& model);
+		Graphics::Model* EmplaceModel(unsigned char flags, const Graphics::Model& model);
 	};
 }

@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <memory>
 
 #include <assimp/scene.h>
 
@@ -33,7 +34,7 @@ namespace Astra::Graphics
 	private:
 		// Base Information
 		std::string m_directory;
-		Mesh* m_mesh;
+		Asset<Mesh> m_mesh;
 		ImageMaterial m_material;
 
 		// Animation Information
@@ -49,7 +50,6 @@ namespace Astra::Graphics
 		void operator=(const Model& other);
 		~Model();
 
-		virtual void Free() override {};
 		inline virtual std::string ToString() const override { return !Name.length() ? ("Model_&" + std::to_string(m_uid)) : Name; }
 		
 		inline size_t GetRenderID() const { return m_renderId; }
@@ -57,7 +57,7 @@ namespace Astra::Graphics
 		inline bool HasNormals() const { return m_normals; }
 		inline bool IsSelected() const { return m_selected; }
 
-		inline Mesh* GetMesh() const { return m_mesh; }
+		inline Asset<Mesh> GetMesh() const { return m_mesh; }
 		inline const ImageMaterial& GetMaterial() const { return m_material; }
 		inline ImageMaterial& GetMaterial() { return m_material; }
 
@@ -91,9 +91,9 @@ namespace Astra::Graphics
 		// Base Methods
 		void LoadModel(std::string filepath, bool calcTangents);
 		void ProcessNode(aiNode* node, const aiScene* scene, const std::string& filepath);
-		std::tuple<Mesh*, ImageMaterial> ProcessMesh(aiMesh* mesh, const aiScene* scene, const std::string& filepath);
+		std::tuple<Asset<Mesh>, ImageMaterial> ProcessMesh(aiMesh* mesh, const aiScene* scene, const std::string& filepath);
 		ImageMaterial ProcessMaterials(aiMesh* mesh, const aiScene* scene);
-		std::vector<Texture*> LoadMaterialTextures(const aiScene* scene, aiMaterial* mat, aiTextureType type, TextureType texType);
+		std::vector<Asset<Texture>> LoadMaterialTextures(const aiScene* scene, aiMaterial* mat, aiTextureType type, TextureType texType);
 	protected:
 		void UpdateMatrices() override;
 	};

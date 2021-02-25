@@ -41,7 +41,6 @@ namespace Astra::Graphics
 
 		void GenerateParticles(float delta) const;
 	public:
-		virtual void Free() override { }
 		inline virtual std::string ToString() const override { return !Name.length() ? ("Particle_System&" + std::to_string(m_uid)) : Name; }
 	public:
 		void SetDirection(const Math::Vec3& direction, float deviation);

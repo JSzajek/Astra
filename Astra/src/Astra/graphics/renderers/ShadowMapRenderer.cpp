@@ -21,7 +21,7 @@ namespace Astra::Graphics
 		m_shader->Start();
 		for (const auto& directory : models)
 		{
-			const auto* mesh = directory.second.front()->GetMesh();
+			const auto& mesh = directory.second.front()->GetMesh();
 			glBindVertexArray(mesh->GetVAO());
 
 			for (const auto* model : directory.second)

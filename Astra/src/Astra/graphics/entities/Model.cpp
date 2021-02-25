@@ -34,7 +34,7 @@ namespace Astra::Graphics
 			selectedModelMatrix(other.selectedModelMatrix), m_boneCounter(other.m_boneCounter),
 			m_animator(other.m_animator), m_animations(other.m_animations), m_material(other.m_material)
 	{
-		Resource::Remark(m_mesh);
+		//Resource::Remark(m_mesh);
 	}
 
 	void Model::operator=(const Model& other)
@@ -61,12 +61,12 @@ namespace Astra::Graphics
 		m_material = other.m_material;
 
 		m_mesh = other.m_mesh;
-		TRACK(m_mesh);
+		//TRACK(m_mesh);
 	}
 
 	Model::~Model()
 	{
-		UNLOAD(m_mesh);
+		//UNLOAD(m_mesh);
 	}
 
 	void Model::LoadModel(std::string filepath, bool calcTangents)
@@ -125,17 +125,17 @@ namespace Astra::Graphics
 		}*/
 	}
 
-	std::tuple<Mesh*, ImageMaterial> Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const std::string& filepath)
+	std::tuple<Asset<Mesh>, ImageMaterial> Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const std::string& filepath)
 	{
 		const auto& material = ProcessMaterials(mesh, scene);
 
 		auto normalMapped = mesh->HasTangentsAndBitangents() && (material.HasTexture(TextureType::NormalMap) || material.HasTexture(TextureType::HeightMap));
-		return { Resource::LoadMesh(filepath, mesh, scene, m_boneInfoMap, m_boneCounter, normalMapped), material };
+		return { Resource::LoadMesh(MeshCreationSpec(filepath, mesh, scene, &m_boneInfoMap, &m_boneCounter, normalMapped)), material };
 	}
 
 	ImageMaterial Model::ProcessMaterials(aiMesh* mesh, const aiScene* scene)
 	{
-		std::vector<Texture*> textures;
+		std::vector<Asset<Texture>> textures;
 		size_t textureHash = 0;
 
 		// Process materials
@@ -158,17 +158,17 @@ namespace Astra::Graphics
 		return ImageMaterial(textures);
 	}
 
-	std::vector<Texture*> Model::LoadMaterialTextures(const aiScene* scene, aiMaterial* mat, aiTextureType type, TextureType texType)
+	std::vector<Asset<Texture>> Model::LoadMaterialTextures(const aiScene* scene, aiMaterial* mat, aiTextureType type, TextureType texType)
 	{
 		stbi_set_flip_vertically_on_load(false);
 
-		std::vector<Texture*> textures;
+		std::vector<Asset<Texture>> textures;
 		textures.reserve(mat->GetTextureCount(type));
 		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 		{
 			aiString string;
 			mat->Get(AI_MATKEY_TEXTURE(type, i), string);
-			auto* texture = Resource::LoadTexture(string.C_Str(), m_directory, scene, texType == TextureType::DiffuseMap);
+			auto texture = Resource::LoadTexture(TextureCreationSpec(string.C_Str(), m_directory, scene, texType == TextureType::DiffuseMap, false));
 			texture->type = texType;
 			textures.push_back(texture);
 		}

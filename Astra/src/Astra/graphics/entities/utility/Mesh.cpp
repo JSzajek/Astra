@@ -29,6 +29,13 @@ namespace Astra::Graphics
 	{
 	}
 
+	Mesh::~Mesh()
+	{
+		glDeleteVertexArrays(1, &m_vao);
+		glDeleteBuffers(1, &m_vbo);
+		glDeleteBuffers(1, &m_ebo);
+	}
+
 	void Mesh::Initialize(const std::vector<Vertex>& vertices, const std::vector<int>& indices)
 	{
 		glGenVertexArrays(1, &m_vao);
@@ -93,12 +100,5 @@ namespace Astra::Graphics
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), &indices[0], GL_STATIC_DRAW);
 
 		glBindVertexArray(0);
-	}
-
-	void Mesh::Free()
-	{
-		glDeleteVertexArrays(1, &m_vao);
-		glDeleteBuffers(1, &m_vbo);
-		glDeleteBuffers(1, &m_ebo);
 	}
 }

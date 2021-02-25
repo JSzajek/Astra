@@ -7,12 +7,12 @@ namespace Astra::Graphics
 	class TerrainMaterial
 	{
 	private:
-		Texture* m_blendMapTexture;
-		Texture* m_backgroundTexture;
-		Texture* m_rTexture;
-		Texture* m_gTexture;
-		Texture* m_bTexture;
-		Texture* specularTexture;
+		Asset<Texture> m_blendMapTexture;
+		Asset<Texture> m_backgroundTexture;
+		Asset<Texture> m_rTexture;
+		Asset<Texture> m_gTexture;
+		Asset<Texture> m_bTexture;
+		Asset<Texture> specularTexture;
 	public:
 		float shineDampener, reflectivity;
 	public:
@@ -21,7 +21,6 @@ namespace Astra::Graphics
 						const char* const red, const char* const green, const char* const blue);
 		TerrainMaterial(const TerrainMaterial& other);
 		void operator=(const TerrainMaterial& other);
-		~TerrainMaterial();
 
 		inline unsigned int GetBackgroundId() const { return m_backgroundTexture->id; }
 		inline unsigned int GetBlendMapId() const { return m_blendMapTexture->id; }

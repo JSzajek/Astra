@@ -27,9 +27,7 @@ namespace Astra::Graphics
 		{
 		}
 
-		virtual void Free() = 0;
 		virtual std::string ToString() const = 0;
-
 		inline unsigned int GetUID() const { return m_uid; }
 	};
 }

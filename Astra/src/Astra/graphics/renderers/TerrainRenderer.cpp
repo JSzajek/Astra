@@ -55,7 +55,7 @@ namespace Astra::Graphics
 
 		for (const auto& directory : terrains)
 		{
-			const auto* mesh = directory.second.front()->GetMesh();
+			const auto& mesh = directory.second.front()->GetMesh();
 			glBindVertexArray(mesh->GetVAO());
 
 			BindTerrainTextures(directory.second.front());

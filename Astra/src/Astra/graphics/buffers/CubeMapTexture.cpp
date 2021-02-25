@@ -15,7 +15,7 @@ namespace Astra::Graphics
 	{
 	}
 
-	void CubeMapTexture::Free()
+	CubeMapTexture::~CubeMapTexture()
 	{
 		glDeleteTextures(1, &id);
 	}

@@ -3,7 +3,7 @@
 #include <map>
 #include <unordered_map>
 
-#include "Astra/Res.h"
+#include "Astra/Core.h"
 #include "Astra/graphics/buffers/Texture.h"
 #include "Astra/graphics/buffers/CubeMapTexture.h"
 #include "Astra/graphics/guis/utility/FontAtlas.h"
@@ -12,48 +12,14 @@
 
 namespace Astra::Graphics
 {
-	#define UNLOAD(res) { if (res) { Resource::Unload(res); res = NULL; } }
-	#define TRACK(res) { if (res) { Resource::Remark(res); } }
-
-	enum ResourceType
-	{
-		TextureResource,
-		CubeTextureResource,
-		FontAtlasResource,
-		MeshResource
-	};
-
-	// track pointer to amount in use, original listing source, and original hash
-	struct ResourceTrack
-	{
-		unsigned short count;
-		unsigned short source;
-		size_t hash;
-
-		ResourceTrack()
-			: count(0), source(0), hash(0)
-		{
-		}
-
-		ResourceTrack(size_t hash, unsigned short source)
-			: count(1), source(source), hash(hash)
-		{
-		}
-
-		inline ResourceTrack& operator++() { count++; return *this; }
-		inline ResourceTrack& operator--() { count--; return *this; }
-		operator int() const { return count; }
-	};
-
 	class Resource
 	{
 	private:
-		std::unordered_map<size_t, Texture> m_loadedTextures;
-		std::unordered_map<size_t, CubeMapTexture> m_loadedCubeTextures;
-		std::unordered_map<size_t, FontAtlas> m_loadedFontAtlas;
-		std::unordered_map<size_t, Mesh> m_loadedMeshes;
+		std::unordered_map<size_t, Asset<Texture>> m_loadedTextures;
+		std::unordered_map<size_t, Asset<CubeMapTexture>> m_loadedCubeTextures;
+		std::unordered_map<size_t, Asset<FontAtlas>> m_loadedFontAtlas;
 
-		std::map<Res*, ResourceTrack> m_tracker;
+		std::unordered_map<size_t, Asset<Mesh>> m_loadedMeshes;
 	public:
 		Resource(const Resource&) = delete;
 		void operator=(const Resource&) = delete;
@@ -64,43 +30,32 @@ namespace Astra::Graphics
 			return instance;
 		}
 
-		static void Unload(Res* ptr)
+		static void Check()
 		{
-			Get().UnloadImpl(ptr);
+			Get().CheckImpl();
 		}
 
-		static void Remark(Res* ptr)
+		static Asset<Texture> LoadTexture(const TextureCreationSpec& specs)
 		{
-			Get().RemarkImpl(ptr);
+			return Get().LoadTextureImpl(specs);
 		}
 
-		static Texture* LoadTexture(const char* const filepath, bool diffuse = false, bool flipped = true)
-		{
-			return Get().LoadTextureImpl(filepath, diffuse, flipped);
-		}
-
-		static Texture* LoadTexture(std::string filepath, std::string directory, const void* scene, bool diffuse = false)
-		{
-			return Get().LoadTextureImpl(filepath, directory, scene, diffuse);
-		}
-
-		static CubeMapTexture* LoadCubeMap(const std::vector<const char*>& filepaths)
+		static Asset<CubeMapTexture> LoadCubeMap(const std::vector<const char*>& filepaths)
 		{
 			return Get().LoadCubeMapImpl(filepaths);
 		}
 
-		static FontAtlas* LoadFontAtlas(const char* const filepath, unsigned int fontsize)
+		static Asset<FontAtlas> LoadFontAtlas(const char* const filepath, unsigned int fontsize)
 		{
 			return Get().LoadFontAtlasImpl(filepath, fontsize);
 		}
 
-		static Mesh* LoadMesh(const std::string& filepath, void* mesh, const void* scene,
-							  std::map<std::string, BoneInfo>& map, int& counter, bool normalMapped)
+		static Asset<Mesh> LoadMesh(const MeshCreationSpec& specs)
 		{
-			return Get().LoadMeshImpl(filepath, mesh, scene, map, counter, normalMapped);
+			return Get().LoadMeshImpl(specs);
 		}
 
-		static Mesh* LoadMesh(const char* const name, const std::vector<Vertex>& vertices, const std::vector<int>& indices)
+		static Asset<Mesh> LoadMesh(const char* const name, const std::vector<Vertex>& vertices, const std::vector<int>& indices)
 		{
 			return Get().LoadMeshImpl(name, vertices, indices);
 		}
@@ -110,30 +65,27 @@ namespace Astra::Graphics
 			Get().UpdateDiffuseTexturesImpl(hdr);
 		}
 	private:
-		Resource();
+		Resource() = default;
 		~Resource();
 	private:
-		void UnloadImpl(Res* ptr);
-		void RemarkImpl(Res* ptr);
-		Texture* LoadTextureImpl(const char* const filepath, bool diffuse, bool flipped);
-		Texture* LoadTextureImpl(std::string filepath, std::string directory, const void* scene, bool diffuse = false);
-		
-		CubeMapTexture* LoadCubeMapImpl(const std::vector<const char*>& filepaths);
-		
-		FontAtlas* LoadFontAtlasImpl(const char* const filepath, unsigned int fontsize);
+		void CheckImpl();
+		Asset<Texture> LoadTextureImpl(const TextureCreationSpec& specs);
 
-		Mesh* LoadMeshImpl(const std::string& filepath, void* mesh, const void* scene,
-						   std::map<std::string, BoneInfo>& map, int& counter, bool normalMapped);
-		Mesh* LoadMeshImpl(const std::string& name, const std::vector<Vertex>& vertices, const std::vector<int>& indices);
+		Asset<CubeMapTexture> LoadCubeMapImpl(const std::vector<const char*>& filepaths);
+		
+		Asset<FontAtlas> LoadFontAtlasImpl(const char* const filepath, unsigned int fontsize);
+
+		Asset<Mesh> LoadMeshImpl(const MeshCreationSpec& specs);
+		Asset<Mesh> LoadMeshImpl(const std::string& name, const std::vector<Vertex>& vertices, const std::vector<int>& indices);
 		
 		void UpdateDiffuseTexturesImpl(bool hdr);
 	private:
-		// Animation Methods
+		// Bone Extraction Methods
 		template<class Vertex>
 		void SetVertexBoneData(Vertex& vertex, int id, float weight);
 
 		template<class Vertex>
 		void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, void* mesh, const void* scene,
-										  std::map<std::string, BoneInfo>& map, int& counter);
+										  std::map<std::string, BoneInfo>* map, int* counter);
 	};
 }

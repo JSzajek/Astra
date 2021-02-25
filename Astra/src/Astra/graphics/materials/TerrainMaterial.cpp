@@ -14,8 +14,12 @@ namespace Astra::Graphics
 
 	TerrainMaterial::TerrainMaterial(const char* const blendMap, const char* const background, 
 									 const char* const red, const char* const green, const char* const blue)
-		: m_blendMapTexture(Resource::LoadTexture(blendMap)), m_backgroundTexture(Resource::LoadTexture(background, true)), m_rTexture(Resource::LoadTexture(red, true)),
-		  m_gTexture(Resource::LoadTexture(green, true)), m_bTexture(Resource::LoadTexture(blue, true)), specularTexture(Resource::LoadTexture(Texture::DefaultSpecular)),
+		: m_blendMapTexture(Resource::LoadTexture(blendMap)), 
+		  m_backgroundTexture(Resource::LoadTexture(TextureCreationSpec(background, true))),
+		  m_rTexture(Resource::LoadTexture(TextureCreationSpec(red, true))),
+		  m_gTexture(Resource::LoadTexture(TextureCreationSpec(green, true))), 
+		  m_bTexture(Resource::LoadTexture(TextureCreationSpec(blue, true))),
+		  specularTexture(Resource::LoadTexture(Texture::DefaultSpecular)),
 		  reflectivity(0), shineDampener(1)
 	{
 	}
@@ -26,12 +30,6 @@ namespace Astra::Graphics
 		  m_gTexture(other.m_gTexture), m_bTexture(other.m_bTexture), specularTexture(other.specularTexture),
 		  reflectivity(other.reflectivity), shineDampener(other.shineDampener)
 	{
-		TRACK(m_blendMapTexture);
-		TRACK(m_backgroundTexture);
-		TRACK(m_rTexture);
-		TRACK(m_gTexture);
-		TRACK(m_bTexture);
-		TRACK(specularTexture);
 	}
 
 	void TerrainMaterial::operator=(const TerrainMaterial& other)
@@ -44,22 +42,5 @@ namespace Astra::Graphics
 		specularTexture = other.specularTexture;
 		reflectivity = other.reflectivity;
 		shineDampener = other.shineDampener;
-
-		TRACK(m_blendMapTexture);
-		TRACK(m_backgroundTexture);
-		TRACK(m_rTexture);
-		TRACK(m_gTexture);
-		TRACK(m_bTexture);
-		TRACK(specularTexture);
-	}
-
-	TerrainMaterial::~TerrainMaterial()
-	{
-		UNLOAD(m_blendMapTexture);
-		UNLOAD(m_backgroundTexture);
-		UNLOAD(m_rTexture);
-		UNLOAD(m_gTexture);
-		UNLOAD(m_bTexture);
-		UNLOAD(specularTexture);
 	}
 }

@@ -162,6 +162,9 @@ namespace Astra
 
 	void WindowsWindow::OnUpdate()
 	{
+		if (auto* scene = Application::Get().GetCurrentScene())
+			((Astra::Scene*)scene)->CheckResources();
+
 		glfwPollEvents();
 		glfwSwapBuffers(m_window);
 	}

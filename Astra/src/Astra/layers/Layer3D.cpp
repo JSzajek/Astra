@@ -159,6 +159,7 @@ namespace Astra
 		m_waterTiles.clear();
 		m_particles.clear();
 		m_pointLights.clear();
+		m_gizmos.clear();
 	}
 
 	void Layer3D::LayerUpdateAnimations(float delta)
@@ -227,7 +228,7 @@ namespace Astra
 		m_selectionRenderer->SetSelectionColor(color);
 	}
 
-	void Layer3D::AddModel(const Graphics::Model& model)
+	Graphics::Model* Layer3D::AddModel(const Graphics::Model& model)
 	{
 		unsigned char flag = 0;
 
@@ -244,7 +245,7 @@ namespace Astra
 		if (model.IsSelected())
 			flag |= BIT(Graphics::ModelType::Selected);
 
-		EmplaceModel(flag, model);
+		return EmplaceModel(flag, model);
 	}
 
 	void Layer3D::AddParticleSystem(const Graphics::ParticleSystem& system)
@@ -384,7 +385,7 @@ namespace Astra
 	#endif
 	}
 
-	void Layer3D::EmplaceModel(unsigned char flags, const Graphics::Model& model)
+	Graphics::Model* Layer3D::EmplaceModel(unsigned char flags, const Graphics::Model& model)
 	{
 		auto string = model.ToString();
 		auto renderId = model.GetRenderID();
@@ -407,6 +408,7 @@ namespace Astra
 				}
 			}
 		}
+		return &m_models[uid];
 	}
 
 #if ASTRA_DEBUG
