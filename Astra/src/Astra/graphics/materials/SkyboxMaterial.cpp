@@ -25,28 +25,6 @@ namespace Astra::Graphics
 		m_secondaryTexture = Resource::LoadCubeMap(secondFiles);
 	}
 	
-	SkyboxMaterial::SkyboxMaterial(const SkyboxMaterial& other)
-		: m_blendFactor(other.m_blendFactor), m_primaryTexture(other.m_primaryTexture), m_secondaryTexture(other.m_secondaryTexture)
-	{
-		TRACK(m_primaryTexture);
-		TRACK(m_secondaryTexture);
-	}
-
-	void SkyboxMaterial::operator=(const SkyboxMaterial& other)
-	{
-		m_blendFactor = other.m_blendFactor;
-		m_primaryTexture = other.m_primaryTexture;
-		m_secondaryTexture = other.m_secondaryTexture;
-		TRACK(m_primaryTexture);
-		TRACK(m_secondaryTexture);
-	}
-
-	SkyboxMaterial::~SkyboxMaterial()
-	{
-		UNLOAD(m_primaryTexture);
-		UNLOAD(m_secondaryTexture);
-	}
-
 	const unsigned int SkyboxMaterial::GetFirstTextureId() const
 	{
 		if (m_primaryTexture != NULL)

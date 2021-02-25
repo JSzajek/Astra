@@ -28,7 +28,6 @@ namespace Astra::Graphics
 		}
 
 		virtual inline GuiType GetType() const override { return GuiType::Label; }
-		virtual void Free() override { }
 		inline virtual std::string ToString() const override { return !Name.length() ? ("Label_&" + std::to_string(m_uid)) : Name; }
 
 		inline float GetMaterialXOffset() const { return (float)(m_textureIndex % Material.GetRowCount()) / (float)Material.GetRowCount(); }

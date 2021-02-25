@@ -37,7 +37,6 @@ namespace Astra::Graphics
 		Spatial2D(const char* const name, const Math::Vec2& translation, float rotation, const Math::Vec2& scale);
 		~Spatial2D();
 
-		virtual void Free() override { }
 		inline virtual std::string ToString() const override { return !Name.length() ? ("Spatial2D_&" + std::to_string(m_uid)) : Name; }
 
 		virtual inline const Math::Vec2& GetTranslation() const { return m_rows[0]; }

@@ -78,6 +78,7 @@ namespace Astra
 		
 		std::unordered_map<unsigned int, Graphics::Model> m_models;
 		std::unordered_map<unsigned int, std::vector<const Graphics::Model*>> m_modelCategories[4];
+		std::vector<Asset<Graphics::Animator>> m_animators;
 
 		// Have an unordered_map that stores based off of name (which is unique).
 		// Upon adding or removing from the map store in another multiset the names that correspond with certain categories
@@ -91,7 +92,6 @@ namespace Astra
 
 		// Entities - 1: regular, 2: normal-mapped, 3: selected, 4: shadow-caster
 		//std::unordered_map<unsigned int, std::vector<Graphics::Model>> m_models[4];
-		std::vector<Graphics::Animator*> m_animators;
 		std::unordered_map<unsigned int, Graphics::ParticleSystem> m_particles;
 
 		// Lighting
@@ -120,14 +120,12 @@ namespace Astra
 		inline void SetCamera(Graphics::Camera* camera) { m_mainCamera = camera; }
 		void SetSelectionColor(const Graphics::Color& color);
 
-		void AddModel(const Graphics::Model& model);
+		Graphics::Model* AddModel(const Graphics::Model& model);
 		void AddParticleSystem(const Graphics::ParticleSystem& system);
 		Graphics::Terrain* AddTerrain(const Graphics::Terrain& terrain);
 		void AddWaterTile(const Graphics::WaterTile& tile);
 		inline void AddPointLight(const Graphics::PointLight& light) { m_pointLights.emplace_back(light); }
 		
-	
-
 		void SetMultisampling(unsigned int sampleSize);
 		void SetBloom(bool enabled);
 		void SetHDR(bool enabled);
@@ -153,6 +151,6 @@ namespace Astra
 		void Render(float delta, const Math::Vec4& inverseViewVector, bool waterPass, 
 					const Math::Vec4& clipPlane = Graphics::Renderer::DefaultClipPlane);
 		void PostRender();
-		void EmplaceModel(unsigned char flags, const Graphics::Model& model);
+		Graphics::Model* EmplaceModel(unsigned char flags, const Graphics::Model& model);
 	};
 }

@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "Texture.h"
-#include "Astra/Res.h"
 
 namespace Astra::Graphics
 {
@@ -17,7 +16,7 @@ namespace Astra::Graphics
 		Front	= 5
 	};
 
-	class CubeMapTexture : public Res
+	class CubeMapTexture
 	{
 	private:
 		std::vector<const char*> m_filepaths;
@@ -29,7 +28,7 @@ namespace Astra::Graphics
 	public:
 		CubeMapTexture();
 		CubeMapTexture(const std::vector<const char*>& filepaths);
+		~CubeMapTexture();
 		inline const std::vector<const char*>& GetFiles() const { return m_filepaths; }
-		virtual void Free() override;
 	};
 }

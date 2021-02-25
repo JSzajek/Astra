@@ -1,8 +1,6 @@
 #pragma once
 
-#include "../shaders/Shader.h"
-#include "../buffers/VertexArray.h"
-#include "../buffers/FrameBuffer.h"
+#include "Astra/graphics/shaders/Shader.h"
 #include "Astra/graphics/entities/Light.h"
 
 namespace Astra::Graphics
@@ -16,13 +14,13 @@ namespace Astra::Graphics
 			std::string error;
 			switch (errorCode)
 			{
-			case GL_INVALID_ENUM:                  error = "INVALID_ENUM"; break;
-			case GL_INVALID_VALUE:                 error = "INVALID_VALUE"; break;
-			case GL_INVALID_OPERATION:             error = "INVALID_OPERATION"; break;
-			case GL_STACK_OVERFLOW:                error = "STACK_OVERFLOW"; break;
-			case GL_STACK_UNDERFLOW:               error = "STACK_UNDERFLOW"; break;
-			case GL_OUT_OF_MEMORY:                 error = "OUT_OF_MEMORY"; break;
-			case GL_INVALID_FRAMEBUFFER_OPERATION: error = "INVALID_FRAMEBUFFER_OPERATION"; break;
+				case GL_INVALID_ENUM:                  error = "INVALID_ENUM"; break;
+				case GL_INVALID_VALUE:                 error = "INVALID_VALUE"; break;
+				case GL_INVALID_OPERATION:             error = "INVALID_OPERATION"; break;
+				case GL_STACK_OVERFLOW:                error = "STACK_OVERFLOW"; break;
+				case GL_STACK_UNDERFLOW:               error = "STACK_UNDERFLOW"; break;
+				case GL_OUT_OF_MEMORY:                 error = "OUT_OF_MEMORY"; break;
+				case GL_INVALID_FRAMEBUFFER_OPERATION: error = "INVALID_FRAMEBUFFER_OPERATION"; break;
 			}
 			std::cout << error << " | " << file << " (" << line << ")" << std::endl;
 		}
@@ -38,18 +36,14 @@ namespace Astra::Graphics
 		Shader* m_shader;
 	public:
 		virtual void UpdateProjectionMatrix(const Math::Mat4* projectionMatrix);
-		void BindFrameBuffer(GLuint bufferId, unsigned int width, unsigned int height);
+		void BindFrameBuffer(unsigned int bufferId, unsigned int width, unsigned int height);
 		void UnbindFrameBuffer();
-
-		//inline virtual void Clear() { }
 	protected:
 		Renderer();
 		~Renderer();
 
 		virtual void SetShader(Shader* shader);
 		virtual void UnbindVertexArray();
-		void UpdateDynamicVbo();
-		void UpdateTexture();
 	public:
 		void UpdateLight(unsigned int index, const Light* light);
 	};

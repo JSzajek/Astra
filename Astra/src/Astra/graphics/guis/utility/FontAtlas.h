@@ -3,7 +3,6 @@
 #include <unordered_map>
 #include <stack>
 
-#include "Astra/Res.h"
 #include "FontStructs.h"
 
 #include <ft2build.h>
@@ -25,7 +24,7 @@ namespace Astra::Graphics
     using spaces_type = rectpack2D::empty_spaces<allow_flip, rectpack2D::default_empty_spaces>;
     using rect_type = rectpack2D::output_rect_t<spaces_type>;
 
-	class FontAtlas : public Res
+	class FontAtlas
 	{
     private:
         std::unordered_map<char, Post_Char> m_characters;
@@ -39,7 +38,7 @@ namespace Astra::Graphics
 	public:
 		FontAtlas();
 		FontAtlas(const char* const fontFile, const unsigned int fontSize);
-        virtual void Free() override;
+        ~FontAtlas();
 
         inline unsigned int GetFontSize() const { return m_fontSize; }
         inline unsigned int GetId() const { return id; }

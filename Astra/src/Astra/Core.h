@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #ifdef ASTRA_PLATFORM_WINDOWS
 	#if ASTRA_DYNAMIC_DLL
 		#ifdef ASTRA_BUILD_DLL
@@ -31,4 +33,12 @@
 #else
 	#define RESOURCE(x) x
 #endif
+
+template<typename T>
+using Asset = std::shared_ptr<T>;
+template<typename T, typename ... Args>
+constexpr Asset<T> CreateAsset(Args&& ... args)
+{
+	return std::make_shared<T>(std::forward<Args>(args)...);
+}
 

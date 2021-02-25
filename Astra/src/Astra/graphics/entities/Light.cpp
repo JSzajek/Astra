@@ -26,9 +26,4 @@ namespace Astra::Graphics
 			m_attenuation(Math::Vec3::Zero), m_cutOff(0), m_outerCutOff(0), m_gizmo()
 	{
 	}
-
-	void Light::Free()
-	{
-
-	}
 }

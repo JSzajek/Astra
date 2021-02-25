@@ -41,7 +41,6 @@ namespace Astra::Graphics
 	{
 		m_heights = new float[m_vertexCount * m_vertexCount];
 		memcpy(m_heights, other.m_heights, m_vertexCount * m_vertexCount * sizeof(float));
-		TRACK(m_mesh);
 	}
 	
 	void Terrain::operator=(const Terrain& other)
@@ -59,16 +58,14 @@ namespace Astra::Graphics
 		memcpy(m_heights, other.m_heights, m_vertexCount * m_vertexCount * sizeof(float));
 
 		m_mesh = other.m_mesh;
-		TRACK(m_mesh);
 	}
 
 	Terrain::~Terrain()
 	{
-		UNLOAD(m_mesh);
 		delete m_heights;
 	}
 
-	Mesh* Terrain::GeneratePlaneTerrain(const char* const heightmap)
+	std::shared_ptr<Mesh> Terrain::GeneratePlaneTerrain(const char* const heightmap)
 	{
 		static int width, height;
 		static unsigned char* buffer;
@@ -121,7 +118,7 @@ namespace Astra::Graphics
 		return Resource::LoadMesh(heightmap, vertices, indices);
 	}
 	
-	Mesh* Terrain::GeneratePlaneTerrain(HeightGenerator* const generator)
+	std::shared_ptr<Mesh> Terrain::GeneratePlaneTerrain(HeightGenerator* const generator)
 	{
 		m_vertexCount = MAX_VERTICES;
 		m_heights = new float[m_vertexCount * m_vertexCount];

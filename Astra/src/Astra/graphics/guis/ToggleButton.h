@@ -48,7 +48,6 @@ namespace Astra::Graphics
 		}
 
 		virtual inline GuiType GetType() const override { return GuiType::ToggleButton; }
-		virtual void Free() override { }
 		inline virtual std::string ToString() const override { return !Name.length() ? ("ToggleButton_&" + std::to_string(m_uid)) : Name; }
 
 		inline void SetOnToggled(std::function<void(bool)> func) { m_onToggled = func; }

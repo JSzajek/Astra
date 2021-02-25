@@ -7,16 +7,15 @@ namespace Astra::Graphics
 	class ParticleMaterial
 	{
 	private:
-		Texture* m_texture;
+		Asset<Texture> m_texture;
 		unsigned int m_rowCount;
 	public:
 		ParticleMaterial();
 		ParticleMaterial(const char* const filepath, unsigned int rowCount);
 		ParticleMaterial(const ParticleMaterial& other);
 		void operator=(const ParticleMaterial& other);
-		~ParticleMaterial();
 
-		inline const Texture* GetTexture() const { return m_texture; }
+		inline const Asset<Texture> GetTexture() const { return m_texture; }
 		inline int GetRowCount() const { return m_rowCount; }
 		inline unsigned int GetId() const { return m_texture->id; }
 	};
