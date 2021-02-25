@@ -4,9 +4,10 @@
 
 namespace Astra::Graphics
 {
-	ShadowFrameBuffer::ShadowFrameBuffer(FrameBuffer* buffer, unsigned int mapId, unsigned int width, unsigned int height)
-		: m_buffer(buffer), m_mapId(mapId), m_width(width), m_height(height)
+	ShadowFrameBuffer::ShadowFrameBuffer(FrameBuffer* buffer, unsigned int width, unsigned int height)
+		: m_buffer(buffer), m_width(width), m_height(height)
 	{
+		m_mapId = m_buffer->GetDepthAttachment();
 	}
 
 	ShadowFrameBuffer::ShadowFrameBuffer(const ShadowFrameBuffer& other)

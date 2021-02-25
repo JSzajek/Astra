@@ -1,10 +1,11 @@
 #pragma once
 
 #include <vector>
-#include <GL/glew.h>
 
 namespace Astra::Graphics
 {
+	#define ASTRA_GL_REPEAT		0x2901
+
 	enum class DepthBufferType
 	{
 		Render,
@@ -21,34 +22,8 @@ namespace Astra::Graphics
 		DepthBufferType m_type;
 		bool m_multisampled;
 	public:
-		FrameBuffer(DepthBufferType type, bool multisampled = false, size_t numOfColorAttachments = 1, size_t numOfDepthAttachments = 1)
-			: m_type(type), m_multisampled(multisampled)
-		{
-			m_colorAttachmentOffset = numOfColorAttachments;
-			m_depthAttachements = numOfDepthAttachments;
-			m_data.resize(1 + numOfColorAttachments + numOfDepthAttachments);
-		}
-
-		~FrameBuffer()
-		{
-			glDeleteFramebuffersEXT(1, &m_data[0]);
-			for (size_t i = 0; i < m_colorAttachmentOffset; i++)
-			{
-				glDeleteTextures(m_colorAttachmentOffset, &GetColorAttachment(i));
-			}
-			
-			for (size_t i = 0; i < m_depthAttachements; i++)
-			{
-				if (m_type == DepthBufferType::Texture)
-				{
-					glDeleteTextures(1, &GetDepthAttachment(i));
-				}
-				else
-				{
-					glDeleteRenderbuffersEXT(1, &GetDepthAttachment(i));
-				}
-			}
-		}
+		FrameBuffer(DepthBufferType type, bool multisampled = false, size_t numOfColorAttachments = 1, size_t numOfDepthAttachments = 1);
+		~FrameBuffer();
 
 		const unsigned int& GetId() const { return m_data[0]; }
 		const unsigned int& GetColorAttachment(size_t index = 0) const { return m_data[1 + index]; }
@@ -61,5 +36,39 @@ namespace Astra::Graphics
 		unsigned int& Id() { return m_data[0]; }
 		unsigned int& ColorAttachment(size_t index = 0) { return m_data[1 + index]; }
 		unsigned int& DepthAttachment(size_t index = 0) { return m_data[1 + m_colorAttachmentOffset + index]; }
+	};
+
+	struct MultiTargetFrameBufferCreationSpec
+	{
+		unsigned int width;
+		unsigned int height;
+		size_t colorAttachments;
+		size_t depthAttachments;
+		bool floating;
+
+		MultiTargetFrameBufferCreationSpec(unsigned int width, unsigned int height, size_t colorAttachments, 
+										   size_t depthAttachments = 1, bool floating = false)
+			: width(width), height(height), colorAttachments(colorAttachments), 
+			  depthAttachments(depthAttachments), floating(floating)
+		{
+		}
+	};
+
+	struct FrameBufferCreationSpec
+	{
+		unsigned int width;
+		unsigned int height;
+		unsigned int multisampled;
+		DepthBufferType depthType;
+		bool floating;
+		unsigned int wrapping;
+
+		FrameBufferCreationSpec(unsigned int width, unsigned int height, unsigned int multisampled = 0,
+								DepthBufferType depthtype = DepthBufferType::None, bool floating = false,
+							    unsigned int wrapping = ASTRA_GL_REPEAT)
+			: width(width), height(height), multisampled(multisampled), depthType(depthtype),
+				floating(floating), wrapping(wrapping)
+		{
+		}
 	};
 }

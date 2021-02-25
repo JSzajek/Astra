@@ -11,7 +11,7 @@ namespace Astra::Graphics
 		unsigned int m_mapId;
 		FrameBuffer* m_buffer;
 	public:
-		ShadowFrameBuffer(FrameBuffer* buffer, unsigned int mapId, unsigned int width, unsigned int height);
+		ShadowFrameBuffer(FrameBuffer* buffer, unsigned int width, unsigned int height);
 		ShadowFrameBuffer(const ShadowFrameBuffer& other);
 		~ShadowFrameBuffer();
 

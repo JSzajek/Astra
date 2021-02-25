@@ -12,7 +12,7 @@ namespace Astra::Graphics
 		m_type = EffectType::Bloom;
 
 		// Multiple render target buffer
-		m_buffer = Loader::LoadMultiTargetFrameBuffer(width, height, 2, 0, true); 
+		m_buffer = Loader::LoadMultiTargetFrameBuffer(MultiTargetFrameBufferCreationSpec(width, height, 2, 0, true)); 
 		m_width = width;
 		m_height = height;
 
@@ -26,7 +26,7 @@ namespace Astra::Graphics
 			m_blurs.push_back(new VerticalBlurEffect(blurWidth, blurHeight, squeezRatio));
 		}
 
-		m_secondBuffer = Loader::LoadFrameBuffer(width, height, false, DepthBufferType::None, true, GL_CLAMP_TO_EDGE);
+		m_secondBuffer = Loader::LoadFrameBuffer(FrameBufferCreationSpec(width, height, false, DepthBufferType::None, true, GL_CLAMP_TO_EDGE));
 		m_secondShader = new CombineBloomShader();
 		m_secondShader->Start();
 		m_secondShader->SetUniform1i(REGULAR_COLOR_MAP, 0);

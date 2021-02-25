@@ -689,6 +689,7 @@
     <ClCompile Include="src\Astra\graphics\entities\utility\Animation.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\utility\Animator.cpp" />
     <ClCompile Include="src\Astra\graphics\Resource.cpp" />
+    <ClCompile Include="src\Astra\graphics\buffers\FrameBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\fonts\calibri.ttf">

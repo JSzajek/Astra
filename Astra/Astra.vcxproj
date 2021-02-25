@@ -285,6 +285,7 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astra\Application.cpp" />
+    <ClCompile Include="src\Astra\graphics\buffers\FrameBuffer.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\utility\Animation.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\utility\Animator.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\utility\Bone.cpp" />

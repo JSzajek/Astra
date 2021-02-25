@@ -66,15 +66,15 @@ namespace Astra::Graphics
 		if (sampleSize == 0)
 		{
 			// Turn off multisampling
-			m_screenBuffer = Loader::LoadFrameBuffer(width, height, false, DepthBufferType::Render, hdr);
+			m_screenBuffer = Loader::LoadFrameBuffer(FrameBufferCreationSpec(width, height, false, DepthBufferType::Render, hdr));
 		}
 		else 
 		{
 			if (!m_multisampledBuffer)
 			{
 				// Turn on multisample framebuffer
-				m_multisampledBuffer = Loader::LoadFrameBuffer(width, height, sampleSize, DepthBufferType::Render, hdr);
-				m_screenBuffer = Loader::LoadFrameBuffer(width, height, false, DepthBufferType::Texture, hdr);
+				m_multisampledBuffer = Loader::LoadFrameBuffer(FrameBufferCreationSpec(width, height, sampleSize, DepthBufferType::Render, hdr));
+				m_screenBuffer = Loader::LoadFrameBuffer(FrameBufferCreationSpec(width, height, false, DepthBufferType::Texture, hdr));
 			}
 			else
 			{
