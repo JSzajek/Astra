@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Astra/Application.h"
+#include "Astra/graphics/Resource.h"
 
 #include "Astra/layers/Layer3D.h"
 #include "Astra/layers/Layer2D.h"
@@ -55,7 +56,7 @@ namespace Astra
 		inline void SetSkyBox(const Graphics::SkyboxMaterial& material) { m_3dLayer->SetSkyBox(material); }
 		inline void SetFogColor(const Graphics::Color& color) { m_3dLayer->SetFogColor(color); }
 
-		inline void AddModel(const Graphics::Model& model) { m_3dLayer->AddModel(model); }
+		inline Graphics::Model* AddModel(const Graphics::Model& model) { return m_3dLayer->AddModel(model); }
 		inline void AddParticleSystem(const Graphics::ParticleSystem& system) { m_3dLayer->AddParticleSystem(system); }
 		inline Graphics::Terrain* AddTerrain(const Graphics::Terrain& terrain) { return m_3dLayer->AddTerrain(terrain); }
 		inline void AddWaterTile(const Graphics::WaterTile& tile) { m_3dLayer->AddWaterTile(tile); }
@@ -73,6 +74,11 @@ namespace Astra
 			wireframe = (wireframe + 1) % 3;
 		}
 	#endif
+
+		inline void CheckResources()
+		{
+			Graphics::Resource::Check();
+		}
 
 		inline void SetMultisampling(unsigned int sampleSize)
 		{

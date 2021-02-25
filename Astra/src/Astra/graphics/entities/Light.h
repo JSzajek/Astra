@@ -54,7 +54,6 @@ namespace Astra::Graphics
 		inline virtual bool IsDirectional() const = 0;
 		inline void SetCallback(std::function<void(unsigned int, const Light*)> callback) { m_lightChanged = callback; }
 	public:
-		virtual void Free() override;
 		/*inline void SetColor(const Math::Vec3& color) 
 		{ 
 			m_color = color;

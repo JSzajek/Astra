@@ -10,20 +10,15 @@ namespace Astra::Graphics
 	struct Gizmo : public LayerEntity
 	{
 	private:
-		Texture* m_texture;
+		Asset<Texture> m_texture;
 	public:
 		Math::Vec3 Position;
 		float Scale;
 	public:
 		Gizmo();
 		Gizmo(const char* const imagepath, const Math::Vec3& position, float scale);
-		Gizmo(const Gizmo& other);
-		void operator=(const Gizmo& other);
-		~Gizmo();
 
-		virtual void Free() override {};
 		inline virtual std::string ToString() const override { return !Name.length() ? ("Gizmo_&" + std::to_string(m_uid)) : Name; }
-
 		inline unsigned int GetTextureId() const { return m_texture->id; }
 	};
 #endif

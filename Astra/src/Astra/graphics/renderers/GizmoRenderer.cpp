@@ -1,7 +1,7 @@
 #include "astra_pch.h"
 
 #include "GizmoRenderer.h"
-#include "Astra/graphics/loaders/Loader.h"
+#include "Astra/graphics/Resource.h"
 
 namespace Astra::Graphics
 {
@@ -10,13 +10,13 @@ namespace Astra::Graphics
 		: m_viewMatrix(NULL)
 	{
 		Renderer::SetShader(shader);
-		m_defaultQuad = Loader::Load(GL_TRIANGLE_STRIP, { -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5 }, 2);
+		m_defaultQuad = Resource::LoadMesh(MeshCreationSpec("Gizmo_Renderer_Default_Quad", GL_TRIANGLE_STRIP, 
+															&std::vector<float>{ -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5 }, 2));
 		m_modelViewMatrix = new Math::Mat4(1);
 	}
 
 	GizmoRenderer::~GizmoRenderer()
 	{
-		delete m_defaultQuad;
 		delete m_modelViewMatrix;
 	}
 
@@ -27,7 +27,7 @@ namespace Astra::Graphics
 
 		m_shader->Start();
 		m_viewMatrix = viewMatrix;
-		glBindVertexArray(m_defaultQuad->vaoId);
+		glBindVertexArray(m_defaultQuad->GetVAO());
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDepthMask(GL_FALSE);
@@ -39,7 +39,7 @@ namespace Astra::Graphics
 			for (const Gizmo* gizmo : directory.second)
 			{
 				UpdateModelViewMatrix(gizmo->Position, gizmo->Scale);
-				glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
+				glDrawArrays(m_defaultQuad->GetDrawType(), 0, m_defaultQuad->GetVertexCount());
 			}
 		}
 

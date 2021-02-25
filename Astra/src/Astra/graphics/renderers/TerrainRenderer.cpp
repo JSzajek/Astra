@@ -55,7 +55,7 @@ namespace Astra::Graphics
 
 		for (const auto& directory : terrains)
 		{
-			const auto* mesh = directory.second.front()->GetMesh();
+			const auto& mesh = directory.second.front()->GetMesh();
 			glBindVertexArray(mesh->GetVAO());
 
 			BindTerrainTextures(directory.second.front());
@@ -63,7 +63,7 @@ namespace Astra::Graphics
 			{
 				m_shader->SetUniformMat4(NORMAL_MATRIX_TAG, terrain->GetNormalMatrix());
 				m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, terrain->GetModelMatrix());
-				glDrawElements(GL_TRIANGLES, mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
+				glDrawElements(mesh->GetDrawType(), mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
 			}
 		}
 	#if ASTRA_DEBUG

@@ -47,7 +47,7 @@ namespace Astra::Graphics
 	}
 
 	void SelectionRenderer::Draw(float delta, const std::unordered_map<unsigned int, std::vector<const Model*>>& models,
-									const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
+								 const Math::Mat4* viewMatrix, const Math::Vec4& inverseViewVector, const Math::Vec4& clipPlane)
 	{
 		// Disable drawing to color and depth buffer.
 		glColorMask(false, false, false, false);
@@ -61,7 +61,7 @@ namespace Astra::Graphics
 
 		for (const auto& directory : models)
 		{
-			const auto* mesh = directory.second.front()->GetMesh();
+			const auto& mesh = directory.second.front()->GetMesh();
 			glBindVertexArray(mesh->GetVAO());
 
 			for (const auto* model : directory.second)
@@ -71,7 +71,7 @@ namespace Astra::Graphics
 				m_entityShader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
 				m_entityShader->SetUniformMat4(TRANSFORM_MATRIX_TAG, model->GetModelMatrix());
 					
-				glDrawElements(GL_TRIANGLES, mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
+				glDrawElements(mesh->GetDrawType(), mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
 			}
 			glBindVertexArray(0);
 		}
@@ -114,7 +114,7 @@ namespace Astra::Graphics
 
 		for (const auto& directory : models)
 		{
-			const auto* mesh = directory.second.front()->GetMesh();
+			const auto& mesh = directory.second.front()->GetMesh();
 			glBindVertexArray(mesh->GetVAO());
 
 			for (const auto* model : directory.second)

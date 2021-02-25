@@ -27,51 +27,10 @@ namespace Astra::Graphics
 	{
 	}
 
-	Model::Model(const Model& other)
-		: Spatial(other), m_renderId(other.m_renderId), m_directory(other.m_directory), m_normals(other.m_normals),
-			m_textureIndex(other.m_textureIndex), m_rowCount(other.m_rowCount),
-			m_selected(other.m_selected), m_mesh(other.m_mesh),
-			selectedModelMatrix(other.selectedModelMatrix), m_boneCounter(other.m_boneCounter),
-			m_animator(other.m_animator), m_animations(other.m_animations), m_material(other.m_material)
-	{
-		Resource::Remark(m_mesh);
-	}
-
-	void Model::operator=(const Model& other)
-	{
-		Name = other.Name;
-		m_uid = other.m_uid;
-
-		m_modelMatrix = new Math::Mat4(*other.m_modelMatrix);
-		m_normalMatrix = new Math::Mat4(*other.m_normalMatrix);
-		memcpy(m_data, other.m_data, sizeof(m_data));
-
-		m_renderId = other.m_renderId; 
-		m_directory = other.m_directory;
-		m_normals = other.m_normals;
-
-		m_textureIndex = other.m_textureIndex; 
-		m_rowCount = other.m_rowCount;
-
-		m_selected = other.m_selected; 
-		selectedModelMatrix = other.selectedModelMatrix;
-		m_boneCounter = other.m_boneCounter;
-		m_animator = other.m_animator; 
-		m_animations = other.m_animations; 
-		m_material = other.m_material;
-
-		m_mesh = other.m_mesh;
-		TRACK(m_mesh);
-	}
-
-	Model::~Model()
-	{
-		UNLOAD(m_mesh);
-	}
-
 	void Model::LoadModel(std::string filepath, bool calcTangents)
 	{
 		// TODO: Look into using global scale tag: aiProcess_GlobalScale
+		m_directory = filepath.substr(0, filepath.find_last_of('/'));
 
 		Assimp::Importer importer;
 		unsigned int pFlag = aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
@@ -80,18 +39,11 @@ namespace Astra::Graphics
 			pFlag |= aiProcess_CalcTangentSpace;
 		}
 		const aiScene* scene = importer.ReadFile(filepath, pFlag);
-		ASTRA_CORE_ASSERT(scene && scene->mFlags | AI_SCENE_FLAGS_INCOMPLETE && scene->mRootNode, "Model: Assimp Error Loading")
 		
-		m_directory = filepath.substr(0, filepath.find_last_of('/'));
+		ASTRA_CORE_ASSERT(scene && scene->mFlags | AI_SCENE_FLAGS_INCOMPLETE && scene->mRootNode, "Model: Assimp Error Loading")
 
-		if (scene->mRootNode)
-		{
-			ProcessNode(scene->mRootNode, scene, filepath);
-		}
-		else
-		{
-			ASTRA_CORE_ERROR("Model: No root node");
-		}
+		ASTRA_CORE_ASSERT(scene->mRootNode, "Model: No root node");
+		ProcessNode(scene->mRootNode, scene, filepath);
 	
 		// Load Animations in Model
 		if (scene->HasAnimations())
@@ -100,7 +52,11 @@ namespace Astra::Graphics
 			
 			for (unsigned int i = 0; i < scene->mNumAnimations; ++i)
 			{
-				m_animations[scene->mAnimations[i]->mName.C_Str()] = Animation(scene->mAnimations[i], scene->mRootNode, m_boneInfoMap, m_boneCounter);
+				m_animations[scene->mAnimations[i]->mName.C_Str()] = Resource::LoadAnimation(AnimationCreationSpec(filepath, 
+																												   scene->mAnimations[i],
+																												   scene->mRootNode, 
+																												   &m_boneInfoMap, 
+																												   &m_boneCounter));
 			}
 		}
 	}
@@ -125,17 +81,17 @@ namespace Astra::Graphics
 		}*/
 	}
 
-	std::tuple<Mesh*, ImageMaterial> Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const std::string& filepath)
+	std::tuple<Asset<Mesh>, ImageMaterial> Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const std::string& filepath)
 	{
 		const auto& material = ProcessMaterials(mesh, scene);
 
 		auto normalMapped = mesh->HasTangentsAndBitangents() && (material.HasTexture(TextureType::NormalMap) || material.HasTexture(TextureType::HeightMap));
-		return { Resource::LoadMesh(filepath, mesh, scene, m_boneInfoMap, m_boneCounter, normalMapped), material };
+		return { Resource::LoadMesh(MeshCreationSpec(filepath, mesh, scene, &m_boneInfoMap, &m_boneCounter, normalMapped)), material };
 	}
 
 	ImageMaterial Model::ProcessMaterials(aiMesh* mesh, const aiScene* scene)
 	{
-		std::vector<Texture*> textures;
+		std::vector<Asset<Texture>> textures;
 		size_t textureHash = 0;
 
 		// Process materials
@@ -158,17 +114,17 @@ namespace Astra::Graphics
 		return ImageMaterial(textures);
 	}
 
-	std::vector<Texture*> Model::LoadMaterialTextures(const aiScene* scene, aiMaterial* mat, aiTextureType type, TextureType texType)
+	std::vector<Asset<Texture>> Model::LoadMaterialTextures(const aiScene* scene, aiMaterial* mat, aiTextureType type, TextureType texType)
 	{
 		stbi_set_flip_vertically_on_load(false);
 
-		std::vector<Texture*> textures;
+		std::vector<Asset<Texture>> textures;
 		textures.reserve(mat->GetTextureCount(type));
 		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 		{
 			aiString string;
 			mat->Get(AI_MATKEY_TEXTURE(type, i), string);
-			auto* texture = Resource::LoadTexture(string.C_Str(), m_directory, scene, texType == TextureType::DiffuseMap);
+			auto texture = Resource::LoadTexture(TextureCreationSpec(string.C_Str(), m_directory, scene, texType == TextureType::DiffuseMap, false));
 			texture->type = texType;
 			textures.push_back(texture);
 		}

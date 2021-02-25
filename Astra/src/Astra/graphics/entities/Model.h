@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <memory>
 
 #include <assimp/scene.h>
 
@@ -33,23 +34,19 @@ namespace Astra::Graphics
 	private:
 		// Base Information
 		std::string m_directory;
-		Mesh* m_mesh;
+		Asset<Mesh> m_mesh;
 		ImageMaterial m_material;
 
 		// Animation Information
-		std::unordered_map<std::string, Animation> m_animations;
-		Animator* m_animator;
+		std::unordered_map<std::string, Asset<Animation>> m_animations;
+		Asset<Animator> m_animator;
 		std::map<std::string, BoneInfo> m_boneInfoMap;
 		int m_boneCounter;
 	public:
 		Model() = default;
 		Model(const char* const name, const char* const filepath, bool calcTangents = false);
 		Model(const char* const filepath, bool calcTangents = false);
-		Model(const Model& other);
-		void operator=(const Model& other);
-		~Model();
 
-		virtual void Free() override {};
 		inline virtual std::string ToString() const override { return !Name.length() ? ("Model_&" + std::to_string(m_uid)) : Name; }
 		
 		inline size_t GetRenderID() const { return m_renderId; }
@@ -57,7 +54,7 @@ namespace Astra::Graphics
 		inline bool HasNormals() const { return m_normals; }
 		inline bool IsSelected() const { return m_selected; }
 
-		inline Mesh* GetMesh() const { return m_mesh; }
+		inline Asset<Mesh> GetMesh() const { return m_mesh; }
 		inline const ImageMaterial& GetMaterial() const { return m_material; }
 		inline ImageMaterial& GetMaterial() { return m_material; }
 
@@ -68,9 +65,9 @@ namespace Astra::Graphics
 		inline void SetTextureIndex(unsigned int index) { m_textureIndex = index; }
 		inline void SetRowCount(unsigned int count) { m_rowCount = count; }
 
-		inline void AddAnimator() { m_animator = new Animator(); }
-		inline bool HasAnimator() const { return m_animator; }
-		inline Animator* GetAnimator() const { return m_animator; }
+		inline void AddAnimator() { m_animator = CreateAsset<Animator>(); }
+		inline bool HasAnimator() const { return m_animator.get(); }
+		inline Asset<Animator> GetAnimator() const { return m_animator; }
 
 		inline void PlayAnimation(const std::string& name) 
 		{
@@ -91,9 +88,9 @@ namespace Astra::Graphics
 		// Base Methods
 		void LoadModel(std::string filepath, bool calcTangents);
 		void ProcessNode(aiNode* node, const aiScene* scene, const std::string& filepath);
-		std::tuple<Mesh*, ImageMaterial> ProcessMesh(aiMesh* mesh, const aiScene* scene, const std::string& filepath);
+		std::tuple<Asset<Mesh>, ImageMaterial> ProcessMesh(aiMesh* mesh, const aiScene* scene, const std::string& filepath);
 		ImageMaterial ProcessMaterials(aiMesh* mesh, const aiScene* scene);
-		std::vector<Texture*> LoadMaterialTextures(const aiScene* scene, aiMaterial* mat, aiTextureType type, TextureType texType);
+		std::vector<Asset<Texture>> LoadMaterialTextures(const aiScene* scene, aiMaterial* mat, aiTextureType type, TextureType texType);
 	protected:
 		void UpdateMatrices() override;
 	};

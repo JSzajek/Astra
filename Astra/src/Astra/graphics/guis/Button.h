@@ -45,7 +45,6 @@ namespace Astra::Graphics
 		}
 		
 		virtual inline GuiType GetType() const override { return GuiType::Button; }
-		virtual void Free() override { }
 		inline virtual std::string ToString() const override { return !Name.length() ? ("Button_&" + std::to_string(m_uid)) : Name; }
 
 		inline void OnHover() override

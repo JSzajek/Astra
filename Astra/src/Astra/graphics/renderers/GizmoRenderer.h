@@ -6,6 +6,7 @@
 
 #include "Astra/graphics/gizmos/Gizmo.h"
 #include "Astra/graphics/shaders/GizmoShader.h"
+#include "Astra/graphics/entities/utility/Mesh.h"
 
 namespace Astra::Graphics
 {
@@ -13,7 +14,7 @@ namespace Astra::Graphics
 	class GizmoRenderer : public Renderer
 	{
 	private:
-		const VertexArray* m_defaultQuad;
+		Asset<Mesh> m_defaultQuad;
 		const Math::Mat4* m_viewMatrix;
 		Math::Mat4* m_modelViewMatrix;
 	public:

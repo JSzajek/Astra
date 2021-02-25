@@ -11,50 +11,16 @@ namespace Astra::Graphics
 	{
 	}
 
-	ImageMaterial::ImageMaterial(const std::vector<Texture*>& textures)
+	ImageMaterial::ImageMaterial(const std::vector<Asset<Texture>>& textures)
 		: ImageMaterial()
 	{
-		for (auto* texture : textures)
+		for (const auto& texture : textures)
 		{
 			AddTexture(texture);
 		}
 	}
 
-	ImageMaterial::ImageMaterial(const ImageMaterial& other)
-		: m_height(other.m_height), m_reflectivity(other.m_reflectivity), m_fakeLight(other.m_fakeLight),
-			m_transparent(other.m_transparent), m_flags(other.m_flags)
-	{
-		memcpy(m_textures, other.m_textures, sizeof(m_textures));
-		for (auto* texture : m_textures)
-		{
-			TRACK(texture);
-		}
-	}
-
-	void ImageMaterial::operator=(const ImageMaterial& other)
-	{
-		m_height = other.m_height;
-		m_reflectivity = other.m_reflectivity;
-		m_fakeLight = other.m_fakeLight;
-		m_transparent = other.m_transparent;
-		m_flags = other.m_flags;
-
-		memcpy(m_textures, other.m_textures, sizeof(m_textures));
-		for (auto* texture : m_textures)
-		{
-			TRACK(texture);
-		}
-	}
-
-	ImageMaterial::~ImageMaterial()
-	{
-		for (auto* texture : m_textures)
-		{
-			UNLOAD(texture);
-		}
-	}
-
-	void ImageMaterial::AddTexture(Texture* texture)
+	void ImageMaterial::AddTexture(const Asset<Texture>& texture)
 	{
 		m_textures[texture->type] = texture; // Add Pointer
 		m_flags |= BIT(texture->type); // Mark as Added

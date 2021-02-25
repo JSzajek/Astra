@@ -40,7 +40,7 @@ namespace Astra::Graphics
 	{
 	}
 
-	void Texture::Free()
+	Texture::~Texture()
 	{
 		glDeleteTextures(1, &id);
 	}

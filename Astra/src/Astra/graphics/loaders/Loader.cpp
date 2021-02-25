@@ -1,86 +1,20 @@
 #include "astra_pch.h"
 
 #include <stb_image/stb_image.h>
-#include <GLFW\glfw3.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include "Loader.h"
 #include "Astra/Application.h"
 
 namespace Astra::Graphics
-{ 
-	Loader::Loader()
-	{
-	}
-
-	const VertexArray* Loader::LoadImpl(unsigned int drawType, const std::vector<float>& vertices,
-										const std::vector<int>& indices, const std::vector<float>& textureCoords,
-										const std::vector<float>& normals)
-	{
-		GLuint id = GenerateVaoId();
-		GLuint verticesID = BindInAttribBuffer(0, vertices, 3);
-		GLuint texturesID = BindInAttribBuffer(1, textureCoords, 2);
-		GLuint normalsID = BindInAttribBuffer(2, normals, 3);
-		static_cast<void>(BindIndicesBuffer(indices));
-		UnbindVertexArray();
-
-		VertexArray* vertArray = new VertexArray(id, indices.size(), drawType);
-
-		(*vertArray)(BufferType::Vertices) = verticesID;
-		(*vertArray)(BufferType::Normals) = normalsID;
-		(*vertArray)(BufferType::TextureCoords) = texturesID;
-
-		return vertArray;
-	}
-
-	const VertexArray* Loader::LoadImpl(unsigned int drawType, const std::vector<float>& vertices, 
-										const std::vector<int>& indices, const std::vector<float>& textureCoords, 
-										const std::vector<float>& normals, const std::vector<float>& tangents)
-	{
-		GLuint id = GenerateVaoId();
-		GLuint verticesID = BindInAttribBuffer(0, vertices, 3);
-		GLuint texturesID = BindInAttribBuffer(1, textureCoords, 2);
-		GLuint normalsID = BindInAttribBuffer(2, normals, 3);
-		static_cast<void>(BindIndicesBuffer(indices));
-		GLuint tangentsID = BindInAttribBuffer(3, tangents, 3);
-		UnbindVertexArray();
-
-		VertexArray* vertArray = new VertexArray(id, indices.size(), drawType);
-
-		(*vertArray)(BufferType::Vertices) = verticesID;
-		(*vertArray)(BufferType::Normals) = normalsID;
-		(*vertArray)(BufferType::TextureCoords) = texturesID;
-		(*vertArray)(BufferType::Tangents) = tangentsID;
-
-		return vertArray;
-	}
-
-	const VertexArray* Loader::LoadImpl(unsigned int drawType, const std::vector<float>& vertices, unsigned int dimensions)
-	{
-		GLuint id = GenerateVaoId();
-		GLuint vboId = BindInAttribBuffer(0, vertices, dimensions);
-		UnbindVertexArray();
-
-		VertexArray* vertArray = new VertexArray(id, vertices.size() / dimensions, drawType);
-
-		(*vertArray)(BufferType::Vertices) = vboId;
-		return vertArray;
-	}
-
-	const GLuint Loader::LoadImpl(unsigned int drawType, const std::vector<float>& vertices, const std::vector<float>& textureCoords)
-	{
-		GLuint id = GenerateVaoId();
-		GLuint verticesID = BindInAttribBuffer(0, vertices, 2);
-		GLuint texturesID = BindInAttribBuffer(1, textureCoords, 2);
-		UnbindVertexArray();
-		return id;
-	}
-
+{
 	WaterFrameBuffer* Loader::LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
-															  unsigned int refractionWidth, unsigned int refractionHeight)
+													   unsigned int refractionWidth, unsigned int refractionHeight)
 	{
 		auto hdr = Application::Get().GetWindow().IsHDR();
 
-		FrameBuffer* reflection = CreateFrameBuffer(DepthBufferType::None, false, GL_COLOR_ATTACHMENT0);
+		auto* reflection = CreateFrameBuffer(DepthBufferType::None, false, GL_COLOR_ATTACHMENT0);
 		CreateTextureAttachment(reflection->ColorAttachment(), reflectionWidth, reflectionHeight, hdr);
 		CreateDepthBufferAttachment(reflection->DepthAttachment(), reflectionWidth, reflectionHeight);
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -89,7 +23,7 @@ namespace Astra::Graphics
 		}
 		UnbindFrameBuffer();
 
-		FrameBuffer* refraction = CreateFrameBuffer(DepthBufferType::None, false, GL_COLOR_ATTACHMENT0);
+		auto* refraction = CreateFrameBuffer(DepthBufferType::None, false, GL_COLOR_ATTACHMENT0);
 		CreateTextureAttachment(refraction->ColorAttachment(), refractionWidth, refractionHeight, hdr);
 		static_cast<void>(CreateDepthTextureAttachment(refraction->DepthAttachment(), refractionWidth, refractionHeight));
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -106,37 +40,37 @@ namespace Astra::Graphics
 
 	ShadowFrameBuffer* Loader::LoadShadowFrameBufferImpl(unsigned int width, unsigned int height)
 	{
-		FrameBuffer* buffer = CreateFrameBuffer(DepthBufferType::None);
-		GLuint id = CreateDepthTextureAttachment(buffer->DepthAttachment(), width, height, GL_DEPTH_COMPONENT16, GL_NEAREST, GL_CLAMP_TO_EDGE);
+		auto* buffer = CreateFrameBuffer(DepthBufferType::None);
+		CreateDepthTextureAttachment(buffer->DepthAttachment(), width, height, GL_DEPTH_COMPONENT16, GL_NEAREST, GL_CLAMP_TO_EDGE);
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
 			ASTRA_CORE_ERROR("ShadowFrameBuffer Error Incomplete Shadow FBO.");
 		}
 		UnbindFrameBuffer();
 
-		ShadowFrameBuffer* shadowFrameBuffer = new ShadowFrameBuffer(buffer, id, width, height);
+		ShadowFrameBuffer* shadowFrameBuffer = new ShadowFrameBuffer(buffer, width, height);
 		return shadowFrameBuffer;
 	}
 
-	FrameBuffer* Loader::LoadFrameBufferImpl(unsigned int width, unsigned int height, unsigned int multisampled, DepthBufferType depthType, bool floating, unsigned int wrapping)
+	FrameBuffer* Loader::LoadFrameBufferImpl(const FrameBufferCreationSpec& specs)
 	{
-		FrameBuffer* buffer = CreateFrameBuffer(depthType, multisampled, GL_COLOR_ATTACHMENT0, multisampled ? GL_COLOR_ATTACHMENT0 : GL_NONE);
-		if (!multisampled)
+		auto* buffer = CreateFrameBuffer(specs.depthType, specs.multisampled, GL_COLOR_ATTACHMENT0, specs.multisampled ? GL_COLOR_ATTACHMENT0 : GL_NONE);
+		if (!specs.multisampled)
 		{
-			CreateTextureAttachment(buffer->ColorAttachment(), width, height, floating, wrapping);
+			CreateTextureAttachment(buffer->ColorAttachment(), specs.width, specs.height, specs.floating, specs.wrapping);
 		}
 		else
 		{
-			CreateColorBufferAttachment(buffer->ColorAttachment(), width, height, multisampled, floating);
+			CreateColorBufferAttachment(buffer->ColorAttachment(), specs.width, specs.height, specs.multisampled, specs.floating);
 		}
 
-		if (depthType == DepthBufferType::Render)
+		if (specs.depthType == DepthBufferType::Render)
 		{
-			CreateDepthBufferAttachment(buffer->DepthAttachment(), width, height, multisampled, floating);
+			CreateDepthBufferAttachment(buffer->DepthAttachment(), specs.width, specs.height, specs.multisampled, specs.floating);
 		}
-		else if (depthType == DepthBufferType::Texture)
+		else if (specs.depthType == DepthBufferType::Texture)
 		{
-			CreateDepthTextureAttachment(buffer->DepthAttachment(), width, height, GL_DEPTH24_STENCIL8);
+			CreateDepthTextureAttachment(buffer->DepthAttachment(), specs.width, specs.height, GL_DEPTH24_STENCIL8);
 		}
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -148,19 +82,19 @@ namespace Astra::Graphics
 		return buffer;
 	}
 
-	FrameBuffer* Loader::LoadMultiTargetFrameBufferImpl(unsigned int width, unsigned int height, size_t colorAttachments, size_t depthAttachments, bool floating)
+	FrameBuffer* Loader::LoadMultiTargetFrameBufferImpl(const MultiTargetFrameBufferCreationSpec& specs)
 	{
-		FrameBuffer* buffer = new FrameBuffer(DepthBufferType::None, false, colorAttachments, depthAttachments);
+		FrameBuffer* buffer = new FrameBuffer(DepthBufferType::None, false, specs.colorAttachments, specs.depthAttachments);
 		glGenFramebuffers(1, &buffer->Id());
 		glBindFramebuffer(GL_FRAMEBUFFER, buffer->Id());
 		
 		std::vector<unsigned int> attachments;
-		for (size_t i = 0; i < colorAttachments; i++)
+		for (size_t i = 0; i < specs.colorAttachments; i++)
 		{
-			CreateTextureAttachment(buffer->ColorAttachment(i), width, height, floating, GL_CLAMP_TO_EDGE, i);
+			CreateTextureAttachment(buffer->ColorAttachment(i), specs.width, specs.height, specs.floating, GL_CLAMP_TO_EDGE, i);
 			attachments.push_back(GL_COLOR_ATTACHMENT0 + i);
 		}
-		glDrawBuffers(colorAttachments, &attachments[0]);
+		glDrawBuffers(specs.colorAttachments, &attachments[0]);
 		
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
@@ -217,7 +151,7 @@ namespace Astra::Graphics
 
 	FrameBuffer* Loader::CreateFrameBuffer(DepthBufferType type, bool multisampled, int drawAttachment, int readAttachment)
 	{
-		FrameBuffer* buffer = new FrameBuffer(type, multisampled);
+		auto* buffer = new FrameBuffer(type, multisampled);
 		glGenFramebuffers(1, &buffer->Id());
 		glBindFramebuffer(GL_FRAMEBUFFER, buffer->Id());
 		glDrawBuffer(drawAttachment);
@@ -225,7 +159,7 @@ namespace Astra::Graphics
 		return buffer;
 	}
 
-	void Loader::CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height, bool floating, unsigned int wrapping, size_t offset)
+	void Loader::CreateTextureAttachment(unsigned int& id, unsigned int width, unsigned int height, bool floating, unsigned int wrapping, size_t offset)
 	{
 		glGenTextures(1, &id);
 		glBindTexture(GL_TEXTURE_2D, id);
@@ -238,7 +172,7 @@ namespace Astra::Graphics
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + offset, GL_TEXTURE_2D, id, 0);
 	}
 
-	GLuint Loader::CreateDepthTextureAttachment(GLuint& id, unsigned int width, unsigned int height, int component, int filter, int wrap)
+	void Loader::CreateDepthTextureAttachment(unsigned int& id, unsigned int width, unsigned int height, int component, int filter, int wrap)
 	{
 		glGenTextures(1, &id);
 		glBindTexture(GL_TEXTURE_2D, id);
@@ -249,10 +183,9 @@ namespace Astra::Graphics
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, id, 0);
-		return id;
 	}
 
-	void Loader::CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height, unsigned int multisampled, bool floating)
+	void Loader::CreateDepthBufferAttachment(unsigned int& id, unsigned int width, unsigned int height, unsigned int multisampled, bool floating)
 	{
 		glGenRenderbuffers(1, &id);
 		glBindRenderbuffer(GL_RENDERBUFFER, id);
@@ -268,7 +201,7 @@ namespace Astra::Graphics
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, id);
 	}
 
-	void Loader::CreateColorBufferAttachment(GLuint& id, unsigned int width, unsigned int height, unsigned int multisampled, bool floating)
+	void Loader::CreateColorBufferAttachment(unsigned int& id, unsigned int width, unsigned int height, unsigned int multisampled, bool floating)
 	{
 		glGenTextures(1, &id);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, id);
@@ -277,40 +210,6 @@ namespace Astra::Graphics
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 	}
 
-	GLuint Loader::BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage, GLboolean normalized)
-	{
-		GLuint id = GenerateVboId();
-		glBindBuffer(GL_ARRAY_BUFFER, id);
-		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], usage);
-		glEnableVertexAttribArray(index);
-		glVertexAttribPointer(index, strideSize, GL_FLOAT, normalized, 0, NULL);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		return id;
-	}
-
-	GLuint Loader::BindIndicesBuffer(const std::vector<int>& data, GLenum usage)
-	{
-		GLuint id = GenerateVboId();
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.size() * sizeof(int), data.data(), usage);
-		return id;
-	}
-
-	GLuint Loader::GenerateVaoId()
-	{
-		GLuint vaoId;
-		glGenVertexArrays(1, &vaoId);
-		glBindVertexArray(vaoId);
-		return vaoId;
-	}
-
-	GLuint Loader::GenerateVboId()
-	{
-		GLuint vboId;
-		glGenBuffers(1, &vboId);
-		return vboId;
-	}
-	
 	void Loader::UnbindFrameBuffer()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);

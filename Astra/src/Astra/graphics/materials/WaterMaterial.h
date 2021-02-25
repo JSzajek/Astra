@@ -18,19 +18,17 @@ namespace Astra::Graphics
 
 	private:
 		float m_currentWaveSpeed;
-		Texture* m_specular;
+		Asset<Texture> m_specular;
 	public:
 		float waveStrength, waveSpeed;
 		float shineDampener, reflectivity;
-		Texture* diffuseTexture;
-		Texture* dudvTexture;
-		Texture* normalTexture;
+		Asset<Texture> diffuseTexture;
+		Asset<Texture> dudvTexture;
+		Asset<Texture> normalTexture;
 	public:
 		WaterMaterial();
 		WaterMaterial(const char* const diffuseFilePath, const char* const dudvMapFilePath, const char* const normalMapFilePath);
 		WaterMaterial(const WaterMaterial& other);
-		void operator=(const WaterMaterial& other);
-		~WaterMaterial();
 		
 		inline unsigned int GetSpecularId() const { return m_specular->id; }
 

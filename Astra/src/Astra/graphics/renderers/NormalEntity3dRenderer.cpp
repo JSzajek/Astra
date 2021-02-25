@@ -59,7 +59,7 @@ namespace Astra::Graphics
 
 		for (const auto& directory : models)
 		{
-			const auto* mesh = directory.second.front()->GetMesh();
+			const auto& mesh = directory.second.front()->GetMesh();
 			glBindVertexArray(mesh->GetVAO());
 
 			for (const auto* model : directory.second)
@@ -86,7 +86,7 @@ namespace Astra::Graphics
 					m_shader->SetUniform1i("animated", false);
 				}
 
-				glDrawElements(GL_TRIANGLES, mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
+				glDrawElements(mesh->GetDrawType(), mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
 			}
 			glBindVertexArray(0);
 			glEnable(GL_CULL_FACE);

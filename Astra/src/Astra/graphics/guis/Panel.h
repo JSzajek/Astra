@@ -43,7 +43,6 @@ namespace Astra::Graphics
 		}
 
 		virtual inline GuiType GetType() const override { return GuiType::Panel; }
-		virtual void Free() override { }
 		inline virtual std::string ToString() const override { return !Name.length() ? ("Panel_&" + std::to_string(m_uid)) : Name; }
 
 		inline void SetText(std::string text) { m_text.SetText(text); }

@@ -10,102 +10,105 @@
 #include <GLFW/glfw3.h>
 #include <stb_image/stb_image.h>
 
-
 namespace Astra::Graphics
 {
-	Resource::Resource()
-	{
-	}
-
 	Resource::~Resource()
 	{
-		auto t = m_tracker.size();
-		auto m = m_loadedMeshes.size();
-		auto c = m_loadedCubeTextures.size();
-		auto f = m_loadedFontAtlas.size();
-		auto tex = m_loadedTextures.size();
-		auto total = m + c + tex;
+	#if ASTRA_DEBUG
+		for (const auto& dir : m_loadedMeshes)
+		{
+			ASTRA_CORE_ASSERT(dir.second.use_count() == 1, "Resource: Dangling Mesh Pointer at Application closure.");
+		}
+		for (const auto& dir : m_loadedTextures)
+		{
+			ASTRA_CORE_ASSERT(dir.second.use_count() == 1, "Resource: Dangling Texture Pointer at Application closure.");
+		}
+		for (const auto& dir : m_loadedCubeTextures)
+		{
+			ASTRA_CORE_ASSERT(dir.second.use_count() == 1, "Resource: Dangling CubeMapTexture Pointer at Application closure.");
+		}
+		for (const auto& dir : m_loadedFontAtlas)
+		{
+			ASTRA_CORE_ASSERT(dir.second.use_count() == 1, "Resource: Dangling FontAtlas Pointer at Application closure.");
+		}
+		for (const auto& dir : m_loadedAnimations)
+		{
+			ASTRA_CORE_ASSERT(dir.second.use_count() == 1, "Resource: Dangling Animation Pointer at Application closure.");
+		}
+	#endif
+		
+		// Clean Up All Remaining References
+		m_loadedMeshes.clear(); 
+		m_loadedTextures.clear();
+		m_loadedCubeTextures.clear();
+		m_loadedFontAtlas.clear();
+		m_loadedAnimations.clear();
 	}
 
-	void Resource::UnloadImpl(Res* ptr)
+	void Resource::CheckImpl()
 	{
-		auto result = m_tracker.find(ptr);
-		if (result != m_tracker.end())
+		// Loop through and determine if any models can be unloaded and are extraneous
+		for (auto iter = m_loadedMeshes.begin(); iter != m_loadedMeshes.end();)
 		{
-			if (result->second - 1 == 0)
+			if (iter->second.use_count() == 1) 
+				iter = m_loadedMeshes.erase(iter);
+			else 
+				++iter;
+		}
+	}
+
+	Asset<Texture> Resource::LoadTextureImpl(const TextureCreationSpec& specs)
+	{
+		// Check if filepath exists within loaded textures.
+		size_t hash = std::hash<std::string>{}(specs.filepath);
+		if (m_loadedTextures.find(hash) != m_loadedTextures.end())
+		{
+			return m_loadedTextures[hash];
+		}
+
+		Asset<Texture> texture = CreateAsset<Texture>(specs.filepath);
+		stbi_set_flip_vertically_on_load(specs.flipped);
+
+		unsigned char* data;
+		int nrComponents;
+
+		if (specs.scene)
+		{
+			const auto* scene = reinterpret_cast<const aiScene*>(specs.scene);
+			if (const auto* tex = scene->GetEmbeddedTexture(specs.filepath.c_str()))
 			{
-				ptr->Free();
-				
-				// Remove from loaded maps
-				switch (result->second.source)
-				{
-					case ResourceType::TextureResource:
-						m_loadedTextures.erase(m_loadedTextures.find(result->second.hash));
-						break;
-					case ResourceType::CubeTextureResource:
-						m_loadedCubeTextures.erase(m_loadedCubeTextures.find(result->second.hash));
-						break;
-					case ResourceType::FontAtlasResource:
-						m_loadedFontAtlas.erase(m_loadedFontAtlas.find(result->second.hash));
-						break;
-					case ResourceType::MeshResource:
-						m_loadedMeshes.erase(m_loadedMeshes.find(result->second.hash));
-						break;
-				}
-				m_tracker.erase(result);
+				// Read Texture from Memory - Embedded Texture
+				data = !tex->mHeight ? stbi_load_from_memory(reinterpret_cast<unsigned char*>(tex->pcData), tex->mWidth, &texture->width, &texture->height, &nrComponents, 0)
+										: stbi_load_from_memory(reinterpret_cast<unsigned char*>(tex->pcData), tex->mWidth * tex->mHeight, &texture->width, &texture->height, &nrComponents, 0);
 			}
 			else
 			{
-				--result->second;
+				// Read Texture from Filepath - External Texture
+				auto filename = specs.directory + '/' + std::string(specs.filepath);
+				data = stbi_load(filename.c_str(), &texture->width, &texture->height, &nrComponents, 0);
 			}
 		}
-	}
-
-	void Resource::RemarkImpl(Res* ptr)
-	{
-		auto result = m_tracker.find(ptr);
-		if (result != m_tracker.end())
+		else
 		{
-			++result->second;
+			data = stbi_load(std::string(specs.filepath).c_str(), &texture->width, &texture->height, &nrComponents, 0);
 		}
-	}
+		ASTRA_CORE_ASSERT(data, "Model: Texture Data Failed to Load.");
 
-	Texture* Resource::LoadTextureImpl(const char* const filepath, bool diffuse, bool flipped)
-	{
-		// Check if filepath exists within loaded textures.
-		size_t hash = std::hash<std::string>{}(filepath);
-		if (m_loadedTextures.find(hash) != m_loadedTextures.end())
-		{
-			auto* result = &m_loadedTextures[hash];
-			++m_tracker[result];
-			return result;
-		}
-
-		Texture texture(filepath);
-
-		stbi_set_flip_vertically_on_load(flipped);
-		int m_bpp;
-		unsigned char* buffer;
-		buffer = stbi_load(std::string(filepath).c_str(), &texture.width, &texture.height, &m_bpp, 4);
-
-		if (!buffer)
-		{
-			ASTRA_CORE_WARN("Texture {0} Did Not Load Correctly.", filepath);
-			return NULL;
-		}
+		glGenTextures(1, &texture->id);
 		auto hdr = Application::Get().GetWindow().IsHDR();
 
-		glGenTextures(1, &texture.id);
-		glBindTexture(GL_TEXTURE_2D, texture.id);
-		glTexImage2D(GL_TEXTURE_2D, 0, hdr && diffuse ? GL_SRGB8_ALPHA8 : GL_RGBA8, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		GLenum format = nrComponents == 1 ? GL_RED : nrComponents == 3 ? GL_RGB : GL_RGBA;
+
+		glBindTexture(GL_TEXTURE_2D, texture->id);
+		glTexImage2D(GL_TEXTURE_2D, 0, hdr && specs.diffuse ? GL_SRGB8_ALPHA8 : GL_RGBA8, texture->width, texture->height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
-		texture.hdr = hdr;
-		if (diffuse)
-			texture.type = TextureType::DiffuseMap;
+
+		if (specs.diffuse)
+			texture->type = TextureType::DiffuseMap;
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, diffuse ? GL_LINEAR : GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, specs.diffuse ? GL_LINEAR : GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
 		if (glfwExtensionSupported("GL_EXT_texture_filter_anisotropic"))
@@ -123,70 +126,12 @@ namespace Astra::Graphics
 		}
 
 		glBindTexture(GL_TEXTURE_2D, 0);
-		stbi_image_free(buffer);
-		m_loadedTextures[hash] = texture;
-		auto* result = &m_loadedTextures[hash];
-		m_tracker[result] = ResourceTrack(hash, ResourceType::TextureResource);
-
-		return result;
-	}
-
-	Texture* Resource::LoadTextureImpl(std::string filepath, std::string directory, const void* _scene, bool diffuse)
-	{
-		// Check if filepath exists within loaded textures.
-		size_t hash = std::hash<std::string>{}(filepath);
-		if (m_loadedTextures.find(hash) != m_loadedTextures.end())
-		{
-			auto* result = &m_loadedTextures[hash];
-			++m_tracker[result];
-			return result;
-		}
-		const aiScene* scene = reinterpret_cast<const aiScene*>(_scene);
-
-		Texture texture(filepath);
-
-		unsigned char* data;
-		int nrComponents;
-
-		if (const auto* tex = scene->GetEmbeddedTexture(filepath.c_str()))
-		{
-			// Read Texture from Memory - Embedded Texture
-			data = !tex->mHeight ? stbi_load_from_memory(reinterpret_cast<unsigned char*>(tex->pcData), tex->mWidth, &texture.width, &texture.height, &nrComponents, 0)
-									: stbi_load_from_memory(reinterpret_cast<unsigned char*>(tex->pcData), tex->mWidth * tex->mHeight, &texture.width, &texture.height, &nrComponents, 0);
-		}
-		else
-		{
-			// Read Texture from Filepath - External Texture
-			auto filename = directory + '/' + std::string(filepath);
-			data = stbi_load(filename.c_str(), &texture.width, &texture.height, &nrComponents, 0);
-		}
-
-		ASTRA_CORE_ASSERT(data, "Model: Texture Data Failed to Load.");
-
-		glGenTextures(1, &texture.id);
-		auto hdr = Application::Get().GetWindow().IsHDR();
-
-		GLenum format = nrComponents == 1 ? GL_RED : nrComponents == 3 ? GL_RGB : GL_RGBA;
-
-		glBindTexture(GL_TEXTURE_2D, texture.id);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture.width, texture.height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, diffuse ? GL_LINEAR : GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
-		glBindTexture(GL_TEXTURE_2D, 0);
 		stbi_image_free(data);
-		m_loadedTextures[hash] = texture;
-		auto* result = &m_loadedTextures[hash];
-		m_tracker[result] = ResourceTrack(hash, ResourceType::TextureResource);
 
-		return result;
+		return m_loadedTextures[hash] = texture;
 	}
 
-	CubeMapTexture* Resource::LoadCubeMapImpl(const std::vector<const char*>& filepaths)
+	Asset<CubeMapTexture> Resource::LoadCubeMapImpl(const std::vector<const char*>& filepaths)
 	{
 		// Check if filepath exists within loaded textures.
 		std::string combinded;
@@ -198,17 +143,15 @@ namespace Astra::Graphics
 
 		if (m_loadedCubeTextures.find(hash) != m_loadedCubeTextures.end())
 		{
-			auto* result = &m_loadedCubeTextures[hash];
-			++m_tracker[result];
-			return result;
+			return m_loadedCubeTextures[hash];
 		}
 
-		CubeMapTexture texture(filepaths);
+		Asset<CubeMapTexture> texture = CreateAsset<CubeMapTexture>(filepaths);
 
-		glGenTextures(1, &texture.id);
+		glGenTextures(1, &texture->id);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, texture.id);
-		stbi_set_flip_vertically_on_load(0); // Don't flip?
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texture->id);
+		stbi_set_flip_vertically_on_load(false); // Don't flip?
 		
 		auto hdr = Application::Get().GetWindow().IsHDR();
 		
@@ -239,44 +182,34 @@ namespace Astra::Graphics
 
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
-		m_loadedCubeTextures[hash] = texture;
-		auto* result = &m_loadedCubeTextures[hash];
-		m_tracker[result] = ResourceTrack(hash, ResourceType::CubeTextureResource);
-
-		return result;
+		return m_loadedCubeTextures[hash] = texture;
 	}
 
-	FontAtlas* Resource::LoadFontAtlasImpl(const char* const filepath, unsigned int fontsize)
+	Asset<FontAtlas> Resource::LoadFontAtlasImpl(const char* const filepath, unsigned int fontsize)
 	{
 		size_t hash = std::hash<std::string>{}(filepath);
 		hash += std::hash<unsigned int>{}(fontsize);
 
 		if (m_loadedFontAtlas.find(hash) != m_loadedFontAtlas.end())
 		{
-			auto* result = &m_loadedFontAtlas[hash];
-			++m_tracker[result];
-			return result;
+			return m_loadedFontAtlas[hash];
 		}
 
-		m_loadedFontAtlas[hash] = FontAtlas(filepath, fontsize);
-		auto* result = &m_loadedFontAtlas[hash];
-		m_tracker[result] = ResourceTrack(hash, ResourceType::FontAtlasResource);
-
-		return result;
+		return m_loadedFontAtlas[hash] = CreateAsset<FontAtlas>(filepath, fontsize);
 	}
 
 	void Resource::UpdateDiffuseTexturesImpl(bool hdr)
 	{
 		for (auto iter = m_loadedTextures.begin(); iter != m_loadedTextures.end(); ++iter)
 		{
-			if (iter->second.type != TextureType::DiffuseMap) // Not diffuse so don't consider
+			if (iter->second->type != TextureType::DiffuseMap) // Not diffuse so don't consider
 				continue;
 
-			if (iter->second.hdr == hdr) // Already Updated
+			if (iter->second->hdr == hdr) // Already Updated
 				continue;
 
 			int width, height;
-			glBindTexture(GL_TEXTURE_2D, iter->second.id);
+			glBindTexture(GL_TEXTURE_2D, iter->second->id);
 			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
 			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
 
@@ -287,7 +220,7 @@ namespace Astra::Graphics
 			glTexImage2D(GL_TEXTURE_2D, 0, hdr ? GL_SRGB8_ALPHA8 : GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
 
-			iter->second.hdr = hdr; // Update hdr status
+			iter->second->hdr = hdr; // Update hdr status
 
 			free(data); // Free Image Data
 			glBindTexture(GL_TEXTURE_2D, 0);
@@ -295,11 +228,11 @@ namespace Astra::Graphics
 
 		for (auto iter = m_loadedCubeTextures.begin(); iter != m_loadedCubeTextures.end(); ++iter)
 		{
-			if (iter->second.hdr == hdr) // Already Updated
+			if (iter->second->hdr == hdr) // Already Updated
 				continue;
 
 			int width, height;
-			glBindTexture(GL_TEXTURE_CUBE_MAP, iter->second.id);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, iter->second->id);
 			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
 			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
 		
@@ -307,7 +240,7 @@ namespace Astra::Graphics
 
 			int m_bpp, i = 0;
 			unsigned char* buffer;
-			for (const auto& file : iter->second.GetFiles())
+			for (const auto& file : iter->second->GetFiles())
 			{
 				buffer = stbi_load(file, &width, &height, &m_bpp, 4);
 				if (!buffer)
@@ -326,29 +259,33 @@ namespace Astra::Graphics
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-			iter->second.hdr = hdr; // Update hdr status
+			iter->second->hdr = hdr; // Update hdr status
 
 			glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 		}
 	}
 
-	Mesh* Resource::LoadMeshImpl(const std::string& filepath, void* _mesh, const void* _scene,
-								 std::map<std::string, BoneInfo>& map, int& counter, bool normalMapped)
+	std::shared_ptr<Mesh> Resource::LoadMeshImpl(const MeshCreationSpec& specs)
 	{
 		// Check if filepath exists within loaded textures.
-		size_t hash = std::hash<std::string>{}(filepath);
+		size_t hash = std::hash<std::string>{}(specs.filepath);
 		if (m_loadedMeshes.find(hash) != m_loadedMeshes.end())
 		{
-			auto* result = &m_loadedMeshes[hash];
-			++m_tracker[result];
+			auto result = m_loadedMeshes[hash];
 			return result;
 		}
-		
-		auto* mesh = reinterpret_cast<aiMesh*>(_mesh);
-		const auto* scene = reinterpret_cast<const aiScene*>(_scene);
+
+		// Check if it contains manually written vertex values
+		if (specs.vertices)
+		{
+			return m_loadedMeshes[hash] = std::make_shared<Mesh>(specs.drawtype, specs.vertices, specs.dimensions);
+		}
+
+		auto* mesh = reinterpret_cast<aiMesh*>(specs.mesh);
+		const auto* scene = reinterpret_cast<const aiScene*>(specs.scene);
 		
 		std::vector<int> indices;
-		if (normalMapped)
+		if (specs.normalMapped)
 		{
 			std::vector<NormalVertex> vertices;
 
@@ -378,13 +315,10 @@ namespace Astra::Graphics
 			// Extract Animation Information
 			if (mesh->HasBones())
 			{
-				ExtractBoneWeightForVertices(vertices, mesh, scene, map, counter);
+				ExtractBoneWeightForVertices(vertices, mesh, scene, specs.map, specs.counter);
 			}
-			m_loadedMeshes[hash] = Mesh(vertices, indices);
-			auto* resultptr = &m_loadedMeshes[hash];
-			m_tracker[resultptr] = ResourceTrack(hash, ResourceType::MeshResource);
-
-			return resultptr;
+			
+			return m_loadedMeshes[hash] = std::make_shared<Mesh>(vertices, indices);
 		}
 		else
 		{
@@ -413,32 +347,34 @@ namespace Astra::Graphics
 			// Extract Animation Information
 			if (mesh->HasBones())
 			{
-				ExtractBoneWeightForVertices(vertices, mesh, scene, map, counter);
+				ExtractBoneWeightForVertices(vertices, mesh, scene, specs.map, specs.counter);
 			}
-			m_loadedMeshes[hash] = Mesh(vertices, indices);
-			auto* resultptr = &m_loadedMeshes[hash];
-			m_tracker[resultptr] = ResourceTrack(hash, ResourceType::MeshResource);
-
-			return resultptr;
+			return m_loadedMeshes[hash] = CreateAsset<Mesh>(vertices, indices);
 		}
 	}
 
-	Mesh* Resource::LoadMeshImpl(const std::string& string, const std::vector<Vertex>& vertices, const std::vector<int>& indices)
+	Asset<Mesh> Resource::LoadMeshImpl(const std::string& string, const std::vector<Vertex>& vertices, const std::vector<int>& indices)
 	{
 		// Check if filepath exists within loaded textures.
 		size_t hash = std::hash<std::string>{}(string);
 		if (m_loadedMeshes.find(hash) != m_loadedMeshes.end())
 		{
-			auto* result = &m_loadedMeshes[hash];
-			++m_tracker[result];
-			return result;
+			return m_loadedMeshes[hash];
 		}
 
-		m_loadedMeshes[hash] = Mesh(vertices, indices);
-		auto* resultptr = &m_loadedMeshes[hash];
-		m_tracker[resultptr] = ResourceTrack(hash, ResourceType::MeshResource);
+		return m_loadedMeshes[hash] = CreateAsset<Mesh>(vertices, indices);
+	}
 
-		return resultptr;
+	Asset<Animation> Resource::LoadAnimationImpl(const AnimationCreationSpec& specs)
+	{
+		// Check if filepath exists within loaded textures.
+		size_t hash = std::hash<std::string>{}(specs.filepath);
+		hash += std::hash<std::string>{}(specs.animation->mName.C_Str());
+		if (m_loadedAnimations.find(hash) != m_loadedAnimations.end())
+		{
+			return m_loadedAnimations[hash];
+		}
+		return m_loadedAnimations[hash] = CreateAsset<Animation>(specs);
 	}
 
 	template<class Vertex>
@@ -457,7 +393,7 @@ namespace Astra::Graphics
 
 	template<class Vertex>
 	void Resource::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, void* _mesh, const void* _scene,
-												std::map<std::string, BoneInfo>& map, int& counter)
+												std::map<std::string, BoneInfo>* map, int* counter)
 	{
 		auto* mesh = reinterpret_cast<aiMesh*>(_mesh);
 		const auto* scene = reinterpret_cast<const aiScene*>(_scene);
@@ -466,15 +402,15 @@ namespace Astra::Graphics
 		{
 			int id = -1;
 			std::string name = mesh->mBones[index]->mName.C_Str();
-			if (map.find(name) == map.end())
+			if (map->find(name) == map->end())
 			{
-				BoneInfo info(counter, ConvertAiMatrix(mesh->mBones[index]->mOffsetMatrix));
-				map[name] = info;
-				id = counter++;
+				BoneInfo info(*counter, ConvertAiMatrix(mesh->mBones[index]->mOffsetMatrix));
+				(*map)[name] = info;
+				id = (*counter)++;
 			}
 			else
 			{
-				id = map[name].Id;
+				id = (*map)[name].Id;
 			}
 			ASTRA_CORE_ASSERT(id != -1, "Model: Error in Animation Bone Id Matching.");
 

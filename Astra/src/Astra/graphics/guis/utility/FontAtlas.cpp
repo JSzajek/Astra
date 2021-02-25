@@ -44,7 +44,7 @@ namespace Astra::Graphics
 		FT_Done_FreeType(ft);
 	}
 
-    void FontAtlas::Free()
+    FontAtlas::~FontAtlas()
     {
         glDeleteTextures(1, &id);
     }

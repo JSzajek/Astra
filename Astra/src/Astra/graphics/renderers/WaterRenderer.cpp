@@ -2,10 +2,10 @@
 
 #include "WaterRenderer.h"
 #include "Astra/math/Mat4Utils.h"
-#include "Astra/graphics/loaders/Loader.h"
 
 #include "Astra/graphics/entities/PointLight.h"
 #include "Astra/graphics/shadows/ShadowMapController.h"
+#include "Astra/graphics/Resource.h"
 
 namespace Astra::Graphics
 {
@@ -15,12 +15,8 @@ namespace Astra::Graphics
 			, m_wireframe(false)
 		#endif
 	{
-		m_defaultQuad = Loader::Load(GL_TRIANGLES, { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 }, 2);
-	}
-
-	WaterRenderer::~WaterRenderer()
-	{
-		delete m_defaultQuad;
+		m_defaultQuad = Resource::LoadMesh(MeshCreationSpec("Water_Renderer_Default_Quad", GL_TRIANGLES, 
+															&std::vector<float> { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 }, 2));
 	}
 
 	void WaterRenderer::SetShader(Shader* shader)
@@ -68,7 +64,7 @@ namespace Astra::Graphics
 			PrepareTile(tile);
 			m_shader->SetUniform1f(MOVE_FACTOR, tile->material.Increase(delta));
 			m_shader->SetUniformMat4(TRANSFORM_MATRIX_TAG, tile->GetModelMatrix());
-			glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
+			glDrawArrays(m_defaultQuad->GetDrawType(), 0, m_defaultQuad->GetVertexCount());
 		}
 
 	#if ASTRA_DEBUG
@@ -101,7 +97,7 @@ namespace Astra::Graphics
 
 	void WaterRenderer::PrepareRender()
 	{
-		glBindVertexArray(m_defaultQuad->vaoId);
+		glBindVertexArray(m_defaultQuad->GetVAO());
 
 		if (m_buffer)
 		{

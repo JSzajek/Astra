@@ -15,7 +15,7 @@ namespace Astra::Graphics
 	private:
 		std::string m_text;
 		unsigned int m_vao, m_vbo;
-		FontAtlas* m_font;
+		Asset<FontAtlas> m_font;
 
 		// TODO: Implement bolding and outlining
 		//uniform float width;
@@ -25,8 +25,8 @@ namespace Astra::Graphics
 		//uniform float outlineEdge;
 	public:
 		TextBox();
-		TextBox(const char* name, const char* text, FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
-		TextBox(const char* text, FontAtlas* font, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		TextBox(const char* name, const char* text, Asset<FontAtlas> font, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
+		TextBox(const char* text, Asset<FontAtlas> font, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
 		TextBox(const char* text, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
 		TextBox(const char* name, const char* text, const Math::Vec2& position, float rotation, const Math::Vec2& scale);
 		TextBox(const TextBox& other);
@@ -34,7 +34,6 @@ namespace Astra::Graphics
 		~TextBox();
 
 		virtual inline GuiType GetType() const override { return GuiType::TextBox; }
-		virtual void Free() override { }
 		inline virtual std::string ToString() const override { return !Name.length() ? ("TextBox_&" + std::to_string(m_uid)) : Name; }
 
 		inline const bool HasCustomVao() const override { return true; }
@@ -43,7 +42,7 @@ namespace Astra::Graphics
 
 		inline unsigned int GetVertexCount() const { return m_text.size() * 6; }
 
-		inline const FontAtlas* GetFont() const { return m_font; }
+		inline const Asset<FontAtlas> GetFont() const { return m_font; }
 		inline const std::string& GetText() const { return m_text; }
 		
 		inline void SetText(const std::string& string) { GenerateVertices(string); }
