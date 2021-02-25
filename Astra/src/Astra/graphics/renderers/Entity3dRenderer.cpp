@@ -82,7 +82,7 @@ namespace Astra::Graphics
 					m_shader->SetUniform1i("animated", false);
 				}
 
-				glDrawElements(GL_TRIANGLES, mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
+				glDrawElements(mesh->GetDrawType(), mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
 			}
 			glBindVertexArray(0);
 			glEnable(GL_CULL_FACE);

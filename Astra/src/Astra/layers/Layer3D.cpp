@@ -165,12 +165,9 @@ namespace Astra
 	void Layer3D::LayerUpdateAnimations(float delta)
 	{
 		std::lock_guard<std::mutex> lock(m_modelLock);
-		for (const auto& model : m_models)
+		for (const auto& animator : m_animators)
 		{
-			if (auto* animator = model.second.GetAnimator())
-			{
-				animator->UpdateAnimation(delta);
-			}
+			animator->UpdateAnimation(delta);
 		}
 	}
 

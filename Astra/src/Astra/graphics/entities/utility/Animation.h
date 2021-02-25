@@ -11,6 +11,21 @@
 
 namespace Astra::Graphics
 {
+	struct AnimationCreationSpec
+	{
+		std::string filepath; // Originating model
+		const aiAnimation* animation;
+		const aiNode* root;
+		std::map<std::string, BoneInfo>* boneMap;
+		int* boneCount;
+
+		AnimationCreationSpec(const std::string& filepath, const aiAnimation* animation, const aiNode* root,
+			std::map<std::string, BoneInfo>* boneMap, int* boneCount)
+			: filepath(filepath), animation(animation), root(root), boneMap(boneMap), boneCount(boneCount)
+		{
+		}
+	};
+
 	struct NodeData
 	{
 		Math::Mat4 Transformation;
@@ -30,7 +45,7 @@ namespace Astra::Graphics
 		float m_ticksPerSecond = 0.0f;
 	public:
 		Animation() = default;
-		Animation(const aiAnimation* animation, const aiNode* root, std::map<std::string, BoneInfo>& boneMap, int& boneCount);
+		Animation(const AnimationCreationSpec& specs);
 
 		inline std::string GetName() const { return m_name; }
 
@@ -42,7 +57,7 @@ namespace Astra::Graphics
 
 		Bone* FindBone(const std::string& name);
 	private:
-		void ValidateBones(const aiAnimation* animation, std::map<std::string, BoneInfo>& boneMap, int& boneCount);
+		void ValidateBones(const aiAnimation* animation, std::map<std::string, BoneInfo>* boneMap, int* boneCount);
 		void ReadData(NodeData& dest, const aiNode* source);
 	};
 }

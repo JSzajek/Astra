@@ -41,7 +41,6 @@ namespace Astra::Graphics
 	{
 		m_heights = new float[m_vertexCount * m_vertexCount];
 		memcpy(m_heights, other.m_heights, m_vertexCount * m_vertexCount * sizeof(float));
-		//TRACK(m_mesh);
 	}
 	
 	void Terrain::operator=(const Terrain& other)
@@ -59,12 +58,10 @@ namespace Astra::Graphics
 		memcpy(m_heights, other.m_heights, m_vertexCount * m_vertexCount * sizeof(float));
 
 		m_mesh = other.m_mesh;
-		//TRACK(m_mesh);
 	}
 
 	Terrain::~Terrain()
 	{
-		//UNLOAD(m_mesh);
 		delete m_heights;
 	}
 

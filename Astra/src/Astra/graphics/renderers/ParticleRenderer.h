@@ -4,8 +4,8 @@
 
 #include "Renderer.h"
 
-#include "../particles/Particle.h"
-#include "../shaders/ParticleShader.h"
+#include "Astra/graphics/shaders/ParticleShader.h"
+#include "Astra/graphics/particles/Particle.h"
 
 namespace Astra::Graphics
 {

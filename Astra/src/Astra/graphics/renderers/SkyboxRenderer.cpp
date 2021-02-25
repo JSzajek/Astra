@@ -1,6 +1,7 @@
 #include "astra_pch.h"
 
 #include "SkyboxRenderer.h"
+#include "Astra/graphics/Resource.h"
 
 namespace Astra::Graphics
 {
@@ -14,12 +15,7 @@ namespace Astra::Graphics
 		m_shader->SetUniform1i(SECOND_CUBE_MAP_TAG,		1);
 		m_shader->Stop();
 
-		m_cube = Loader::Load(GL_TRIANGLES, Vertices, 3);
-	}
-
-	SkyboxRenderer::~SkyboxRenderer()
-	{
-		delete m_cube;
+		m_cube = Resource::LoadMesh(MeshCreationSpec("Skybox_Renderer_Default_Cube", GL_TRIANGLES, &Vertices, 3));
 	}
 
 	void SkyboxRenderer::SetSkyBox(const SkyboxMaterial& material)
@@ -42,10 +38,10 @@ namespace Astra::Graphics
 		m_fixedViewMatrix->Rotate(m_rotation, Math::Vec3::Y_Axis);
 		m_shader->SetUniformMat4(VIEW_MATRIX_TAG, m_fixedViewMatrix);
 	
-		glBindVertexArray(m_cube->vaoId);
+		glBindVertexArray(m_cube->GetVAO());
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 		BindTextures();
-		glDrawArrays(m_cube->drawType, 0, m_cube->vertexCount);
+		glDrawArrays(m_cube->GetDrawType(), 0, m_cube->GetVertexCount());
 		glDepthFunc(GL_LESS); // set depth function back to default
 		glBindVertexArray(0);
 		m_shader->Stop();

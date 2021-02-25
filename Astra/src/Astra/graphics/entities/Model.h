@@ -38,17 +38,14 @@ namespace Astra::Graphics
 		ImageMaterial m_material;
 
 		// Animation Information
-		std::unordered_map<std::string, Animation> m_animations;
-		Animator* m_animator;
+		std::unordered_map<std::string, Asset<Animation>> m_animations;
+		Asset<Animator> m_animator;
 		std::map<std::string, BoneInfo> m_boneInfoMap;
 		int m_boneCounter;
 	public:
 		Model() = default;
 		Model(const char* const name, const char* const filepath, bool calcTangents = false);
 		Model(const char* const filepath, bool calcTangents = false);
-		Model(const Model& other);
-		void operator=(const Model& other);
-		~Model();
 
 		inline virtual std::string ToString() const override { return !Name.length() ? ("Model_&" + std::to_string(m_uid)) : Name; }
 		
@@ -68,9 +65,9 @@ namespace Astra::Graphics
 		inline void SetTextureIndex(unsigned int index) { m_textureIndex = index; }
 		inline void SetRowCount(unsigned int count) { m_rowCount = count; }
 
-		inline void AddAnimator() { m_animator = new Animator(); }
-		inline bool HasAnimator() const { return m_animator; }
-		inline Animator* GetAnimator() const { return m_animator; }
+		inline void AddAnimator() { m_animator = CreateAsset<Animator>(); }
+		inline bool HasAnimator() const { return m_animator.get(); }
+		inline Asset<Animator> GetAnimator() const { return m_animator; }
 
 		inline void PlayAnimation(const std::string& name) 
 		{

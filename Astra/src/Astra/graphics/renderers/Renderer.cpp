@@ -29,7 +29,7 @@ namespace Astra::Graphics
 		m_shader->Stop();
 	}
 
-	void Renderer::BindFrameBuffer(GLuint bufferId, unsigned int width, unsigned int height)
+	void Renderer::BindFrameBuffer(unsigned int bufferId, unsigned int width, unsigned int height)
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, bufferId);
@@ -47,10 +47,6 @@ namespace Astra::Graphics
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 
-		glDisableVertexAttribArray(static_cast<unsigned short>(BufferType::Vertices));
-		glDisableVertexAttribArray(static_cast<unsigned short>(BufferType::TextureCoords));
-		glDisableVertexAttribArray(static_cast<unsigned short>(BufferType::Normals));
-		glDisableVertexAttribArray(static_cast<unsigned short>(BufferType::Tangents));
 		glBindVertexArray(0);
 	}
 
@@ -59,16 +55,6 @@ namespace Astra::Graphics
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 		glFinish();
-	}
-
-	void Renderer::UpdateDynamicVbo()
-	{
-		//TODO: Implement
-	}
-
-	void Renderer::UpdateTexture()
-	{
-		//TODO: Implement
 	}
 
 	void Renderer::UpdateLight(unsigned int index, const Light* light)

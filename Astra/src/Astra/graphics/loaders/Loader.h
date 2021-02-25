@@ -4,7 +4,6 @@
 #include <string>
 #include <unordered_map>
 
-#include "Astra/graphics/buffers/VertexArray.h"
 #include "Astra/graphics/buffers/FrameBuffer.h"
 #include "Astra/graphics/buffers/WaterFrameBuffer.h"
 #include "Astra/graphics/buffers/ShadowFrameBuffer.h"
@@ -23,28 +22,6 @@ namespace Astra::Graphics
 			return instance;
 		}
 		
-		static const VertexArray* Load(unsigned int drawType, const std::vector<float>& vertices, const std::vector<int>& indices, 
-										const std::vector<float>& texturesCoords, const std::vector<float>& normals)
-		{
-			return Get().LoadImpl(drawType, vertices, indices, texturesCoords, normals);
-		}
-
-		static const VertexArray* Load(unsigned int drawType, const std::vector<float>& vertices, const std::vector<int>& indices,
-										const std::vector<float>& textureCoords, const std::vector<float>& normals, const std::vector<float>& tangents)
-		{
-			return Get().LoadImpl(drawType, vertices, indices, textureCoords, normals, tangents);
-		}
-
-		static const VertexArray* Load(unsigned int drawType, const std::vector<float>& vertices, unsigned int dimensions)
-		{
-			return Get().LoadImpl(drawType, vertices , dimensions);
-		}
-
-		static const unsigned int Load(unsigned int drawType, const std::vector<float>& vertices, const std::vector<float>& textureCoords)
-		{
-			return Get().LoadImpl(drawType, vertices, textureCoords);
-		}
-
 		static WaterFrameBuffer* LoadWaterFrameBuffer(unsigned int reflectionWidth, unsigned int reflectionHeight,
 													  unsigned int refractionWidth, unsigned int refractionHeight)
 		{
@@ -72,18 +49,7 @@ namespace Astra::Graphics
 		}
 
 	private:
-		Loader();
-
-		const VertexArray* LoadImpl(unsigned int drawType, const std::vector<float>& vertices,
-									const std::vector<int>& indices, const std::vector<float>& texturesCoords,
-									const std::vector<float>& normals);
-		
-		const VertexArray* LoadImpl(unsigned int drawType, const std::vector<float>& vertices, 
-									const std::vector<int>& indices, const std::vector<float>& textureCoords, 
-									const std::vector<float>& normals, const std::vector<float>& tangents);
-
-		const VertexArray* LoadImpl(unsigned int drawType, const std::vector<float>& vertices, unsigned int dimensions);
-		const GLuint LoadImpl(unsigned int drawType, const std::vector<float>& vertices, const std::vector<float>& textureCoords);
+		Loader() = default;
 
 		WaterFrameBuffer* LoadWaterFrameBufferImpl(unsigned int reflectionWidth, unsigned int reflectionHeight,
 												   unsigned int refractionWidth, unsigned int refractionHeight);
@@ -91,21 +57,14 @@ namespace Astra::Graphics
 		FrameBuffer* LoadFrameBufferImpl(unsigned int width, unsigned int height, unsigned int multisampled, DepthBufferType depthType, bool floating, unsigned int component);
 		FrameBuffer* LoadMultiTargetFrameBufferImpl(unsigned int width, unsigned int height, size_t colorAttachments, size_t depthAttachments, bool floating);
 
-
 		void UpdateFrameBufferImpl(FrameBuffer* buffer, unsigned int width, unsigned int height, bool floating, unsigned int multisampled);
 
 		FrameBuffer* CreateFrameBuffer(DepthBufferType type, bool multisampled = false, int drawAttachment = GL_NONE, int readAttachment = GL_NONE);
-		void CreateTextureAttachment(GLuint& id, unsigned int width, unsigned int height, bool floating, unsigned int wrapping = GL_REPEAT, size_t offset = 0);
-		GLuint CreateDepthTextureAttachment(GLuint& id, unsigned int width, unsigned int height, int component = GL_DEPTH24_STENCIL8, int filter = GL_LINEAR, int wrap = GL_REPEAT);
-		void CreateDepthBufferAttachment(GLuint& id, unsigned int width, unsigned int height, unsigned int multisampled = 0, bool floating = false);
-		void CreateColorBufferAttachment(GLuint& id, unsigned int width, unsigned int height, unsigned int multisampled = 0, bool floating = false);
-		GLuint BindInAttribBuffer(GLuint index, const std::vector<float>& data, int strideSize, GLenum usage = GL_STATIC_DRAW, GLboolean normalized = GL_FALSE);
-		GLuint BindIndicesBuffer(const std::vector<int>& data, GLenum usage = GL_STATIC_DRAW);
-
-		GLuint GenerateVaoId();
-		GLuint GenerateVboId();
+		void CreateTextureAttachment(unsigned int& id, unsigned int width, unsigned int height, bool floating, unsigned int wrapping = GL_REPEAT, size_t offset = 0);
+		unsigned int CreateDepthTextureAttachment(unsigned int& id, unsigned int width, unsigned int height, int component = GL_DEPTH24_STENCIL8, int filter = GL_LINEAR, int wrap = GL_REPEAT);
+		void CreateDepthBufferAttachment(unsigned int& id, unsigned int width, unsigned int height, unsigned int multisampled = 0, bool floating = false);
+		void CreateColorBufferAttachment(unsigned int& id, unsigned int width, unsigned int height, unsigned int multisampled = 0, bool floating = false);
 		
 		void UnbindFrameBuffer();
-		inline void UnbindVertexArray() { glBindVertexArray(0); }
 	};
 }

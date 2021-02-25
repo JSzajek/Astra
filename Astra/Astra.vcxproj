@@ -177,7 +177,6 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\graphics\buffers\FrameBuffer.h" />
     <ClInclude Include="src\Astra\graphics\buffers\ShadowFrameBuffer.h" />
     <ClInclude Include="src\Astra\graphics\buffers\Texture.h" />
-    <ClInclude Include="src\Astra\graphics\buffers\VertexArray.h" />
     <ClInclude Include="src\Astra\graphics\buffers\WaterFrameBuffer.h" />
     <ClInclude Include="src\Astra\graphics\entities\Camera.h" />
     <ClInclude Include="src\Astra\graphics\entities\DirectionalLight.h" />
@@ -205,7 +204,6 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\graphics\guis\utility\FontStructs.h" />
     <ClInclude Include="src\Astra\graphics\guis\utility\Rect2.h" />
     <ClInclude Include="src\Astra\graphics\loaders\Loader.h" />
-    <ClInclude Include="src\Astra\graphics\loaders\ObjLoader.h" />
     <ClInclude Include="src\Astra\graphics\materials\GuiMaterial.h" />
     <ClInclude Include="src\Astra\graphics\materials\ImageMaterial.h" />
     <ClInclude Include="src\Astra\graphics\materials\Materials.h" />
@@ -298,7 +296,6 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClCompile Include="src\Astra\graphics\buffers\CubeMapTexture.cpp" />
     <ClCompile Include="src\Astra\graphics\buffers\ShadowFrameBuffer.cpp" />
     <ClCompile Include="src\Astra\graphics\buffers\Texture.cpp" />
-    <ClCompile Include="src\Astra\graphics\buffers\VertexArray.cpp" />
     <ClCompile Include="src\Astra\graphics\buffers\WaterFrameBuffer.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\Camera.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\Light.cpp" />
@@ -316,7 +313,6 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClCompile Include="src\Astra\graphics\guis\utility\FontAtlas.cpp" />
     <ClCompile Include="src\Astra\graphics\guis\utility\Rect2.cpp" />
     <ClCompile Include="src\Astra\graphics\loaders\Loader.cpp" />
-    <ClCompile Include="src\Astra\graphics\loaders\ObjLoader.cpp" />
     <ClCompile Include="src\Astra\graphics\materials\GuiMaterial.cpp" />
     <ClCompile Include="src\Astra\graphics\materials\ImageMaterial.cpp" />
     <ClCompile Include="src\Astra\graphics\materials\ParticleMaterial.cpp" />

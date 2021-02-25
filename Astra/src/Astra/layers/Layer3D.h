@@ -78,6 +78,7 @@ namespace Astra
 		
 		std::unordered_map<unsigned int, Graphics::Model> m_models;
 		std::unordered_map<unsigned int, std::vector<const Graphics::Model*>> m_modelCategories[4];
+		std::vector<Asset<Graphics::Animator>> m_animators;
 
 		// Have an unordered_map that stores based off of name (which is unique).
 		// Upon adding or removing from the map store in another multiset the names that correspond with certain categories
@@ -91,7 +92,6 @@ namespace Astra
 
 		// Entities - 1: regular, 2: normal-mapped, 3: selected, 4: shadow-caster
 		//std::unordered_map<unsigned int, std::vector<Graphics::Model>> m_models[4];
-		std::vector<Graphics::Animator*> m_animators;
 		std::unordered_map<unsigned int, Graphics::ParticleSystem> m_particles;
 
 		// Lighting

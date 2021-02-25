@@ -7,13 +7,14 @@
 #include "Astra/graphics/entities/terrains/WaterTile.h"
 #include "Astra/graphics/entities/Light.h"
 #include "Astra/graphics/shaders/WaterShader.h"
+#include "Astra/graphics/entities/utility/Mesh.h"
 
 namespace Astra::Graphics
 {
 	class WaterRenderer : public Renderer
 	{
 	private:
-		const VertexArray* m_defaultQuad;
+		Asset<Mesh> m_defaultQuad;
 		WaterFrameBuffer* m_buffer;
 		const Math::Mat4* m_toShadowSpaceMatrix;
 		float m_near, m_far;
@@ -22,7 +23,6 @@ namespace Astra::Graphics
 	#endif
 	public:
 		WaterRenderer(float _near, float _far);
-		~WaterRenderer();
 	#if ASTRA_DEBUG
 		void SetWireframe(bool wireframe) { m_wireframe = wireframe; };
 	#endif

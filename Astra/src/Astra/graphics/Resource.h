@@ -9,6 +9,7 @@
 #include "Astra/graphics/guis/utility/FontAtlas.h"
 #include "Astra/graphics/entities/utility/Mesh.h"
 #include "Astra/graphics/entities/utility/BoneInfo.h"
+#include "Astra/graphics/entities/utility/Animation.h"
 
 namespace Astra::Graphics
 {
@@ -20,6 +21,7 @@ namespace Astra::Graphics
 		std::unordered_map<size_t, Asset<FontAtlas>> m_loadedFontAtlas;
 
 		std::unordered_map<size_t, Asset<Mesh>> m_loadedMeshes;
+		std::unordered_map<size_t, Asset<Animation>> m_loadedAnimations;
 	public:
 		Resource(const Resource&) = delete;
 		void operator=(const Resource&) = delete;
@@ -60,6 +62,11 @@ namespace Astra::Graphics
 			return Get().LoadMeshImpl(name, vertices, indices);
 		}
 
+		static Asset<Animation> LoadAnimation(const AnimationCreationSpec& specs)
+		{
+			return Get().LoadAnimationImpl(specs);
+		}
+
 		static void UpdateDiffuseTextures(bool hdr)
 		{
 			Get().UpdateDiffuseTexturesImpl(hdr);
@@ -77,7 +84,9 @@ namespace Astra::Graphics
 
 		Asset<Mesh> LoadMeshImpl(const MeshCreationSpec& specs);
 		Asset<Mesh> LoadMeshImpl(const std::string& name, const std::vector<Vertex>& vertices, const std::vector<int>& indices);
-		
+
+		Asset<Animation> LoadAnimationImpl(const AnimationCreationSpec& specs);
+
 		void UpdateDiffuseTexturesImpl(bool hdr);
 	private:
 		// Bone Extraction Methods

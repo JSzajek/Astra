@@ -4,10 +4,10 @@
 
 #include "Renderer.h"
 #include "Astra/graphics/Color.h"
-#include "../buffers/CubeMapTexture.h"
-#include "../materials/SkyboxMaterial.h"
-#include "../loaders/Loader.h"
-#include "../shaders/SkyboxShader.h"
+#include "Astra/graphics/buffers/CubeMapTexture.h"
+#include "Astra/graphics/materials/SkyboxMaterial.h"
+#include "Astra/graphics/shaders/SkyboxShader.h"
+#include "Astra/graphics/entities/utility/Mesh.h"
 
 namespace Astra::Graphics
 {
@@ -62,7 +62,7 @@ namespace Astra::Graphics
 			 Size, -Size,  Size
 		};
 	private:
-		const VertexArray* m_cube;
+		Asset<Mesh> m_cube;
 		SkyboxMaterial m_material;
 		bool m_set;
 		const Color* m_fogColor;
@@ -71,7 +71,6 @@ namespace Astra::Graphics
 		float m_rotation;
 	public:
 		SkyboxRenderer(Shader* shader, const Color* fogColor);
-		~SkyboxRenderer();
 
 		void SetSkyBox(const SkyboxMaterial& material);
 

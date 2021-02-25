@@ -11,7 +11,8 @@ namespace Astra::Graphics
 	PostProcessor::PostProcessor()
 		: m_screenBuffer(NULL), m_multisampledBuffer(NULL)
 	{
-		m_defaultQuad = Loader::Load(GL_TRIANGLE_STRIP, { -1, 1, -1, -1, 1, 1, 1, -1 }, 2);
+		m_defaultQuad = Resource::LoadMesh(MeshCreationSpec("Post_Processor_Default_Quad", GL_TRIANGLE_STRIP, 
+															&std::vector<float>{ -1, 1, -1, -1, 1, 1, 1, -1 }, 2));
 		auto [width, height] = Application::Get().GetWindow().GetSize();
 		auto hdr = Application::Get().GetWindow().IsHDR();
 
@@ -28,7 +29,6 @@ namespace Astra::Graphics
 
 	PostProcessor::~PostProcessor()
 	{
-		delete m_defaultQuad;
 		delete m_screenBuffer;
 		delete m_multisampledBuffer;
 
@@ -157,7 +157,7 @@ namespace Astra::Graphics
 
 	void PostProcessor::Draw()
 	{
-		glBindVertexArray(m_defaultQuad->vaoId);
+		glBindVertexArray(m_defaultQuad->GetVAO());
 		glDisable(GL_DEPTH_TEST);
 
 		unsigned int attachment = 0;
@@ -175,7 +175,7 @@ namespace Astra::Graphics
 		for (auto iter = effects.begin(); iter != effects.end();) 
 		{
 			(*iter)->Start(&attachment);
-			glDrawArrays(m_defaultQuad->drawType, 0, m_defaultQuad->vertexCount);
+			glDrawArrays(m_defaultQuad->GetDrawType(), 0, m_defaultQuad->GetVertexCount());
 			(*iter)->Stop();
 			if ((*iter)->Finished())
 			{

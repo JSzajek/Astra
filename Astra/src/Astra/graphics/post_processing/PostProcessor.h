@@ -3,8 +3,8 @@
 #include <vector>
 #include <deque>
 
-#include "../buffers/VertexArray.h"
 #include "ImageEffect.h"
+#include <Astra/graphics/entities/utility/Mesh.h>
 
 #include "HDREffect.h"
 #include "HorizontalBlurEffect.h"
@@ -16,7 +16,7 @@ namespace Astra::Graphics
 	class PostProcessor
 	{
 	private:
-		const VertexArray* m_defaultQuad;
+		Asset<Mesh> m_defaultQuad;
 		FrameBuffer* m_screenBuffer;
 		FrameBuffer* m_multisampledBuffer;
 

@@ -31,6 +31,10 @@ namespace Astra::Graphics
 		{
 			ASTRA_CORE_ASSERT(dir.second.use_count() == 1, "Resource: Dangling FontAtlas Pointer at Application closure.");
 		}
+		for (const auto& dir : m_loadedAnimations)
+		{
+			ASTRA_CORE_ASSERT(dir.second.use_count() == 1, "Resource: Dangling Animation Pointer at Application closure.");
+		}
 	#endif
 		
 		// Clean Up All Remaining References
@@ -38,6 +42,7 @@ namespace Astra::Graphics
 		m_loadedTextures.clear();
 		m_loadedCubeTextures.clear();
 		m_loadedFontAtlas.clear();
+		m_loadedAnimations.clear();
 	}
 
 	void Resource::CheckImpl()
@@ -51,49 +56,6 @@ namespace Astra::Graphics
 				++iter;
 		}
 	}
-
-	/*Asset<Texture> Resource::LoadTextureImpl(const TextureCreationSpec& specs)
-	{
-		// Check if filepath exists within loaded textures.
-		size_t hash = std::hash<std::string>{}(specs.filepath);
-		if (m_loadedTextures.find(hash) != m_loadedTextures.end())
-		{
-			return m_loadedTextures[hash];
-		}
-
-		Asset<Texture> texture = CreateAsset<Texture>(specs.filepath);
-
-		stbi_set_flip_vertically_on_load(specs.flipped);
-		int m_bpp;
-		unsigned char* buffer;
-		buffer = stbi_load(std::string(specs.filepath).c_str(), &texture->width, &texture->height, &m_bpp, 4);
-
-		if (!buffer)
-		{
-			ASTRA_CORE_WARN("Texture {0} Did Not Load Correctly.", specs.filepath);
-			return NULL;
-		}
-		auto hdr = Application::Get().GetWindow().IsHDR();
-
-		glGenTextures(1, &texture->id);
-		glBindTexture(GL_TEXTURE_2D, texture->id);
-		glTexImage2D(GL_TEXTURE_2D, 0, hdr && specs.diffuse ? GL_SRGB8_ALPHA8 : GL_RGBA8, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-		glGenerateMipmap(GL_TEXTURE_2D);
-		texture->hdr = hdr;
-		if (specs.diffuse)
-			texture->type = TextureType::DiffuseMap;
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, specs.diffuse ? GL_LINEAR : GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
-		
-		glBindTexture(GL_TEXTURE_2D, 0);
-		stbi_image_free(buffer);
-
-		return m_loadedTextures[hash] = texture;
-	}*/
 
 	Asset<Texture> Resource::LoadTextureImpl(const TextureCreationSpec& specs)
 	{
@@ -310,10 +272,15 @@ namespace Astra::Graphics
 		if (m_loadedMeshes.find(hash) != m_loadedMeshes.end())
 		{
 			auto result = m_loadedMeshes[hash];
-			//++m_tracker[result];
 			return result;
 		}
-		
+
+		// Check if it contains manually written vertex values
+		if (specs.vertices)
+		{
+			return m_loadedMeshes[hash] = std::make_shared<Mesh>(specs.drawtype, specs.vertices, specs.dimensions);
+		}
+
 		auto* mesh = reinterpret_cast<aiMesh*>(specs.mesh);
 		const auto* scene = reinterpret_cast<const aiScene*>(specs.scene);
 		
@@ -350,6 +317,7 @@ namespace Astra::Graphics
 			{
 				ExtractBoneWeightForVertices(vertices, mesh, scene, specs.map, specs.counter);
 			}
+			
 			return m_loadedMeshes[hash] = std::make_shared<Mesh>(vertices, indices);
 		}
 		else
@@ -395,6 +363,18 @@ namespace Astra::Graphics
 		}
 
 		return m_loadedMeshes[hash] = CreateAsset<Mesh>(vertices, indices);
+	}
+
+	Asset<Animation> Resource::LoadAnimationImpl(const AnimationCreationSpec& specs)
+	{
+		// Check if filepath exists within loaded textures.
+		size_t hash = std::hash<std::string>{}(specs.filepath);
+		hash += std::hash<std::string>{}(specs.animation->mName.C_Str());
+		if (m_loadedAnimations.find(hash) != m_loadedAnimations.end())
+		{
+			return m_loadedAnimations[hash];
+		}
+		return m_loadedAnimations[hash] = CreateAsset<Animation>(specs);
 	}
 
 	template<class Vertex>

@@ -30,7 +30,7 @@ namespace Astra::Graphics
 				m_shader->SetUniformMat4(MODEL_VIEW_PROJ_MATRIX_TAG, projectionViewMatrix * (*model->GetModelMatrix()));
 				m_shader->SetUniform1f(NUMBER_OF_ROWS_TAG, static_cast<float>(model->GetRowCount()));
 				m_shader->SetUniform2f(OFFSET_TAG, model->GetMaterialXOffset(), model->GetMaterialYOffset());
-					
+
 				if (model->HasAnimator())
 				{
 					m_shader->SetUniform1i("animated", true);
@@ -45,8 +45,8 @@ namespace Astra::Graphics
 				{
 					m_shader->SetUniform1i("animated", false);
 				}
-
-				glDrawElements(GL_TRIANGLES, mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
+				
+				glDrawElements(mesh->GetDrawType(), mesh->GetVertexCount(), GL_UNSIGNED_INT, NULL);
 			}
 			glBindVertexArray(0);
 		}
