@@ -6,7 +6,7 @@
 
 #include "Astra/graphics/gizmos/Gizmo.h"
 #include "Astra/graphics/shaders/GizmoShader.h"
-#include "Astra/graphics/entities/utility/Mesh.h"
+#include "Astra/graphics/buffers/Mesh.h"
 
 namespace Astra::Graphics
 {

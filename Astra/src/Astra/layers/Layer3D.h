@@ -15,14 +15,14 @@
 #include "Astra/graphics/renderers/SkyboxRenderer.h"
 #include "Astra/graphics/renderers/WaterRenderer.h"
 
-#include "Astra/graphics/entities/LayerEntity.h"
+#include "Astra/graphics/LayerEntity.h"
 #include "Astra/graphics/entities/Model.h"
 #include "Astra/graphics/entities/PointLight.h"
 #include "Astra/graphics/entities/DirectionalLight.h"
 #include "Astra/graphics/entities/terrains/Terrain.h"
 #include "Astra/graphics/entities/terrains/WaterTile.h"
 
-#include "Astra/graphics/entities/utility/Animator.h"
+#include "Astra/graphics/entities/animation/Animator.h"
 
 #include "Astra/graphics/particles/ParticleController.h"
 #include "Astra/graphics/particles/ParticleSystem.h"

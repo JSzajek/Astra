@@ -153,14 +153,14 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\Application.h" />
     <ClInclude Include="src\Astra\Core.h" />
     <ClInclude Include="src\Astra\EntryPoint.h" />
-    <ClInclude Include="src\Astra\graphics\entities\LayerEntity.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\Animation.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\Animator.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\AssimpReader.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\Bone.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\BoneInfo.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\BoneReader.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\KeyStructs.h" />
+    <ClInclude Include="src\Astra\graphics\LayerEntity.h" />
+    <ClInclude Include="src\Astra\graphics\entities\animation\Animation.h" />
+    <ClInclude Include="src\Astra\graphics\entities\animation\Animator.h" />
+    <ClInclude Include="src\Astra\graphics\entities\animation\AssimpReader.h" />
+    <ClInclude Include="src\Astra\graphics\entities\animation\Bone.h" />
+    <ClInclude Include="src\Astra\graphics\entities\animation\BoneInfo.h" />
+    <ClInclude Include="src\Astra\graphics\entities\animation\BoneReader.h" />
+    <ClInclude Include="src\Astra\graphics\entities\animation\KeyStructs.h" />
     <ClInclude Include="src\Astra\graphics\Resource.h" />
     <ClInclude Include="src\Astra\Log.h" />
     <ClInclude Include="src\Astra\math\Quat.h" />
@@ -187,7 +187,7 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\graphics\entities\terrains\HeightGenerator.h" />
     <ClInclude Include="src\Astra\graphics\entities\terrains\Terrain.h" />
     <ClInclude Include="src\Astra\graphics\entities\terrains\WaterTile.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\Mesh.h" />
+    <ClInclude Include="src\Astra\graphics\buffers\Mesh.h" />
     <ClInclude Include="src\Astra\graphics\entities\Model.h" />
     <ClInclude Include="src\Astra\graphics\gizmos\Gizmo.h" />
     <ClInclude Include="src\Astra\graphics\gizmos\GizmoController.h" />
@@ -286,9 +286,9 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
   <ItemGroup>
     <ClCompile Include="src\Astra\Application.cpp" />
     <ClCompile Include="src\Astra\graphics\buffers\FrameBuffer.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\utility\Animation.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\utility\Animator.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\utility\Bone.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\animation\Animation.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\animation\Animator.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\animation\Bone.cpp" />
     <ClCompile Include="src\Astra\graphics\Resource.cpp" />
     <ClCompile Include="src\Astra\Log.cpp" />
     <ClCompile Include="src\Astra\audio\AudioController.cpp" />
@@ -304,7 +304,7 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClCompile Include="src\Astra\graphics\entities\terrains\HeightGenerator.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\terrains\Terrain.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\terrains\WaterTile.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\utility\Mesh.cpp" />
+    <ClCompile Include="src\Astra\graphics\buffers\Mesh.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\Model.cpp" />
     <ClCompile Include="src\Astra\graphics\gizmos\Gizmo.cpp" />
     <ClCompile Include="src\Astra\graphics\gizmos\GizmoController.cpp" />

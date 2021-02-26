@@ -1,7 +1,5 @@
 #include "astra_pch.h"
 
-#include <thread>
-
 #include "Animator.h"
 
 namespace Astra::Graphics

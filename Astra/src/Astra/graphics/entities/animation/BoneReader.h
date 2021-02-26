@@ -5,9 +5,9 @@
 
 #include <assimp/anim.h>
 
-#include "Astra/graphics/entities/utility/BoneInfo.h"
-#include "Astra/graphics/entities/utility/KeyStructs.h"
-#include "Astra/graphics/entities/utility/AssimpReader.h"
+#include "Astra/graphics/entities/animation/BoneInfo.h"
+#include "Astra/graphics/entities/animation/KeyStructs.h"
+#include "Astra/graphics/entities/animation/AssimpReader.h"
 
 namespace Astra::Graphics
 {

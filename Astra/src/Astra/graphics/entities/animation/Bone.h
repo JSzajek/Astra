@@ -7,7 +7,7 @@
 
 #include "Astra/math/Mat4.h"
 
-#include "Astra/graphics/entities/utility/BoneReader.h"
+#include "Astra/graphics/entities/animation/BoneReader.h"
 
 namespace Astra::Graphics
 {

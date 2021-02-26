@@ -6,7 +6,7 @@
 #include "Astra/graphics/loaders/Loader.h"
 #include "Astra/graphics/Resource.h"
 #include "Astra/math/Mat4Utils.h"
-#include "Astra/graphics/entities/utility/AssimpReader.h"
+#include "Astra/graphics/entities/animation/AssimpReader.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>

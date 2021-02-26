@@ -5,7 +5,7 @@
 #include <map>
 
 #include "Astra/math/Maths.h"
-#include "Astra/graphics/entities/utility/BoneInfo.h"
+#include "Astra/graphics/entities/animation/BoneInfo.h"
 #include "Astra/graphics/materials/ImageMaterial.h"
 
 namespace Astra::Graphics

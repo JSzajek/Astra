@@ -2,8 +2,8 @@
 
 #include "Particle.h"
 #include "Astra/math/Maths.h"
+#include "Astra/graphics/LayerEntity.h"
 #include "Astra/graphics/gizmos/Gizmo.h"
-#include "Astra/graphics/entities/LayerEntity.h"
 
 namespace Astra::Graphics
 {

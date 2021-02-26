@@ -7,12 +7,12 @@
 
 #include <assimp/scene.h>
 
+#include "Astra/graphics/buffers/Mesh.h"
 #include "Astra/graphics/entities/Spatial.h"
-#include "Astra/graphics/entities/utility/Mesh.h"
-#include "Astra/graphics/entities/utility/BoneInfo.h"
+#include "Astra/graphics/entities/animation/BoneInfo.h"
 
-#include "Astra/graphics/entities/utility/Animation.h"
-#include "Astra/graphics/entities/utility/Animator.h"
+#include "Astra/graphics/entities/animation/Animation.h"
+#include "Astra/graphics/entities/animation/Animator.h"
 
 namespace Astra::Graphics
 {

@@ -7,9 +7,9 @@
 #include "Astra/graphics/buffers/Texture.h"
 #include "Astra/graphics/buffers/CubeMapTexture.h"
 #include "Astra/graphics/guis/utility/FontAtlas.h"
-#include "Astra/graphics/entities/utility/Mesh.h"
-#include "Astra/graphics/entities/utility/BoneInfo.h"
-#include "Astra/graphics/entities/utility/Animation.h"
+#include "Astra/graphics/buffers/Mesh.h"
+#include "Astra/graphics/entities/animation/BoneInfo.h"
+#include "Astra/graphics/entities/animation/Animation.h"
 
 namespace Astra::Graphics
 {

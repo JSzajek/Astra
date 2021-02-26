@@ -7,7 +7,7 @@
 #include <assimp/anim.h>
 #include <assimp/scene.h>
 
-#include "Astra/graphics/entities/utility/Bone.h"
+#include "Astra/graphics/entities/animation/Bone.h"
 
 namespace Astra::Graphics
 {

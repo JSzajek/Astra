@@ -2,7 +2,7 @@
 
 #include "Astra/math/Vec3.h"
 #include "Astra/graphics/buffers/Texture.h"
-#include "Astra/graphics/entities/LayerEntity.h"
+#include "Astra/graphics/LayerEntity.h"
 
 namespace Astra::Graphics
 {

@@ -3,7 +3,7 @@
 #include <vector>
 #include <thread>
 
-#include "Astra/graphics/entities/utility/Animation.h"
+#include "Astra/graphics/entities/animation/Animation.h"
 #include "Astra/math/Mat4.h"
 
 namespace Astra::Graphics

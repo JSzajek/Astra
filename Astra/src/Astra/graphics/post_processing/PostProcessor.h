@@ -4,7 +4,7 @@
 #include <deque>
 
 #include "ImageEffect.h"
-#include <Astra/graphics/entities/utility/Mesh.h>
+#include "Astra/graphics/buffers/Mesh.h"
 
 #include "HDREffect.h"
 #include "HorizontalBlurEffect.h"

@@ -1,7 +1,7 @@
 #include "astra_pch.h"
 
 #include "Animation.h"
-#include "Astra/graphics/entities/utility/AssimpReader.h"
+#include "Astra/graphics/entities/animation/AssimpReader.h"
 
 namespace Astra::Graphics
 {

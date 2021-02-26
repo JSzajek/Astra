@@ -189,9 +189,6 @@
     <ClInclude Include="src\Astra\graphics\entities\terrains\WaterTile.h">
       <Filter>src\Astra\graphics\entities\terrains</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astra\graphics\entities\utility\Mesh.h">
-      <Filter>src\Astra\graphics\entities\utility</Filter>
-    </ClInclude>
     <ClInclude Include="src\Astra\graphics\gizmos\Gizmo.h">
       <Filter>src\Astra\graphics\gizmos</Filter>
     </ClInclude>
@@ -474,16 +471,19 @@
     <ClInclude Include="src\Astra\graphics\entities\Model.h">
       <Filter>src\Astra\graphics\entities\utility</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astra\graphics\entities\utility\BoneInfo.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\KeyStructs.h" />
     <ClInclude Include="src\Astra\math\Quat.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\Bone.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\BoneReader.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\Animation.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\AssimpReader.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\Animator.h" />
-    <ClInclude Include="src\Astra\graphics\entities\LayerEntity.h" />
     <ClInclude Include="src\Astra\graphics\Resource.h" />
+    <ClInclude Include="src\Astra\graphics\LayerEntity.h" />
+    <ClInclude Include="src\Astra\graphics\buffers\Mesh.h">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\animation\Animation.h" />
+    <ClInclude Include="src\Astra\graphics\entities\animation\Animator.h" />
+    <ClInclude Include="src\Astra\graphics\entities\animation\AssimpReader.h" />
+    <ClInclude Include="src\Astra\graphics\entities\animation\Bone.h" />
+    <ClInclude Include="src\Astra\graphics\entities\animation\BoneReader.h" />
+    <ClInclude Include="src\Astra\graphics\entities\animation\BoneInfo.h" />
+    <ClInclude Include="src\Astra\graphics\entities\animation\KeyStructs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astra\Application.cpp">
@@ -530,9 +530,6 @@
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\entities\terrains\WaterTile.cpp">
       <Filter>src\Astra\graphics\entities\terrains</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Astra\graphics\entities\utility\Mesh.cpp">
-      <Filter>src\Astra\graphics\entities\utility</Filter>
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\gizmos\Gizmo.cpp">
       <Filter>src\Astra\graphics\gizmos</Filter>
@@ -685,11 +682,14 @@
       <Filter>src\Astra\graphics\entities\utility</Filter>
     </ClCompile>
     <ClCompile Include="src\Astra\math\Quat.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\utility\Bone.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\utility\Animation.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\utility\Animator.cpp" />
     <ClCompile Include="src\Astra\graphics\Resource.cpp" />
     <ClCompile Include="src\Astra\graphics\buffers\FrameBuffer.cpp" />
+    <ClCompile Include="src\Astra\graphics\buffers\Mesh.cpp">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\animation\Animation.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\animation\Animator.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\animation\Bone.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\fonts\calibri.ttf">

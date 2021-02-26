@@ -4,10 +4,10 @@
 
 #include "Renderer.h"
 #include "Astra/graphics/Color.h"
+#include "Astra/graphics/buffers/Mesh.h"
 #include "Astra/graphics/buffers/CubeMapTexture.h"
 #include "Astra/graphics/materials/SkyboxMaterial.h"
 #include "Astra/graphics/shaders/SkyboxShader.h"
-#include "Astra/graphics/entities/utility/Mesh.h"
 
 namespace Astra::Graphics
 {
