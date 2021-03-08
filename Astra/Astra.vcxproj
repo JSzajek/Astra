@@ -153,6 +153,12 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\Application.h" />
     <ClInclude Include="src\Astra\Core.h" />
     <ClInclude Include="src\Astra\EntryPoint.h" />
+    <ClInclude Include="src\Astra\graphics\buffers\Vertex.h" />
+    <ClInclude Include="src\Astra\graphics\entities\utility\Heap.h" />
+    <ClInclude Include="src\Astra\graphics\entities\utility\KdTree.h" />
+    <ClInclude Include="src\Astra\graphics\entities\utility\Map.h" />
+    <ClInclude Include="src\Astra\graphics\entities\utility\Simplifier.h" />
+    <ClInclude Include="src\Astra\graphics\entities\utility\SimpStructs.h" />
     <ClInclude Include="src\Astra\graphics\LayerEntity.h" />
     <ClInclude Include="src\Astra\graphics\entities\animation\Animation.h" />
     <ClInclude Include="src\Astra\graphics\entities\animation\Animator.h" />
@@ -289,6 +295,8 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClCompile Include="src\Astra\graphics\entities\animation\Animation.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\animation\Animator.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\animation\Bone.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\utility\Simplifier.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\utility\SimpStructs.cpp" />
     <ClCompile Include="src\Astra\graphics\Resource.cpp" />
     <ClCompile Include="src\Astra\Log.cpp" />
     <ClCompile Include="src\Astra\audio\AudioController.cpp" />

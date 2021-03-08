@@ -76,14 +76,14 @@ namespace Astra::Graphics
 		m_vertexCount = height;
 		m_heights = new float[m_vertexCount * m_vertexCount];
 
-		int count = m_vertexCount * m_vertexCount;
-		std::vector<int> indices;
+		unsigned int count = m_vertexCount * m_vertexCount;
+		std::vector<unsigned int> indices;
 		std::vector<Vertex> vertices;
 		indices.reserve(6 * (m_vertexCount - 1) * (m_vertexCount - 1));
 		vertices.reserve(count);
-		for (int i = 0; i < m_vertexCount; i++)
+		for (auto i = 0; i < m_vertexCount; i++)
 		{
-			for (int j = 0; j < m_vertexCount; j++)
+			for (auto j = 0; j < m_vertexCount; j++)
 			{
 				Vertex vertex;
 				m_heights[j + i * m_vertexCount] = GetHeight(j, i, buffer, height);
@@ -96,14 +96,14 @@ namespace Astra::Graphics
 				vertices.push_back(vertex);
 			}
 		}
-		for (int gz = 0; gz < m_vertexCount - 1; gz++)
+		for (auto gz = 0; gz < m_vertexCount - 1; gz++)
 		{
-			for (int gx = 0; gx < m_vertexCount - 1; gx++)
+			for (auto gx = 0; gx < m_vertexCount - 1; gx++)
 			{
-				int topLeft = (gz * m_vertexCount) + gx;
-				int topRight = topLeft + 1;
-				int bottomLeft = ((gz + 1) * m_vertexCount) + gx;
-				int bottomRight = bottomLeft + 1;
+				unsigned int topLeft = (gz * m_vertexCount) + gx;
+				unsigned int topRight = topLeft + 1;
+				unsigned int bottomLeft = ((gz + 1) * m_vertexCount) + gx;
+				unsigned int bottomRight = bottomLeft + 1;
 				
 				indices.push_back(topLeft);
 				indices.push_back(bottomLeft);
@@ -123,14 +123,14 @@ namespace Astra::Graphics
 		m_vertexCount = MAX_VERTICES;
 		m_heights = new float[m_vertexCount * m_vertexCount];
 
-		int count = m_vertexCount * m_vertexCount;
-		std::vector<int> indices;
+		unsigned int count = m_vertexCount * m_vertexCount;
+		std::vector<unsigned int> indices;
 		std::vector<Vertex> vertices;
 		indices.reserve(6 * (m_vertexCount - 1) * (m_vertexCount - 1));
 		vertices.reserve(count);
-		for (int i = 0; i < m_vertexCount; i++)
+		for (auto i = 0; i < m_vertexCount; i++)
 		{
-			for (int j = 0; j < m_vertexCount; j++)
+			for (auto j = 0; j < m_vertexCount; j++)
 			{
 				Vertex vertex;
 				m_heights[j + i * m_vertexCount] = GetHeight(j, i, generator);
@@ -143,14 +143,14 @@ namespace Astra::Graphics
 				vertices.push_back(vertex);
 			}
 		}
-		for (int gz = 0; gz < m_vertexCount - 1; gz++)
+		for (auto gz = 0; gz < m_vertexCount - 1; gz++)
 		{
-			for (int gx = 0; gx < m_vertexCount - 1; gx++)
+			for (auto gx = 0; gx < m_vertexCount - 1; gx++)
 			{
-				int topLeft = (gz * m_vertexCount) + gx;
-				int topRight = topLeft + 1;
-				int bottomLeft = ((gz + 1) * m_vertexCount) + gx;
-				int bottomRight = bottomLeft + 1;
+				unsigned int topLeft = (gz * m_vertexCount) + gx;
+				unsigned int topRight = topLeft + 1;
+				unsigned int bottomLeft = ((gz + 1) * m_vertexCount) + gx;
+				unsigned int bottomRight = bottomLeft + 1;
 
 				indices.push_back(topLeft);
 				indices.push_back(bottomLeft);
@@ -169,8 +169,8 @@ namespace Astra::Graphics
 		int zTerrain = zWorldCoord - static_cast<int>(GetTranslation().z);
 
 		float gridSquareSize = Size / (float)(m_vertexCount - 1);
-		int xGrid = static_cast<int>(floorf(xTerrain / gridSquareSize));
-		int zGrid = static_cast<int>(floorf(zTerrain / gridSquareSize));
+		auto xGrid = static_cast<int>(floorf(xTerrain / gridSquareSize));
+		auto zGrid = static_cast<int>(floorf(zTerrain / gridSquareSize));
 		if (xGrid >= m_vertexCount - 1 || zGrid >= m_vertexCount - 1 || xGrid < 0 || zGrid < 0)
 		{
 			return 0;

@@ -31,6 +31,7 @@ private:
     ToggleButton* bloomToggle;
     ToggleButton* hdrToggle;
     ToggleButton* reflectionToggle;
+    Model* bunny;
     
     const float InGameTimeSpeed = 0.005f;
     short timeDir = 1;
@@ -91,6 +92,8 @@ public:
         bloomToggle = scene->Get<ToggleButton>("bloom toggle");
         hdrToggle = scene->Get<ToggleButton>("hdr toggle");
         reflectionToggle = scene->Get<ToggleButton>("reflection toggle");
+
+        bunny = scene->Get<Model>("bunny");
 
         vsycnToggle->SetOnToggled(std::bind(&TestGame::ToggleVsync, this, std::placeholders::_1));
         multisamplingButton->SetOnPressed(std::bind(&TestGame::ToggleMultiSampling, this));
@@ -200,7 +203,7 @@ public:
 
         Vec3 light_pos = Astra::Math::Vec3(20, terrain.GetHeightOfTerrain(-55, 55) + 7, 5);
         auto dir_light = DirectionalLight("Sun", Vec3(25), Vec3(-0.2f, -1.0f, -0.3f), Vec3(0.2f), Vec3(0.3f), Vec3(0));
-        auto light4 = PointLight(Vec3(-28.75f, 0, -65.5f), Vec3(3, 1.5f, 0), Vec3(1), Vec3(5), 1, 0.22f, 0.20f);
+        auto light4 = PointLight(Vec3(-28.75f, 5, -65.5f), Vec3(3, 1.5f, 0), Vec3(1), Vec3(5), 1, 0.22f, 0.20f);
         auto light3 = PointLight("Lamp Light", light_pos, Vec3(3, 1.5f, 0), Vec3(1), Vec3(25));
 
         scene->SetDirectionalLight(dir_light);
@@ -212,12 +215,12 @@ public:
         cubeModel.SetTranslation(Math::Vec3(0, 0, 20));
         scene->AddModel(cubeModel);
 
-        auto vampire = Model("res/vampire/dancing_vampire.dae", true);
+        /*auto vampire = Model("res/vampire/dancing_vampire.dae", true);
         vampire.SetScale(Math::Vec3(10));
         vampire.SetTranslation(Math::Vec3(50, terrain.GetHeightOfTerrain(50, 70), 70));
         vampire.AddAnimator();
         vampire.PlayAnimation("");
-        scene->AddModel(vampire);
+        scene->AddModel(vampire);*/
 
         // FBX doesn't export displacement map- Work Around
         auto heightMap = Resource::LoadTexture(TextureCreationSpec("res/textures/bricks_heightmap.jpg", false, false));
@@ -227,8 +230,13 @@ public:
         brickModel.GetMaterial().SetHeightOffset(0.1f);
         brickModel.SetScale(Math::Vec3(10));
         brickModel.SetRotation(Math::Vec3(0, 0, -90));
-        brickModel.SetTranslation(Math::Vec3(-10, 0, -10));
-        //scene->AddModel(brickModel);
+        brickModel.SetTranslation(Math::Vec3(-10, terrain.GetHeightOfTerrain(-10, -10) + 20, -10));
+        scene->AddModel(brickModel);
+
+       /* auto bunnyModel = Model("bunny", "res/bunny.fbx", false);
+        bunnyModel.SetTranslation(Math::Vec3(-28.75f, terrain.GetHeightOfTerrain(-28.75f, -75), -75));
+        bunnyModel.SetScale(Math::Vec3(2));
+        scene->AddModel(bunnyModel);*/
 
         auto partMaterial = ParticleMaterial("res/textures/particleAtlas.png", 4);
         auto particleCenter = Vec3(-80, terrain.GetHeightOfTerrain(-80, 80) + 5, 80);
@@ -286,6 +294,11 @@ public:
             scene->ToggleWireframeMode();
         }
     #endif
+
+        if (Input::IsKeyJustPressed(Key::L))
+        {
+            bunny->SetLODMesh(0.5f);
+        }
     }
 
     ~TestGame()

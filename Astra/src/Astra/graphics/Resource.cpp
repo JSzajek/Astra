@@ -284,22 +284,26 @@ namespace Astra::Graphics
 		auto* mesh = reinterpret_cast<aiMesh*>(specs.mesh);
 		const auto* scene = reinterpret_cast<const aiScene*>(specs.scene);
 		
-		std::vector<int> indices;
+		std::vector<unsigned int> indices;
 		if (specs.normalMapped)
 		{
 			std::vector<NormalVertex> vertices;
 
 			for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 			{
-				NormalVertex vertex;
-				// Process vertex positions, normals, tangents, bitangents and texture coordinates
-				vertex.Position = Math::Vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-				vertex.Normal = Math::Vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
-				vertex.Tangent = Math::Vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);
-
-				vertex.TextureCoords = mesh->mTextureCoords[0] ? Math::Vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y)
-					: Math::Vec2::Zero;
-				vertices.push_back(vertex);
+				if (mesh->mTextureCoords[0])
+				{
+					vertices.push_back(NormalVertex(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z,
+													mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y,
+													mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z,
+													mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z));
+				}
+				else
+				{
+					vertices.push_back(NormalVertex(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z,
+													mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z,
+													mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z));
+				}
 			}
 
 			// Process indices
@@ -325,13 +329,17 @@ namespace Astra::Graphics
 			std::vector<Vertex> vertices;
 			for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 			{
-				Vertex vertex;
-				// Process vertex positions, normals, and texture coordinates
-				vertex.Position = Math::Vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-				vertex.Normal = Math::Vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
-				vertex.TextureCoords = mesh->mTextureCoords[0] ? Math::Vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y)
-					: Math::Vec2::Zero;
-				vertices.push_back(vertex);
+				if (mesh->mTextureCoords[0])
+				{
+					vertices.push_back(Vertex(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z,
+											  mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y,
+											  mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z));
+				}
+				else
+				{
+					vertices.push_back(Vertex(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z,
+											  mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z));
+				}
 			}
 
 			// Process indices
@@ -353,7 +361,7 @@ namespace Astra::Graphics
 		}
 	}
 
-	Asset<Mesh> Resource::LoadMeshImpl(const std::string& string, const std::vector<Vertex>& vertices, const std::vector<int>& indices)
+	Asset<Mesh> Resource::LoadMeshImpl(const std::string& string, const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices)
 	{
 		// Check if filepath exists within loaded textures.
 		size_t hash = std::hash<std::string>{}(string);

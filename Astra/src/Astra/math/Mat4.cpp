@@ -73,6 +73,17 @@ namespace Astra::Math
 		columns[3][3] = v33;
 	}
 
+	Mat4::Mat4(const Vec4& vals)
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				data[4 * i + j] = vals[i] * vals[j];
+			}
+		}
+	}
+
 	void Mat4::operator=(const Mat4& other)
 	{
 		memcpy(data, other.data, 16 * sizeof(float));
@@ -155,6 +166,22 @@ namespace Astra::Math
 	Mat4& Mat4::operator*=(const Mat4& other)
 	{
 		return Multiply(other);
+	}
+
+	Mat4 Mat4::operator+(const Mat4& r_val) const
+	{
+		Mat4 result;
+		for (int i = 0; i < 16; ++i) {
+			result.data[i] = data[i] + r_val.data[i];
+		}
+		return result;
+	}
+
+	void Mat4::operator+=(const Mat4& r_val)
+	{
+		for (int i = 0; i < 16; ++i) {
+			data[i] += r_val.data[i];
+		}
 	}
 
 	Mat4& Mat4::Translate(const Vec3& other)

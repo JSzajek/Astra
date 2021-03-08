@@ -69,10 +69,10 @@ namespace Astra::Math
 		bool operator==(const Vec3& r_val) const;
 		bool operator!=(const Vec3& r_val) const;
 
-		inline bool operator<(const Vec3& r_val) const;
-		inline bool operator>(const Vec3& r_val) const;
-		inline bool operator<=(const Vec3& r_val) const;
-		inline bool operator>=(const Vec3& r_val) const;
+		bool operator<(const Vec3& r_val) const;
+		bool operator>(const Vec3& r_val) const;
+		bool operator<=(const Vec3& r_val) const;
+		bool operator>=(const Vec3& r_val) const;
 
 		inline Vec3 Abs() const { return Vec3(std::abs(x), std::abs(y), std::abs(z)); }
 

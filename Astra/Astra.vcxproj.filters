@@ -484,6 +484,12 @@
     <ClInclude Include="src\Astra\graphics\entities\animation\BoneReader.h" />
     <ClInclude Include="src\Astra\graphics\entities\animation\BoneInfo.h" />
     <ClInclude Include="src\Astra\graphics\entities\animation\KeyStructs.h" />
+    <ClInclude Include="src\Astra\graphics\entities\utility\Simplifier.h" />
+    <ClInclude Include="src\Astra\graphics\buffers\Vertex.h" />
+    <ClInclude Include="src\Astra\graphics\entities\utility\KdTree.h" />
+    <ClInclude Include="src\Astra\graphics\entities\utility\SimpStructs.h" />
+    <ClInclude Include="src\Astra\graphics\entities\utility\Map.h" />
+    <ClInclude Include="src\Astra\graphics\entities\utility\Heap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astra\Application.cpp">
@@ -690,6 +696,8 @@
     <ClCompile Include="src\Astra\graphics\entities\animation\Animation.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\animation\Animator.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\animation\Bone.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\utility\Simplifier.cpp" />
+    <ClCompile Include="src\Astra\graphics\entities\utility\SimpStructs.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\fonts\calibri.ttf">

@@ -55,6 +55,8 @@ namespace Astra::Graphics
 		inline bool IsSelected() const { return m_selected; }
 
 		inline Asset<Mesh> GetMesh() const { return m_mesh; }
+		inline void SetLODMesh(float ratio) { m_mesh->SimplifyMesh(ratio); }
+		
 		inline const ImageMaterial& GetMaterial() const { return m_material; }
 		inline ImageMaterial& GetMaterial() { return m_material; }
 

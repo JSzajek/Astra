@@ -4,10 +4,12 @@
 #include "Astra/graphics/renderers/Renderer.h"
 #include <GL/glew.h>
 
+#include "Astra/graphics/entities/utility/Simplifier.h"
+
 namespace Astra::Graphics
 {
 	Mesh::Mesh()
-		: m_vertexCount(0), m_vao(0), m_vbo(0), m_ebo(0), m_drawtype(0)
+		: m_vertexCount(0), m_vao(0), m_vbo(0), m_ebo(0), m_drawtype(0), m_simplificationLevel(0)
 	{
 	}
 
@@ -17,21 +19,41 @@ namespace Astra::Graphics
 		Initialize(vertices, dimensions);
 	}
 
-	Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<int>& indices, unsigned int drawtype)
-		: m_vertexCount(indices.size()), m_drawtype(drawtype)
+	Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, unsigned int drawtype)
+		: m_drawtype(drawtype)
+#if ASTRA_DEBUG
+	, m_vertices(vertices), m_indices(indices)
+#endif
 	{
-		Initialize(vertices, indices);
+		// Generate LOD meshes based on vertices and indices
+		if (indices.size() == 208998)
+		{
+			std::vector<unsigned int> simplifiedIndices;
+			Simplifier::Setup(vertices, indices);
+			Simplifier::SimplifyMesh(0.3f, &simplifiedIndices);
+			Initialize(vertices, simplifiedIndices);
+		}
+		else
+		{
+			Initialize(vertices, indices);
+		}
 	}
 
-	Mesh::Mesh(const std::vector<NormalVertex>& vertices, const std::vector<int>& indices, unsigned int drawtype)
+	Mesh::Mesh(const std::vector<NormalVertex>& vertices, const std::vector<unsigned int>& indices, unsigned int drawtype)
 		: m_vertexCount(indices.size()), m_drawtype(drawtype)
+#if ASTRA_DEBUG
+		, m_normVertices(vertices), m_indices(indices)
+#endif
 	{
 		Initialize(vertices, indices);
 	}
 
 	Mesh::Mesh(const Mesh& other)
 		: m_vertexCount(other.m_vertexCount), m_drawtype(other.m_drawtype),
-			m_vao(other.m_vao), m_vbo(other.m_vbo), m_ebo(other.m_ebo)
+			m_vao(other.m_vao), m_vbo(other.m_vbo), m_ebo(other.m_ebo), m_simplificationLevel(other.m_simplificationLevel)
+	#if ASTRA_DEBUG
+		, m_vertices(other.m_vertices), m_indices(other.m_indices)
+	#endif
 	{
 	}
 
@@ -60,8 +82,10 @@ namespace Astra::Graphics
 		glBindVertexArray(0);
 	}
 
-	void Mesh::Initialize(const std::vector<Vertex>& vertices, const std::vector<int>& indices)
+	void Mesh::Initialize(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices)
 	{
+		m_vertexCount = indices.size();
+
 		glGenVertexArrays(1, &m_vao);
 		glGenBuffers(1, &m_vbo);
 		glGenBuffers(1, &m_ebo);
@@ -93,7 +117,7 @@ namespace Astra::Graphics
 		glBindVertexArray(0);
 	}
 
-	void Mesh::Initialize(const std::vector<NormalVertex>& vertices, const std::vector<int>& indices)
+	void Mesh::Initialize(const std::vector<NormalVertex>& vertices, const std::vector<unsigned int>& indices)
 	{
 		glGenVertexArrays(1, &m_vao);
 		glGenBuffers(1, &m_vbo);
@@ -127,4 +151,18 @@ namespace Astra::Graphics
 
 		glBindVertexArray(0);
 	}
+
+#if ASTRA_DEBUG
+	void Mesh::SimplifyMesh(float ratio)
+	{
+		if (m_simplificationLevel != ratio)
+		{
+			m_simplificationLevel = ratio;
+
+			// Simplify mesh here
+
+
+		}
+	}
+#endif
 }

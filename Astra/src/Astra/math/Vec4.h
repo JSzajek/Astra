@@ -71,10 +71,10 @@ namespace Astra::Math
 		bool operator==(const Vec4& r_val) const;
 		bool operator!=(const Vec4& r_val) const;
 
-		inline bool operator<(const Vec4& r_val) const;
-		inline bool operator>(const Vec4& r_val) const;
-		inline bool operator<=(const Vec4& r_val) const;
-		inline bool operator>=(const Vec4& r_val) const;
+		bool operator<(const Vec4& r_val) const;
+		bool operator>(const Vec4& r_val) const;
+		bool operator<=(const Vec4& r_val) const;
+		bool operator>=(const Vec4& r_val) const;
 
 		inline Vec4 Abs() const { return Vec4(std::abs(x), std::abs(y), std::abs(z), std::abs(w)); }
 

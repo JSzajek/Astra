@@ -57,7 +57,7 @@ namespace Astra::Graphics
 			return Get().LoadMeshImpl(specs);
 		}
 
-		static Asset<Mesh> LoadMesh(const char* const name, const std::vector<Vertex>& vertices, const std::vector<int>& indices)
+		static Asset<Mesh> LoadMesh(const char* const name, const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices)
 		{
 			return Get().LoadMeshImpl(name, vertices, indices);
 		}
@@ -83,7 +83,7 @@ namespace Astra::Graphics
 		Asset<FontAtlas> LoadFontAtlasImpl(const char* const filepath, unsigned int fontsize);
 
 		Asset<Mesh> LoadMeshImpl(const MeshCreationSpec& specs);
-		Asset<Mesh> LoadMeshImpl(const std::string& name, const std::vector<Vertex>& vertices, const std::vector<int>& indices);
+		Asset<Mesh> LoadMeshImpl(const std::string& name, const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
 
 		Asset<Animation> LoadAnimationImpl(const AnimationCreationSpec& specs);
 

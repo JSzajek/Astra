@@ -25,6 +25,8 @@ namespace Astra::Math
 			 float v20, float v21, float v22, float v23,
 			 float v30, float v31, float v32, float v33);
 
+		Mat4(const Vec4& vals);
+
 		void operator=(const Mat4&);
 
 		static Mat4 Identity();
@@ -45,6 +47,9 @@ namespace Astra::Math
 
 		Vec4 Multiply(const Vec4& other) const;
 		friend Vec4 operator*(const Mat4& left, const Vec4& right);
+
+		Mat4 operator+(const Mat4& r_val) const;
+		void operator+=(const Mat4& r_val);
 
 		/// <summary>
 		/// Multiplication operator override.
