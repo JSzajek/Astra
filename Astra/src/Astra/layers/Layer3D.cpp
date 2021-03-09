@@ -192,6 +192,11 @@ namespace Astra
 			system.second.GenerateParticles(delta);
 		}
 
+		for (const auto& animator : m_animators)
+		{
+			animator->UpdateAnimation(delta);
+		}
+
 		m_shadowMapController->Render(m_modelCategories[Graphics::ModelType::ShadowCaster]);
 		
 		if (m_waterBuffer && m_mainCamera)
@@ -216,7 +221,7 @@ namespace Astra
 		Render(delta, inverseView, false); // Renders entities 
 		PostRender();
 
-		std::thread{ &Layer3D::LayerUpdateAnimations, this, delta }.detach();
+		//std::thread{ &Layer3D::LayerUpdateAnimations, this, delta }.detach();
 		//std::thread{ &Layer3D::LayerUpdateParticles, this, delta }.detach();
 	}
 

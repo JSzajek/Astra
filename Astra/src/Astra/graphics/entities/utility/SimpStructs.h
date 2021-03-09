@@ -23,7 +23,7 @@ namespace Astra::Graphics
 		float cost1;
 		int heapIndex;
 		int index;
-		int v[2];
+		int v[2] = {};
 	public:
 		Pair();
 		Pair(int v0, int v1);
@@ -59,6 +59,8 @@ namespace Astra::Graphics
 	{
 	public:
 		Math::Vec3 p;
+		Math::Vec2 TextureCoords;
+		Math::Vec3 Normal;
 		Math::Mat4 q;
 		int newIndex;
 
@@ -68,6 +70,8 @@ namespace Astra::Graphics
 		Vert(float x = 0.0f, float y = 0.0f, float z = 0.0f);
 
 		inline void SetPosition(const Math::Vec3& position) { p = position; }
+		inline void SetTextureCoord(const Math::Vec2& coord) { TextureCoords = coord; }
+		inline void SetNormal(const Math::Vec3& normal) { Normal = normal; }
 		
 		inline void AddNeighbor(int index) { neighbor.push_back(index); }
 		inline void AddPair(int index) { pairs.push_back(index); }

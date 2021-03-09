@@ -6,7 +6,7 @@
 namespace Astra::Graphics
 {
 	Simplifier::Simplifier()
-		: vOffset(1), pOffset(0), fOffset(0), faceCount(0),
+		: vOffset(0), pOffset(0), fOffset(0), faceCount(0),
 			vertexCount(0), rate(1.0f)
 	{
 	}
@@ -19,7 +19,7 @@ namespace Astra::Graphics
 	{
 		for (const auto& vert : vertices)
 		{
-			AddVertex(vert.Position);
+			AddVertex(vert);
 		}
 
 		unsigned int i = 0;
@@ -30,7 +30,7 @@ namespace Astra::Graphics
 		}
 	}
 
-	void Simplifier::SimplifyMeshImpl(float _rate, std::vector<unsigned int>* resultIndices)
+	void Simplifier::SimplifyMeshImpl(float _rate, std::vector<Vertex>* result, std::vector<unsigned int>* resultIndices)
 	{
 		rate = _rate;
 
@@ -61,6 +61,19 @@ namespace Astra::Graphics
 			++iter;
 		}
 		
+		int vNum = 0;
+		for (int index = 0; index < vOffset; ++index) 
+		{
+			if (valid[index]) {
+				vertices[index].newIndex = vNum;
+				auto& vert = vertices[index];
+				result->push_back(Vertex(vert.p.x, vert.p.y, vert.p.z, 
+										 vert.TextureCoords.x, vert.TextureCoords.y,
+										 vert.Normal.x, vert.Normal.y, vert.Normal.z));
+				++vNum;
+			}
+		}
+
 		for (int index = 0; index < vOffset; ++index) {
 			if (valid[index]) {
 				for (int i = 0; i < vertices[index].neighbor.size(); ++i) {
@@ -69,12 +82,17 @@ namespace Astra::Graphics
 						int neiIndex2 = vertices[index].neighbor[j];
 						if (!inFace[neiIndex1] && !inFace[neiIndex2]) {
 							if (vertices[neiIndex1].IsNeighbor(neiIndex2)) {
-								auto found = faceMap.find(Face(index, neiIndex1, neiIndex2));
-								if (found != faceMap.end())
+								Face realFace;
+								int b = faceMap.Get(Face(index, neiIndex1, neiIndex2), realFace);
+								if (b) 
 								{
-									resultIndices->push_back(found->indices[0]);
-									resultIndices->push_back(found->indices[1]);
-									resultIndices->push_back(found->indices[2]);
+								
+								/*auto found = faceMap.find(Face(index, neiIndex1, neiIndex2));
+								if (found != faceMap.end())
+								{*/
+									resultIndices->push_back(realFace.indices[0]);
+									resultIndices->push_back(realFace.indices[1]);
+									resultIndices->push_back(realFace.indices[2]);
 								}
 							}
 						}
@@ -125,11 +143,14 @@ namespace Astra::Graphics
 		}
 	}
 
-	int Simplifier::AddVertex(const Math::Vec3& position)
+	int Simplifier::AddVertex(const Vertex& vert)
 	{
 		int index = vOffset;
-		vertices[vOffset].SetPosition(position);
-		originVertices[vOffset] = position;
+		vertices[vOffset].SetPosition(vert.Position);
+		vertices[vOffset].SetTextureCoord(vert.TextureCoords);
+		vertices[vOffset].SetNormal(vert.Normal);
+
+		originVertices[vOffset] = vert.Position;
 		valid[vOffset] = true;
 		++vOffset;
 		++vertexCount;
@@ -164,7 +185,8 @@ namespace Astra::Graphics
 			}
 		}
 
-		faceMap.insert(face);
+		//faceMap.insert(face);
+		faceMap.Insert(face);
 		originFace[fOffset] = face;
 		++fOffset;
 		++faceCount;
@@ -186,19 +208,24 @@ namespace Astra::Graphics
 			{
 				int neiIndex1 = vertices[pair.v[0]].neighbor[i];
 				int neiIndex2 = vertices[pair.v[0]].neighbor[j];
-				auto found = faceMap.find(Face(pair.v[0], neiIndex1, neiIndex2));
-				if (found != faceMap.end())
+				
+				Face realFace;
+				int b = faceMap.Get(Face(pair.v[0], neiIndex1, neiIndex2), realFace);
+				if (b) 
 				{
-					auto originNorm = (*found).Norm(vertices);
-					auto p0 = vertices[found->indices[0]].p;
-					auto p1 = vertices[found->indices[1]].p;
-					auto p2 = vertices[found->indices[2]].p;
+				/*auto found = faceMap.find(Face(pair.v[0], neiIndex1, neiIndex2));
+				if (found != faceMap.end())
+				{*/
+					auto originNorm = realFace.Norm(vertices);
+					auto p0 = vertices[realFace.indices[0]].p;
+					auto p1 = vertices[realFace.indices[1]].p;
+					auto p2 = vertices[realFace.indices[2]].p;
 
-					if (found->indices[0] == pair.v[0])
+					if (realFace.indices[0] == pair.v[0])
 					{
 						p0 = newPos;
 					}
-					else if (found->indices[1] == pair.v[0])
+					else if (realFace.indices[1] == pair.v[0])
 					{
 						p1 = newPos;
 					}
@@ -230,28 +257,32 @@ namespace Astra::Graphics
 				int neiIndex1 = vertices[pair.v[1]].neighbor[i];
 				int neiIndex2 = vertices[pair.v[1]].neighbor[j];
 
-				auto found = faceMap.find(Face(pair.v[1], neiIndex1, neiIndex2));
-				if (found != faceMap.end())
+				Face realFace;
+				int b = faceMap.Get(Face(pair.v[1], neiIndex1, neiIndex2), realFace);
+				if (b) 
 				{
-					Face newFace = *found;
-					if (found->indices[0] == pair.v[1])
+				/*auto found = faceMap.find(Face(pair.v[1], neiIndex1, neiIndex2));
+				if (found != faceMap.end())
+				{*/
+					Face newFace = realFace;
+					if (realFace.indices[0] == pair.v[1])
 					{
 						newFace.indices[0] = pair.v[0];
 					}
-					else if (found->indices[1] == pair.v[1])
+					else if (realFace.indices[1] == pair.v[1])
 					{
 						newFace.indices[1] = pair.v[0];
 					}
-					else if (found->indices[2] == pair.v[1])
+					else if (realFace.indices[2] == pair.v[1])
 					{
 						newFace.indices[2] = pair.v[0];
 					}
 
-					auto n0 = found->Norm(vertices);
+					auto n0 = realFace.Norm(vertices);
 					auto n = newFace.Norm(vertices);
 					if (n.Dot(n0) > -0.1f) 
 					{
-						realFaceV.push_back(*found);
+						realFaceV.push_back(realFace);
 						newFaceV.push_back(newFace);
 					}
 					else 
@@ -266,8 +297,8 @@ namespace Astra::Graphics
 		}
 		for (int i = 0; i < realFaceV.size(); ++i) 
 		{
-			faceMap.erase(realFaceV[i]);
-			faceMap.insert(newFaceV[i]);
+			faceMap.Remove(realFaceV[i]);
+			faceMap.Insert(newFaceV[i]);
 		}
 		realFaceV.clear();
 		newFaceV.clear();

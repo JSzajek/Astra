@@ -19,7 +19,7 @@ uniform mat4 boneTransformation[MAX_BONES];
 
 out vec2 v_TexCoordinates;
 
-void CalcBoneInfluence(out vec4 totalPosition);
+void CalcBoneInfluence(inout vec4 totalPosition);
 
 void main()
 {
@@ -35,14 +35,16 @@ void main()
 	gl_Position = mvpMatrix * aPosition;
 }
 
-void CalcBoneInfluence(out vec4 totalPosition)
+void CalcBoneInfluence(inout vec4 totalPosition)
 {
 	vec4 partialPos = vec4(position, 1.0f);
-	for (int i = 0; i < MAX_BONE_INFLUENCE; i++)
+
+	for (int i = 0; i < MAX_BONE_INFLUENCE; ++i)
 	{
-		if (boneIds[i] < 0)
-			continue;
-		totalPosition += boneTransformation[boneIds[i]] * partialPos * weights[i];
+		if (boneIds[i] >= 0 && boneIds[i] < MAX_BONES)
+		{
+			totalPosition += boneTransformation[boneIds[i]] * partialPos * weights[i];
+		}
 	}
 }
 

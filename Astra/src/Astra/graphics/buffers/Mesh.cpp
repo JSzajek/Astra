@@ -29,9 +29,10 @@ namespace Astra::Graphics
 		if (indices.size() == 208998)
 		{
 			std::vector<unsigned int> simplifiedIndices;
+			std::vector<Vertex> simplifiedVertices;
 			Simplifier::Setup(vertices, indices);
-			Simplifier::SimplifyMesh(0.3f, &simplifiedIndices);
-			Initialize(vertices, simplifiedIndices);
+			Simplifier::SimplifyMesh(0.7f, &simplifiedVertices, &simplifiedIndices);
+			Initialize(simplifiedVertices, simplifiedIndices);
 		}
 		else
 		{

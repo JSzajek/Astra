@@ -124,9 +124,6 @@ namespace Astra::Graphics
 
 	Face& Face::operator=(const Face& face)
 	{
-		if (this == &face)
-			return *this;
-		
 		indices[0] = face.indices[0];
 		indices[1] = face.indices[1];
 		indices[2] = face.indices[2];
@@ -240,7 +237,7 @@ namespace Astra::Graphics
 		for (int i = 0; i < pairs.size(); ++i)
 		{
 			if (((_pairs[index].v[0] == _pairs[pairs[i]].v[0]) && (_pairs[index].v[1] == _pairs[pairs[i]].v[1]))
-				|| ((_pairs[index].v[0] == _pairs[pairs[i]].v[1]) && (_pairs[index].v[1] == _pairs[pairs[i]].v[0])))
+		     || ((_pairs[index].v[0] == _pairs[pairs[i]].v[1]) && (_pairs[index].v[1] == _pairs[pairs[i]].v[0])))
 			{
 				return true;
 			}
@@ -253,7 +250,7 @@ namespace Astra::Graphics
 		for (int i = 0; i < pairs.size(); ++i)
 		{
 			if (((pair.v[0] == _pairs[pairs[i]].v[0]) && (pair.v[1] == _pairs[pairs[i]].v[1]))
-				|| ((pair.v[0] == _pairs[pairs[i]].v[1]) && (pair.v[1] == _pairs[pairs[i]].v[0])))
+			 || ((pair.v[0] == _pairs[pairs[i]].v[1]) && (pair.v[1] == _pairs[pairs[i]].v[0])))
 			{
 				return true;
 			}

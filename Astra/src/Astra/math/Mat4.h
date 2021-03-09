@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "MathsUtils.h"
 
 #include "Vec3.h"
@@ -75,12 +77,22 @@ namespace Astra::Math
 		static Mat4 ScaleMatrix(const Vec3& scale);
 		static Mat4 ScaleMatrix(float scale);
 
+		#define TOSTRING_MAT4(x_0, y_0, z_0, w_0, x_1, y_1, z_1, w_1, x_2, y_2, z_2, w_2, x_3, y_3, z_3, w_3) "[(" + std::to_string(x_0) + ", " + std::to_string(y_0) + ", " + std::to_string(z_0) + ", " + std::to_string(w_0) + ")\n(" \
+																												   + std::to_string(x_1) + ", " + std::to_string(y_1) + ", " + std::to_string(z_1) + ", " + std::to_string(w_1) + ")\n(" \
+																												   + std::to_string(x_2) + ", " + std::to_string(y_2) + ", " + std::to_string(z_2) + ", " + std::to_string(w_2) + ")\n(" \
+																												   + std::to_string(x_3) + ", " + std::to_string(y_3) + ", " + std::to_string(z_3) + ", " + std::to_string(w_3) + ")]"
+		
+		
+		
+		inline std::string ToString() const  { return TOSTRING_MAT4(columns[0].x, columns[0].y, columns[0].z, columns[0].w,
+									                                columns[1].x, columns[1].y, columns[1].z, columns[1].w, 
+									                                columns[2].x, columns[2].y, columns[2].z, columns[2].w, 
+									                                columns[3].x, columns[3].y, columns[3].z, columns[3].w); 
+		}
+
 		friend std::ostream& operator<<(std::ostream& stream, const Mat4& other)
 		{
-			stream << "mat4: (" << other.columns[0].x << ", " << other.columns[1].x << ", " << other.columns[2].x << ", " << other.columns[3].x << "), " << std::endl;
-			stream << "(" << other.columns[0].y << ", " << other.columns[1].y << ", " << other.columns[2].y << ", " << other.columns[3].y << "), " << std::endl;
-			stream << "(" << other.columns[0].z << ", " << other.columns[1].z << ", " << other.columns[2].z << ", " << other.columns[3].z << "), " << std::endl;
-			stream << "(" << other.columns[0].w << ", " << other.columns[1].w << ", " << other.columns[2].w << ", " << other.columns[3].w << ")";
+			stream << other.ToString();
 			return stream;
 		}
 	private:

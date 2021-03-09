@@ -21,7 +21,7 @@ namespace Astra::Graphics
 			unsigned long long int a2 = face.indices[0] * face.indices[1] + face.indices[1] * face.indices[2] + face.indices[2] * face.indices[0];
 			unsigned long long int a3 = face.indices[0] * face.indices[1] * face.indices[2];
 			unsigned long long int temp = (a1 * P + a2) * P + a3;
-			return (unsigned int)(temp % MAX_FACE);
+			return (unsigned int)(temp % (int)(MAX_FACE));
 		}
 
 		void Insert(const Face& face)
@@ -33,7 +33,7 @@ namespace Astra::Graphics
 			while (fill[position])
 			{
 				step++;
-				position = (hash + step * step) % MAX_FACE;
+				position = (hash + step * step) % (int)(MAX_FACE);
 			}
 			table[position] = face;
 			fill[position] = true;
@@ -48,7 +48,7 @@ namespace Astra::Graphics
 			while ((fill[position] && (!(table[position] == face))) || (!fill[position] && lazy[position]))
 			{
 				++step;
-				position = (hash + step * step) % MAX_FACE;
+				position = (hash + step * step) % (int)(MAX_FACE);
 			}
 
 			if (fill[position])
@@ -68,7 +68,7 @@ namespace Astra::Graphics
 			while ((fill[position] && (!(table[position] == face))) || (!fill[position] && lazy[position]))
 			{
 				++step;
-				position = (hash + step * step) % MAX_FACE;
+				position = (hash + step * step) % (int)(MAX_FACE);
 			}
 
 			if (fill[position])

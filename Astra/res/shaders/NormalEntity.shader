@@ -39,7 +39,7 @@ out mat3 v_ToTangentSpace;
 const float density = 0.0035;
 const float gradient = 5.0;
 
-void CalcBoneInfluence(out vec4 totalPosition, out vec4 totalNormal);
+void CalcBoneInfluence(inout vec4 totalPosition, inout vec4 totalNormal);
 
 void main()
 {
@@ -48,8 +48,8 @@ void main()
 	vec3 aNormal = normal;
 	if (animated > 0)
 	{
-		vec4 totalPosition = vec4(0.0f);
-		vec4 totalNormal = vec4(0.0f);
+		vec4 totalPosition = vec4(position, 1.0f);
+		vec4 totalNormal = vec4(normal, 1.0f);
 		CalcBoneInfluence(totalPosition, totalNormal);
 		aPosition = totalPosition;
 		aNormal = totalNormal.xyz;
@@ -91,16 +91,18 @@ void main()
 	v_Normal = v_ToTangentSpace * v_Normal;
 }
 
-void CalcBoneInfluence(out vec4 totalPosition, out vec4 totalNormal)
+void CalcBoneInfluence(inout vec4 totalPosition, inout vec4 totalNormal)
 {
 	vec4 partialPos = vec4(position, 1.0f);
 	vec4 partialNorm = vec4(normal, 1.0f);
-	for (int i = 0; i < MAX_BONE_INFLUENCE; i++)
+
+	for (int i = 0; i < MAX_BONE_INFLUENCE; ++i)
 	{
-		if (boneIds[i] < 0)
-			continue;
-		totalPosition += boneTransformation[boneIds[i]] * partialPos * weights[i];
-		totalNormal += boneTransformation[boneIds[i]] * partialNorm * weights[i];
+		if (boneIds[i] >= 0 && boneIds[i] < MAX_BONES)
+		{
+			totalPosition += boneTransformation[boneIds[i]] * partialPos * weights[i];
+			totalNormal += boneTransformation[boneIds[i]] * partialNorm * weights[i];
+		}
 	}
 }
 

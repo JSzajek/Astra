@@ -11,6 +11,7 @@
 #include "SimpStructs.h"
 #include "KdTree.h"
 #include "Heap.h"
+#include "Map.h"
 
 namespace Astra::Graphics
 {
@@ -68,9 +69,9 @@ namespace Astra::Graphics
 			Get().SetupImpl(vertices, indices);
 		}
 
-		static void SimplifyMesh(float rate, std::vector<unsigned int>* result)
+		static void SimplifyMesh(float rate, std::vector<Vertex>* result, std::vector<unsigned int>* indices)
 		{
-			Get().SimplifyMeshImpl(rate, result);
+			Get().SimplifyMeshImpl(rate, result, indices);
 		}
 	private:
 		Simplifier();
@@ -78,14 +79,15 @@ namespace Astra::Graphics
 
 		void SetupImpl(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
 
-		void SimplifyMeshImpl(float rate, std::vector<unsigned int>* resultIndices);
+		void SimplifyMeshImpl(float rate, std::vector<Vertex>* result, std::vector<unsigned int>* resultIndices);
 	private:
 		Vert vertices[MAX_VERTEX];
 		Math::Vec3 originVertices[MAX_VERTEX];
 		Face originFace[MAX_FACE];
 		Pair pairs[MAX_PAIR];
 		
-		std::unordered_set<Face, FaceHash> faceMap;
+		//std::unordered_set<Face, FaceHash> faceMap;
+		Map faceMap;
 		Heap heap;
 		KdTree tree;
 
@@ -103,7 +105,7 @@ namespace Astra::Graphics
 
 		void ComputeQ();
 		void ComputeValidPairs();
-		int AddVertex(const Math::Vec3& position);
+		int AddVertex(const Vertex& vert);
 		int AddPair(int v1, int v2);
 		void AddFace(const Face& face);
 
