@@ -1,5 +1,7 @@
 #include "astra_pch.h"
 
+#include <tuple>
+
 #include "SimpStructs.h"
 
 namespace Astra::Graphics
@@ -19,93 +21,89 @@ namespace Astra::Graphics
 		v[1] = v1;
 	}
 
-	void Pair::UpdateOptimalPos(const Vert* vertices)
+	void Pair::Update(std::unordered_map<size_t, std::tuple<Vert, std::vector<std::tuple<Vertex, unsigned int>>, unsigned int>>& vertices,
+					  std::unordered_map<unsigned int, size_t>& mapper)
 	{
-		optPos = (vertices[v[0]].p + vertices[v[1]].p) / 2;
-		Math::Mat4 a = vertices[v[0]].q + vertices[v[1]].q;
-		a.columns[3][0] = 0;
-		a.columns[3][1] = 0;
-		a.columns[3][2] = 0;
-		a.columns[3][3] = 1;
+		const auto& first = std::get<0>(vertices[mapper[v[0]]]);
+		const auto& second = std::get<0>(vertices[mapper[v[1]]]);
 
-		Math::Vec4(0, 0, 0, 1.0f);
-		for (int i = 0; i < 4; ++i)
+		optPos = (first.p + second.p) / 2;
+		Math::Mat4 a = first.q + second.q;
+		a.columns[3].x = 0;
+		a.columns[3].y = 0;
+		a.columns[3].z = 0;
+		a.columns[3].w = 1;
+
+		bool invertible = false;
+		auto inv = a.Inverse(&invertible);
+
+		if (invertible)
 		{
-			a.columns[i][3] = -a.columns[i][3];
+			// a * [0, 0, 0, 1].T
+			optPos.x = inv.columns[0].w;
+			optPos.y = inv.columns[1].w;
+			optPos.z = inv.columns[2].w;
 		}
 
-		for (int i = 0; i < 3; ++i)
-		{
-			int j = 0;
-			for (; j < 3; ++j)
-			{
-				if (std::fabs(a.columns[i][j]) >= 1e-6)
-					break;
-			}
-			if (j == 3)
-				return;
-
-			for (int k = 0; k < 3; ++k)
-			{
-				if (k != i)
-				{
-					float d = a.columns[k][j] / a.columns[i][j];
-					for (int l = 0; l < 4; ++l)
-					{
-						a.columns[k][l] = a.columns[k][l] - a.columns[i][l] * d;
-					}
-				}
-			}
-		}
-
-		for (int i = 0; i < 3; ++i)
-		{
-			int count = 0;
-			for (int j = 0; j < 3; ++j)
-			{
-				if (std::fabs(a.columns[i][j]) < 1e-6)
-					count++;
-			}
-			if (count == 3)
-				return;
-		}
-
-		float index[3];
-		for (int i = 0; i < 3; ++i)
-		{
-			for (int j = 0; j < 3; ++j)
-			{
-				if (std::fabs(a.columns[i][j]) > 1e-6)
-				{
-					index[j] = a.columns[i][3] / a.columns[i][j];
-				}
-			}
-		}
-
-		optPos.x = index[0];
-		optPos.y = index[1];
-		optPos.z = index[2];
+		Math::Vec4 y(optPos, 1.0f);
+		Math::Vec4 a_y = a * y;
+		cost = y.Dot(a_y);
+		cost1 = first.p.DistanceSquaredTo(second.p);
 	}
 
-	void Pair::UpdateCost(const Vert* vertices)
+	//void Pair::UpdateOptimalPos(const Vert* vertices)
+	//{
+	//	optPos = (vertices[v[0]].p + vertices[v[1]].p) / 2;
+	//	Math::Mat4 a = vertices[v[0]].q + vertices[v[1]].q;
+	//	a.columns[3].x = 0;
+	//	a.columns[3].y = 0;
+	//	a.columns[3].z = 0;
+	//	a.columns[3].w = 1;
+
+	//	bool invertible = false;
+	//	auto inv = a.Inverse(&invertible);
+
+	//	if (invertible)
+	//	{
+	//		// a * [0, 0, 0, 1].T
+	//		optPos.x = inv.columns[0].w;
+	//		optPos.y = inv.columns[1].w;
+	//		optPos.z = inv.columns[2].w;
+	//	}
+	//}
+
+	/*void Pair::UpdateCost(const Vert* vertices)
 	{
 		Math::Vec4 y(optPos, 1.0f);
 		Math::Mat4 a = vertices[v[0]].q + vertices[v[1]].q;
 		Math::Vec4 a_y = a * y;
 		cost = y.Dot(a_y);
 		cost1 = vertices[v[0]].p.DistanceSquaredTo(vertices[v[1]].p);
-	}
+	}*/
 
 	Face::Face()
 	{
 		indices[0] = indices[1] = indices[2] = 0;
+		originIndices[0] = originIndices[1] = originIndices[2] = 0;
 	}
 	
-	Face::Face(int v0, int v1, int v2)
+	Face::Face(unsigned int v0, unsigned int v1, unsigned int v2)
 	{
 		indices[0] = v0;
 		indices[1] = v1;
 		indices[2] = v2;
+		originIndices[0] = originIndices[1] = originIndices[2] = 0;
+	}
+
+	Face::Face(unsigned int v0, unsigned int v1, unsigned int v2,
+			   unsigned int origin_v0, unsigned int origin_v1, unsigned int origin_v2)
+	{
+		indices[0] = v0;
+		indices[1] = v1;
+		indices[2] = v2;
+		originIndices[0] = origin_v0;
+		originIndices[1] = origin_v1;
+		originIndices[2] = origin_v2;
 	}
 	
 	Face::Face(const Face& face)
@@ -113,27 +111,28 @@ namespace Astra::Graphics
 		indices[0] = face.indices[0];
 		indices[1] = face.indices[1];
 		indices[2] = face.indices[2];
+
+		originIndices[0] = face.originIndices[0];
+		originIndices[1] = face.originIndices[1];
+		originIndices[2] = face.originIndices[2];
 	}
 	
-	Face::Face(const int _indices[])
-	{
-		indices[0] = _indices[0];
-		indices[1] = _indices[1];
-		indices[2] = _indices[2];
-	}
-
 	Face& Face::operator=(const Face& face)
 	{
+		if (this == &face)
+			return *this;
+
 		indices[0] = face.indices[0];
 		indices[1] = face.indices[1];
 		indices[2] = face.indices[2];
 		return *this;
 	}
 
-	Math::Vec3 Face::Norm(const Vert* vertices) const
+	Math::Vec3 Face::Norm(std::unordered_map<size_t, std::tuple<Vert, std::vector<std::tuple<Vertex, unsigned int>>, unsigned int>>& vertices,
+						  std::unordered_map<unsigned int, size_t>& mapper) const
 	{
-		Math::Vec3 v0 = vertices[indices[0]].p;
-		return (vertices[indices[1]].p - v0).Cross(vertices[indices[2]].p - v0).Normalized();
+		auto& v0 = std::get<0>(vertices[mapper[indices[0]]]).p;
+		return (std::get<0>(vertices[mapper[indices[1]]]).p - v0).Cross(std::get<0>(vertices[mapper[indices[2]]]).p - v0).Normalized();
 	}
 
 	bool operator==(const Face& face1, const Face& face2)
@@ -147,7 +146,7 @@ namespace Astra::Graphics
 		return b0 || b1 || b2 || b3 || b4 || b5;
 	}
 
-	bool Face::InFace(const Math::Vec3& p, const Vert* vertices) const
+	/*bool Face::InFace(const Math::Vec3& p, const Vert* vertices) const
 	{
 		Math::Vec3 v0 = vertices[indices[0]].p;
 		Math::Vec3 v1 = vertices[indices[1]].p;
@@ -160,7 +159,7 @@ namespace Astra::Graphics
 		if (s0 + s1 + s2 > a0)
 			return false;
 		return true;
-	}
+	}*/
 
 	/*float Face::Distance(const Math::Vec3& p, const Vert* vertices) const
 	{
@@ -213,17 +212,20 @@ namespace Astra::Graphics
 				return;
 			}
 		}
+		auto tasdas = 2;
 	}
 
-	void Vert::ComputeQ(const Vert* vertices)
+	void Vert::ComputeQ(std::unordered_map<size_t, std::tuple<Vert, std::vector<std::tuple<Vertex, unsigned int>>, unsigned int>>& vertices,
+						std::unordered_map<unsigned int, size_t>& mapper)
 	{
 		for (int i = 0; i < neighbor.size(); ++i)
 		{
+			const auto& vert = std::get<0>(vertices[mapper[neighbor[i]]]);
 			for (int j = i + 1; j < neighbor.size(); ++j)
 			{
-				if (vertices[neighbor[i]].IsNeighbor(neighbor[j]))
+				if (vert.IsNeighbor(neighbor[j]))
 				{
-					Math::Vec3 norm = (vertices[neighbor[i]].p - p).Cross(vertices[neighbor[j]].p - p).Normalized();
+					Math::Vec3 norm = (vert.p - p).Cross(std::get<0>(vertices[mapper[neighbor[j]]]).p - p).Normalized();
 					float w = -(p.Dot(norm));
 					Math::Vec4 v4(norm, w);
 					q += Math::Mat4(v4);

@@ -65,7 +65,7 @@ namespace Astra::Math
 		Mat4& Scale(const Vec3& other);
 		Mat4& Scale(float scale);
 
-		const Mat4 Inverse() const;
+		const Mat4 Inverse(bool* success = NULL) const;
 		void Transpose();
 
 		static Mat4 Orthographic(float left, float right, float bottom, float top, float _near, float _far);

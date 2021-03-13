@@ -215,12 +215,12 @@ public:
         cubeModel.SetTranslation(Math::Vec3(0, 0, 20));
         scene->AddModel(cubeModel);
 
-        auto vampire = Model("res/vampire/dancing_vampire.dae", false);
+        /*auto vampire = Model("res/vampire/dancing_vampire.dae", false);
         vampire.SetScale(Math::Vec3(10));
         vampire.SetTranslation(Math::Vec3(50, terrain.GetHeightOfTerrain(50, 70), 70));
         vampire.AddAnimator();
         vampire.PlayAnimation("");
-        scene->AddModel(vampire);
+        scene->AddModel(vampire);*/
 
         // FBX doesn't export displacement map- Work Around
         auto heightMap = Resource::LoadTexture(TextureCreationSpec("res/textures/bricks_heightmap.jpg", false, false));
@@ -244,14 +244,17 @@ public:
         bunnyModel.SetScale(Math::Vec3(2));
         scene->AddModel(bunnyModel);*/
 
-         auto diff = Resource::LoadTexture(TextureCreationSpec("res/textures/purple.jpg", false, false));
+        auto diff = Resource::LoadTexture(TextureCreationSpec("res/textures/purple.jpg", false, false));
         diff->type = TextureType::DiffuseMap;
         auto spec = Resource::LoadTexture(TextureCreationSpec("res/textures/red.jpg", false, false));
         spec->type = TextureType::SpecularMap;
-        auto bunnyModel = Model("bunny", "res/bunny1.obj", false);
+        //auto bunnyModel = Model("bunny", "res/bunny2.obj", false);
+        auto bunnyModel = Model("bunny", "res/bunny.fbx", false);
+        //auto bunnyModel = Model("bunny", "res/iso-sphere.obj", false);
+        //auto bunnyModel = Model("bunny", "res/astra_simpbunny2.obj", false);
         bunnyModel.GetMaterial().AddTexture(diff);
         bunnyModel.GetMaterial().AddTexture(spec);
-        bunnyModel.SetTranslation(Math::Vec3(-28.75f, terrain.GetHeightOfTerrain(-28.75f, -75), -75));
+        bunnyModel.SetTranslation(Math::Vec3(-28.75f, terrain.GetHeightOfTerrain(-28.75f, -75) + 10, -75));
         bunnyModel.SetScale(Math::Vec3(2));
         scene->AddModel(bunnyModel);
 

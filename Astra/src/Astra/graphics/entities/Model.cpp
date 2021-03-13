@@ -33,7 +33,8 @@ namespace Astra::Graphics
 		m_directory = filepath.substr(0, filepath.find_last_of('/'));
 
 		Assimp::Importer importer;
-		unsigned int pFlag = aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
+		unsigned int pFlag = aiProcess_SortByPType | aiProcess_Triangulate | aiProcess_GenSmoothNormals 
+						   | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcess_FindInvalidData;
 		if (calcTangents)
 		{
 			pFlag |= aiProcess_CalcTangentSpace;

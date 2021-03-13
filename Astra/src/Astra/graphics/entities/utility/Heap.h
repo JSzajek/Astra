@@ -18,7 +18,11 @@ namespace Astra::Graphics
 
 		inline friend bool operator<(const HeapNode& n1, const HeapNode& n2)
 		{
-			return (n1.cost < n2.cost) || ((std::fabs(n1.cost - n2.cost) < CMP_EPSILON) && (n1.cost1 < n2.cost1));
+			if (std::fabs(n1.cost - n2.cost) < CMP_EPSILON)
+			{
+				return n1.cost1 < n2.cost1;
+			}
+			return n1.cost < n2.cost;
 		}
 	};
 

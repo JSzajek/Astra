@@ -130,7 +130,7 @@ namespace Astra::Math
 
 		bool IsEqualApprox(const Vec3& val) const;
 
-		#define TOSTRING3(x, y, z) "(" #x ", " #y ", " #z ")"
+		#define TOSTRING3(x, y, z) "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")"
 		inline std::string ToString() const { return TOSTRING3(x, y, z); }
 
 		inline Vec2 ToVec2() const { return Vec2(x, z); }

@@ -310,6 +310,10 @@ namespace Astra::Graphics
 			for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 			{
 				auto face = mesh->mFaces[i];
+				if (face.mNumIndices < 3) 
+				{
+					continue;
+				}
 				for (unsigned int j = 0; j < face.mNumIndices; j++)
 				{
 					indices.push_back(face.mIndices[j]);
@@ -322,7 +326,7 @@ namespace Astra::Graphics
 				ExtractBoneWeightForVertices(vertices, mesh, scene, specs.map, specs.counter);
 			}
 			
-			return m_loadedMeshes[hash] = std::make_shared<Mesh>(vertices, indices);
+			return m_loadedMeshes[hash] = CreateAsset<Mesh>(vertices, indices);
 		}
 		else
 		{

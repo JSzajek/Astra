@@ -29,7 +29,9 @@ namespace Astra::Graphics
 	{
 	private:
 		KdNode* nodes;
-		Vert* vB;
+		//Vert* vB;
+		std::unordered_map<size_t, std::tuple<Vert, std::vector<std::tuple<Vertex, unsigned int>>, unsigned int>>* vertices;
+		std::unordered_map<unsigned int, size_t>* mapper;
 		int offset;
 		int vpNum;
 	public:
@@ -37,7 +39,9 @@ namespace Astra::Graphics
 	public:
 		KdTree()
 			: offset(1), root(0), nodes(new KdNode[MAX_VERTEX]),
-			vB(NULL), vpNum(-1)
+			 vpNum(-1), vertices(NULL), mapper(NULL)
+			
+			/*vB(NULL),*/
 		{
 		}
 
@@ -51,14 +55,14 @@ namespace Astra::Graphics
 			if (l >= r)
 				return 0;
 			int mid = (l + r) >> 1;
-			std::nth_element(indices + l, indices + mid, indices + r, VertComp(dim, vB));
+			std::nth_element(indices + l, indices + mid, indices + r, VertComp(dim, vertices, mapper));
 			int tIndex = offset;
 			++offset;
 			int midIndex = indices[mid];
 			nodes[tIndex].index = midIndex;
 			nodes[tIndex].dim = dim;
-			nodes[tIndex].maxBound = vB[midIndex].p;
-			nodes[tIndex].minBound = vB[midIndex].p;
+			nodes[tIndex].maxBound = std::get<0>((*vertices)[(*mapper)[midIndex]]).p;
+			nodes[tIndex].minBound = std::get<0>((*vertices)[(*mapper)[midIndex]]).p;
 			nodes[tIndex].left = BuildLayer(indices, l, mid, (dim + 1) % 3);
 			if (nodes[tIndex].left)
 			{
@@ -75,9 +79,13 @@ namespace Astra::Graphics
 			return tIndex;
 		}
 
-		void BuildTree(Vert* _vB, int _vpNum)
+		void BuildTree(std::unordered_map<size_t, std::tuple<Vert, std::vector<std::tuple<Vertex, unsigned int>>, unsigned int>>* _vertices,
+					   std::unordered_map<unsigned int, size_t>* _mapper, int _vpNum)
 		{
-			vB = _vB;
+			vertices = _vertices;
+			mapper = _mapper;
+			
+			//vB = _vB;
 			vpNum = _vpNum;
 
 			int* indices = new int[MAX_VERTEX];
@@ -99,8 +107,7 @@ namespace Astra::Graphics
 			}
 
 			int vIndex = nodes[node].index;
-
-			if (vB[vIndex].p.IsEqualApprox(position))
+			if (std::get<0>((*vertices)[(*mapper)[vIndex]]).p.IsEqualApprox(position))
 			{
 				vHit.push_back(vIndex);
 			}

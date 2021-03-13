@@ -26,12 +26,14 @@ namespace Astra::Graphics
 #endif
 	{
 		// Generate LOD meshes based on vertices and indices
+		//if (indices.size() == 60)
 		if (indices.size() == 208998)
 		{
 			std::vector<unsigned int> simplifiedIndices;
 			std::vector<Vertex> simplifiedVertices;
 			Simplifier::Setup(vertices, indices);
-			Simplifier::SimplifyMesh(0.7f, &simplifiedVertices, &simplifiedIndices);
+			Simplifier::SimplifyMesh(0.03f, &simplifiedVertices, &simplifiedIndices);
+
 			Initialize(simplifiedVertices, simplifiedIndices);
 		}
 		else

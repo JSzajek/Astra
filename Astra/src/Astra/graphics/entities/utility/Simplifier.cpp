@@ -22,10 +22,13 @@ namespace Astra::Graphics
 			AddVertex(vert);
 		}
 
+		faceMap.reserve(indices.size());
+		
 		unsigned int i = 0;
 		while (i < indices.size())
 		{
-			AddFace(Face(indices[i], indices[i + 1], indices[i + 2]));
+			AddFace(Face(indexMapper[indices[i]], indexMapper[indices[i + 1]], indexMapper[indices[i + 2]],
+						 indices[i], indices[i + 1], indices[i + 2]));
 			i += 3;
 		}
 	}
@@ -53,8 +56,7 @@ namespace Astra::Graphics
 
 			Pair minPair = pairs[heap.Top()];
 			heap.Delete();
-			bool b = Update(minPair);
-			if (b)
+			if (Update(minPair))
 			{
 				nowCount -= 2;
 			}
@@ -62,37 +64,54 @@ namespace Astra::Graphics
 		}
 		
 		int vNum = 0;
+		auto mapper = std::unordered_map<unsigned int, unsigned int>();
 		for (int index = 0; index < vOffset; ++index) 
 		{
-			if (valid[index]) {
-				vertices[index].newIndex = vNum;
-				auto& vert = vertices[index];
-				result->push_back(Vertex(vert.p.x, vert.p.y, vert.p.z, 
-										 vert.TextureCoords.x, vert.TextureCoords.y,
-										 vert.Normal.x, vert.Normal.y, vert.Normal.z));
+			if (valid[index]) 
+			{
+				auto& list = std::get<1>(vertices[vertMapper[index]]);
+				auto& first = std::get<0>(vertices[vertMapper[index]]);
+				Math::Vec2 avgTexCoords;
+				Math::Vec3 avgNormCoords;
+				for (const auto& v : list)
+				{
+					const auto& vert = std::get<0>(v);
+					avgTexCoords += vert.TextureCoords;
+					avgNormCoords += vert.Normal;
+				}
+				avgTexCoords /= list.size();
+				avgNormCoords /= list.size();
+				first.newIndex = vNum;
+				result->push_back(Vertex(first.p.x, first.p.y, first.p.z,
+										 avgTexCoords.x, avgTexCoords.y,
+										 avgNormCoords.x, avgNormCoords.y, avgNormCoords.z));
 				++vNum;
 			}
 		}
 
 		for (int index = 0; index < vOffset; ++index) {
 			if (valid[index]) {
-				for (int i = 0; i < vertices[index].neighbor.size(); ++i) {
-					int neiIndex1 = vertices[index].neighbor[i];
-					for (int j = i + 1; j < vertices[index].neighbor.size(); ++j) {
-						int neiIndex2 = vertices[index].neighbor[j];
-						if (!inFace[neiIndex1] && !inFace[neiIndex2]) {
-							if (vertices[neiIndex1].IsNeighbor(neiIndex2)) {
-								Face realFace;
+				const auto& indexVert = std::get<0>(vertices[vertMapper[index]]);
+				for (int i = 0; i < indexVert.neighbor.size(); ++i) 
+				{
+					int neiIndex1 = indexVert.neighbor[i];
+					for (int j = i + 1; j < indexVert.neighbor.size(); ++j) 
+					{
+						int neiIndex2 = indexVert.neighbor[j];
+						if (!inFace[neiIndex1] && !inFace[neiIndex2]) 
+						{
+							if (std::get<0>(vertices[vertMapper[neiIndex1]]).IsNeighbor(neiIndex2))
+							{
+								/*Face realFace;
 								int b = faceMap.Get(Face(index, neiIndex1, neiIndex2), realFace);
 								if (b) 
-								{
-								
-								/*auto found = faceMap.find(Face(index, neiIndex1, neiIndex2));
-								if (found != faceMap.end())
 								{*/
-									resultIndices->push_back(realFace.indices[0]);
-									resultIndices->push_back(realFace.indices[1]);
-									resultIndices->push_back(realFace.indices[2]);
+								auto found = faceMap.find(Face(index, neiIndex1, neiIndex2));
+								if (found != faceMap.end())
+								{
+									resultIndices->push_back(std::get<0>(vertices[vertMapper[found->indices[0]]]).newIndex);
+									resultIndices->push_back(std::get<0>(vertices[vertMapper[found->indices[1]]]).newIndex);
+									resultIndices->push_back(std::get<0>(vertices[vertMapper[found->indices[2]]]).newIndex);
 								}
 							}
 						}
@@ -105,38 +124,37 @@ namespace Astra::Graphics
 
 	void Simplifier::ComputeQ()
 	{
-		for (unsigned int i = 0; i < vOffset; ++i)
+		for (auto& v : vertices)
 		{
-			vertices[i].ComputeQ(vertices);
+			std::get<0>(v.second).ComputeQ(vertices, vertMapper);
 		}
 	}
 
 	void Simplifier::ComputeValidPairs()
 	{
-		tree.BuildTree(vertices, vOffset);
+		tree.BuildTree(&vertices, &vertMapper, vOffset);
 
 		for (int i = 0; i < vOffset; ++i)
 		{
-			for (int j = 0; j < vertices[i].neighbor.size(); ++j)
+			const auto& vert = std::get<0>(vertices[vertMapper[i]]);
+			for (int j = 0; j < vert.neighbor.size(); ++j)
 			{
-				int index = vertices[i].neighbor[j];
+				int index = vert.neighbor[j];
 				if (!inPair[index])
 				{
 					int pairIndex = AddPair(i, index);
-					pairs[pairIndex].UpdateOptimalPos(vertices);
-					pairs[pairIndex].UpdateCost(vertices);
+					pairs[pairIndex].Update(vertices, vertMapper);
 				}
 			}
 
 			std::vector<int> v_hit;
-			tree.Query(tree.root, vertices[i].p, v_hit);
+			tree.Query(tree.root, vert.p, v_hit);
 			for (int k = 0; k < v_hit.size(); ++k)
 			{
-				if ((v_hit[k] != i) && !inPair[v_hit[k]] && !vertices[i].HasPair(Pair(i, v_hit[k]), pairs))
+				if ((v_hit[k] != i) && !inPair[v_hit[k]] && !vert.HasPair(Pair(i, v_hit[k]), pairs))
 				{
 					int index = AddPair(i, v_hit[k]);
-					pairs[index].UpdateOptimalPos(vertices);
-					pairs[index].UpdateCost(vertices);
+					pairs[index].Update(vertices, vertMapper);
 				}
 			}
 			inPair[i] = true;
@@ -145,27 +163,42 @@ namespace Astra::Graphics
 
 	int Simplifier::AddVertex(const Vertex& vert)
 	{
+		static unsigned int count = 0;
 		int index = vOffset;
-		vertices[vOffset].SetPosition(vert.Position);
-		vertices[vOffset].SetTextureCoord(vert.TextureCoords);
-		vertices[vOffset].SetNormal(vert.Normal);
+		
+		size_t hash = std::hash<std::string>{}(vert.Position.ToString());
+		auto found = vertices.find(hash);
+		if (found == vertices.end())
+		{
+			auto v = Vert();
+			v.SetPosition(vert.Position);
 
-		originVertices[vOffset] = vert.Position;
-		valid[vOffset] = true;
-		++vOffset;
-		++vertexCount;
-		ASTRA_ASSERT(vOffset < MAX_VERTEX, "Simplifier: Error in Adding Vertex.");
+			vertices[hash] = std::make_tuple(v, std::vector<std::tuple<Vertex, unsigned int>>(), index);
+
+			valid[index] = true;
+			++vOffset;
+			++vertexCount;
+			ASTRA_ASSERT(vOffset < MAX_VERTEX, "Simplifier: Error in Adding Vertex.");
+		}
+
+		std::get<1>(vertices[hash]).push_back(std::make_tuple(vert, count));
+		vertMapper[index] = hash;
+		indexMapper[count] = std::get<2>(vertices[hash]); // Map back original index
+		
+		count++;
 		return index;
 	}
 	
 	int Simplifier::AddPair(int v1, int v2)
 	{
 		int index = pOffset;
+
 		pairs[pOffset].v[0] = v1;
 		pairs[pOffset].v[1] = v2;
 		pairs[pOffset].index = index;
-		vertices[v1].AddPair(index);
-		vertices[v2].AddPair(index);
+
+		std::get<0>(vertices[vertMapper[v1]]).AddPair(index);
+		std::get<0>(vertices[vertMapper[v2]]).AddPair(index);
 		++pOffset;
 		ASTRA_ASSERT(pOffset < MAX_PAIR, "Simplifier: Error in Adding Pair.");
 		return index;
@@ -177,16 +210,16 @@ namespace Astra::Graphics
 		{
 			for (int j = i + 1; j < 3; ++j)
 			{
-				if (!vertices[face.indices[i]].IsNeighbor(face.indices[j]))
+				if (!std::get<0>(vertices[vertMapper[face.indices[i]]]).IsNeighbor(face.indices[j]))
 				{
-					vertices[face.indices[i]].AddNeighbor(face.indices[j]);
-					vertices[face.indices[j]].AddNeighbor(face.indices[i]);
+					std::get<0>(vertices[vertMapper[face.indices[i]]]).AddNeighbor(face.indices[j]);
+					std::get<0>(vertices[vertMapper[face.indices[j]]]).AddNeighbor(face.indices[i]);
 				}
 			}
 		}
 
-		//faceMap.insert(face);
-		faceMap.Insert(face);
+		faceMap.insert(face);
+		//faceMap.Insert(face);
 		originFace[fOffset] = face;
 		++fOffset;
 		++faceCount;
@@ -202,30 +235,32 @@ namespace Astra::Graphics
 	bool Simplifier::Update(const Pair& pair)
 	{
 		auto newPos = pair.GetOptimalPos();
-		for (int i = 0; i < vertices[pair.v[0]].neighbor.size(); ++i)
+		auto& v0Vert = std::get<0>(vertices[vertMapper[pair.v[0]]]);
+		auto& v1Vert = std::get<0>(vertices[vertMapper[pair.v[1]]]);
+		for (int i = 0; i < v0Vert.neighbor.size(); ++i)
 		{
-			for (int j = i + 1; j < vertices[pair.v[0]].neighbor.size(); ++j)
+			for (int j = i + 1; j < v0Vert.neighbor.size(); ++j)
 			{
-				int neiIndex1 = vertices[pair.v[0]].neighbor[i];
-				int neiIndex2 = vertices[pair.v[0]].neighbor[j];
+				int neiIndex1 = v0Vert.neighbor[i];
+				int neiIndex2 = v0Vert.neighbor[j];
 				
-				Face realFace;
+				/*Face realFace;
 				int b = faceMap.Get(Face(pair.v[0], neiIndex1, neiIndex2), realFace);
 				if (b) 
-				{
-				/*auto found = faceMap.find(Face(pair.v[0], neiIndex1, neiIndex2));
-				if (found != faceMap.end())
 				{*/
-					auto originNorm = realFace.Norm(vertices);
-					auto p0 = vertices[realFace.indices[0]].p;
-					auto p1 = vertices[realFace.indices[1]].p;
-					auto p2 = vertices[realFace.indices[2]].p;
+				auto found = faceMap.find(Face(pair.v[0], neiIndex1, neiIndex2));
+				if (found != faceMap.end())
+				{
+					auto originNorm = found->Norm(vertices, vertMapper);
+					auto p0 = std::get<0>(vertices[vertMapper[found->indices[0]]]).p;
+					auto p1 = std::get<0>(vertices[vertMapper[found->indices[1]]]).p;
+					auto p2 = std::get<0>(vertices[vertMapper[found->indices[2]]]).p;
 
-					if (realFace.indices[0] == pair.v[0])
+					if (found->indices[0] == pair.v[0])
 					{
 						p0 = newPos;
 					}
-					else if (realFace.indices[1] == pair.v[0])
+					else if (found->indices[1] == pair.v[0])
 					{
 						p1 = newPos;
 					}
@@ -237,8 +272,8 @@ namespace Astra::Graphics
 					auto newNorm = (p1 - p0).Cross(p2 - p0).Normalized();
 					if (originNorm.Dot(newNorm) < -0.1f)
 					{
-						vertices[pair.v[0]].DeletePair(pair.index);
-						vertices[pair.v[1]].DeletePair(pair.index);
+						std::get<0>(vertices[vertMapper[pair.v[0]]]).DeletePair(pair.index);
+						std::get<0>(vertices[vertMapper[pair.v[1]]]).DeletePair(pair.index);
 						return false;
 					}
 				}
@@ -246,50 +281,50 @@ namespace Astra::Graphics
 		}
 
 		int newIndex = pair.v[0];
-		auto originPos = vertices[newIndex].p;
-		vertices[newIndex].SetPosition(newPos);
+		auto originPos = std::get<0>(vertices[vertMapper[newIndex]]).p;
+		std::get<0>(vertices[vertMapper[newIndex]]).SetPosition(newPos);
 
 		// Update Faces
 		std::vector<Face> realFaceV;
 		std::vector<Face> newFaceV;
-		for (int i = 0; i < vertices[pair.v[1]].neighbor.size(); ++i) {
-			for (int j = i + 1; j < vertices[pair.v[1]].neighbor.size(); ++j) {
-				int neiIndex1 = vertices[pair.v[1]].neighbor[i];
-				int neiIndex2 = vertices[pair.v[1]].neighbor[j];
+		for (int i = 0; i < v1Vert.neighbor.size(); ++i) {
+			for (int j = i + 1; j < v1Vert.neighbor.size(); ++j) {
+				int neiIndex1 = v1Vert.neighbor[i];
+				int neiIndex2 = v1Vert.neighbor[j];
 
-				Face realFace;
+				/*Face realFace;
 				int b = faceMap.Get(Face(pair.v[1], neiIndex1, neiIndex2), realFace);
 				if (b) 
-				{
-				/*auto found = faceMap.find(Face(pair.v[1], neiIndex1, neiIndex2));
-				if (found != faceMap.end())
 				{*/
-					Face newFace = realFace;
-					if (realFace.indices[0] == pair.v[1])
+				auto found = faceMap.find(Face(pair.v[1], neiIndex1, neiIndex2));
+				if (found != faceMap.end())
+				{
+					Face newFace = *found;
+					if (found->indices[0] == pair.v[1])
 					{
 						newFace.indices[0] = pair.v[0];
 					}
-					else if (realFace.indices[1] == pair.v[1])
+					else if (found->indices[1] == pair.v[1])
 					{
 						newFace.indices[1] = pair.v[0];
 					}
-					else if (realFace.indices[2] == pair.v[1])
+					else if (found->indices[2] == pair.v[1])
 					{
 						newFace.indices[2] = pair.v[0];
 					}
 
-					auto n0 = realFace.Norm(vertices);
-					auto n = newFace.Norm(vertices);
+					auto n0 = found->Norm(vertices, vertMapper);
+					auto n = newFace.Norm(vertices, vertMapper);
 					if (n.Dot(n0) > -0.1f) 
 					{
-						realFaceV.push_back(realFace);
+						realFaceV.push_back(*found);
 						newFaceV.push_back(newFace);
 					}
 					else 
 					{
-						vertices[pair.v[0]].SetPosition(originPos);
-						vertices[pair.v[0]].DeletePair(pair.index);
-						vertices[pair.v[1]].DeletePair(pair.index);
+						std::get<0>(vertices[vertMapper[pair.v[0]]]).SetPosition(originPos);
+						std::get<0>(vertices[vertMapper[pair.v[0]]]).DeletePair(pair.index);
+						std::get<0>(vertices[vertMapper[pair.v[1]]]).DeletePair(pair.index);
 						return false;
 					}
 				}
@@ -297,37 +332,39 @@ namespace Astra::Graphics
 		}
 		for (int i = 0; i < realFaceV.size(); ++i) 
 		{
-			faceMap.Remove(realFaceV[i]);
-			faceMap.Insert(newFaceV[i]);
+			faceMap.erase(realFaceV[i]);
+			faceMap.insert(newFaceV[i]);
+			//faceMap.Remove(realFaceV[i]);
+			//faceMap.Insert(newFaceV[i]);
 		}
 		realFaceV.clear();
 		newFaceV.clear();
 
 		// Get New Neighbor
-		for (int i = 0; i < vertices[pair.v[1]].neighbor.size(); ++i)
+		for (int i = 0; i < v1Vert.neighbor.size(); ++i)
 		{
-			int index = vertices[pair.v[1]].neighbor[i];
-			if (index != pair.v[0])
+			int neighborIndex = v1Vert.neighbor[i];
+			if (neighborIndex != pair.v[0])
 			{
-				if (!vertices[newIndex].IsNeighbor(index))
+				if (!std::get<0>(vertices[vertMapper[newIndex]]).IsNeighbor(neighborIndex))
 				{
-					vertices[newIndex].AddNeighbor(index);
-					vertices[index].AddNeighbor(newIndex);
+					std::get<0>(vertices[vertMapper[newIndex]]).AddNeighbor(neighborIndex);
+					std::get<0>(vertices[vertMapper[neighborIndex]]).AddNeighbor(newIndex);
 				}
-				vertices[index].DeleteNeighbor(pair.v[1]);
+				std::get<0>(vertices[vertMapper[neighborIndex]]).DeleteNeighbor(pair.v[1]);
 			}
 		}
-		vertices[newIndex].DeleteNeighbor(pair.v[1]);
+		std::get<0>(vertices[vertMapper[newIndex]]).DeleteNeighbor(pair.v[1]);
 		
 		// Update Pairs
-		for (int i = 0; i < vertices[pair.v[1]].pairs.size(); ++i) {
-			int pairIndex = vertices[pair.v[1]].pairs[i];
+		for (int i = 0; i < v1Vert.pairs.size(); ++i) {
+			int pairIndex = v1Vert.pairs[i];
 
 			if (pairs[pairIndex].v[0] == pair.v[1]) {
 				if (pairs[pairIndex].v[1] == pair.v[0]) {
 					//pair between v[0] and v[1]
 					ASTRA_CORE_ASSERT(pairIndex == pair.index, "Simplifier: Update Error.");
-					vertices[newIndex].DeletePair(pairIndex);
+					std::get<0>(vertices[vertMapper[newIndex]]).DeletePair(pairIndex);
 					continue;
 				}
 				else {
@@ -340,7 +377,7 @@ namespace Astra::Graphics
 				{
 					//pair between v[0] and v[1]
 					ASTRA_CORE_ASSERT(pairIndex == pair.index, "Simplifier: Update Error.");
-					vertices[newIndex].DeletePair(pairIndex);
+					std::get<0>(vertices[vertMapper[newIndex]]).DeletePair(pairIndex);
 					continue;
 				}
 				else 
@@ -348,433 +385,31 @@ namespace Astra::Graphics
 					pairs[pairIndex].v[1] = newIndex;
 				}
 			}
-			if (vertices[newIndex].HasPair(pairIndex, pairs))
+			if (std::get<0>(vertices[vertMapper[newIndex]]).HasPair(pairIndex, pairs))
 			{
 				heap.Remove(pairs[pairIndex]);
 				if (pairs[pairIndex].v[0] == pair.v[0]) {
-					vertices[pairs[pairIndex].v[1]].DeletePair(pairIndex);
+					std::get<0>(vertices[vertMapper[pairs[pairIndex].v[1]]]).DeletePair(pairIndex);
 				}
 				else {
-					vertices[pairs[pairIndex].v[0]].DeletePair(pairIndex);
+					std::get<0>(vertices[vertMapper[pairs[pairIndex].v[0]]]).DeletePair(pairIndex);
 				}
 			}
 			else {
-				vertices[newIndex].AddPair(pairIndex);
+				std::get<0>(vertices[vertMapper[newIndex]]).AddPair(pairIndex);
 			}
 		}
 
 		// Update Cost and Optimal Position
-		vertices[newIndex].q += vertices[pair.v[1]].q;
-		for (int i = 0; i < vertices[newIndex].pairs.size(); ++i)
+		std::get<0>(vertices[vertMapper[newIndex]]).q += std::get<0>(vertices[vertMapper[pair.v[1]]]).q;
+		for (int i = 0; i < std::get<0>(vertices[vertMapper[newIndex]]).pairs.size(); ++i)
 		{
-			int index = vertices[newIndex].pairs[i];
-			pairs[index].UpdateOptimalPos(vertices);
-			pairs[index].UpdateCost(vertices);
+			int index = std::get<0>(vertices[vertMapper[newIndex]]).pairs[i];
+			pairs[index].Update(vertices, vertMapper);
+			//pairs[index].UpdateCost(vertices, vertMapper);
 			heap.Update(pairs[index]);
 		}
 		DeleteVertex(pair.v[1]);
 		return true;
 	}
-
-	/*void Simplifier::SetupImpl(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices)
-	{
-		m_vertices.clear();
-		m_triangles.clear();
-		m_refs.clear();
-
-		m_vertices.resize(vertices.size());
-		m_triangles.resize(indices.size() / 3);
-
-		for (int i = 0; i < vertices.size(); ++i)
-		{
-			m_vertices[i].p = vertices[i].Position;
-		}
-
-		unsigned int x = 0;
-		for (int i = 0; i < m_triangles.size(); i++)
-		{
-			m_triangles[i].v[0] = indices[x++];
-			m_triangles[i].v[1] = indices[x++];
-			m_triangles[i].v[2] = indices[x++];
-		}
-	}*/
-
-	/*void Simplifier::SimplifyMeshImpl(int target, float aggressive)
-	{
-		int deleted_triangles = 0;
-		std::vector<int> deleted0, deleted1;
-		int triangle_count = m_triangles.size();
-
-		for (int iter = 0; iter < 100; iter++)
-		{
-			printf("iteration %d - triangles %d\n", iter, triangle_count - deleted_triangles);
-
-			if (triangle_count - deleted_triangles <= target)
-				break;
-
-			UpdateMesh(iter);
-
-			for (int i = 0; i < m_triangles.size(); ++i)
-			{
-				m_triangles[i].dirty = 0;
-			}
-
-			double threshold = 0.000000001 * pow(double(iter + 3), aggressive);
-			for (int i = 0; i < m_triangles.size(); ++i)
-			{
-				auto& t = m_triangles[i];
-				if (t.err[3] > threshold)
-					continue;
-				if (t.deleted)
-					continue;
-				if (t.dirty)
-					continue;
-
-				for (int j = 0; j < 3; ++j)
-				{
-					if (t.err[j] < threshold)
-					{
-						int i0 = t.v[j];
-						auto& v0 = m_vertices[i0];
-						int i1 = t.v[(j + 1) % 3];
-						auto& v1 = m_vertices[i1];
-
-						if (v0.border != v1.border)
-							continue;
-
-						Math::Vec3 p(0);
-						CalculateError(i0, i1, p);
-						deleted0.resize(v0.tcount);
-						deleted1.resize(v1.tcount);
-
-						if (Flipped(p, i0, i1, v0, v1, deleted0))
-							continue;
-						if (Flipped(p, i1, i0, v1, v0, deleted1))
-							continue;
-
-						v0.p = p;
-						v0.q = v1.q + v0.q;
-						int tstart = m_refs.size();
-
-						UpdateTriangles(i0, v0, deleted0, deleted_triangles);
-						UpdateTriangles(i0, v1, deleted1, deleted_triangles);
-
-						int tcount = m_refs.size() - tstart;
-						if (tcount <= v0.tcount)
-						{
-							if (tcount)
-								memcpy(&m_refs[v0.tstart], &m_refs[tstart], tcount * sizeof(Ref));
-						}
-						else
-						{
-							v0.tstart = tstart;
-						}
-
-						v0.tcount = tcount;
-						break;
-					}
-				}
-
-				if (triangle_count - deleted_triangles <= target)
-					break;
-			}
-		}
-
-		auto t = 2;
-	}
-
-	double Simplifier::VertexError(const SymMatrix& q, double x, double y, double z)
-	{
-		return  q[0] * x * x + 2 * q[1] * x * y + 2 * q[2] * x * z + 2 * q[3] * x + q[4] * y * y
-			+ 2 * q[5] * y * z + 2 * q[6] * y + q[7] * z * z + 2 * q[8] * z + q[9];
-	}
-
-	double Simplifier::CalculateError(int id_v1, int id_v2, Math::Vec3& result)
-	{
-		auto q = m_vertices[id_v1].q + m_vertices[id_v2].q;
-		auto border = m_vertices[id_v1].border & m_vertices[id_v2].border;
-		double error = 0;
-		auto determinant = q.Determinant(0, 1, 2, 1, 4, 5, 2, 5, 7);
-		if (determinant != 0 && !border)
-		{
-			result.x = -1 / determinant * (q.Determinant(1, 2, 3, 4, 5, 6, 5, 7, 8));
-			result.y =  1 / determinant * (q.Determinant(0, 2, 3, 1, 5, 6, 2, 7, 8));
-			result.z = -1 / determinant * (q.Determinant(0, 1, 3, 1, 4, 6, 2, 5, 8));
-			error = VertexError(q, result.x, result.y, result.z);
-		}
-		else
-		{
-			auto p1 = m_vertices[id_v1].p;
-			auto p2 = m_vertices[id_v2].p;
-			auto p3 = (p1 + p2) / 2;
-			double error1 = VertexError(q, p1.x, p1.y, p1.z);
-			double error2 = VertexError(q, p2.x, p2.y, p2.z);
-			double error3 = VertexError(q, p3.x, p3.y, p3.z);
-			error = MIN(error1, MIN(error2, error3));
-			if (error1 == error)
-				result = p1;
-			if (error2 == error)
-				result = p2;
-			if (error3 == error)
-				result = p3;
-		}
-		return error;
-	}
-
-	bool Simplifier::Flipped(const Math::Vec3& p, int i0, int i1, Vert& v0, Vert& v1, std::vector<int>& deleted)
-	{
-		for (int i = 0; i < v0.tcount; ++i)
-		{
-			auto& t = m_triangles[m_refs[v0.tstart + i].tid];
-			if (t.deleted)
-				continue;
-
-			int s = m_refs[v0.tstart + i].tvertex;
-			int id1 = t.v[(s + 1) % 3];
-			int id2 = t.v[(s + 2) % 3];
-
-			if (id1 == i1 || id2 == i1)
-			{
-				deleted[i] = true;
-				continue;
-			}
-
-			auto d1 = m_vertices[id1].p - p;
-			d1.Normalize();
-			auto d2 = m_vertices[id2].p - p;
-			d2.Normalize();
-
-			if (std::fabs(d1.Dot(d2)) > 0.999f)
-				return true;
-
-			auto cross = d1.Cross(d2);
-			cross.Normalize();
-			deleted[i] = false;
-			if (cross.Dot(t.n) < 0.2f)
-				return true;
-		}
-		return false;
-	}
-
-	void Simplifier::UpdateUVs(int i0, const Vert& v, const Math::Vec3& p, std::vector<int>& deleted)
-	{
-		for (int i = 0; i < v.tcount; ++i)
-		{
-			auto& r = m_refs[v.tstart + i];
-			auto& t = m_triangles[r.tid];
-			if (t.deleted)
-				continue;
-			if (deleted[i])
-				continue;
-
-			auto p1 = m_vertices[t.v[0]].p;
-			auto p2 = m_vertices[t.v[1]].p;
-			auto p3 = m_vertices[t.v[2]].p;
-			t.uvs[r.tvertex] = Interpolate(p, p1, p2, p3, t.uvs);
-		}
-	}
-
-	void Simplifier::UpdateTriangles(int i0, const Vert& v, std::vector<int>& deleted, int& deleted_triangles)
-	{
-		Math::Vec3 p(0);
-		for (int i = 0; i < v.tcount; ++i)
-		{
-			auto& r = m_refs[v.tstart + i];
-			auto& t = m_triangles[r.tid];
-			if (t.deleted)
-				continue;
-			if (deleted[i])
-			{
-				t.deleted = true;
-				++deleted_triangles;
-				continue;
-			}
-			t.v[r.tvertex] = i0;
-			t.dirty = true;
-			t.err[0] = CalculateError(t.v[0], t.v[1], p);
-			t.err[1] = CalculateError(t.v[1], t.v[2], p);
-			t.err[2] = CalculateError(t.v[2], t.v[0], p);
-			t.err[3] = MIN(t.err[0], MIN(t.err[1], t.err[2]));
-			m_refs.push_back(r);
-		}
-	}
-
-	void Simplifier::UpdateMesh(int iter)
-	{
-		if (iter > 0)
-		{
-			int dst = 0;
-			for (int i = 0; i < m_triangles.size(); ++i)
-			{
-				if (!m_triangles[i].deleted)
-				{
-					m_triangles[dst++] = m_triangles[i];
-				}
-			}
-			m_triangles.resize(dst);
-		}
-
-		if (iter == 0)
-		{
-			for (int i = 0; i < m_vertices.size(); ++i)
-			{
-				m_vertices[i].q = SymMatrix(0.0f);
-			}
-
-			for (int i = 0; i < m_triangles.size(); ++i)
-			{
-				auto& t = m_triangles[i];
-				Math::Vec3 verts[3];
-				for (int j = 0; j < 3; ++j)
-				{
-					verts[j] = m_vertices[t.v[j]].p;
-				}
-				
-				auto cross = (verts[1] - verts[0]).Cross(verts[2] - verts[0]);
-				cross.Normalize();
-				t.n = cross;
-				for (int j = 0; j < 3; ++j)
-				{
-					//if (t.v[j] == 0)
-					//{
-					//	auto tris = 2;
-					//}
-					m_vertices[t.v[j]].q = m_vertices[t.v[j]].q + SymMatrix(cross.x, cross.y, cross.z, -cross.Dot(verts[0]));
-				}
-			}
-
-			for (int i = 0; i < m_triangles.size(); ++i)
-			{
-				// Calculate Edge Error
-				auto& t = m_triangles[i];
-				Math::Vec3 p(0);
-
-				for (int j = 0; j < 3; ++j)
-				{
-					t.err[j] = CalculateError(t.v[j], t.v[(j + 1) % 3], p);
-				}
-				t.err[3] = MIN(t.err[0], MIN(t.err[1], t.err[2]));
-			}
-		}
-
-		// Init Reference ID List
-		for (int i = 0; i < m_vertices.size(); ++i)
-		{
-			m_vertices[i].tstart = 0;
-			m_vertices[i].tcount = 0;
-		}
-
-		for (int i = 0; i < m_triangles.size(); ++i)
-		{
-			auto& t = m_triangles[i];
-			for (int j = 0; j < 3; ++j)
-			{
-				m_vertices[t.v[j]].tcount++;
-			}
-		}
-
-		int tstart = 0;
-		for (int i = 0; i < m_vertices.size(); ++i)
-		{
-			auto& v = m_vertices[i];
-			v.tstart = tstart;
-			tstart += v.tcount;
-			v.tcount = 0;
-		}
-
-		// Write References
-		m_refs.resize(m_triangles.size() * 3);
-		for (int i = 0; i < m_triangles.size(); ++i)
-		{
-			auto& t = m_triangles[i];
-			for (int j = 0; j < 3; ++j)
-			{
-				auto& v = m_vertices[t.v[j]];
-				m_refs[v.tstart + v.tcount].tid = i;
-				m_refs[v.tstart + v.tcount].tvertex = j;
-				v.tcount++;
-			}
-		}
-
-		// Identify Boundaries
-		if (iter == 0)
-		{
-			std::vector<int> vcount, vids;
-
-			for (int i = 0; i < m_vertices.size(); ++i)
-			{
-				m_vertices[i].border = 0;
-			}
-
-			for (int i = 0; i < m_vertices.size(); ++i)
-			{
-				auto& v = m_vertices[i];
-				vcount.clear();
-				vids.clear();
-
-				for (int j = 0; j < v.tcount; ++j)
-				{
-					int k = m_refs[v.tstart + j].tid;
-					auto& t = m_triangles[k];
-					for (int k = 0; k < 3; ++k)
-					{
-						int ofs = 0;
-						int id = t.v[k];
-
-						while (ofs < vcount.size())
-						{
-							if (vids[ofs] == id)
-							{
-								break;
-							}
-							ofs++;
-						}
-
-						if (ofs == vcount.size())
-						{
-							vcount.push_back(1);
-							vids.push_back(id);
-						}
-						else
-						{
-							vcount[ofs]++;
-						}
-					}
-				}
-
-				for (int j = 0; j < vcount.size(); ++j)
-				{
-					if (vcount[j] == 1)
-					{
-						m_vertices[vids[j]].border = 1;
-					}
-				}
-			}
-		}
-	}
-
-	Math::Vec3 Simplifier::Interpolate(const Math::Vec3& p, const Math::Vec3& a, const Math::Vec3& b, const Math::Vec3& c, const Math::Vec3 attrs[3])
-	{
-		// Calculate bary centric
-		auto v0 = b - a;
-		auto v1 = c - a;
-		auto v2 = p - a;
-
-		float d00 = v0.Dot(v0);
-		float d01 = v0.Dot(v1);
-		float d11 = v1.Dot(v1);
-		float d20 = v2.Dot(v0);
-		float d21 = v2.Dot(v1);
-
-		float denom = d00 * d11 - d01 * d01;
-		float v = (d11 * d20 - d01 * d21) / denom;
-		float w = (d00 * d21 - d01 * d20) / denom;
-		float u = 1.0f - v - w;
-		
-		Math::Vec3 result(0);
-		result = result + attrs[0] * u;
-		result = result + attrs[1] * v;
-		result = result + attrs[2] * w;
-		return result;
-	}*/
 }

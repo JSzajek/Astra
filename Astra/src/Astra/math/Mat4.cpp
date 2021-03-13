@@ -208,129 +208,222 @@ namespace Astra::Math
 		return *this;
 	}
 
-	const Mat4 Mat4::Inverse() const
+	const Mat4 Mat4::Inverse(bool* success) const
 	{
 		Mat4 inverse(0);
 
-		inverse.data[0] = data[5] * data[10] * data[15] -
-						  data[5] * data[11] * data[14] -
-						  data[9] * data[6] * data[15] +
-						  data[9] * data[7] * data[14] +
-						  data[13] * data[6] * data[11] -
-						  data[13] * data[7] * data[10];
+		auto m00 = columns[0][0];
+		auto m01 = columns[0][1];
+		auto m02 = columns[0][2];
+		auto m03 = columns[0][3];
+		
+		auto m10 = columns[1][0];
+		auto m11 = columns[1][1];
+		auto m12 = columns[1][2];
+		auto m13 = columns[1][3];
+		
+		auto m20 = columns[2][0];
+		auto m21 = columns[2][1];
+		auto m22 = columns[2][2];
+		auto m23 = columns[2][3];
+
+		auto m30 = columns[3][0];
+		auto m31 = columns[3][1];
+		auto m32 = columns[3][2];
+		auto m33 = columns[3][3];
+
+		auto A2323 = m22 * m33 - m23 * m32;
+		auto A1323 = m21 * m33 - m23 * m31;
+		auto A1223 = m21 * m32 - m22 * m31;
+		auto A0323 = m20 * m33 - m23 * m30;
+		auto A0223 = m20 * m32 - m22 * m30;
+		auto A0123 = m20 * m31 - m21 * m30;
+		auto A2313 = m12 * m33 - m13 * m32;
+		auto A1313 = m11 * m33 - m13 * m31;
+		auto A1213 = m11 * m32 - m12 * m31;
+		auto A2312 = m12 * m23 - m13 * m22;
+		auto A1312 = m11 * m23 - m13 * m21;
+		auto A1212 = m11 * m22 - m12 * m21;
+		auto A0313 = m10 * m33 - m13 * m30;
+		auto A0213 = m10 * m32 - m12 * m30;
+		auto A0312 = m10 * m23 - m13 * m20;
+		auto A0212 = m10 * m22 - m12 * m20;
+		auto A0113 = m10 * m31 - m11 * m30;
+		auto A0112 = m10 * m21 - m11 * m20;
+
+		auto det = m00 * (m11 * A2323 - m12 * A1323 + m13 * A1223)
+				 - m01 * (m10 * A2323 - m12 * A0323 + m13 * A0223)
+				 + m02 * (m10 * A1323 - m11 * A0323 + m13 * A0123)
+				 - m03 * (m10 * A1223 - m11 * A0223 + m12 * A0123);
+
+		if (std::fabs(det) <= CMP_EPSILON)
+		{
+			if (success)
+			{
+				*success = false;
+			}
+			return *this;
+		}
+		else
+		{
+			det = 1 / det;
+			if (success)
+			{
+				*success = true;
+			}
+		}
+
+		return Mat4(
+		   det *  (m11 * A2323 - m12 * A1323 + m13 * A1223),
+		   det * -(m01 * A2323 - m02 * A1323 + m03 * A1223),
+		   det *  (m01 * A2313 - m02 * A1313 + m03 * A1213),
+		   det * -(m01 * A2312 - m02 * A1312 + m03 * A1212),
+		   det * -(m10 * A2323 - m12 * A0323 + m13 * A0223),
+		   det *  (m00 * A2323 - m02 * A0323 + m03 * A0223),
+		   det * -(m00 * A2313 - m02 * A0313 + m03 * A0213),
+		   det *  (m00 * A2312 - m02 * A0312 + m03 * A0212),
+		   det *  (m10 * A1323 - m11 * A0323 + m13 * A0123),
+		   det * -(m00 * A1323 - m01 * A0323 + m03 * A0123),
+		   det *  (m00 * A1313 - m01 * A0313 + m03 * A0113),
+		   det * -(m00 * A1312 - m01 * A0312 + m03 * A0112),
+		   det * -(m10 * A1223 - m11 * A0223 + m12 * A0123),
+		   det *  (m00 * A1223 - m01 * A0223 + m02 * A0123),
+		   det * -(m00 * A1213 - m01 * A0213 + m02 * A0113),
+		   det *  (m00 * A1212 - m01 * A0212 + m02 * A0112)
+		);
+
+		/*inverse.data[0] = data[5] * data[10] * data[15] -
+			data[5] * data[11] * data[14] -
+			data[9] * data[6] * data[15] +
+			data[9] * data[7] * data[14] +
+			data[13] * data[6] * data[11] -
+			data[13] * data[7] * data[10];
 
 		inverse.data[4] = -data[4] * data[10] * data[15] +
-						   data[4] * data[11] * data[14] +
-						   data[8] * data[6] * data[15] -
-						   data[8] * data[7] * data[14] -
-						   data[12] * data[6] * data[11] +
-						   data[12] * data[7] * data[10];
+			data[4] * data[11] * data[14] +
+			data[8] * data[6] * data[15] -
+			data[8] * data[7] * data[14] -
+			data[12] * data[6] * data[11] +
+			data[12] * data[7] * data[10];
 
 		inverse.data[8] = data[4] * data[9] * data[15] -
-						  data[4] * data[11] * data[13] -
-						  data[8] * data[5] * data[15] +
-						  data[8] * data[7] * data[13] +
-						  data[12] * data[5] * data[11] -
-						  data[12] * data[7] * data[9];
+			data[4] * data[11] * data[13] -
+			data[8] * data[5] * data[15] +
+			data[8] * data[7] * data[13] +
+			data[12] * data[5] * data[11] -
+			data[12] * data[7] * data[9];
 
 		inverse.data[12] = -data[4] * data[9] * data[14] +
-							data[4] * data[10] * data[13] +
-							data[8] * data[5] * data[14] -
-							data[8] * data[6] * data[13] -
-							data[12] * data[5] * data[10] +
-							data[12] * data[6] * data[9];
+			data[4] * data[10] * data[13] +
+			data[8] * data[5] * data[14] -
+			data[8] * data[6] * data[13] -
+			data[12] * data[5] * data[10] +
+			data[12] * data[6] * data[9];
 
 		inverse.data[1] = -data[1] * data[10] * data[15] +
-						   data[1] * data[11] * data[14] +
-						   data[9] * data[2] * data[15] -
-						   data[9] * data[3] * data[14] -
-						   data[13] * data[2] * data[11] +
-						   data[13] * data[3] * data[10];
+			data[1] * data[11] * data[14] +
+			data[9] * data[2] * data[15] -
+			data[9] * data[3] * data[14] -
+			data[13] * data[2] * data[11] +
+			data[13] * data[3] * data[10];
 
 		inverse.data[5] = data[0] * data[10] * data[15] -
-						  data[0] * data[11] * data[14] -
-						  data[8] * data[2] * data[15] +
-						  data[8] * data[3] * data[14] +
-						  data[12] * data[2] * data[11] -
-						  data[12] * data[3] * data[10];
+			data[0] * data[11] * data[14] -
+			data[8] * data[2] * data[15] +
+			data[8] * data[3] * data[14] +
+			data[12] * data[2] * data[11] -
+			data[12] * data[3] * data[10];
 
 		inverse.data[9] = -data[0] * data[9] * data[15] +
-						   data[0] * data[11] * data[13] +
-						   data[8] * data[1] * data[15] -
-						   data[8] * data[3] * data[13] -
-						   data[12] * data[1] * data[11] +
-						   data[12] * data[3] * data[9];
+			data[0] * data[11] * data[13] +
+			data[8] * data[1] * data[15] -
+			data[8] * data[3] * data[13] -
+			data[12] * data[1] * data[11] +
+			data[12] * data[3] * data[9];
 
 		inverse.data[13] = data[0] * data[9] * data[14] -
-						   data[0] * data[10] * data[13] -
-						   data[8] * data[1] * data[14] +
-						   data[8] * data[2] * data[13] +
-						   data[12] * data[1] * data[10] -
-						   data[12] * data[2] * data[9];
+			data[0] * data[10] * data[13] -
+			data[8] * data[1] * data[14] +
+			data[8] * data[2] * data[13] +
+			data[12] * data[1] * data[10] -
+			data[12] * data[2] * data[9];
 
 		inverse.data[2] = data[1] * data[6] * data[15] -
-						  data[1] * data[7] * data[14] -
-						  data[5] * data[2] * data[15] +
-						  data[5] * data[3] * data[14] +
-						  data[13] * data[2] * data[7] -
-						  data[13] * data[3] * data[6];
+			data[1] * data[7] * data[14] -
+			data[5] * data[2] * data[15] +
+			data[5] * data[3] * data[14] +
+			data[13] * data[2] * data[7] -
+			data[13] * data[3] * data[6];
 
 		inverse.data[6] = -data[0] * data[6] * data[15] +
-						   data[0] * data[7] * data[14] +
-						   data[4] * data[2] * data[15] -
-						   data[4] * data[3] * data[14] -
-						   data[12] * data[2] * data[7] +
-						   data[12] * data[3] * data[6];
+			data[0] * data[7] * data[14] +
+			data[4] * data[2] * data[15] -
+			data[4] * data[3] * data[14] -
+			data[12] * data[2] * data[7] +
+			data[12] * data[3] * data[6];
 
 		inverse.data[10] = data[0] * data[5] * data[15] -
-						   data[0] * data[7] * data[13] -
-						   data[4] * data[1] * data[15] +
-						   data[4] * data[3] * data[13] +
-						   data[12] * data[1] * data[7] -
-						   data[12] * data[3] * data[5];
+			data[0] * data[7] * data[13] -
+			data[4] * data[1] * data[15] +
+			data[4] * data[3] * data[13] +
+			data[12] * data[1] * data[7] -
+			data[12] * data[3] * data[5];
 
 		inverse.data[14] = -data[0] * data[5] * data[14] +
-							data[0] * data[6] * data[13] +
-							data[4] * data[1] * data[14] -
-							data[4] * data[2] * data[13] -
-							data[12] * data[1] * data[6] +
-							data[12] * data[2] * data[5];
+			data[0] * data[6] * data[13] +
+			data[4] * data[1] * data[14] -
+			data[4] * data[2] * data[13] -
+			data[12] * data[1] * data[6] +
+			data[12] * data[2] * data[5];
 
 		inverse.data[3] = -data[1] * data[6] * data[11] +
-						   data[1] * data[7] * data[10] +
-						   data[5] * data[2] * data[11] -
-						   data[5] * data[3] * data[10] -
-						   data[9] * data[2] * data[7] +
-						   data[9] * data[3] * data[6];
+			data[1] * data[7] * data[10] +
+			data[5] * data[2] * data[11] -
+			data[5] * data[3] * data[10] -
+			data[9] * data[2] * data[7] +
+			data[9] * data[3] * data[6];
 
 		inverse.data[7] = data[0] * data[6] * data[11] -
-						  data[0] * data[7] * data[10] -
-						  data[4] * data[2] * data[11] +
-						  data[4] * data[3] * data[10] +
-						  data[8] * data[2] * data[7] -
-						  data[8] * data[3] * data[6];
+			data[0] * data[7] * data[10] -
+			data[4] * data[2] * data[11] +
+			data[4] * data[3] * data[10] +
+			data[8] * data[2] * data[7] -
+			data[8] * data[3] * data[6];
 
 		inverse.data[11] = -data[0] * data[5] * data[11] +
-							data[0] * data[7] * data[9] +
-							data[4] * data[1] * data[11] -
-							data[4] * data[3] * data[9] -
-							data[8] * data[1] * data[7] +
-							data[8] * data[3] * data[5];
+			data[0] * data[7] * data[9] +
+			data[4] * data[1] * data[11] -
+			data[4] * data[3] * data[9] -
+			data[8] * data[1] * data[7] +
+			data[8] * data[3] * data[5];
 
 		inverse.data[15] = data[0] * data[5] * data[10] -
-						   data[0] * data[6] * data[9] -
-						   data[4] * data[1] * data[10] +
-						   data[4] * data[2] * data[9] +
-						   data[8] * data[1] * data[6] -
-						   data[8] * data[2] * data[5];
+			data[0] * data[6] * data[9] -
+			data[4] * data[1] * data[10] +
+			data[4] * data[2] * data[9] +
+			data[8] * data[1] * data[6] -
+			data[8] * data[2] * data[5];
 
 		float det = data[0] * inverse.data[0] + data[1] * inverse.data[4] + data[2] * inverse.data[8] + data[3] * inverse.data[12];
+		if (det == 0.0f)
+		{
+			if (success)
+			{
+				*success = false;
+			}
+			return *this;
+		}
+
 		det = 1.0f / det;
 		for (int i = 0; i < 16; i++)
 		{
 			inverse.data[i] *= det;
 		}
-		return inverse;
+		if (success)
+		{
+			*success = true;
+		}
+		return inverse;*/
 	}
 
 	void Mat4::Transpose()

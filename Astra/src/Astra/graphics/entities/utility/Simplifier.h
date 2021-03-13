@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <unordered_set>
+#include <queue>
 
 #include "Astra/math/Vec3.h"
 #include "Astra/math/Vec4.h"
@@ -37,18 +38,34 @@ namespace Astra::Graphics
 		int tid, tvertex;
 	};*/
 
+	/*template<typename T>
+	class custom_priority_queue : public std::priority_queue<T, std::vector<T>>
+	{
+	public:
+
+		bool remove(const T& value) {
+			auto it = std::find(this->c.begin(), this->c.end(), value);
+			if (it != this->c.end()) {
+				this->c.erase(it);
+				std::make_heap(this->c.begin(), this->c.end(), this->comp);
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	};*/
+
 	struct FaceHash
 	{
 		std::size_t operator()(const Face& face) const
 		{
-			//std::string str = std::to_string(face.indices[0]) + " " + std::to_string(face.indices[1]) + " " + std::to_string(face.indices[2]);
 			unsigned long long int a1 = face.indices[0] + face.indices[1] + face.indices[2];
 			unsigned long long int a2 = face.indices[0] * face.indices[1] + face.indices[1] * face.indices[2] + face.indices[2] * face.indices[0];
 			unsigned long long int a3 = face.indices[0] * face.indices[1] * face.indices[2];
 			unsigned long long int temp = (a1 * 131313 + a2) * 131313 + a3;
 			unsigned int result = temp % (int)(MAX_FACE);
 			return result; 
-			//return std::hash<int>()(face.indices[0]) + std::hash<int>()(face.indices[1]) + std::hash<int>()(face.indices[2]);
 		}
 	};
 
@@ -81,13 +98,19 @@ namespace Astra::Graphics
 
 		void SimplifyMeshImpl(float rate, std::vector<Vertex>* result, std::vector<unsigned int>* resultIndices);
 	private:
-		Vert vertices[MAX_VERTEX];
-		Math::Vec3 originVertices[MAX_VERTEX];
+		//Vert vertices[MAX_VERTEX];
+
+		std::unordered_map<unsigned int, size_t> vertMapper;
+		std::unordered_map<unsigned int, unsigned int> indexMapper;
+		std::unordered_map<size_t, std::tuple<Vert, std::vector<std::tuple<Vertex, unsigned int>>, unsigned int>> vertices;
+		//std::vector<Vert> vertices;
+
 		Face originFace[MAX_FACE];
 		Pair pairs[MAX_PAIR];
-		
-		//std::unordered_set<Face, FaceHash> faceMap;
-		Map faceMap;
+
+		std::unordered_set<Face, FaceHash> faceMap;
+		//Map faceMap;
+		//custom_priority_queue<Pair> heap;
 		Heap heap;
 		KdTree tree;
 

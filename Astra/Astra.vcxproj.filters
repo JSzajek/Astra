@@ -34,6 +34,9 @@
     <Filter Include="src\Astra\graphics\entities">
       <UniqueIdentifier>{4BD8651D-B7E5-9303-40CC-8FEEACD85FBA}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Astra\graphics\entities\animation">
+      <UniqueIdentifier>{1ACB1F28-868F-1E18-4FF5-4EE2BB78BA4D}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Astra\graphics\entities\terrains">
       <UniqueIdentifier>{22892AFA-0E70-ECF1-B7C0-520FA3866558}</UniqueIdentifier>
     </Filter>
@@ -147,16 +150,28 @@
     <ClInclude Include="src\Astra\graphics\Color.h">
       <Filter>src\Astra\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="src\Astra\graphics\LayerEntity.h">
+      <Filter>src\Astra\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\Resource.h">
+      <Filter>src\Astra\graphics</Filter>
+    </ClInclude>
     <ClInclude Include="src\Astra\graphics\buffers\CubeMapTexture.h">
       <Filter>src\Astra\graphics\buffers</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\buffers\FrameBuffer.h">
       <Filter>src\Astra\graphics\buffers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Astra\graphics\buffers\Mesh.h">
+      <Filter>src\Astra\graphics\buffers</Filter>
+    </ClInclude>
     <ClInclude Include="src\Astra\graphics\buffers\ShadowFrameBuffer.h">
       <Filter>src\Astra\graphics\buffers</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\buffers\Texture.h">
+      <Filter>src\Astra\graphics\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\buffers\Vertex.h">
       <Filter>src\Astra\graphics\buffers</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\buffers\WaterFrameBuffer.h">
@@ -171,6 +186,9 @@
     <ClInclude Include="src\Astra\graphics\entities\Light.h">
       <Filter>src\Astra\graphics\entities</Filter>
     </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\Model.h">
+      <Filter>src\Astra\graphics\entities</Filter>
+    </ClInclude>
     <ClInclude Include="src\Astra\graphics\entities\PointLight.h">
       <Filter>src\Astra\graphics\entities</Filter>
     </ClInclude>
@@ -180,6 +198,27 @@
     <ClInclude Include="src\Astra\graphics\entities\SpotLight.h">
       <Filter>src\Astra\graphics\entities</Filter>
     </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\animation\Animation.h">
+      <Filter>src\Astra\graphics\entities\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\animation\Animator.h">
+      <Filter>src\Astra\graphics\entities\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\animation\AssimpReader.h">
+      <Filter>src\Astra\graphics\entities\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\animation\Bone.h">
+      <Filter>src\Astra\graphics\entities\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\animation\BoneInfo.h">
+      <Filter>src\Astra\graphics\entities\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\animation\BoneReader.h">
+      <Filter>src\Astra\graphics\entities\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\animation\KeyStructs.h">
+      <Filter>src\Astra\graphics\entities\animation</Filter>
+    </ClInclude>
     <ClInclude Include="src\Astra\graphics\entities\terrains\HeightGenerator.h">
       <Filter>src\Astra\graphics\entities\terrains</Filter>
     </ClInclude>
@@ -188,6 +227,33 @@
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\entities\terrains\WaterTile.h">
       <Filter>src\Astra\graphics\entities\terrains</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\utility\EdgeHeap.h">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\utility\Heap.h">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\utility\KdTree.h">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\utility\Map.h">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\utility\SimpStructs.h">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\utility\Simplifier.h">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\utility\SimplifierStructs.h">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\utility\SymMatrix.h">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astra\graphics\entities\utility\VertGroup.h">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\gizmos\Gizmo.h">
       <Filter>src\Astra\graphics\gizmos</Filter>
@@ -411,6 +477,9 @@
     <ClInclude Include="src\Astra\math\MathsUtils.h">
       <Filter>src\Astra\math</Filter>
     </ClInclude>
+    <ClInclude Include="src\Astra\math\Quat.h">
+      <Filter>src\Astra\math</Filter>
+    </ClInclude>
     <ClInclude Include="src\Astra\math\Vec2.h">
       <Filter>src\Astra\math</Filter>
     </ClInclude>
@@ -468,28 +537,6 @@
     <ClInclude Include="vendor\stb_image\stb_image\stb_image_write.h">
       <Filter>vendor\stb_image\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astra\graphics\entities\Model.h">
-      <Filter>src\Astra\graphics\entities\utility</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Astra\math\Quat.h" />
-    <ClInclude Include="src\Astra\graphics\Resource.h" />
-    <ClInclude Include="src\Astra\graphics\LayerEntity.h" />
-    <ClInclude Include="src\Astra\graphics\buffers\Mesh.h">
-      <Filter>src\Astra\graphics\entities\utility</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Astra\graphics\entities\animation\Animation.h" />
-    <ClInclude Include="src\Astra\graphics\entities\animation\Animator.h" />
-    <ClInclude Include="src\Astra\graphics\entities\animation\AssimpReader.h" />
-    <ClInclude Include="src\Astra\graphics\entities\animation\Bone.h" />
-    <ClInclude Include="src\Astra\graphics\entities\animation\BoneReader.h" />
-    <ClInclude Include="src\Astra\graphics\entities\animation\BoneInfo.h" />
-    <ClInclude Include="src\Astra\graphics\entities\animation\KeyStructs.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\Simplifier.h" />
-    <ClInclude Include="src\Astra\graphics\buffers\Vertex.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\KdTree.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\SimpStructs.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\Map.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\Heap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astra\Application.cpp">
@@ -507,7 +554,16 @@
     <ClCompile Include="src\Astra\graphics\Color.cpp">
       <Filter>src\Astra\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="src\Astra\graphics\Resource.cpp">
+      <Filter>src\Astra\graphics</Filter>
+    </ClCompile>
     <ClCompile Include="src\Astra\graphics\buffers\CubeMapTexture.cpp">
+      <Filter>src\Astra\graphics\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\buffers\FrameBuffer.cpp">
+      <Filter>src\Astra\graphics\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\buffers\Mesh.cpp">
       <Filter>src\Astra\graphics\buffers</Filter>
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\buffers\ShadowFrameBuffer.cpp">
@@ -525,8 +581,20 @@
     <ClCompile Include="src\Astra\graphics\entities\Light.cpp">
       <Filter>src\Astra\graphics\entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\Model.cpp">
+      <Filter>src\Astra\graphics\entities</Filter>
+    </ClCompile>
     <ClCompile Include="src\Astra\graphics\entities\Spatial.cpp">
       <Filter>src\Astra\graphics\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\animation\Animation.cpp">
+      <Filter>src\Astra\graphics\entities\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\animation\Animator.cpp">
+      <Filter>src\Astra\graphics\entities\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\animation\Bone.cpp">
+      <Filter>src\Astra\graphics\entities\animation</Filter>
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\entities\terrains\HeightGenerator.cpp">
       <Filter>src\Astra\graphics\entities\terrains</Filter>
@@ -536,6 +604,18 @@
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\entities\terrains\WaterTile.cpp">
       <Filter>src\Astra\graphics\entities\terrains</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\utility\EdgeHeap.cpp">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\utility\SimpStructs.cpp">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\utility\Simplifier.cpp">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astra\graphics\entities\utility\VertGroup.cpp">
+      <Filter>src\Astra\graphics\entities\utility</Filter>
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\gizmos\Gizmo.cpp">
       <Filter>src\Astra\graphics\gizmos</Filter>
@@ -654,6 +734,9 @@
     <ClCompile Include="src\Astra\math\Mat4.cpp">
       <Filter>src\Astra\math</Filter>
     </ClCompile>
+    <ClCompile Include="src\Astra\math\Quat.cpp">
+      <Filter>src\Astra\math</Filter>
+    </ClCompile>
     <ClCompile Include="src\Astra\math\Vec2.cpp">
       <Filter>src\Astra\math</Filter>
     </ClCompile>
@@ -684,20 +767,6 @@
     <ClCompile Include="vendor\stb_image\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Astra\graphics\entities\Model.cpp">
-      <Filter>src\Astra\graphics\entities\utility</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Astra\math\Quat.cpp" />
-    <ClCompile Include="src\Astra\graphics\Resource.cpp" />
-    <ClCompile Include="src\Astra\graphics\buffers\FrameBuffer.cpp" />
-    <ClCompile Include="src\Astra\graphics\buffers\Mesh.cpp">
-      <Filter>src\Astra\graphics\entities\utility</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Astra\graphics\entities\animation\Animation.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\animation\Animator.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\animation\Bone.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\utility\Simplifier.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\utility\SimpStructs.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\fonts\calibri.ttf">
