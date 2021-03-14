@@ -1,7 +1,5 @@
 #include "astra_pch.h"
 
-#include <tuple>
-
 #include "SimpStructs.h"
 
 namespace Astra::Graphics
@@ -50,36 +48,6 @@ namespace Astra::Graphics
 		cost = y.Dot(a_y);
 		cost1 = first.p.DistanceSquaredTo(second.p);
 	}
-
-	//void Pair::UpdateOptimalPos(const Vert* vertices)
-	//{
-	//	optPos = (vertices[v[0]].p + vertices[v[1]].p) / 2;
-	//	Math::Mat4 a = vertices[v[0]].q + vertices[v[1]].q;
-	//	a.columns[3].x = 0;
-	//	a.columns[3].y = 0;
-	//	a.columns[3].z = 0;
-	//	a.columns[3].w = 1;
-
-	//	bool invertible = false;
-	//	auto inv = a.Inverse(&invertible);
-
-	//	if (invertible)
-	//	{
-	//		// a * [0, 0, 0, 1].T
-	//		optPos.x = inv.columns[0].w;
-	//		optPos.y = inv.columns[1].w;
-	//		optPos.z = inv.columns[2].w;
-	//	}
-	//}
-
-	/*void Pair::UpdateCost(const Vert* vertices)
-	{
-		Math::Vec4 y(optPos, 1.0f);
-		Math::Mat4 a = vertices[v[0]].q + vertices[v[1]].q;
-		Math::Vec4 a_y = a * y;
-		cost = y.Dot(a_y);
-		cost1 = vertices[v[0]].p.DistanceSquaredTo(vertices[v[1]].p);
-	}*/
 
 	Face::Face()
 	{
@@ -146,46 +114,6 @@ namespace Astra::Graphics
 		return b0 || b1 || b2 || b3 || b4 || b5;
 	}
 
-	/*bool Face::InFace(const Math::Vec3& p, const Vert* vertices) const
-	{
-		Math::Vec3 v0 = vertices[indices[0]].p;
-		Math::Vec3 v1 = vertices[indices[1]].p;
-		Math::Vec3 v2 = vertices[indices[2]].p;
-		
-		float a0 = (v1 - v0).Cross(v2 - v0).Length();
-		float s0 = (v1 -  p).Cross(v2 -  p).Length();
-		float s1 = (v2 -  p).Cross(v0 -  p).Length();
-		float s2 = (v0 -  p).Cross(v1 -  p).Length();
-		if (s0 + s1 + s2 > a0)
-			return false;
-		return true;
-	}*/
-
-	/*float Face::Distance(const Math::Vec3& p, const Vert* vertices) const
-	{
-		Math::Vec3 norm = Norm(vertices);
-		float dist = norm.Dot(vertices[indices[0]].p - p);
-		Math::Vec3 p_f = p + dist * norm;
-		
-		if (InFace(p_f, vertices))
-		{
-			return std::fabs(dist);
-		}
-		else
-		{
-			float d = 10000;
-			for (int i = 0; i < 3; ++i)
-			{
-				float newD = vertices[indices[i]].p.DistanceTo(p);
-				if (newD < d)
-				{
-					d = newD;
-				}
-			}
-			return d;
-		}
-	}*/
-
 	Vert::Vert(float x, float y, float z)
 		: p(x, y, z), newIndex(0)
 	{
@@ -212,7 +140,7 @@ namespace Astra::Graphics
 				return;
 			}
 		}
-		auto tasdas = 2;
+		ASTRA_ASSERT(false, "Vert: Couldn't Delete Neighbor");
 	}
 
 	void Vert::ComputeQ(std::unordered_map<size_t, std::tuple<Vert, std::vector<std::tuple<Vertex, unsigned int>>, unsigned int>>& vertices,

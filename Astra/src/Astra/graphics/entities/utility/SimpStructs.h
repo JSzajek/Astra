@@ -47,9 +47,6 @@ namespace Astra::Graphics
 
 		void Update(std::unordered_map<size_t, std::tuple<Vert, std::vector<std::tuple<Vertex, unsigned int>>, unsigned int>>& vertices,
 					std::unordered_map<unsigned int, size_t>& mapper);
-
-		//void UpdateOptimalPos(const Vert* vertices);
-		//void UpdateCost(const Vert* vertices);
 	};
 
 	struct Face
@@ -70,8 +67,6 @@ namespace Astra::Graphics
 					    std::unordered_map<unsigned int, size_t>& mapper) const;
 		
 		friend bool operator==(const Face& face1, const Face& face2);
-
-		//bool InFace(const Math::Vec3& p, const Vert* vertices) const;
 	};
 
 	struct Vert

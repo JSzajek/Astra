@@ -22,7 +22,7 @@ namespace Astra::Graphics
 			AddVertex(vert);
 		}
 
-		faceMap.reserve(indices.size());
+		faceMap.reserve(indices.size() / 3);
 		
 		unsigned int i = 0;
 		while (i < indices.size())
@@ -69,8 +69,10 @@ namespace Astra::Graphics
 		{
 			if (valid[index]) 
 			{
+				// Currently averaging the original vertices into the new position
+				// instead should find a way to remap it back to its original vertex causing re-expansion of face mapping
 				auto& list = std::get<1>(vertices[vertMapper[index]]);
-				auto& first = std::get<0>(vertices[vertMapper[index]]);
+				auto& first = VERT(index);
 				Math::Vec2 avgTexCoords;
 				Math::Vec3 avgNormCoords;
 				for (const auto& v : list)
@@ -91,7 +93,7 @@ namespace Astra::Graphics
 
 		for (int index = 0; index < vOffset; ++index) {
 			if (valid[index]) {
-				const auto& indexVert = std::get<0>(vertices[vertMapper[index]]);
+				const auto& indexVert = VERT(index);
 				for (int i = 0; i < indexVert.neighbor.size(); ++i) 
 				{
 					int neiIndex1 = indexVert.neighbor[i];
@@ -109,9 +111,9 @@ namespace Astra::Graphics
 								auto found = faceMap.find(Face(index, neiIndex1, neiIndex2));
 								if (found != faceMap.end())
 								{
-									resultIndices->push_back(std::get<0>(vertices[vertMapper[found->indices[0]]]).newIndex);
-									resultIndices->push_back(std::get<0>(vertices[vertMapper[found->indices[1]]]).newIndex);
-									resultIndices->push_back(std::get<0>(vertices[vertMapper[found->indices[2]]]).newIndex);
+									resultIndices->push_back(VERT(found->indices[0]).newIndex);
+									resultIndices->push_back(VERT(found->indices[1]).newIndex);
+									resultIndices->push_back(VERT(found->indices[2]).newIndex);
 								}
 							}
 						}
@@ -136,7 +138,7 @@ namespace Astra::Graphics
 
 		for (int i = 0; i < vOffset; ++i)
 		{
-			const auto& vert = std::get<0>(vertices[vertMapper[i]]);
+			const auto& vert = VERT(i);
 			for (int j = 0; j < vert.neighbor.size(); ++j)
 			{
 				int index = vert.neighbor[j];
@@ -197,8 +199,8 @@ namespace Astra::Graphics
 		pairs[pOffset].v[1] = v2;
 		pairs[pOffset].index = index;
 
-		std::get<0>(vertices[vertMapper[v1]]).AddPair(index);
-		std::get<0>(vertices[vertMapper[v2]]).AddPair(index);
+		VERT(v1).AddPair(index);
+		VERT(v2).AddPair(index);
 		++pOffset;
 		ASTRA_ASSERT(pOffset < MAX_PAIR, "Simplifier: Error in Adding Pair.");
 		return index;
@@ -210,10 +212,10 @@ namespace Astra::Graphics
 		{
 			for (int j = i + 1; j < 3; ++j)
 			{
-				if (!std::get<0>(vertices[vertMapper[face.indices[i]]]).IsNeighbor(face.indices[j]))
+				if (!VERT(face.indices[i]).IsNeighbor(face.indices[j]))
 				{
-					std::get<0>(vertices[vertMapper[face.indices[i]]]).AddNeighbor(face.indices[j]);
-					std::get<0>(vertices[vertMapper[face.indices[j]]]).AddNeighbor(face.indices[i]);
+					VERT(face.indices[i]).AddNeighbor(face.indices[j]);
+					VERT(face.indices[j]).AddNeighbor(face.indices[i]);
 				}
 			}
 		}
@@ -235,8 +237,8 @@ namespace Astra::Graphics
 	bool Simplifier::Update(const Pair& pair)
 	{
 		auto newPos = pair.GetOptimalPos();
-		auto& v0Vert = std::get<0>(vertices[vertMapper[pair.v[0]]]);
-		auto& v1Vert = std::get<0>(vertices[vertMapper[pair.v[1]]]);
+		auto& v0Vert = VERT(pair.v[0]);
+		auto& v1Vert = VERT(pair.v[1]);
 		for (int i = 0; i < v0Vert.neighbor.size(); ++i)
 		{
 			for (int j = i + 1; j < v0Vert.neighbor.size(); ++j)
@@ -252,9 +254,9 @@ namespace Astra::Graphics
 				if (found != faceMap.end())
 				{
 					auto originNorm = found->Norm(vertices, vertMapper);
-					auto p0 = std::get<0>(vertices[vertMapper[found->indices[0]]]).p;
-					auto p1 = std::get<0>(vertices[vertMapper[found->indices[1]]]).p;
-					auto p2 = std::get<0>(vertices[vertMapper[found->indices[2]]]).p;
+					auto p0 = VERT(found->indices[0]).p;
+					auto p1 = VERT(found->indices[1]).p;
+					auto p2 = VERT(found->indices[2]).p;
 
 					if (found->indices[0] == pair.v[0])
 					{
@@ -272,8 +274,8 @@ namespace Astra::Graphics
 					auto newNorm = (p1 - p0).Cross(p2 - p0).Normalized();
 					if (originNorm.Dot(newNorm) < -0.1f)
 					{
-						std::get<0>(vertices[vertMapper[pair.v[0]]]).DeletePair(pair.index);
-						std::get<0>(vertices[vertMapper[pair.v[1]]]).DeletePair(pair.index);
+						VERT(pair.v[0]).DeletePair(pair.index);
+						VERT(pair.v[1]).DeletePair(pair.index);
 						return false;
 					}
 				}
@@ -281,8 +283,8 @@ namespace Astra::Graphics
 		}
 
 		int newIndex = pair.v[0];
-		auto originPos = std::get<0>(vertices[vertMapper[newIndex]]).p;
-		std::get<0>(vertices[vertMapper[newIndex]]).SetPosition(newPos);
+		auto originPos = VERT(newIndex).p;
+		VERT(newIndex).SetPosition(newPos);
 
 		// Update Faces
 		std::vector<Face> realFaceV;
@@ -322,9 +324,9 @@ namespace Astra::Graphics
 					}
 					else 
 					{
-						std::get<0>(vertices[vertMapper[pair.v[0]]]).SetPosition(originPos);
-						std::get<0>(vertices[vertMapper[pair.v[0]]]).DeletePair(pair.index);
-						std::get<0>(vertices[vertMapper[pair.v[1]]]).DeletePair(pair.index);
+						VERT(pair.v[0]).SetPosition(originPos);
+						VERT(pair.v[0]).DeletePair(pair.index);
+						VERT(pair.v[1]).DeletePair(pair.index);
 						return false;
 					}
 				}
@@ -346,15 +348,15 @@ namespace Astra::Graphics
 			int neighborIndex = v1Vert.neighbor[i];
 			if (neighborIndex != pair.v[0])
 			{
-				if (!std::get<0>(vertices[vertMapper[newIndex]]).IsNeighbor(neighborIndex))
+				if (!VERT(newIndex).IsNeighbor(neighborIndex))
 				{
-					std::get<0>(vertices[vertMapper[newIndex]]).AddNeighbor(neighborIndex);
-					std::get<0>(vertices[vertMapper[neighborIndex]]).AddNeighbor(newIndex);
+					VERT(newIndex).AddNeighbor(neighborIndex);
+					VERT(neighborIndex).AddNeighbor(newIndex);
 				}
-				std::get<0>(vertices[vertMapper[neighborIndex]]).DeleteNeighbor(pair.v[1]);
+				VERT(neighborIndex).DeleteNeighbor(pair.v[1]);
 			}
 		}
-		std::get<0>(vertices[vertMapper[newIndex]]).DeleteNeighbor(pair.v[1]);
+		VERT(newIndex).DeleteNeighbor(pair.v[1]);
 		
 		// Update Pairs
 		for (int i = 0; i < v1Vert.pairs.size(); ++i) {
@@ -364,7 +366,7 @@ namespace Astra::Graphics
 				if (pairs[pairIndex].v[1] == pair.v[0]) {
 					//pair between v[0] and v[1]
 					ASTRA_CORE_ASSERT(pairIndex == pair.index, "Simplifier: Update Error.");
-					std::get<0>(vertices[vertMapper[newIndex]]).DeletePair(pairIndex);
+					VERT(newIndex).DeletePair(pairIndex);
 					continue;
 				}
 				else {
@@ -377,7 +379,7 @@ namespace Astra::Graphics
 				{
 					//pair between v[0] and v[1]
 					ASTRA_CORE_ASSERT(pairIndex == pair.index, "Simplifier: Update Error.");
-					std::get<0>(vertices[vertMapper[newIndex]]).DeletePair(pairIndex);
+					VERT(newIndex).DeletePair(pairIndex);
 					continue;
 				}
 				else 
@@ -385,28 +387,28 @@ namespace Astra::Graphics
 					pairs[pairIndex].v[1] = newIndex;
 				}
 			}
-			if (std::get<0>(vertices[vertMapper[newIndex]]).HasPair(pairIndex, pairs))
+			if (VERT(newIndex).HasPair(pairIndex, pairs))
 			{
 				heap.Remove(pairs[pairIndex]);
 				if (pairs[pairIndex].v[0] == pair.v[0]) {
-					std::get<0>(vertices[vertMapper[pairs[pairIndex].v[1]]]).DeletePair(pairIndex);
+					VERT(pairs[pairIndex].v[1]).DeletePair(pairIndex);
 				}
 				else {
-					std::get<0>(vertices[vertMapper[pairs[pairIndex].v[0]]]).DeletePair(pairIndex);
+					VERT(pairs[pairIndex].v[0]).DeletePair(pairIndex);
 				}
 			}
 			else {
-				std::get<0>(vertices[vertMapper[newIndex]]).AddPair(pairIndex);
+				VERT(newIndex).AddPair(pairIndex);
 			}
 		}
 
 		// Update Cost and Optimal Position
-		std::get<0>(vertices[vertMapper[newIndex]]).q += std::get<0>(vertices[vertMapper[pair.v[1]]]).q;
-		for (int i = 0; i < std::get<0>(vertices[vertMapper[newIndex]]).pairs.size(); ++i)
+		VERT(newIndex).q += VERT(pair.v[1]).q;
+		auto newIndexPairs = VERT(newIndex).pairs;
+		for (int i = 0; i < newIndexPairs.size(); ++i)
 		{
-			int index = std::get<0>(vertices[vertMapper[newIndex]]).pairs[i];
+			int index = newIndexPairs[i];
 			pairs[index].Update(vertices, vertMapper);
-			//pairs[index].UpdateCost(vertices, vertMapper);
 			heap.Update(pairs[index]);
 		}
 		DeleteVertex(pair.v[1]);

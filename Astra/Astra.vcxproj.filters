@@ -228,9 +228,6 @@
     <ClInclude Include="src\Astra\graphics\entities\terrains\WaterTile.h">
       <Filter>src\Astra\graphics\entities\terrains</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astra\graphics\entities\utility\EdgeHeap.h">
-      <Filter>src\Astra\graphics\entities\utility</Filter>
-    </ClInclude>
     <ClInclude Include="src\Astra\graphics\entities\utility\Heap.h">
       <Filter>src\Astra\graphics\entities\utility</Filter>
     </ClInclude>
@@ -244,15 +241,6 @@
       <Filter>src\Astra\graphics\entities\utility</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\entities\utility\Simplifier.h">
-      <Filter>src\Astra\graphics\entities\utility</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Astra\graphics\entities\utility\SimplifierStructs.h">
-      <Filter>src\Astra\graphics\entities\utility</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Astra\graphics\entities\utility\SymMatrix.h">
-      <Filter>src\Astra\graphics\entities\utility</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Astra\graphics\entities\utility\VertGroup.h">
       <Filter>src\Astra\graphics\entities\utility</Filter>
     </ClInclude>
     <ClInclude Include="src\Astra\graphics\gizmos\Gizmo.h">
@@ -605,16 +593,10 @@
     <ClCompile Include="src\Astra\graphics\entities\terrains\WaterTile.cpp">
       <Filter>src\Astra\graphics\entities\terrains</Filter>
     </ClCompile>
-    <ClCompile Include="src\Astra\graphics\entities\utility\EdgeHeap.cpp">
-      <Filter>src\Astra\graphics\entities\utility</Filter>
-    </ClCompile>
     <ClCompile Include="src\Astra\graphics\entities\utility\SimpStructs.cpp">
       <Filter>src\Astra\graphics\entities\utility</Filter>
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\entities\utility\Simplifier.cpp">
-      <Filter>src\Astra\graphics\entities\utility</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Astra\graphics\entities\utility\VertGroup.cpp">
       <Filter>src\Astra\graphics\entities\utility</Filter>
     </ClCompile>
     <ClCompile Include="src\Astra\graphics\gizmos\Gizmo.cpp">

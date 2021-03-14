@@ -16,28 +16,6 @@
 
 namespace Astra::Graphics
 {
-	/*struct Triangle
-	{
-		int v[3];
-		double err[4];
-		int deleted = 0, dirty = 0;
-		Math::Vec3 uvs[3];
-		Math::Vec3 n;
-	};
-
-	struct Vert
-	{
-		Math::Vec3 p;
-		int tstart, tcount;
-		SymMatrix q;
-		int border;
-	};
-
-	struct Ref
-	{
-		int tid, tvertex;
-	};*/
-
 	/*template<typename T>
 	class custom_priority_queue : public std::priority_queue<T, std::vector<T>>
 	{
@@ -69,6 +47,8 @@ namespace Astra::Graphics
 		}
 	};
 
+	#define VERT(index) std::get<0>(vertices[vertMapper[index]])
+
 	class Simplifier
 	{
 	public:
@@ -98,12 +78,9 @@ namespace Astra::Graphics
 
 		void SimplifyMeshImpl(float rate, std::vector<Vertex>* result, std::vector<unsigned int>* resultIndices);
 	private:
-		//Vert vertices[MAX_VERTEX];
-
 		std::unordered_map<unsigned int, size_t> vertMapper;
 		std::unordered_map<unsigned int, unsigned int> indexMapper;
 		std::unordered_map<size_t, std::tuple<Vert, std::vector<std::tuple<Vertex, unsigned int>>, unsigned int>> vertices;
-		//std::vector<Vert> vertices;
 
 		Face originFace[MAX_FACE];
 		Pair pairs[MAX_PAIR];
@@ -121,9 +98,6 @@ namespace Astra::Graphics
 		bool valid[MAX_VERTEX] = {};
 		bool inPair[MAX_VERTEX] = {};
 		bool inFace[MAX_VERTEX] = {};
-		/*std::vector<Triangle> m_triangles;
-		std::vector<Vert> m_vertices;
-		std::vector<Ref> m_refs;*/
 	private:
 
 		void ComputeQ();
@@ -134,13 +108,5 @@ namespace Astra::Graphics
 
 		void DeleteVertex(int index);
 		bool Update(const Pair& pair);
-		/*double VertexError(const SymMatrix& q, double x, double y, double z);
-		double CalculateError(int id_v1, int id_v2, Math::Vec3& result);
-		bool Flipped(const Math::Vec3& p, int i0, int i1, Vert& v0, Vert& v1, std::vector<int>& deleted);
-		void UpdateUVs(int i0, const Vert& v, const Math::Vec3& p, std::vector<int>& deleted);
-		void UpdateTriangles(int i0, const Vert& v, std::vector<int>& deleted, int& deleted_triangles);
-		void UpdateMesh(int iter);
-
-		Math::Vec3 Interpolate(const Math::Vec3& p, const Math::Vec3& a, const Math::Vec3& b, const Math::Vec3& c, const Math::Vec3 attrs[3]);*/
 	};
 }

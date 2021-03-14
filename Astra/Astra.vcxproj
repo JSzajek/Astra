@@ -189,15 +189,11 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClInclude Include="src\Astra\graphics\entities\terrains\HeightGenerator.h" />
     <ClInclude Include="src\Astra\graphics\entities\terrains\Terrain.h" />
     <ClInclude Include="src\Astra\graphics\entities\terrains\WaterTile.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\EdgeHeap.h" />
     <ClInclude Include="src\Astra\graphics\entities\utility\Heap.h" />
     <ClInclude Include="src\Astra\graphics\entities\utility\KdTree.h" />
     <ClInclude Include="src\Astra\graphics\entities\utility\Map.h" />
     <ClInclude Include="src\Astra\graphics\entities\utility\SimpStructs.h" />
     <ClInclude Include="src\Astra\graphics\entities\utility\Simplifier.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\SimplifierStructs.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\SymMatrix.h" />
-    <ClInclude Include="src\Astra\graphics\entities\utility\VertGroup.h" />
     <ClInclude Include="src\Astra\graphics\gizmos\Gizmo.h" />
     <ClInclude Include="src\Astra\graphics\gizmos\GizmoController.h" />
     <ClInclude Include="src\Astra\graphics\guis\Button.h" />
@@ -316,10 +312,8 @@ IF EXIST res\fonts\**.ttf\ (xcopy /Q /E /Y /I res\fonts\**.ttf ..\bin\windows-Di
     <ClCompile Include="src\Astra\graphics\entities\terrains\HeightGenerator.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\terrains\Terrain.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\terrains\WaterTile.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\utility\EdgeHeap.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\utility\SimpStructs.cpp" />
     <ClCompile Include="src\Astra\graphics\entities\utility\Simplifier.cpp" />
-    <ClCompile Include="src\Astra\graphics\entities\utility\VertGroup.cpp" />
     <ClCompile Include="src\Astra\graphics\gizmos\Gizmo.cpp" />
     <ClCompile Include="src\Astra\graphics\gizmos\GizmoController.cpp" />
     <ClCompile Include="src\Astra\graphics\guis\Gui.cpp" />
